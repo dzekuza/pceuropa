@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** Admin can see all tenants and their monthly revenue in one place, and sellers can easily report their earnings each month.
-**Current focus:** Phase 2 — Tenant Management
+**Current focus:** Phase 3 — Revenue, Analytics, FAQ
 
 ## Current Position
 
-Phase: 2 of 4 (Tenant Management)
-Plan: 1 of 2 in current phase
-Status: In Progress — plan 02-01 complete, 02-02 next
-Last activity: 2026-02-25 — Plan 02-01 complete (tenant CRUD at /admin/tenants with DataTable, Sheet form, delete dialog)
+Phase: 3 of 4 (Revenue, Analytics, FAQ)
+Plan: 3 of 3 in current phase
+Status: In Progress — plan 03-03 complete, phase 03 complete
+Last activity: 2026-02-25 — Plan 03-03 complete (admin FAQ CRUD at /admin/faq with Dialog form, AlertDialog delete, move up/down reorder; seller read-only accordion at /seller/faq)
 
-Progress: [███░░░░░░░] 38%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~28 min
-- Total execution time: ~85 min
+- Total plans completed: 6
+- Average duration: ~20 min
+- Total execution time: ~100 min
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [███░░░░░░░] 38%
 |-------|-------|-------|----------|
 | 01-foundation | 2 | 60min | 30min |
 | 02-tenant-management | 1 | 25min | 25min |
+| 03-revenue-analytics-faq | 3 | ~45min | ~15min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~15min), 01-02 (~45min), 02-01 (~25min)
-- Trend: —
+- Last 5 plans: 01-01 (~15min), 01-02 (~45min), 02-01 (~25min), 03-01 (~15min), 03-03 (~15min)
+- Trend: Accelerating
 
 *Updated after each plan completion*
 
@@ -58,6 +59,11 @@ Recent decisions affecting current work:
 - [Phase 02-tenant-management]: TenantFormValues uses string types for numeric fields (space_m2, rent_eur) — Zod v4 z.coerce.number() unknown input type breaks react-hook-form resolver; values parsed to float in Server Actions
 - [Phase 02-tenant-management]: Column factory pattern getColumns(onEdit, onDelete) — keeps ColumnDef stateless, callbacks flow from TenantsTable state owner
 - [Phase 02-tenant-management]: Atomic tenant creation with orphan cleanup — auth user created first, tenant record second; if step 2 fails, auth.admin.deleteUser() called immediately to prevent ghost accounts
+- [Phase 03-revenue-analytics-faq]: RevenuePageClient thin wrapper: holds selectedMonth state shared between RevenueForm and SubmissionHistory
+- [Phase 03-revenue-analytics-faq]: String fields for amount_eur/tx_count in Zod schema, parsed in Server Action — mirrors tenant.ts pattern
+- [03-03]: reorderFaqItems uses individual loop updates — FAQ lists small (<20 items), simplicity over batch upsert
+- [03-03]: FaqAdminList optimistic reorder — local state swap is instant, server action persists asynchronously
+- [03-03]: reorderFaqItems revalidates /admin/faq and /seller/faq both — seller sees admin changes immediately
 
 ### Pending Todos
 
@@ -71,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Plan 02-01 complete — tenant CRUD at /admin/tenants with TanStack DataTable, Sheet form drawer (create/edit), AlertDialog delete confirmation. All 4 TNNT requirements satisfied.
+Stopped at: Plan 03-03 complete — admin FAQ CRUD at /admin/faq (Dialog create/edit, AlertDialog delete, move up/down reorder with optimistic UI); seller read-only accordion at /seller/faq. All 5 FAQ requirements satisfied.
 Resume file: None
