@@ -42,10 +42,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Analytics (Admin)
 
-- [ ] **ANLT-01**: Admin sees center-wide monthly revenue totals (chart + summary)
-- [ ] **ANLT-02**: Admin sees revenue breakdown by tenant category (bar chart)
-- [ ] **ANLT-03**: Admin sees month-over-month trend charts per tenant
-- [ ] **ANLT-04**: Admin sees submission status tracker — which tenants submitted / haven't for current month
+- [x] **ANLT-01**: Admin sees center-wide monthly revenue totals (chart + summary)
+- [x] **ANLT-02**: Admin sees revenue breakdown by tenant category (bar chart)
+- [x] **ANLT-03**: Admin sees month-over-month trend charts per tenant
+- [x] **ANLT-04**: Admin sees submission status tracker — which tenants submitted / haven't for current month
 
 ### FAQ
 
@@ -135,10 +135,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REVN-02 | Phase 3 | Complete |
 | REVN-03 | Phase 3 | Complete |
 | REVN-04 | Phase 3 | Complete |
-| ANLT-01 | Phase 3 | Pending |
-| ANLT-02 | Phase 3 | Pending |
-| ANLT-03 | Phase 3 | Pending |
-| ANLT-04 | Phase 3 | Pending |
+| ANLT-01 | Phase 3 | Complete |
+| ANLT-02 | Phase 3 | Complete |
+| ANLT-03 | Phase 3 | Complete |
+| ANLT-04 | Phase 3 | Complete |
 | FAQ-01 | Phase 3 | Complete |
 | FAQ-02 | Phase 3 | Complete |
 | FAQ-03 | Phase 3 | Complete |

@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [03-03]: reorderFaqItems uses individual loop updates — FAQ lists small (<20 items), simplicity over batch upsert
 - [03-03]: FaqAdminList optimistic reorder — local state swap is instant, server action persists asynchronously
 - [03-03]: reorderFaqItems revalidates /admin/faq and /seller/faq both — seller sees admin changes immediately
+- [03-02]: Single-tenant dropdown for TenantTrendChart (ANLT-03) — multi-line with 10+ tenants unreadable; dropdown lets admin pick any tenant individually
+- [03-02]: SubmissionTracker as 'use client' with filter toggle (Visi/Pateike/Laukiama) — interactivity without DB round-trip; pre-computed arrays from Server Component
+- [03-02]: URL searchParams (from/to) as analytics date range state — shareable/bookmarkable, Server Component refetch pattern
 
 ### Pending Todos
 
@@ -77,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Plan 03-03 complete — admin FAQ CRUD at /admin/faq (Dialog create/edit, AlertDialog delete, move up/down reorder with optimistic UI); seller read-only accordion at /seller/faq. All 5 FAQ requirements satisfied.
+Stopped at: Plan 03-02 complete — admin analytics dashboard at /admin/analytics with recharts line/bar/trend charts, submission tracker, and URL-driven date range filter. All 4 ANLT requirements satisfied.
 Resume file: None

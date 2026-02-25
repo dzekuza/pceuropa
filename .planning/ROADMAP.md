@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - DB schema, Supabase auth, RLS policies, and dashboard shell with role-aware navigation (completed 2026-02-25)
 - [ ] **Phase 2: Tenant Management** - Admin CRUD for tenant accounts and per-tenant detail tables with auto-calculated metrics
-- [ ] **Phase 3: Revenue, Analytics & FAQ** - Seller revenue submission, admin analytics views, and FAQ management
+- [x] **Phase 3: Revenue, Analytics & FAQ** - Seller revenue submission, admin analytics views, and FAQ management (completed 2026-02-25)
 - [ ] **Phase 4: Landing Page** - Public-facing page built from Figma design with link to dashboard login
 
 ## Phase Details
@@ -61,7 +61,7 @@ Plans:
   3. Admin sees center-wide monthly revenue totals with a chart and per-category revenue breakdown
   4. Admin sees a submission status tracker showing which tenants have and have not submitted for the current month
   5. Admin can create, edit, reorder, and delete FAQ entries; seller can read all FAQ entries in read-only mode
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 03-01-PLAN.md — Seller revenue submission form with month selector, upsert Server Action, and submission history table
@@ -90,5 +90,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-02-25 |
 | 2. Tenant Management | 1/2 | In Progress|  |
-| 3. Revenue, Analytics & FAQ | 2/3 | In Progress|  |
+| 3. Revenue, Analytics & FAQ | 3/3 | Complete   | 2026-02-25 |
 | 4. Landing Page | 0/1 | Not started | - |
