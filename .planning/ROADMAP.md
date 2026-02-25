@@ -61,12 +61,12 @@ Plans:
   3. Admin sees center-wide monthly revenue totals with a chart and per-category revenue breakdown
   4. Admin sees a submission status tracker showing which tenants have and have not submitted for the current month
   5. Admin can create, edit, reorder, and delete FAQ entries; seller can read all FAQ entries in read-only mode
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 03-01: Seller revenue submission form and submission history list
-- [ ] 03-02: Admin revenue overview and analytics page (center-wide totals, category breakdown, per-tenant trends, submission tracker)
-- [ ] 03-03: FAQ CRUD for admin and read-only FAQ view for seller
+- [ ] 03-01-PLAN.md — Seller revenue submission form with month selector, upsert Server Action, and submission history table
+- [ ] 03-02-PLAN.md — Admin analytics dashboard with monthly revenue line chart, category bar chart, and submission status tracker
+- [ ] 03-03-PLAN.md — FAQ admin CRUD with reorder and seller read-only accordion view
 
 ### Phase 4: Landing Page
 **Goal**: A visitor to the PC EUROPA website sees the public landing page and can navigate to the dashboard login
