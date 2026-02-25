@@ -41,15 +41,15 @@ export async function createTenant(
 
   const newUserId = authData.user.id
 
-  // Step 2: insert tenant record
+  // Step 2: insert tenant record (parse string fields to numbers)
   const { error: tenantError } = await supabase.from('tenants').insert({
     user_id: newUserId,
     store_name: formData.store_name,
     operator: formData.operator ?? null,
     company_code: formData.company_code ?? null,
     category: formData.category,
-    space_m2: formData.space_m2,
-    rent_eur: formData.rent_eur,
+    space_m2: parseFloat(formData.space_m2),
+    rent_eur: parseFloat(formData.rent_eur),
   })
 
   if (tenantError) {
@@ -67,7 +67,7 @@ export async function createTenant(
  */
 export async function updateTenant(
   tenantId: string,
-  formData: Partial<Omit<TenantFormValues, 'username' | 'password'>>
+  formData: Partial<TenantFormValues>
 ): Promise<{ success: true } | { error: string }> {
   const supabase = await createClient()
   const {
@@ -85,8 +85,8 @@ export async function updateTenant(
       operator: formData.operator ?? null,
       company_code: formData.company_code ?? null,
       category: formData.category,
-      space_m2: formData.space_m2,
-      rent_eur: formData.rent_eur,
+      space_m2: formData.space_m2 != null ? parseFloat(formData.space_m2) : undefined,
+      rent_eur: formData.rent_eur != null ? parseFloat(formData.rent_eur) : undefined,
     })
     .eq('id', tenantId)
 
