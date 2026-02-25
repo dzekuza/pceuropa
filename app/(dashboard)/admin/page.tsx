@@ -178,7 +178,7 @@ export default async function AdminHomePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {reports
+                  {[...reports]
                     .sort((a, b) => (b.submitted_at || b.month).localeCompare(a.submitted_at || a.month))
                     .slice(0, 10)
                     .map((report) => {
