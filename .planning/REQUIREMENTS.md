@@ -109,50 +109,50 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| TNNT-01 | — | Pending |
-| TNNT-02 | — | Pending |
-| TNNT-03 | — | Pending |
-| TNNT-04 | — | Pending |
-| TNNT-05 | — | Pending |
-| TDTL-01 | — | Pending |
-| TDTL-02 | — | Pending |
-| TDTL-03 | — | Pending |
-| TDTL-04 | — | Pending |
-| TDTL-05 | — | Pending |
-| TDTL-06 | — | Pending |
-| TDTL-07 | — | Pending |
-| REVN-01 | — | Pending |
-| REVN-02 | — | Pending |
-| REVN-03 | — | Pending |
-| REVN-04 | — | Pending |
-| ANLT-01 | — | Pending |
-| ANLT-02 | — | Pending |
-| ANLT-03 | — | Pending |
-| ANLT-04 | — | Pending |
-| FAQ-01 | — | Pending |
-| FAQ-02 | — | Pending |
-| FAQ-03 | — | Pending |
-| FAQ-04 | — | Pending |
-| FAQ-05 | — | Pending |
-| SHLL-01 | — | Pending |
-| SHLL-02 | — | Pending |
-| SHLL-03 | — | Pending |
-| SHLL-04 | — | Pending |
-| SHLL-05 | — | Pending |
-| LAND-01 | — | Pending |
-| LAND-02 | — | Pending |
-| LAND-03 | — | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| SHLL-01 | Phase 1 | Pending |
+| SHLL-02 | Phase 1 | Pending |
+| SHLL-03 | Phase 1 | Pending |
+| SHLL-04 | Phase 1 | Pending |
+| SHLL-05 | Phase 1 | Pending |
+| TNNT-01 | Phase 2 | Pending |
+| TNNT-02 | Phase 2 | Pending |
+| TNNT-03 | Phase 2 | Pending |
+| TNNT-04 | Phase 2 | Pending |
+| TNNT-05 | Phase 2 | Pending |
+| TDTL-01 | Phase 2 | Pending |
+| TDTL-02 | Phase 2 | Pending |
+| TDTL-03 | Phase 2 | Pending |
+| TDTL-04 | Phase 2 | Pending |
+| TDTL-05 | Phase 2 | Pending |
+| TDTL-06 | Phase 2 | Pending |
+| TDTL-07 | Phase 2 | Pending |
+| REVN-01 | Phase 3 | Pending |
+| REVN-02 | Phase 3 | Pending |
+| REVN-03 | Phase 3 | Pending |
+| REVN-04 | Phase 3 | Pending |
+| ANLT-01 | Phase 3 | Pending |
+| ANLT-02 | Phase 3 | Pending |
+| ANLT-03 | Phase 3 | Pending |
+| ANLT-04 | Phase 3 | Pending |
+| FAQ-01 | Phase 3 | Pending |
+| FAQ-02 | Phase 3 | Pending |
+| FAQ-03 | Phase 3 | Pending |
+| FAQ-04 | Phase 3 | Pending |
+| FAQ-05 | Phase 3 | Pending |
+| LAND-01 | Phase 4 | Pending |
+| LAND-02 | Phase 4 | Pending |
+| LAND-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 38 total
-- Mapped to phases: 0
-- Unmapped: 38 ⚠️
+- Mapped to phases: 38
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after initial definition*
+*Last updated: 2026-02-25 after roadmap creation*
