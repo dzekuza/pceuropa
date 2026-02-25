@@ -1,0 +1,30 @@
+# Environment variables — NEVER commit these
+.env.local
+.env.*.local
+
+# Node.js
+node_modules/
+.npm
+
+# Next.js
+.next/
+out/
+build/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Supabase local dev
+supabase/.branches
+supabase/.temp
