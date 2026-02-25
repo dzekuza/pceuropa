@@ -11,26 +11,26 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 Phase: 1 of 4 (Foundation)
 Plan: 2 of 2 in current phase
-Status: In Progress — plan 01-01 complete, 01-02 next
-Last activity: 2026-02-25 — Plan 01-01 complete (all 3 tasks done, Supabase project linked and verified)
+Status: Phase 1 Complete — both plans done (01-01 and 01-02)
+Last activity: 2026-02-25 — Plan 01-02 complete (auth flow, dashboard shell, login page, role-aware sidebar)
 
-Progress: [█░░░░░░░░░] 13%
+Progress: [██░░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~15 min
-- Total execution time: ~15 min
+- Total plans completed: 2
+- Average duration: ~30 min
+- Total execution time: ~60 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 1 | 15min | 15min |
+| 01-foundation | 2 | 60min | 30min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~15min)
+- Last 5 plans: 01-01 (~15min), 01-02 (~45min)
 - Trend: —
 
 *Updated after each plan completion*
@@ -50,6 +50,10 @@ Recent decisions affecting current work:
 - [01-01]: All RLS policies use app_metadata — confirmed correct pattern in migration SQL
 - [01-01]: types/database.ts is hand-written placeholder — must regen with `npx supabase gen types typescript --linked` after project is linked
 - [01-01]: SUPABASE_SERVICE_ROLE_KEY has no NEXT_PUBLIC_ prefix — naming convention set correctly from day one
+- [01-02]: proxy.ts filename (not middleware.ts) — required for Next.js 16 compatibility
+- [01-02]: Seller username login handled client-side — append @pceuropa.lt before signInWithPassword if no '@' in identifier
+- [01-02]: getUser() in every protected Server Component page — defense-in-depth, proxy.ts alone insufficient per CVE-2025-29927
+- [01-02]: All Lithuanian UI strings centralized in lib/strings.ts — single source of truth for AUTH_STRINGS, ADMIN_NAV_ITEMS, SELLER_NAV_ITEMS
 
 ### Pending Todos
 
@@ -57,12 +61,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Lithuanian string inventory not yet drafted — all Zod validation messages and UI strings must be Lithuanian from day one; consider creating a strings constants file in Phase 1
 - First-login password change flow not decided — admin sets seller passwords; decide before Phase 1 ships whether to include a `first_login` flag + change prompt in v1 or defer to v1.x
 - Test data seed script needed for Phase 3 analytics — charts require 3+ months of revenue data to render meaningfully; plan seed script at start of Phase 3
 
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Plan 01-01 complete — Supabase project linked, migration applied, admin user created, types regenerated. Ready to begin 01-02 (Next.js scaffold).
+Stopped at: Plan 01-02 complete — auth flow (login, proxy.ts, session), dashboard shell (sidebar, admin/seller pages) all verified. Phase 1 complete. Ready to begin Phase 2.
 Resume file: None

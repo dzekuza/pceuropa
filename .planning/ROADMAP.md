@@ -12,7 +12,7 @@ Four phases take PC EUROPA from a scaffolded Next.js project to a fully deployed
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - DB schema, Supabase auth, RLS policies, and dashboard shell with role-aware navigation
+- [x] **Phase 1: Foundation** - DB schema, Supabase auth, RLS policies, and dashboard shell with role-aware navigation (completed 2026-02-25)
 - [ ] **Phase 2: Tenant Management** - Admin CRUD for tenant accounts and per-tenant detail tables with auto-calculated metrics
 - [ ] **Phase 3: Revenue, Analytics & FAQ** - Seller revenue submission, admin analytics views, and FAQ management
 - [ ] **Phase 4: Landing Page** - Public-facing page built from Figma design with link to dashboard login
@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. An unauthenticated visitor attempting to access any dashboard route is redirected to the login page
   4. A seller attempting to access any admin route is redirected away (role enforcement works)
   5. Session persists after browser refresh — users do not need to log in again
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Supabase DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
@@ -88,7 +88,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/2 | In Progress | 2026-02-25 (01-01) |
+| 1. Foundation | 2/2 | Complete   | 2026-02-25 |
 | 2. Tenant Management | 0/2 | Not started | - |
 | 3. Revenue, Analytics & FAQ | 0/3 | Not started | - |
 | 4. Landing Page | 0/1 | Not started | - |

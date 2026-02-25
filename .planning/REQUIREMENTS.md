@@ -11,9 +11,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **AUTH-01**: Admin can log in with email and password
 - [x] **AUTH-02**: Seller can log in with username and password (account created by admin)
-- [ ] **AUTH-03**: User session persists across browser refresh
+- [x] **AUTH-03**: User session persists across browser refresh
 - [x] **AUTH-04**: Role-based access — admin sees admin pages, seller sees seller pages
-- [ ] **AUTH-05**: Unauthorized users are redirected to login page
+- [x] **AUTH-05**: Unauthorized users are redirected to login page
 
 ### Tenant Management (Admin)
 
@@ -57,11 +57,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dashboard Shell
 
-- [ ] **SHLL-01**: Dashboard has sidebar navigation with role-aware menu items
-- [ ] **SHLL-02**: Admin navigation: Nuomininkai (Tenants), Analitika (Analytics), DUK (FAQ), Nustatymai (Settings)
-- [ ] **SHLL-03**: Seller navigation: Apyvarta (Revenue), DUK (FAQ)
-- [ ] **SHLL-04**: Lithuanian labels throughout all UI elements
-- [ ] **SHLL-05**: Responsive layout — works on desktop and tablet
+- [x] **SHLL-01**: Dashboard has sidebar navigation with role-aware menu items
+- [x] **SHLL-02**: Admin navigation: Nuomininkai (Tenants), Analitika (Analytics), DUK (FAQ), Nustatymai (Settings)
+- [x] **SHLL-03**: Seller navigation: Apyvarta (Revenue), DUK (FAQ)
+- [x] **SHLL-04**: Lithuanian labels throughout all UI elements
+- [x] **SHLL-05**: Responsive layout — works on desktop and tablet
 
 ### Landing Page
 
@@ -111,14 +111,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
-| AUTH-03 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Complete |
 | AUTH-04 | Phase 1 | Complete |
-| AUTH-05 | Phase 1 | Pending |
-| SHLL-01 | Phase 1 | Pending |
-| SHLL-02 | Phase 1 | Pending |
-| SHLL-03 | Phase 1 | Pending |
-| SHLL-04 | Phase 1 | Pending |
-| SHLL-05 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Complete |
+| SHLL-01 | Phase 1 | Complete |
+| SHLL-02 | Phase 1 | Complete |
+| SHLL-03 | Phase 1 | Complete |
+| SHLL-04 | Phase 1 | Complete |
+| SHLL-05 | Phase 1 | Complete |
 | TNNT-01 | Phase 2 | Pending |
 | TNNT-02 | Phase 2 | Pending |
 | TNNT-03 | Phase 2 | Pending |
