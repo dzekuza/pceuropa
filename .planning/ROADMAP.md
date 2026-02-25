@@ -29,11 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. An unauthenticated visitor attempting to access any dashboard route is redirected to the login page
   4. A seller attempting to access any admin route is redirected away (role enforcement works)
   5. Session persists after browser refresh — users do not need to log in again
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: Supabase project setup — DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
-- [ ] 01-02: Next.js scaffold with shadcn Nova preset, Supabase SSR clients, proxy.ts middleware, login page, auth callback, dashboard shell with role-aware sidebar
+- [ ] 01-01-PLAN.md — Supabase DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
+- [ ] 01-02-PLAN.md — Next.js scaffold with shadcn Nova preset, Supabase SSR clients, proxy.ts middleware, login page, auth callback, dashboard shell with role-aware sidebar
 
 ### Phase 2: Tenant Management
 **Goal**: Admin can create, view, edit, and remove tenants — and inspect any tenant's yearly revenue detail
