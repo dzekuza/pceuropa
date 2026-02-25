@@ -17,10 +17,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Tenant Management (Admin)
 
-- [ ] **TNNT-01**: Admin can view a list of all tenants with key info (store name, operator, category, space m², rent price)
-- [ ] **TNNT-02**: Admin can add a new tenant with fields: username, password, operator, company code (Įm. kodas), store name (Parduotuvė), category (Kategorija), space m² (Patalpos), rent price EUR (Nuomos kaina)
-- [ ] **TNNT-03**: Admin can edit any tenant's details
-- [ ] **TNNT-04**: Admin can remove a tenant (with confirmation)
+- [x] **TNNT-01**: Admin can view a list of all tenants with key info (store name, operator, category, space m², rent price)
+- [x] **TNNT-02**: Admin can add a new tenant with fields: username, password, operator, company code (Įm. kodas), store name (Parduotuvė), category (Kategorija), space m² (Patalpos), rent price EUR (Nuomos kaina)
+- [x] **TNNT-03**: Admin can edit any tenant's details
+- [x] **TNNT-04**: Admin can remove a tenant (with confirmation)
 - [ ] **TNNT-05**: Admin can view a single tenant detail page with yearly revenue breakdown table
 
 ### Tenant Detail Table (Admin)
@@ -119,10 +119,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHLL-03 | Phase 1 | Complete |
 | SHLL-04 | Phase 1 | Complete |
 | SHLL-05 | Phase 1 | Complete |
-| TNNT-01 | Phase 2 | Pending |
-| TNNT-02 | Phase 2 | Pending |
-| TNNT-03 | Phase 2 | Pending |
-| TNNT-04 | Phase 2 | Pending |
+| TNNT-01 | Phase 2 | Complete |
+| TNNT-02 | Phase 2 | Complete |
+| TNNT-03 | Phase 2 | Complete |
+| TNNT-04 | Phase 2 | Complete |
 | TNNT-05 | Phase 2 | Pending |
 | TDTL-01 | Phase 2 | Pending |
 | TDTL-02 | Phase 2 | Pending |

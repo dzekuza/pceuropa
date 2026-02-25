@@ -45,7 +45,7 @@ Plans:
   3. Admin can edit any tenant's details and delete a tenant with a confirmation prompt
   4. Admin can open a single tenant page and see a 12-month table with Mėnuo, Apyvarta, Pirkimų sk., P.K, Apyvarta/m², Efektyvumas columns
   5. P.K, Apyvarta/m², and Efektyvumas are auto-calculated — admin never enters these values manually
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — Tenant list page with DataTable, CRUD via side drawer form and delete dialog, Server Actions with service role admin client
@@ -89,6 +89,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-02-25 |
-| 2. Tenant Management | 0/2 | Not started | - |
+| 2. Tenant Management | 1/2 | In Progress|  |
 | 3. Revenue, Analytics & FAQ | 0/3 | Not started | - |
 | 4. Landing Page | 0/1 | Not started | - |
