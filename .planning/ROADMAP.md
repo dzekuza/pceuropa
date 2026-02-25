@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 01-01-PLAN.md — Supabase DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
+- [x] 01-01-PLAN.md — Supabase DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
 - [ ] 01-02-PLAN.md — Next.js scaffold with shadcn Nova preset, Supabase SSR clients, proxy.ts middleware, login page, auth callback, dashboard shell with role-aware sidebar
 
 ### Phase 2: Tenant Management
@@ -88,7 +88,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/2 | In Progress|  |
+| 1. Foundation | 1/2 | In Progress | 2026-02-25 (01-01) |
 | 2. Tenant Management | 0/2 | Not started | - |
 | 3. Revenue, Analytics & FAQ | 0/3 | Not started | - |
 | 4. Landing Page | 0/1 | Not started | - |

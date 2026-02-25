@@ -60,7 +60,7 @@ completed: 2026-02-25
 - **Duration:** ~15 min
 - **Started:** 2026-02-25T17:48:36Z
 - **Completed:** 2026-02-25T18:03:00Z
-- **Tasks:** 2 of 3 complete (Task 3 is a human-verify checkpoint — awaiting user action)
+- **Tasks:** 3 of 3 complete
 - **Files modified:** 6
 
 ## Accomplishments
@@ -75,7 +75,7 @@ Each task was committed atomically:
 
 1. **Task 1: Create Supabase migration with full schema and RLS policies** - `f5f1f7d` (feat)
 2. **Task 2: Configure environment and generate TypeScript types** - `2264842` (feat)
-3. **Task 3: Verify Supabase project connection** - PENDING (awaiting human verification)
+3. **Task 3: Verify Supabase project connection** - checkpoint approved (human-verify)
 
 ## Files Created/Modified
 - `supabase/config.toml` - Supabase local dev configuration
@@ -97,17 +97,7 @@ None — plan executed exactly as written. The `supabase init` step was replaced
 
 ## User Setup Required
 
-**Task 3 requires manual Supabase configuration.** To complete this plan:
-
-1. Ensure you have a Supabase project at https://supabase.com/dashboard
-2. Copy your project's URL, anon key, and service role key into `.env.local`
-3. Run `npx supabase login` and authenticate
-4. Run `npx supabase link --project-ref YOUR_PROJECT_REF`
-5. Run `npx supabase db push` to apply the migration
-6. Check Dashboard → Table Editor: tenants, revenue_reports, faq_items should be visible
-7. Check Dashboard → Authentication → Policies: each table should have RLS enabled with policies
-8. Create admin user: Dashboard → Authentication → Users → Add User → email: admin@pceuropa.lt → edit user → app_metadata: `{"role": "admin"}`
-9. Regenerate types: `npx supabase gen types typescript --linked > types/database.ts`
+**Completed.** Supabase project was linked, migration applied, admin user created with `app_metadata.role=admin`, and TypeScript types regenerated from live schema.
 
 ## Issues Encountered
 
@@ -121,4 +111,4 @@ None.
 
 ---
 *Phase: 01-foundation*
-*Completed: 2026-02-25 (partial — checkpoint pending)*
+*Completed: 2026-02-25*
