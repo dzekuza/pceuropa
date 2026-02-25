@@ -22,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { ModeToggle } from '@/components/mode-toggle'
 import type { NavItem } from '@/lib/strings'
 
 // Icon map — resolves string icon names from lib/strings.ts to Lucide components
@@ -83,7 +84,13 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex justify-center p-2 pt-0">
+            <ModeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

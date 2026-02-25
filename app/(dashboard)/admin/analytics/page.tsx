@@ -6,30 +6,23 @@ export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { RevenueLineChart } from '@/components/analytics/revenue-line-chart'
 import { CategoryBarChart } from '@/components/analytics/category-bar-chart'
 import { TenantTrendChart } from '@/components/analytics/tenant-trend-chart'
 import { SubmissionTracker } from '@/components/analytics/submission-tracker'
 import { AnalyticsDateRange } from '@/components/analytics/analytics-date-range'
+import { AnalyticsSectionCards } from '@/components/analytics/section-cards'
 import {
   aggregateMonthlyRevenue,
   aggregateCategoryRevenue,
   getSubmissionStatus,
   aggregateTenantTrends,
+  getDateRangeMonths,
 } from '@/lib/utils/analytics'
+import { MONTHS_LT } from '@/lib/constants'
 
 interface AnalyticsPageProps {
   searchParams: Promise<{ from?: string; to?: string }>
-}
-
-function formatEur(value: number): string {
-  return new Intl.NumberFormat('lt-LT', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 /** Default "from" = 12 months ago, "to" = current month (YYYY-MM) */
@@ -49,6 +42,15 @@ function getDefaultRange(): { from: string; to: string } {
     from: `${fromYear}-${String(fromMonth).padStart(2, '0')}`,
     to: `${toYear}-${String(toMonth).padStart(2, '0')}`,
   }
+}
+
+/** Friendly Lithuanian label for a date range */
+function buildRangeLabel(fromParam: string, toParam: string): string {
+  const [fy, fm] = fromParam.split('-').map(Number)
+  const [ty, tm] = toParam.split('-').map(Number)
+  const fromLabel = `${MONTHS_LT[fm - 1]} ${fy}`
+  const toLabel = `${MONTHS_LT[tm - 1]} ${ty}`
+  return fromLabel === toLabel ? fromLabel : `${fromLabel} – ${toLabel}`
 }
 
 export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPageProps) {
@@ -77,18 +79,34 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const now = new Date()
   const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
 
-  // Parallel fetch: tenants + revenue reports in range
-  const [tenantsResult, reportsResult] = await Promise.all([
+  // Build previous period of same length for trend comparison
+  const months = getDateRangeMonths(fromDate, toDate)
+  const periodLen = months.length
+  const firstDate = new Date(fromDate)
+  firstDate.setMonth(firstDate.getMonth() - periodLen)
+  const prevFromDate = `${firstDate.getFullYear()}-${String(firstDate.getMonth() + 1).padStart(2, '0')}-01`
+  const prevToMs = new Date(fromDate)
+  prevToMs.setMonth(prevToMs.getMonth() - 1)
+  const prevToDate = `${prevToMs.getFullYear()}-${String(prevToMs.getMonth() + 1).padStart(2, '0')}-01`
+
+  // Parallel fetch: tenants + current period reports + previous period reports
+  const [tenantsResult, reportsResult, prevReportsResult] = await Promise.all([
     supabase.from('tenants').select('*').order('store_name'),
     supabase
       .from('revenue_reports')
       .select('*')
       .gte('month', fromDate)
       .lte('month', toDate),
+    supabase
+      .from('revenue_reports')
+      .select('amount_eur')
+      .gte('month', prevFromDate)
+      .lte('month', prevToDate),
   ])
 
   const tenants = tenantsResult.data ?? []
   const reports = reportsResult.data ?? []
+  const prevReports = prevReportsResult.data ?? []
 
   // Aggregate data for charts
   const monthlyRevenue = aggregateMonthlyRevenue(reports, fromDate, toDate)
@@ -98,17 +116,24 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
 
   // Summary stats
   const totalRevenue = reports.reduce((sum, r) => sum + r.amount_eur, 0)
+  const prevRevenue = prevReports.length > 0
+    ? prevReports.reduce((sum, r) => sum + r.amount_eur, 0)
+    : null
   const tenantCount = tenants.length
-  const avgRevenue = tenantCount > 0 ? totalRevenue / tenantCount : 0
+  const avgRevenue = submissionStatus.submittedCount > 0
+    ? totalRevenue / submissionStatus.submittedCount
+    : 0
+
+  const rangeLabel = buildRangeLabel(fromParam, toParam)
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 py-6">
       {/* Page header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
         <div>
           <h1 className="text-2xl font-bold">Analitika</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Centro pajamu ir nuomininku apyvartos apzvalga
+            Centro pajamų ir nuomininkų apyvartos apžvalga
           </p>
         </div>
         <Suspense fallback={null}>
@@ -116,45 +141,25 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
         </Suspense>
       </div>
 
-      {/* Summary stat cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Viso pajamu (laikotarpis)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{formatEur(totalRevenue)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Nuomininku skaicius
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{tenantCount}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Vid. pajamos / nuomininkas
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{formatEur(avgRevenue)}</p>
-          </CardContent>
-        </Card>
+      {/* Dashboard-01 style section cards */}
+      <div className="px-4 lg:px-6">
+        <AnalyticsSectionCards
+          totalRevenue={totalRevenue}
+          totalRevenueLabel={rangeLabel}
+          prevRevenue={prevRevenue}
+          tenantCount={tenantCount}
+          submittedCount={submissionStatus.submittedCount}
+          avgRevenue={avgRevenue}
+        />
       </div>
 
-      {/* Monthly revenue line chart — full width */}
-      <RevenueLineChart data={monthlyRevenue} />
+      {/* Area chart — full span */}
+      <div className="px-4 lg:px-6">
+        <RevenueLineChart data={monthlyRevenue} />
+      </div>
 
-      {/* Category bar chart + Submission tracker side-by-side */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+      {/* Category bar chart + Submission tracker */}
+      <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-5 lg:px-6">
         <div className="lg:col-span-3">
           <CategoryBarChart data={categoryRevenue} />
         </div>
@@ -169,8 +174,10 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
         </div>
       </div>
 
-      {/* Per-tenant trend chart — full width */}
-      <TenantTrendChart data={tenantTrends} />
+      {/* Per-tenant trend chart */}
+      <div className="px-4 lg:px-6">
+        <TenantTrendChart data={tenantTrends} />
+      </div>
     </div>
   )
 }

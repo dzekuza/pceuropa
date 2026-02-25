@@ -117,16 +117,15 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
     const existing = reports.find((r) => r.month.startsWith(selectedMonth))
     const weeks = existing?.weeks && Array.isArray(existing.weeks)
       ? (existing.weeks.map((w) => ({
-          tx_count: w.tx_count ? String(w.tx_count) : '',
-          amount_eur: w.amount_eur ? String(w.amount_eur) : '',
-        })) as RevenueFormValues['weeks'])
+        tx_count: w.tx_count ? String(w.tx_count) : '',
+        amount_eur: w.amount_eur ? String(w.amount_eur) : '',
+      })) as RevenueFormValues['weeks'])
       : EMPTY_WEEKS
     form.reset({
       month: selectedMonth,
       weeks,
       submitted_by: existing?.submitted_by ?? '',
     })
-    setSubmitMessage(null)
   }, [selectedMonth, reports, form])
 
   function onSubmit(values: RevenueFormValues) {
@@ -151,7 +150,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {/* Editing indicator */}
           {isEditing && (
-            <div className="rounded-md bg-blue-50 border border-blue-200 px-3 py-2 text-sm text-blue-700">
+            <div className="rounded-md bg-info/10 border border-info/20 px-3 py-2 text-sm text-info-foreground">
               Redaguojate jau pateiktus duomenis
             </div>
           )}
@@ -159,11 +158,10 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
           {/* Submit feedback */}
           {submitMessage && (
             <div
-              className={`rounded-md border px-3 py-2 text-sm ${
-                submitMessage.type === 'success'
-                  ? 'border-green-200 bg-green-50 text-green-700'
-                  : 'border-destructive/50 bg-destructive/10 text-destructive'
-              }`}
+              className={`rounded-md border px-3 py-2 text-sm ${submitMessage.type === 'success'
+                ? 'border-success/20 bg-success/10 text-success-foreground'
+                : 'border-destructive/20 bg-destructive/10 text-destructive-foreground'
+                }`}
             >
               {submitMessage.text}
             </div>
@@ -180,6 +178,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
                   onValueChange={(value) => {
                     field.onChange(value)
                     onSelectMonth(value)
+                    setSubmitMessage(null)
                   }}
                   value={field.value}
                 >
@@ -290,8 +289,8 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
             {isPending
               ? 'Saugoma...'
               : isEditing
-              ? 'Atnaujinti'
-              : 'Pateikti'}
+                ? 'Atnaujinti'
+                : 'Pateikti'}
           </Button>
         </form>
       </Form>

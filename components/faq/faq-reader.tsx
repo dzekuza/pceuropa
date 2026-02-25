@@ -31,7 +31,7 @@ export function FaqReader({ items }: FaqReaderProps) {
             {item.question}
           </AccordionTrigger>
           <AccordionContent>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed">
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
               {item.answer}
             </p>
           </AccordionContent>

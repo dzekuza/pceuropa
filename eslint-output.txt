@@ -1,0 +1,193 @@
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/app/(dashboard)/admin/page.tsx
+  17:3  warning  'CalendarIcon' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/analytics/section-cards.tsx
+  1:10  warning  'TrendingUpIcon' is defined but never used    @typescript-eslint/no-unused-vars
+  1:26  warning  'TrendingDownIcon' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/analytics/submission-tracker.tsx
+  96:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/analytics/submission-tracker.tsx:96:17
+  94 |   ], [])
+  95 |
+> 96 |   const table = useReactTable({
+     |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  97 |     data: filtered,
+  98 |     columns,
+  99 |     getCoreRowModel: getCoreRowModel(),  react-hooks/incompatible-library
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/patterns/p-data-grid-21.tsx
+  368:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/patterns/p-data-grid-21.tsx:368:17
+  366 |   )
+  367 |
+> 368 |   const table = useReactTable({
+      |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  369 |     columns,
+  370 |     data: demoData,
+  371 |     pageCount: Math.ceil((demoData?.length || 0) / pagination.pageSize),  react-hooks/incompatible-library
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/revenue/revenue-form.tsx
+  129:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/revenue/revenue-form.tsx:129:5
+  127 |       submitted_by: existing?.submitted_by ?? '',
+  128 |     })
+> 129 |     setSubmitMessage(null)
+      |     ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  130 |   }, [selectedMonth, reports, form])
+  131 |
+  132 |   function onSubmit(values: RevenueFormValues) {  react-hooks/set-state-in-effect
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/revenue/submission-history.tsx
+  71:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/revenue/submission-history.tsx:71:17
+  69 |   ], [])
+  70 |
+> 71 |   const table = useReactTable({
+     |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  72 |     data: sorted,
+  73 |     columns,
+  74 |     getCoreRowModel: getCoreRowModel(),  react-hooks/incompatible-library
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/tenants/tenant-revenue-table.tsx
+   30:10  warning  'cn' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+  157:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/tenants/tenant-revenue-table.tsx:157:17
+  155 |   ], [tenant, pk])
+  156 |
+> 157 |   const table = useReactTable({
+      |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  158 |     data: rows,
+  159 |     columns,
+  160 |     getCoreRowModel: getCoreRowModel(),  react-hooks/incompatible-library
+  181:67  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/tenants/tenants-table.tsx
+  58:3   warning  The 'handleEdit' function makes the dependencies of useMemo Hook (at line 73) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'handleEdit' in its own useCallback() Hook                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+  63:3   warning  The 'handleDelete' function makes the dependencies of useMemo Hook (at line 73) change on every render. Move it inside the useMemo callback. Alternatively, wrap the definition of 'handleDelete' in its own useCallback() Hook                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+  76:40  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  76:62  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  79:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/tenants/tenants-table.tsx:79:17
+  77 |   )
+  78 |
+> 79 |   const table = useReactTable({
+     |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  80 |     data,
+  81 |     columns,
+  82 |     state: { sorting, columnFilters, pagination, columnOrder },  react-hooks/incompatible-library
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx
+    8:23  warning  'Sparkles' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   66:27  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:66:27
+  64 |     };
+  65 |
+> 66 |     const pupilPosition = calculatePupilPosition();
+     |                           ^^^^^^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  67 |
+  68 |     return (
+  69 |         <div                                                                                                                                              react-hooks/refs
+  144:27  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:144:27
+  142 |     };
+  143 |
+> 144 |     const pupilPosition = calculatePupilPosition();
+      |                           ^^^^^^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  145 |
+  146 |     return (
+  147 |         <div                                                                                                                                      react-hooks/refs
+  294:23  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:294:23
+  292 |     };
+  293 |
+> 294 |     const purplePos = calculatePosition(purpleRef);
+      |                       ^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  295 |     const blackPos = calculatePosition(blackRef);
+  296 |     const yellowPos = calculatePosition(yellowRef);
+  297 |     const orangePos = calculatePosition(orangeRef);               react-hooks/refs
+  295:22  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:295:22
+  293 |
+  294 |     const purplePos = calculatePosition(purpleRef);
+> 295 |     const blackPos = calculatePosition(blackRef);
+      |                      ^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  296 |     const yellowPos = calculatePosition(yellowRef);
+  297 |     const orangePos = calculatePosition(orangeRef);
+  298 |                       react-hooks/refs
+  296:23  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:296:23
+  294 |     const purplePos = calculatePosition(purpleRef);
+  295 |     const blackPos = calculatePosition(blackRef);
+> 296 |     const yellowPos = calculatePosition(yellowRef);
+      |                       ^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  297 |     const orangePos = calculatePosition(orangeRef);
+  298 |
+  299 |     return (         react-hooks/refs
+  297:23  error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/animated-characters-login-page.tsx:297:23
+  295 |     const blackPos = calculatePosition(blackRef);
+  296 |     const yellowPos = calculatePosition(yellowRef);
+> 297 |     const orangePos = calculatePosition(orangeRef);
+      |                       ^^^^^^^^^^^^^^^^^ This function accesses a ref value
+  298 |
+  299 |     return (
+  300 |         <div className="min-h-screen grid lg:grid-cols-2">  react-hooks/refs
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/sidebar.tsx
+  611:26  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/gvozdovic/Desktop/WEB Projects/pceuropa/components/ui/sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, [])
+  613 |
+  614 |   return (  react-hooks/purity
+
+✖ 23 problems (11 errors, 12 warnings)
+

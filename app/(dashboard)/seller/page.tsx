@@ -1,6 +1,7 @@
 // app/(dashboard)/seller/page.tsx — Seller home page
 // Server Component — Defense-in-depth auth check (middleware alone is not sufficient)
 // CVE-2025-29927: middleware can be bypassed via x-middleware-subrequest header
+// Phase 3 gap closure: redirect to /seller/revenue (the real seller entry point)
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -16,26 +17,7 @@ export default async function SellerHomePage() {
     redirect('/login')
   }
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Apyvarta</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Mėnesinės apyvartos pateikimas
-        </p>
-      </div>
-
-      {/* TODO Phase 3: replace with revenue submission form */}
-      <div className="flex items-center justify-center rounded-lg border border-dashed p-12">
-        <div className="text-center">
-          <p className="text-muted-foreground text-lg">
-            Apyvartos pateikimas bus prieinamas netrukus
-          </p>
-          <p className="text-muted-foreground/60 text-sm mt-2">
-            Ši funkcija bus prieinama Phase 3 metu.
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+  // Revenue submission is fully implemented at /seller/revenue — redirect immediately.
+  // Keeping the auth guard above ensures /seller cannot be accessed without a valid seller session.
+  redirect('/seller/revenue')
 }

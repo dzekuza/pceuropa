@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // Redirect to admin after login — proxy.ts middleware will enforce role-based routing
-  return NextResponse.redirect(new URL('/admin', request.url))
+  // Redirect to the intended page or default to admin
+  const next = requestUrl.searchParams.get('next') ?? '/admin'
+  return NextResponse.redirect(new URL(next, request.url))
 }

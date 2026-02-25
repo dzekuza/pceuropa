@@ -11,7 +11,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 // Next.js 16 proxy.ts requires the exported function to be named "proxy" (not "middleware")
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

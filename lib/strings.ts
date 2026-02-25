@@ -11,6 +11,7 @@ export const ADMIN_NAV_ITEMS = [
 
 export const SELLER_NAV_ITEMS = [
   { label: 'Apyvarta', href: '/seller/revenue', icon: 'TrendingUp' },
+  { label: 'Analitika', href: '/seller/analytics', icon: 'BarChart2' },
   { label: 'DUK', href: '/seller/faq', icon: 'HelpCircle' },
 ] as const
 

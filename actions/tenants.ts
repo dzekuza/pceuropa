@@ -51,6 +51,7 @@ export async function createTenant(
     category: formData.category,
     space_m2: parseFloat(formData.space_m2),
     rent_eur: parseFloat(formData.rent_eur),
+    login_password: formData.password,
   })
 
   if (tenantError) {
@@ -142,5 +143,56 @@ export async function deleteTenant(
   }
 
   revalidatePath('/admin/tenants')
+  return { success: true }
+}
+
+/**
+ * resetPassword — Updates the auth user's password for a given tenant.
+ * Requires the tenant's user_id (fetched from the tenants table first).
+ */
+export async function resetPassword(
+  tenantId: string,
+  newPassword: string
+): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { error: 'Neturite teisės atlikti šį veiksmą' }
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return { error: 'Slaptažodis turi būti bent 6 simbolių' }
+  }
+
+  // Fetch the tenant's auth user_id
+  const { data: tenant, error: fetchError } = await supabase
+    .from('tenants')
+    .select('user_id')
+    .eq('id', tenantId)
+    .single()
+
+  if (fetchError || !tenant?.user_id) {
+    return { error: 'Nuomininkas nerastas' }
+  }
+
+  const adminClient = createAdminClient()
+  const { error: authError } = await adminClient.auth.admin.updateUserById(
+    tenant.user_id,
+    { password: newPassword }
+  )
+
+  if (authError) {
+    return { error: 'Nepavyko pakeisti slaptažodžio' }
+  }
+
+  // Persist the new password in the tenants table so admin can view it
+  await supabase
+    .from('tenants')
+    .update({ login_password: newPassword })
+    .eq('id', tenantId)
+
   return { success: true }
 }

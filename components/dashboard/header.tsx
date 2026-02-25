@@ -15,15 +15,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { ModeToggle } from '@/components/mode-toggle'
 import { logout } from '@/actions/auth'
 import { AUTH_STRINGS } from '@/lib/strings'
 
 interface HeaderProps {
   userEmail?: string
   pageTitle?: string
+  role?: 'admin' | 'seller'
 }
 
-export function Header({ userEmail, pageTitle = 'Pagrindinis' }: HeaderProps) {
+export function Header({ userEmail, pageTitle = 'Pagrindinis', role }: HeaderProps) {
   const initials = userEmail
     ? userEmail.charAt(0).toUpperCase()
     : 'U'
@@ -40,6 +42,7 @@ export function Header({ userEmail, pageTitle = 'Pagrindinis' }: HeaderProps) {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      <ModeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="flex items-center gap-2 h-8 px-2">
@@ -60,6 +63,19 @@ export function Header({ userEmail, pageTitle = 'Pagrindinis' }: HeaderProps) {
               <DropdownMenuLabel className="font-normal">
                 <span className="block text-xs text-muted-foreground truncate">{userEmail}</span>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+            </>
+          )}
+          {role === 'seller' && (
+            <>
+              <DropdownMenuItem asChild className="text-warning focus:text-warning focus:bg-warning/10">
+                <form action={logout}>
+                  <button type="submit" className="flex w-full items-center gap-2">
+                    <LogOut className="size-4" />
+                    Grįžti į Admin
+                  </button>
+                </form>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
           )}
