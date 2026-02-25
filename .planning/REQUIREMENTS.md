@@ -35,10 +35,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Revenue Submission (Seller)
 
-- [ ] **REVN-01**: Seller can submit monthly revenue: Apyvarta (EUR) + Pirkimų sk. (transaction count)
-- [ ] **REVN-02**: Seller selects which month they are submitting for
-- [ ] **REVN-03**: Seller can update a previously submitted month's data
-- [ ] **REVN-04**: Seller cannot submit for the same month twice without updating (unique constraint)
+- [x] **REVN-01**: Seller can submit monthly revenue: Apyvarta (EUR) + Pirkimų sk. (transaction count)
+- [x] **REVN-02**: Seller selects which month they are submitting for
+- [x] **REVN-03**: Seller can update a previously submitted month's data
+- [x] **REVN-04**: Seller cannot submit for the same month twice without updating (unique constraint)
 
 ### Analytics (Admin)
 
@@ -49,11 +49,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### FAQ
 
-- [ ] **FAQ-01**: Admin can create FAQ entries (question + answer)
-- [ ] **FAQ-02**: Admin can edit existing FAQ entries
-- [ ] **FAQ-03**: Admin can delete FAQ entries (with confirmation)
-- [ ] **FAQ-04**: Admin can reorder FAQ entries
-- [ ] **FAQ-05**: Seller can view all FAQ entries in read-only mode
+- [x] **FAQ-01**: Admin can create FAQ entries (question + answer)
+- [x] **FAQ-02**: Admin can edit existing FAQ entries
+- [x] **FAQ-03**: Admin can delete FAQ entries (with confirmation)
+- [x] **FAQ-04**: Admin can reorder FAQ entries
+- [x] **FAQ-05**: Seller can view all FAQ entries in read-only mode
 
 ### Dashboard Shell
 
@@ -131,19 +131,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TDTL-05 | Phase 2 | Pending |
 | TDTL-06 | Phase 2 | Pending |
 | TDTL-07 | Phase 2 | Pending |
-| REVN-01 | Phase 3 | Pending |
-| REVN-02 | Phase 3 | Pending |
-| REVN-03 | Phase 3 | Pending |
-| REVN-04 | Phase 3 | Pending |
+| REVN-01 | Phase 3 | Complete |
+| REVN-02 | Phase 3 | Complete |
+| REVN-03 | Phase 3 | Complete |
+| REVN-04 | Phase 3 | Complete |
 | ANLT-01 | Phase 3 | Pending |
 | ANLT-02 | Phase 3 | Pending |
 | ANLT-03 | Phase 3 | Pending |
 | ANLT-04 | Phase 3 | Pending |
-| FAQ-01 | Phase 3 | Pending |
-| FAQ-02 | Phase 3 | Pending |
-| FAQ-03 | Phase 3 | Pending |
-| FAQ-04 | Phase 3 | Pending |
-| FAQ-05 | Phase 3 | Pending |
+| FAQ-01 | Phase 3 | Complete |
+| FAQ-02 | Phase 3 | Complete |
+| FAQ-03 | Phase 3 | Complete |
+| FAQ-04 | Phase 3 | Complete |
+| FAQ-05 | Phase 3 | Complete |
 | LAND-01 | Phase 4 | Pending |
 | LAND-02 | Phase 4 | Pending |
 | LAND-03 | Phase 4 | Pending |
