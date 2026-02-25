@@ -45,11 +45,11 @@ Plans:
   3. Admin can edit any tenant's details and delete a tenant with a confirmation prompt
   4. Admin can open a single tenant page and see a 12-month table with Mėnuo, Apyvarta, Pirkimų sk., P.K, Apyvarta/m², Efektyvumas columns
   5. P.K, Apyvarta/m², and Efektyvumas are auto-calculated — admin never enters these values manually
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Tenant list page, create form, edit form, delete confirmation — Server Actions with service role admin client
-- [ ] 02-02: Tenant detail page with yearly revenue table, auto-calculated columns, average row, year selector
+- [ ] 02-01-PLAN.md — Tenant list page with DataTable, CRUD via side drawer form and delete dialog, Server Actions with service role admin client
+- [ ] 02-02-PLAN.md — Tenant detail page with 12-month revenue table, auto-calculated metrics (P.K, Apyvarta/m², Efektyvumas), color-coded efficiency, average row, year selector
 
 ### Phase 3: Revenue, Analytics & FAQ
 **Goal**: Sellers report monthly revenue, admins see it aggregated and can answer seller questions via FAQ
