@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-02-25 — Roadmap created, ready to begin Phase 1 planning
+Plan: 1 of 2 in current phase
+Status: Checkpoint — awaiting human verification for plan 01-01
+Last activity: 2026-02-25 — Plan 01-01 executed (Tasks 1-2 complete, Task 3 checkpoint awaiting user)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -47,6 +47,9 @@ Recent decisions affecting current work:
 - [Research]: Middleware (proxy.ts) is NOT the sole auth guard — every admin Server Component calls `getUser()` independently (CVE-2025-29927)
 - [Research]: Enable RLS + write policies in the same migration — never leave a table with RLS on and no policies
 - [Research]: Service role key used only in Server Actions, never browser — must not carry NEXT_PUBLIC_ prefix
+- [01-01]: All RLS policies use app_metadata — confirmed correct pattern in migration SQL
+- [01-01]: types/database.ts is hand-written placeholder — must regen with `npx supabase gen types typescript --linked` after project is linked
+- [01-01]: SUPABASE_SERVICE_ROLE_KEY has no NEXT_PUBLIC_ prefix — naming convention set correctly from day one
 
 ### Pending Todos
 
@@ -61,5 +64,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Roadmap created — Phase 1 planning not yet started
+Stopped at: Plan 01-01, Task 3 checkpoint — Supabase migration and TypeScript types created, awaiting human verification (link project, push migration, create admin user, regen types)
 Resume file: None

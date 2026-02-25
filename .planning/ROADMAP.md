@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. An unauthenticated visitor attempting to access any dashboard route is redirected to the login page
   4. A seller attempting to access any admin route is redirected away (role enforcement works)
   5. Session persists after browser refresh — users do not need to log in again
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 01-01-PLAN.md — Supabase DB schema (tenants, revenue_reports, faq_items), RLS policies, TypeScript type generation
@@ -88,7 +88,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 1/2 | In Progress|  |
 | 2. Tenant Management | 0/2 | Not started | - |
 | 3. Revenue, Analytics & FAQ | 0/3 | Not started | - |
 | 4. Landing Page | 0/1 | Not started | - |

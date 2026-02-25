@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: Admin can log in with email and password
-- [ ] **AUTH-02**: Seller can log in with username and password (account created by admin)
+- [x] **AUTH-01**: Admin can log in with email and password
+- [x] **AUTH-02**: Seller can log in with username and password (account created by admin)
 - [ ] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: Role-based access — admin sees admin pages, seller sees seller pages
+- [x] **AUTH-04**: Role-based access — admin sees admin pages, seller sees seller pages
 - [ ] **AUTH-05**: Unauthorized users are redirected to login page
 
 ### Tenant Management (Admin)
@@ -109,10 +109,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 1 | Pending |
 | SHLL-01 | Phase 1 | Pending |
 | SHLL-02 | Phase 1 | Pending |
