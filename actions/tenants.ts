@@ -41,8 +41,9 @@ export async function createTenant(
 
   const newUserId = authData.user.id
 
-  // Step 2: insert tenant record (parse string fields to numbers)
-  const { error: tenantError } = await supabase.from('tenants').insert({
+  // Step 2: insert tenant record via admin client (bypasses RLS — regular client's
+  // JWT may not yet reflect admin role for WITH CHECK on INSERT)
+  const { error: tenantError } = await adminClient.from('tenants').insert({
     user_id: newUserId,
     store_name: formData.store_name,
     operator: formData.operator ?? null,

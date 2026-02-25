@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/gvozdovic/Desktop/WEB Projects/pceuropa/logs/.b2d7aacadbc418a70793f6bd041711bb6b2f0c0e-audit.json",
+    "files": [
+        {
+            "date": 1772036628908,
+            "name": "/Users/gvozdovic/Desktop/WEB Projects/pceuropa/logs/mcp-puppeteer-2026-02-25.log",
+            "hash": "c82b20906cdbc1e79b4414dbd08547797a231efc3f62d1ff6e23af72cda7c748"
+        }
+    ],
+    "hashType": "sha256"
+}

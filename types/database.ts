@@ -70,6 +70,8 @@ export interface Database {
           month: string
           amount_eur: number
           tx_count: number | null
+          weeks: WeekData[] | null
+          submitted_by: string | null
           submitted_at: string | null
         }
         Insert: {
@@ -79,6 +81,8 @@ export interface Database {
           month: string
           amount_eur: number
           tx_count?: number | null
+          weeks?: WeekData[] | null
+          submitted_by?: string | null
           submitted_at?: string | null
         }
         Update: {
@@ -88,6 +92,8 @@ export interface Database {
           month?: string
           amount_eur?: number
           tx_count?: number | null
+          weeks?: WeekData[] | null
+          submitted_by?: string | null
           submitted_at?: string | null
         }
         Relationships: [
@@ -145,6 +151,12 @@ export interface Database {
       [_ in never]: never
     }
   }
+}
+
+// Weekly revenue breakdown — 5 weeks per month
+export interface WeekData {
+  tx_count: number
+  amount_eur: number
 }
 
 // Convenience type aliases for common usage patterns

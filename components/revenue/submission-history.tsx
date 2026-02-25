@@ -49,6 +49,7 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
             <TableHead>Mėnuo</TableHead>
             <TableHead className="text-right">Apyvarta (EUR)</TableHead>
             <TableHead className="text-right">Pirkimų sk.</TableHead>
+            <TableHead>Užpildė</TableHead>
             <TableHead>Pateikta</TableHead>
           </TableRow>
         </TableHeader>
@@ -62,6 +63,7 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
               <TableCell className="font-medium">{formatMonth(report.month)}</TableCell>
               <TableCell className="text-right">{report.amount_eur.toFixed(2)}</TableCell>
               <TableCell className="text-right">{report.tx_count ?? '—'}</TableCell>
+              <TableCell>{report.submitted_by ?? '—'}</TableCell>
               <TableCell>{formatDate(report.submitted_at)}</TableCell>
             </TableRow>
           ))}

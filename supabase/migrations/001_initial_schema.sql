@@ -23,7 +23,8 @@ ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
 -- Admin can do everything on tenants
 CREATE POLICY "tenants_admin_all" ON public.tenants
   FOR ALL TO authenticated
-  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 -- Sellers can only view their own tenant record
 CREATE POLICY "tenants_seller_own_select" ON public.tenants
@@ -52,7 +53,8 @@ ALTER TABLE public.revenue_reports ENABLE ROW LEVEL SECURITY;
 -- Admin can do everything on revenue_reports
 CREATE POLICY "revenue_admin_all" ON public.revenue_reports
   FOR ALL TO authenticated
-  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 -- Sellers can view their own reports
 CREATE POLICY "revenue_seller_own_select" ON public.revenue_reports
@@ -91,7 +93,8 @@ ALTER TABLE public.faq_items ENABLE ROW LEVEL SECURITY;
 -- Admin can do everything on faq_items
 CREATE POLICY "faq_admin_all" ON public.faq_items
   FOR ALL TO authenticated
-  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 -- All authenticated users (admin + seller) can read FAQ items
 CREATE POLICY "faq_authenticated_select" ON public.faq_items

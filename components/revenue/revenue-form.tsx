@@ -1,9 +1,10 @@
 'use client'
-// components/revenue/revenue-form.tsx — Revenue submission form
-// Handles month selection, pre-fill for existing entries, and upsert via Server Action
-import { useEffect, useState, useTransition } from 'react'
+// components/revenue/revenue-form.tsx — Weekly revenue submission table
+// Seller fills in per-week Pirkimų skaičius + Apyvarta be PVM (weeks I–V)
+// Suma row auto-calculates totals
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { revenueFormSchema, type RevenueFormValues } from '@/lib/validations/revenue'
 import { submitRevenue } from '@/actions/revenue'
@@ -26,6 +27,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+const WEEK_LABELS = ['I', 'II', 'III', 'IV', 'V'] as const
+
+const EMPTY_WEEKS: RevenueFormValues['weeks'] = [
+  { tx_count: '', amount_eur: '' },
+  { tx_count: '', amount_eur: '' },
+  { tx_count: '', amount_eur: '' },
+  { tx_count: '', amount_eur: '' },
+  { tx_count: '', amount_eur: '' },
+]
 
 // Generate last 12 months as "YYYY-MM" values, most recent first
 function generateMonthOptions(): { value: string; label: string }[] {
@@ -40,11 +60,6 @@ function generateMonthOptions(): { value: string; label: string }[] {
     options.push({ value, label })
   }
   return options
-}
-
-function getCurrentMonth(): string {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 }
 
 interface RevenueFormProps {
@@ -64,29 +79,55 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
   const existingReport = reports.find((r) => r.month.startsWith(selectedMonth))
   const isEditing = !!existingReport
 
+  // Convert existing weekly data back to form strings
+  function existingWeeksToForm(): RevenueFormValues['weeks'] {
+    if (!existingReport?.weeks || !Array.isArray(existingReport.weeks)) return EMPTY_WEEKS
+    return existingReport.weeks.map((w) => ({
+      tx_count: w.tx_count ? String(w.tx_count) : '',
+      amount_eur: w.amount_eur ? String(w.amount_eur) : '',
+    })) as RevenueFormValues['weeks']
+  }
+
   const form = useForm<RevenueFormValues>({
     resolver: zodResolver(revenueFormSchema),
     defaultValues: {
       month: selectedMonth,
-      amount_eur: existingReport ? String(existingReport.amount_eur) : '',
-      tx_count: existingReport?.tx_count != null ? String(existingReport.tx_count) : '',
+      weeks: existingWeeksToForm(),
+      submitted_by: existingReport?.submitted_by ?? '',
     },
   })
+
+  // Watch weeks for live Suma calculation
+  const watchedWeeks = useWatch({ control: form.control, name: 'weeks' })
+
+  const totals = useMemo(() => {
+    let totalTx = 0
+    let totalAmount = 0
+    for (const w of watchedWeeks) {
+      const tx = parseInt(w.tx_count)
+      const amt = parseFloat(w.amount_eur)
+      if (!isNaN(tx)) totalTx += tx
+      if (!isNaN(amt)) totalAmount += amt
+    }
+    return { tx_count: totalTx, amount_eur: totalAmount }
+  }, [watchedWeeks])
 
   // Re-sync form values when selectedMonth or reports change
   useEffect(() => {
     const existing = reports.find((r) => r.month.startsWith(selectedMonth))
+    const weeks = existing?.weeks && Array.isArray(existing.weeks)
+      ? (existing.weeks.map((w) => ({
+          tx_count: w.tx_count ? String(w.tx_count) : '',
+          amount_eur: w.amount_eur ? String(w.amount_eur) : '',
+        })) as RevenueFormValues['weeks'])
+      : EMPTY_WEEKS
     form.reset({
       month: selectedMonth,
-      amount_eur: existing ? String(existing.amount_eur) : '',
-      tx_count: existing?.tx_count != null ? String(existing.tx_count) : '',
+      weeks,
+      submitted_by: existing?.submitted_by ?? '',
     })
     setSubmitMessage(null)
   }, [selectedMonth, reports, form])
-
-  function handleMonthChange(value: string) {
-    onSelectMonth(value)
-  }
 
   function onSubmit(values: RevenueFormValues) {
     const wasEditing = isEditing
@@ -107,7 +148,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
   return (
     <div className="rounded-lg border p-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {/* Editing indicator */}
           {isEditing && (
             <div className="rounded-md bg-blue-50 border border-blue-200 px-3 py-2 text-sm text-blue-700">
@@ -134,16 +175,16 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
             name="month"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mėnuo</FormLabel>
+                <FormLabel>Ataskaitinis laikotarpis</FormLabel>
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value)
-                    handleMonthChange(value)
+                    onSelectMonth(value)
                   }}
                   value={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full max-w-xs">
                       <SelectValue placeholder="Pasirinkite mėnesį" />
                     </SelectTrigger>
                   </FormControl>
@@ -160,18 +201,83 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
             )}
           />
 
-          {/* Apyvarta (EUR) */}
+          {/* Weekly breakdown table */}
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-20">Savaitė</TableHead>
+                  <TableHead className="text-right">Pirkimų skaičius</TableHead>
+                  <TableHead className="text-right">Apyvarta be PVM</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {([0, 1, 2, 3, 4] as const).map((idx) => (
+                  <TableRow key={idx}>
+                    <TableCell className="font-medium">{WEEK_LABELS[idx]}</TableCell>
+                    <TableCell className="text-right p-1">
+                      <FormField
+                        control={form.control}
+                        name={`weeks.${idx}.tx_count` as const}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormControl>
+                              <Input
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="0"
+                                className="text-right h-9"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell className="text-right p-1">
+                      <FormField
+                        control={form.control}
+                        name={`weeks.${idx}.amount_eur` as const}
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormControl>
+                              <Input
+                                type="text"
+                                inputMode="decimal"
+                                placeholder="0.00"
+                                className="text-right h-9"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow className="font-bold">
+                  <TableCell>Suma:</TableCell>
+                  <TableCell className="text-right">{totals.tx_count}</TableCell>
+                  <TableCell className="text-right">{totals.amount_eur.toFixed(2)}</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
+
+          {/* Submitted by */}
           <FormField
             control={form.control}
-            name="amount_eur"
+            name="submitted_by"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Apyvarta (EUR)</FormLabel>
+                <FormLabel>Užpildė</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    inputMode="decimal"
-                    placeholder="0.00"
+                    placeholder="Vardas Pavardė"
+                    className="max-w-xs"
                     {...field}
                   />
                 </FormControl>
@@ -180,27 +286,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
             )}
           />
 
-          {/* Pirkimų sk. */}
-          <FormField
-            control={form.control}
-            name="tx_count"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pirkimų sk.</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="0"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit" disabled={isPending} className="mt-2">
+          <Button type="submit" disabled={isPending} className="mt-2 w-fit">
             {isPending
               ? 'Saugoma...'
               : isEditing
