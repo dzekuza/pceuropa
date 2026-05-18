@@ -1,0 +1,28 @@
+{
+    "mcpServers": {
+        "shadcn": {
+            "command": "npx",
+            "args": [
+                "shadcn@latest",
+                "mcp"
+            ]
+        },
+        "supabase": {
+            "type": "http",
+            "url": "https://mcp.supabase.com/mcp"
+        },
+        "figma-desktop": {
+            "type": "http",
+            "url": "http://127.0.0.1:3845/mcp",
+            "transport": "httpStream"
+        },
+        "puppeteer": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "puppeteer-mcp-server"
+            ],
+            "env": {}
+        }
+    }
+}
