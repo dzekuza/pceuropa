@@ -34,3 +34,4 @@ supabase/.temp
 logs/
 *.png
 eslint-output.txt
+.vercel
