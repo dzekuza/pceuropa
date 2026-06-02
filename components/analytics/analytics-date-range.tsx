@@ -59,10 +59,10 @@ export function AnalyticsDateRange({ from, to }: AnalyticsDateRangeProps) {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <span className="text-sm text-muted-foreground whitespace-nowrap">Nuo</span>
       <Select value={from} onValueChange={(v) => updateParam('from', v)}>
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-36 min-w-0">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -76,7 +76,7 @@ export function AnalyticsDateRange({ from, to }: AnalyticsDateRangeProps) {
 
       <span className="text-sm text-muted-foreground whitespace-nowrap">Iki</span>
       <Select value={to} onValueChange={(v) => updateParam('to', v)}>
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-36 min-w-0">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

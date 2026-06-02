@@ -201,7 +201,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
           />
 
           {/* Weekly breakdown table */}
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>

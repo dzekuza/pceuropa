@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TenantsTable } from '@/components/tenants/tenants-table'
+import { AddTenantButton } from '@/components/tenants/add-tenant-button'
 
 export default async function AdminTenantsPage() {
   const supabase = await createClient()
@@ -26,11 +27,14 @@ export default async function AdminTenantsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Nuomininkai</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Valdykite nuomininkų duomenis ir paskyras
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Nuomininkai</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Valdykite nuomininkų duomenis ir paskyras
+          </p>
+        </div>
+        <AddTenantButton />
       </div>
 
       <TenantsTable data={tenants ?? []} />

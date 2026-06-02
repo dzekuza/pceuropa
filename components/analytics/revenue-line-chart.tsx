@@ -65,11 +65,11 @@ export function RevenueLineChart({ data }: RevenueLineChartProps) {
       </CardHeader>
       <CardContent className="px-2 pt-2 sm:px-6 sm:pt-4">
         {!hasData ? (
-          <div className="flex items-center justify-center h-[280px] text-muted-foreground text-sm">
+          <div className="flex items-center justify-center h-[220px] sm:h-[280px] text-muted-foreground text-sm">
             Nėra duomenų pasirinktam laikotarpiui
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="aspect-auto h-[280px] w-full">
+          <ChartContainer config={chartConfig} className="aspect-auto h-[220px] sm:h-[280px] w-full">
             <AreaChart
               accessibilityLayer
               data={data}

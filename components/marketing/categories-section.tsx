@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
 
-const imgLeft1 = 'https://www.figma.com/api/mcp/asset/03cb4f3f-b1f2-4172-8e6f-98ae1eddf45c'
-const imgLeft2 = 'https://www.figma.com/api/mcp/asset/35295232-0f92-4a4f-b699-813e100d9d67'
-const imgRight1 = 'https://www.figma.com/api/mcp/asset/500fb682-4e18-4c24-bf65-c9c44b7e6e5b'
-const imgRight2 = 'https://www.figma.com/api/mcp/asset/a366e92f-1467-47dc-ab24-088b7d62ad32'
+const imgLeft1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
+const imgLeft2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
+const imgRight1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
+const imgRight2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
 
 const CATEGORIES = [
   {

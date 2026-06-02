@@ -45,7 +45,7 @@ export function Header({ userEmail, pageTitle = 'Pagrindinis', role }: HeaderPro
       <ModeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 h-8 px-2">
+          <Button variant="ghost" className="flex items-center gap-2 h-11 px-3">
             <Avatar className="h-7 w-7 rounded-lg">
               <AvatarFallback className="rounded-lg text-xs">{initials}</AvatarFallback>
             </Avatar>

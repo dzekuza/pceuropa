@@ -35,7 +35,7 @@ const cardVariants = cva('flex flex-col items-stretch text-card-foreground round
   },
 });
 
-const cardHeaderVariants = cva('flex items-center justify-between flex-wrap px-6 py-5 min-h-14 gap-2.5', {
+const cardHeaderVariants = cva('flex items-center justify-between flex-wrap px-4 py-3 sm:px-6 sm:py-4 min-h-0 sm:min-h-14 gap-2', {
   variants: {
     variant: {
       default: 'border-b border-border',
@@ -47,7 +47,7 @@ const cardHeaderVariants = cva('flex items-center justify-between flex-wrap px-6
   },
 });
 
-const cardContentVariants = cva('grow p-6', {
+const cardContentVariants = cva('grow p-4 sm:p-6', {
   variants: {
     variant: {
       default: '',
@@ -71,7 +71,7 @@ const cardTableVariants = cva('grid grow', {
   },
 });
 
-const cardFooterVariants = cva('flex items-center px-6 min-h-14', {
+const cardFooterVariants = cva('flex items-center px-4 sm:px-6 min-h-0 sm:min-h-14', {
   variants: {
     variant: {
       default: 'border-t border-border',

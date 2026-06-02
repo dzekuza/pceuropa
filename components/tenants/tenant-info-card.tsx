@@ -191,7 +191,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
     return (
         <>
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between gap-4">
+                <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
                             <BuildingIcon className="h-5 w-5 text-muted-foreground" />
@@ -230,7 +230,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                 </CardHeader>
 
                 <CardContent>
-                    <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3 lg:grid-cols-7">
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
                         <Field label="Parduotuvė" value={tenant.store_name} />
                         <Field label="Operatorius" value={tenant.operator ?? '—'} />
                         <Field label="Įm. kodas" value={tenant.company_code ?? '—'} />

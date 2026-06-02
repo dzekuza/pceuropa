@@ -1,6 +1,6 @@
-const imgGiven = 'https://www.figma.com/api/mcp/asset/620a6193-0ab0-4209-a725-62d98e9b34aa'
-const imgGeraDovana = 'https://www.figma.com/api/mcp/asset/31249faa-b9ba-4e85-8a80-6e9ad0862525'
-const imgLemonGym = 'https://www.figma.com/api/mcp/asset/b688636c-35b2-43f9-86f8-9cb971939559'
+const imgGiven = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-given.png'
+const imgGeraDovana = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-gera-dovana.png'
+const imgLemonGym = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-lemon-gym.png'
 
 const LOGOS = [
   { key: 'given-1',     content: <img src={imgGiven} alt="GIVEN" style={{ width: 95.5, height: 17.9 }} /> },

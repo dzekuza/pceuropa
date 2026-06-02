@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
-const logoUrl = 'https://www.figma.com/api/mcp/asset/977da264-a63f-4f9a-a239-e18c9e9dbbad'
-const facebookIcon = 'https://www.figma.com/api/mcp/asset/971b224e-05d4-4c76-99a9-afbfadfcb4df'
-const instagramIcon = 'https://www.figma.com/api/mcp/asset/88fa7c7d-869a-4041-940d-e656b681fb0f'
+const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-logo.png'
+const facebookIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.png'
+const instagramIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.png'
 
 const NAV_LINKS = [
   { label: 'Parduotuvės', href: '/parduotuves' },

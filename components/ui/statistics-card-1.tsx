@@ -26,12 +26,12 @@ export function StatisticsCard({
 }: StatisticsCardProps) {
   return (
     <Card className={cn("overflow-hidden", className)}>
-      <div className="p-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+      <div className="p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="space-y-0.5 min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">{title}</p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-2xl font-bold tracking-tight tabular-nums">{value}</h3>
+              <h3 className="text-lg font-bold tracking-tight tabular-nums">{value}</h3>
               {trend && (
                 <div className={cn(
                   "flex items-center text-xs font-medium px-1.5 py-0.5 rounded-md",
@@ -48,14 +48,14 @@ export function StatisticsCard({
             </div>
           </div>
           {Icon && (
-            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-              <Icon className="size-5" />
+            <div className="size-9 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <Icon className="size-4" />
             </div>
           )}
         </div>
 
         {description && (
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground">
             {description}
             {trend && <span className="ml-1 text-foreground font-medium">{trend.label}</span>}
           </p>

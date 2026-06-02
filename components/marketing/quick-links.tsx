@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
 
-const timerIcon = 'https://www.figma.com/api/mcp/asset/29d116cd-339b-441d-b2ce-7276e7b6152f'
-const phoneIcon = 'https://www.figma.com/api/mcp/asset/bed7d8ac-53db-4ec1-879a-cb14b8a4be1f'
-const mapIcon = 'https://www.figma.com/api/mcp/asset/bf6f25ae-9c96-4c95-b45b-04cc3ea7fe93'
+const timerIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
+const phoneIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.png'
+const mapIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/map-icon.png'
 
 const LINKS = [
   { icon: timerIcon, label: 'Parduotuvių darbo laikai', href: '/darbo-laikai', iconBg: 'bg-[#e6ffd1]' },

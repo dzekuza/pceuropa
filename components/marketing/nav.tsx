@@ -4,9 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 
-const logoUrl = 'https://www.figma.com/api/mcp/asset/b1001f52-a6f0-4491-ae53-75f6c683d259'
-const parkingIconUrl = 'https://www.figma.com/api/mcp/asset/0ef94fee-0e81-4538-ba8c-bb3440b5604e'
-const infoIconUrl = 'https://www.figma.com/api/mcp/asset/1fbbdc77-ffbc-4f54-b67e-9e315b75f6b0'
+const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-logo.png'
+const parkingIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-parking-icon.png'
+const infoIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.png'
 
 const NAV_LINKS = [
   { label: 'Parduotuvės / Paslaugos', href: '/parduotuves' },

@@ -7,21 +7,21 @@ import { ArrowIcon } from './ui/arrow-icon'
 
 const news = [
   {
-    image: 'https://www.figma.com/api/mcp/asset/cecc57fc-8e22-458f-8832-ecca08124eb3',
+    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
     title: 'Kvepia pavasariu',
     subtitle: 'Atrinktam namų jaukumo asortimentui – 20%*',
     date: 'Nuo 2026.03.25 iki 2026.03.29',
     href: '/akcijos/pavasaris',
   },
   {
-    image: 'https://www.figma.com/api/mcp/asset/09a8f626-359e-4072-9364-1fc170aeb96a',
+    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
     title: 'Samsung Salonas',
     subtitle: 'Iki -20% nuolaida atrinktoms prekėms!',
     date: 'Nuo 2026.03.27 iki 2026.03.29',
     href: '/akcijos/samsung',
   },
   {
-    image: 'https://www.figma.com/api/mcp/asset/043e2ae2-f46a-4437-99bb-a62553926c04',
+    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
     title: 'Vision Express',
     subtitle: 'Atrinktam namų jaukumo asortimentui – 20%*',
     date: 'Nuo 2026.03.25 iki 2026.03.29',

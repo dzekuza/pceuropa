@@ -1,4 +1,4 @@
-const heroImageUrl = 'https://www.figma.com/api/mcp/asset/777010d2-5996-4bbf-bc37-94dd3210e341'
+const heroImageUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/hero-bg.jpg'
 
 export function Hero() {
   return (

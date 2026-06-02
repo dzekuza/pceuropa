@@ -113,23 +113,23 @@ export function SubmissionTracker({
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <Card variant="accent">
-          <CardHeader>
+          <CardHeader className="px-4 py-3 min-h-0">
             <CardHeading>
-              <CardDescription className="text-base font-medium">Pateikė ({monthLabel})</CardDescription>
-              <CardTitle className="text-4xl font-bold tabular-nums text-success">
+              <CardDescription className="text-sm font-medium">Pateikė ({monthLabel})</CardDescription>
+              <CardTitle className="text-2xl font-bold tabular-nums text-success">
                 {submittedCount}
-                <span className="text-xl font-normal text-muted-foreground">/{totalCount}</span>
+                <span className="text-base font-normal text-muted-foreground">/{totalCount}</span>
               </CardTitle>
             </CardHeading>
           </CardHeader>
         </Card>
         <Card variant="accent">
-          <CardHeader>
+          <CardHeader className="px-4 py-3 min-h-0">
             <CardHeading>
-              <CardDescription className="text-base font-medium">Laukiama</CardDescription>
-              <CardTitle className="text-4xl font-bold tabular-nums text-warning">
+              <CardDescription className="text-sm font-medium">Laukiama</CardDescription>
+              <CardTitle className="text-2xl font-bold tabular-nums text-warning">
                 {pendingCount}
-                <span className="text-xl font-normal text-muted-foreground">/{totalCount}</span>
+                <span className="text-base font-normal text-muted-foreground">/{totalCount}</span>
               </CardTitle>
             </CardHeading>
           </CardHeader>

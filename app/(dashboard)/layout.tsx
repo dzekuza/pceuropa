@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { AppSidebar } from '@/components/dashboard/app-sidebar'
 import { Header } from '@/components/dashboard/header'
 import { ImpersonationBanner } from '@/components/dashboard/impersonation-banner'
+import { MobileBottomNav } from '@/components/dashboard/mobile-bottom-nav'
 import { ADMIN_NAV_ITEMS, SELLER_NAV_ITEMS } from '@/lib/strings'
 import {
   SidebarInset,
@@ -41,15 +42,16 @@ export default async function DashboardLayout({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     <TooltipProvider>
     <SidebarProvider>
-      <AppSidebar navItems={navItems} />
+      <AppSidebar navItems={navItems} className="hidden md:flex" />
       <SidebarInset>
         {isImpersonating && <ImpersonationBanner />}
         <Header userEmail={user.email} role={role} />
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4 pb-20 md:pb-4">
           {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
+    <MobileBottomNav navItems={navItems} />
     </TooltipProvider>
     </ThemeProvider>
   )

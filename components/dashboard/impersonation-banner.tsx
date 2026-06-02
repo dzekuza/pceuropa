@@ -13,7 +13,7 @@ export function ImpersonationBanner() {
             <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 gap-2 bg-black/10 hover:bg-black/20 text-gray-950 border-none font-bold"
+                className="h-11 gap-2 bg-black/10 hover:bg-black/20 text-gray-950 border-none font-bold"
                 onClick={() => { window.location.href = '/api/admin/restore' }}
             >
                 <LogOutIcon className="size-4" />

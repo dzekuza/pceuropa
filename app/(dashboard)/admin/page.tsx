@@ -98,7 +98,7 @@ export default async function AdminHomePage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatisticsCard
           title="Viso nuomininkų"
           value={tenantCount}
@@ -140,7 +140,7 @@ export default async function AdminHomePage() {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <RevenueAreaChart
           data={revenueChartData}
           title="Apyvartos tendencija"
@@ -153,7 +153,7 @@ export default async function AdminHomePage() {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardHeading>
@@ -224,12 +224,12 @@ export default async function AdminHomePage() {
                     {tenant.store_name?.charAt(0).toUpperCase() || 'N'}
                   </div>
                   <div className="flex-1 space-y-0.5">
-                    <p className="text-sm font-medium leading-none truncate max-w-[120px]">{tenant.store_name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate max-w-[120px]">
+                    <p className="text-sm font-medium leading-none truncate">{tenant.store_name}</p>
+                    <p className="text-xs text-muted-foreground truncate">
                       {tenant.operator || 'Nenurodytas'}
                     </p>
                   </div>
-                  <div className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  <div className="text-xs text-muted-foreground whitespace-nowrap">
                     {tenant.created_at ? new Date(tenant.created_at).toLocaleDateString('lt-LT') : '-'}
                   </div>
                 </div>

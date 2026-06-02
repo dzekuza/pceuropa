@@ -106,7 +106,7 @@ export function TenantFormSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[480px] overflow-y-auto">
+      <SheetContent className="w-full sm:w-[480px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle>
             {isEdit ? 'Redaguoti nuomininką' : 'Naujas nuomininkas'}

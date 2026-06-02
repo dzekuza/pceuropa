@@ -12,7 +12,6 @@ import {
   type ColumnFiltersState,
   type PaginationState,
 } from '@tanstack/react-table'
-import { PlusIcon } from 'lucide-react'
 import { getColumns } from '@/components/tenants/tenant-columns'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
@@ -29,7 +28,7 @@ import {
 import { DataGrid } from '@/components/reui/data-grid/data-grid'
 import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridPagination } from '@/components/reui/data-grid/data-grid-pagination'
-import { Card, CardToolbar, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 
 interface TenantsTableProps {
   data: Tenant[]
@@ -107,7 +106,7 @@ export function TenantsTable({ data }: TenantsTableProps) {
         }}
       >
         <Card className="w-full">
-          <CardHeader className="flex flex-row items-center justify-between px-4 py-3">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 px-4 py-3">
             <div className="flex items-center gap-4">
               <CardTitle className="text-lg">Nuomininkai</CardTitle>
               <Select
@@ -118,7 +117,7 @@ export function TenantsTable({ data }: TenantsTableProps) {
                     ?.setFilterValue(val === 'all' ? '' : val)
                 }}
               >
-                <SelectTrigger className="w-[200px] h-9">
+                <SelectTrigger className="w-full sm:w-[200px] h-9">
                   <SelectValue placeholder="Visos kategorijos" />
                 </SelectTrigger>
                 <SelectContent>
@@ -131,19 +130,6 @@ export function TenantsTable({ data }: TenantsTableProps) {
                 </SelectContent>
               </Select>
             </div>
-            <CardToolbar>
-              <Button
-                size="sm"
-                onClick={() => {
-                  setSelectedTenant(null)
-                  setSheetOpen(true)
-                }}
-                className="h-9"
-              >
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Pridėti nuomininką
-              </Button>
-            </CardToolbar>
           </CardHeader>
 
           <div className="w-full overflow-x-auto border-y">

@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
 
-const coffeeImg = 'https://www.figma.com/api/mcp/asset/61e78c46-03bf-4bd5-a8ce-e26043e69289'
-const sportsAd1 = 'https://www.figma.com/api/mcp/asset/87a702c6-eb2d-439c-8d59-d0cf62c79ba0'
-const sportsAd2 = 'https://www.figma.com/api/mcp/asset/1846be44-c3b0-45e5-a0bc-5add0fcb6506'
-const sportsAd3 = 'https://www.figma.com/api/mcp/asset/2c08ca71-cb53-43d1-b48f-e65027dd1443'
-const petImg = 'https://www.figma.com/api/mcp/asset/bd0f535d-6601-493c-8c3a-8987ba44ca79'
+const coffeeImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
+const sportsAd1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
+const sportsAd2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-2.jpg'
+const sportsAd3 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
+const petImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
 
 export function ActivitiesSection() {
   return (
