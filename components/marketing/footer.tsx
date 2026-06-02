@@ -85,7 +85,7 @@ export function Footer() {
 
       <div className="flex flex-col items-center gap-2 text-center w-full max-w-[530px]">
         <p className="font-normal text-[13px] lg:text-[16px] leading-[24px] text-[rgba(245,241,232,0.56)]">
-          Paspausdamas „Prenumeruoti" sutinki gauti PC Europa naujienas.
+          Paspausdamas „Prenumeruoti&rdquo; sutinki gauti PC Europa naujienas.
         </p>
         <p className="font-normal text-[13px] lg:text-[16px] leading-[24px] text-[rgba(245,241,232,0.56)]">
           2026 | Web sprendimai P.idea
