@@ -34,9 +34,8 @@ export async function createTenant(
     })
 
   if (authError || !authData.user) {
-    return {
-      error: authError?.message ?? 'Nepavyko sukurti vartotojo',
-    }
+    console.error('[createTenant] auth.admin.createUser error:', authError)
+    return { error: 'Nepavyko sukurti vartotojo paskyros' }
   }
 
   const newUserId = authData.user.id
@@ -51,7 +50,6 @@ export async function createTenant(
     category: formData.category,
     space_m2: parseFloat(formData.space_m2),
     rent_eur: parseFloat(formData.rent_eur),
-    login_password: formData.password,
   })
 
   if (tenantError) {
@@ -147,6 +145,73 @@ export async function deleteTenant(
 }
 
 /**
+ * createTenantAccount — Creates an auth user for an existing tenant that has no user_id.
+ * Derives email from store_name, uses existing login_password or a default.
+ */
+export async function createTenantAccount(
+  tenantId: string
+): Promise<{ success: true; userId: string } | { error: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { error: 'Neturite teisės atlikti šį veiksmą' }
+  }
+
+  const adminClient = createAdminClient()
+
+  const { data: tenant, error: fetchError } = await adminClient
+    .from('tenants')
+    .select('store_name, user_id')
+    .eq('id', tenantId)
+    .single()
+
+  if (fetchError || !tenant) {
+    return { error: 'Nuomininkas nerastas' }
+  }
+
+  if (tenant.user_id) {
+    return { success: true, userId: tenant.user_id }
+  }
+
+  const username = tenant.store_name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+
+  const { randomBytes } = await import('crypto')
+  const password = randomBytes(16).toString('hex')
+
+  const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+    email: `${username}@pceuropa.lt`,
+    password,
+    email_confirm: true,
+    app_metadata: { role: 'seller' },
+  })
+
+  if (authError || !authData.user) {
+    console.error('[createTenantAccount] auth.admin.createUser error:', authError)
+    return { error: 'Nepavyko sukurti vartotojo paskyros' }
+  }
+
+  const { error: updateError } = await adminClient
+    .from('tenants')
+    .update({ user_id: authData.user.id })
+    .eq('id', tenantId)
+
+  if (updateError) {
+    await adminClient.auth.admin.deleteUser(authData.user.id)
+    return { error: 'Nepavyko susieti vartotojo paskyros' }
+  }
+
+  revalidatePath(`/admin/tenants/${tenantId}`)
+  return { success: true, userId: authData.user.id }
+}
+
+/**
  * resetPassword — Updates the auth user's password for a given tenant.
  * Requires the tenant's user_id (fetched from the tenants table first).
  */
@@ -163,8 +228,8 @@ export async function resetPassword(
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  if (!newPassword || newPassword.length < 6) {
-    return { error: 'Slaptažodis turi būti bent 6 simbolių' }
+  if (!newPassword || newPassword.length < 10) {
+    return { error: 'Slaptažodis turi būti bent 10 simbolių' }
   }
 
   // Fetch the tenant's auth user_id
@@ -187,12 +252,6 @@ export async function resetPassword(
   if (authError) {
     return { error: 'Nepavyko pakeisti slaptažodžio' }
   }
-
-  // Persist the new password in the tenants table so admin can view it
-  await supabase
-    .from('tenants')
-    .update({ login_password: newPassword })
-    .eq('id', tenantId)
 
   return { success: true }
 }

@@ -28,7 +28,6 @@ export interface Database {
           category: string | null
           space_m2: number | null
           rent_eur: number | null
-          login_password: string | null
           created_at: string | null
         }
         Insert: {
@@ -40,7 +39,6 @@ export interface Database {
           category?: string | null
           space_m2?: number | null
           rent_eur?: number | null
-          login_password?: string | null
           created_at?: string | null
         }
         Update: {
@@ -52,7 +50,6 @@ export interface Database {
           category?: string | null
           space_m2?: number | null
           rent_eur?: number | null
-          login_password?: string | null
           created_at?: string | null
         }
         Relationships: [

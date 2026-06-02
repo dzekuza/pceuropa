@@ -3,6 +3,7 @@
 // The generated magic link signs the browser in as the tenant user
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -22,6 +23,22 @@ export async function GET(request: NextRequest) {
 
     if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    // Save admin refresh token so we can restore the session after impersonation ends.
+    // getSession() is used here only to extract the refresh_token value — NOT for access
+    // control. Access was already verified via getUser() above. The restore route
+    // re-validates role after refreshing, so a tampered token fails there.
+    const { data: { session: adminSession } } = await supabase.auth.getSession()
+    const cookieStore = await cookies()
+    if (adminSession?.refresh_token) {
+        cookieStore.set('admin_refresh_token', adminSession.refresh_token, {
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60,
+        })
     }
 
     // 2. Fetch the tenant's user_id and email from the tenants table
@@ -88,8 +105,8 @@ export async function GET(request: NextRequest) {
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60, // 1 hour
+        sameSite: 'strict',
+        maxAge: 60 * 60,
     })
 
     return response

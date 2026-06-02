@@ -30,7 +30,8 @@ export async function GET(request: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // Redirect to the intended page or default to admin
-  const next = requestUrl.searchParams.get('next') ?? '/admin'
+  // Validate `next` is a relative path — prevent open redirect via external URLs
+  const raw = requestUrl.searchParams.get('next') ?? '/admin'
+  const next = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/admin'
   return NextResponse.redirect(new URL(next, request.url))
 }

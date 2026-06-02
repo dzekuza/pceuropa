@@ -2,7 +2,8 @@
 // components/tenants/tenant-info-card.tsx
 // Tenant details card — all fields in a grid + password field that opens a reset dialog
 import { useState, useTransition } from 'react'
-import { BuildingIcon, PencilIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, CheckCircle2Icon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { BuildingIcon, PencilIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, CheckCircle2Icon, LogInIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,8 +17,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
-import { resetPassword } from '@/actions/tenants'
+import { resetPassword, createTenantAccount } from '@/actions/tenants'
 import type { Tenant } from '@/types/database'
+
+const MIN_PASSWORD_LENGTH = 10
 
 interface TenantInfoCardProps {
     tenant: Tenant
@@ -34,77 +37,39 @@ function Field({ label, value }: { label: string; value: string }) {
     )
 }
 
-function PasswordField({
-    currentPassword,
-    onClick,
-}: {
-    currentPassword: string | null
-    onClick: () => void
-}) {
-    const [show, setShow] = useState(false)
-
+function PasswordField({ onClick }: { onClick: () => void }) {
     return (
         <div className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Slaptažodis
             </span>
-            <div className="flex items-center gap-1.5">
-                <button
-                    type="button"
-                    onClick={onClick}
-                    className="text-sm font-semibold font-mono hover:text-primary transition-colors text-left"
-                    title="Spustelėkite keisti slaptažodį"
-                >
-                    {currentPassword
-                        ? show
-                            ? currentPassword
-                            : '•'.repeat(Math.min(currentPassword.length, 10))
-                        : '—'}
-                </button>
-                {currentPassword && (
-                    <button
-                        type="button"
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            setShow((v) => !v)
-                        }}
-                        aria-label={show ? 'Slėpti' : 'Rodyti'}
-                    >
-                        {show ? <EyeOffIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
-                    </button>
-                )}
-                <button
-                    type="button"
-                    onClick={onClick}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                    title="Keisti slaptažodį"
-                >
-                    <PencilIcon className="h-3.5 w-3.5" />
-                </button>
-            </div>
+            <button
+                type="button"
+                onClick={onClick}
+                className="flex items-center gap-1.5 text-sm font-semibold font-mono hover:text-primary transition-colors text-left"
+                title="Keisti slaptažodį"
+            >
+                {'•'.repeat(10)}
+                <PencilIcon className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
         </div>
     )
 }
 
 function PasswordDialog({
     tenantId,
-    currentPassword,
     open,
     onOpenChange,
 }: {
     tenantId: string
-    currentPassword: string | null
     open: boolean
     onOpenChange: (v: boolean) => void
 }) {
-    const [showCurrent, setShowCurrent] = useState(false)
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
     const [showNew, setShowNew] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
-    const [livePassword, setLivePassword] = useState(currentPassword)
     const [isPending, startTransition] = useTransition()
 
     function handleSubmit(e: React.FormEvent) {
@@ -112,8 +77,8 @@ function PasswordDialog({
         setError(null)
         setSuccess(false)
 
-        if (password.length < 6) {
-            setError('Slaptažodis turi būti bent 6 simbolių')
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            setError(`Slaptažodis turi būti bent ${MIN_PASSWORD_LENGTH} simbolių`)
             return
         }
         if (password !== confirm) {
@@ -127,7 +92,6 @@ function PasswordDialog({
                 setError(result.error)
             } else {
                 setSuccess(true)
-                setLivePassword(password)
                 setPassword('')
                 setConfirm('')
             }
@@ -143,101 +107,86 @@ function PasswordDialog({
                         <DialogTitle>Prisijungimo slaptažodis</DialogTitle>
                     </div>
                     <DialogDescription>
-                        Peržiūrėkite arba pakeiskite nuomininko slaptažodį
+                        Pakeiskite nuomininko slaptažodį
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-col gap-5 pt-1">
-                    {/* Current password display */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-1">
                     <div className="flex flex-col gap-1.5">
-                        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            Dabartinis slaptažodis
-                        </Label>
+                        <Label htmlFor="new-password">Naujas slaptažodis</Label>
                         <div className="relative">
                             <Input
-                                readOnly
-                                type={showCurrent ? 'text' : 'password'}
-                                value={livePassword ?? ''}
-                                placeholder={livePassword ? undefined : 'Nenurodytas'}
-                                className="pr-10 bg-muted/40 cursor-default font-mono text-sm select-all"
+                                id="new-password"
+                                type={showNew ? 'text' : 'password'}
+                                placeholder="••••••••••"
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value); setError(null); setSuccess(false) }}
+                                className="pr-10"
+                                autoComplete="new-password"
                             />
-                            {livePassword && (
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                                    onClick={() => setShowCurrent((v) => !v)}
-                                    aria-label={showCurrent ? 'Slėpti' : 'Rodyti'}
-                                >
-                                    {showCurrent ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                                onClick={() => setShowNew((v) => !v)}
+                                tabIndex={-1}
+                            >
+                                {showNew ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                            </button>
                         </div>
                     </div>
 
-                    {/* Divider */}
-                    <div className="border-t" />
+                    <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="confirm-password">Pakartokite slaptažodį</Label>
+                        <Input
+                            id="confirm-password"
+                            type={showNew ? 'text' : 'password'}
+                            placeholder="••••••••••"
+                            value={confirm}
+                            onChange={(e) => { setConfirm(e.target.value); setError(null); setSuccess(false) }}
+                            autoComplete="new-password"
+                        />
+                    </div>
 
-                    {/* Change password form */}
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                        <p className="text-sm font-medium">Pakeisti slaptažodį</p>
+                    {error && <p className="text-sm text-destructive">{error}</p>}
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="new-password">Naujas slaptažodis</Label>
-                            <div className="relative">
-                                <Input
-                                    id="new-password"
-                                    type={showNew ? 'text' : 'password'}
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => { setPassword(e.target.value); setError(null); setSuccess(false) }}
-                                    className="pr-10"
-                                    autoComplete="new-password"
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                                    onClick={() => setShowNew((v) => !v)}
-                                    tabIndex={-1}
-                                >
-                                    {showNew ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
-                                </button>
-                            </div>
+                    {success && (
+                        <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
+                            <CheckCircle2Icon className="h-4 w-4 shrink-0" />
+                            Slaptažodis sėkmingai pakeistas
                         </div>
+                    )}
 
-                        <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="confirm-password">Pakartokite slaptažodį</Label>
-                            <Input
-                                id="confirm-password"
-                                type={showNew ? 'text' : 'password'}
-                                placeholder="••••••••"
-                                value={confirm}
-                                onChange={(e) => { setConfirm(e.target.value); setError(null); setSuccess(false) }}
-                                autoComplete="new-password"
-                            />
-                        </div>
-
-                        {error && <p className="text-sm text-destructive">{error}</p>}
-
-                        {success && (
-                            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-500">
-                                <CheckCircle2Icon className="h-4 w-4 shrink-0" />
-                                Slaptažodis sėkmingai pakeistas
-                            </div>
-                        )}
-
-                        <Button type="submit" disabled={isPending || !password || !confirm} className="w-full">
-                            {isPending ? 'Keičiama...' : 'Pakeisti slaptažodį'}
-                        </Button>
-                    </form>
-                </div>
+                    <Button type="submit" disabled={isPending || !password || !confirm} className="w-full">
+                        {isPending ? 'Keičiama...' : 'Pakeisti slaptažodį'}
+                    </Button>
+                </form>
             </DialogContent>
         </Dialog>
     )
 }
 
 export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
+    const router = useRouter()
     const [editOpen, setEditOpen] = useState(false)
     const [passwordOpen, setPasswordOpen] = useState(false)
+    const [isPending, startTransition] = useTransition()
+    const [enterError, setEnterError] = useState<string | null>(null)
+
+    function handleEnter() {
+        setEnterError(null)
+        if (tenant.user_id) {
+            router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
+            return
+        }
+        startTransition(async () => {
+            const result = await createTenantAccount(tenant.id)
+            if ('error' in result) {
+                setEnterError(result.error)
+            } else {
+                router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
+            }
+        })
+    }
 
     return (
         <>
@@ -256,15 +205,28 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                             )}
                         </div>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="shrink-0"
-                        onClick={() => setEditOpen(true)}
-                    >
-                        <PencilIcon className="h-4 w-4 mr-1.5" />
-                        Redaguoti
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                        {enterError && (
+                            <span className="text-xs text-destructive">{enterError}</span>
+                        )}
+                        <Button
+                            variant="default"
+                            size="sm"
+                            onClick={handleEnter}
+                            disabled={isPending}
+                        >
+                            <LogInIcon className="h-4 w-4 mr-1.5" />
+                            {isPending ? 'Kuriama...' : 'Įeiti'}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditOpen(true)}
+                        >
+                            <PencilIcon className="h-4 w-4 mr-1.5" />
+                            Redaguoti
+                        </Button>
+                    </div>
                 </CardHeader>
 
                 <CardContent>
@@ -285,10 +247,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                                     : '—'
                             }
                         />
-                        <PasswordField
-                            currentPassword={tenant.login_password}
-                            onClick={() => setPasswordOpen(true)}
-                        />
+                        <PasswordField onClick={() => setPasswordOpen(true)} />
                     </div>
                 </CardContent>
             </Card>
@@ -301,7 +260,6 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
 
             <PasswordDialog
                 tenantId={tenant.id}
-                currentPassword={tenant.login_password}
                 open={passwordOpen}
                 onOpenChange={setPasswordOpen}
             />
