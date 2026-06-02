@@ -90,7 +90,7 @@ export default async function AdminHomePage() {
   const revenueChartData = aggregateMonthlyRevenue(reports, startDate, currentMonthDate)
 
   return (
-    <div className="flex flex-col gap-8 p-1">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Suvestinė</h1>
         <p className="text-muted-foreground">

@@ -35,3 +35,4 @@ logs/
 *.png
 eslint-output.txt
 .vercel
+CLAUDE.local.md

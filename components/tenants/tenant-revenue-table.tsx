@@ -181,7 +181,7 @@ function RevenueTableContent({ stats, pk, tenantSpace }: { stats: { avgAmount: n
   const { table } = useDataGrid()
 
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className="rounded-md border overflow-x-auto">
       <DataGridTableBase>
         <DataGridTableHead>
           {table.getHeaderGroups().map((headerGroup) => (

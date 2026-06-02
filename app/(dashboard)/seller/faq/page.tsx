@@ -25,7 +25,7 @@ export default async function SellerFaqPage() {
     .order('sort_order', { ascending: true })
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">DUK</h1>
         <p className="text-muted-foreground text-sm mt-1">

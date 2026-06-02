@@ -1,29 +1,24 @@
 'use client'
 
-import { LogOut } from 'lucide-react'
+import { LogOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { logout } from '@/actions/auth'
 
 export function ImpersonationBanner() {
     return (
-        <div className="bg-warning text-warning-foreground px-4 py-2 flex items-center justify-between sticky top-0 z-50 shadow-md">
+        <div className="bg-amber-400 text-gray-950 px-4 py-2 flex items-center justify-between sticky top-0 z-50 shadow-md">
             <div className="flex items-center gap-2 text-sm font-semibold">
-                <div className="bg-white/10 p-1 rounded-md flex items-center gap-2">
-                    <span className="animate-pulse inline-block w-2 h-2 bg-current rounded-full" />
-                    Esate prisijungę kaip nuomininkas (Impersonacija)
-                </div>
+                <span className="animate-pulse inline-block w-2 h-2 bg-gray-950 rounded-full" />
+                Esate prisijungę kaip nuomininkas (Impersonacija)
             </div>
-            <form action={logout}>
-                <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 gap-2 bg-warning-foreground/10 hover:bg-warning-foreground/20 text-warning-foreground border-none font-bold"
-                >
-                    <LogOut className="size-4" />
-                    Grįžti į Admin
-                </Button>
-            </form>
+            <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-2 bg-black/10 hover:bg-black/20 text-gray-950 border-none font-bold"
+                onClick={() => { window.location.href = '/api/admin/restore' }}
+            >
+                <LogOutIcon className="size-4" />
+                Grįžti į Admin
+            </Button>
         </div>
     )
 }

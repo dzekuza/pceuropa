@@ -1,5 +1,4 @@
 'use client'
-// components/analytics/submission-tracker.tsx — Updated to use DataGrid aesthetic
 import { useState, useMemo } from 'react'
 import { Card, CardToolbar, CardDescription, CardHeader, CardHeading, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/reui/badge'
@@ -10,19 +9,32 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
-  ColumnDef,
+  flexRender,
+  type ColumnDef,
+  type SortingState,
+  type Column,
 } from '@tanstack/react-table'
-import { DataGrid } from '@/components/reui/data-grid/data-grid'
-import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
-import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
+import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+
+function SortHeader<T>({ column, title }: { column: Column<T>; title: string }) {
+  const sorted = column.getIsSorted()
+  return (
+    <button
+      onClick={() => column.toggleSorting(sorted === 'asc')}
+      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+    >
+      {title}
+      {sorted === 'asc' ? <ArrowUp className="h-3 w-3" /> : sorted === 'desc' ? <ArrowDown className="h-3 w-3" /> : <ArrowUpDown className="h-3 w-3 opacity-50" />}
+    </button>
+  )
+}
 
 interface SubmissionTrackerProps {
   submitted: Tenant[]
   pending: Tenant[]
   submittedCount: number
   totalCount: number
-  targetMonth: string  // "YYYY-MM-01"
+  targetMonth: string
 }
 
 function formatTargetMonth(targetMonth: string): string {
@@ -33,6 +45,7 @@ function formatTargetMonth(targetMonth: string): string {
 }
 
 type FilterType = 'visi' | 'pateike' | 'laukiama'
+type TenantRow = Tenant & { _submitted: boolean }
 
 export function SubmissionTracker({
   submitted,
@@ -42,17 +55,18 @@ export function SubmissionTracker({
   targetMonth,
 }: SubmissionTrackerProps) {
   const [filter, setFilter] = useState<FilterType>('visi')
+  const [sorting, setSorting] = useState<SortingState>([])
 
   const pendingCount = totalCount - submittedCount
   const progressPercent = totalCount > 0 ? Math.round((submittedCount / totalCount) * 100) : 0
   const monthLabel = formatTargetMonth(targetMonth)
 
-  const allTenants = useMemo(() => [
+  const allTenants = useMemo<TenantRow[]>(() => [
     ...submitted.map((t) => ({ ...t, _submitted: true })),
     ...pending.map((t) => ({ ...t, _submitted: false })),
   ], [submitted, pending])
 
-  const filtered = useMemo(() =>
+  const filtered = useMemo<TenantRow[]>(() =>
     allTenants.filter((t) => {
       if (filter === 'pateike') return t._submitted
       if (filter === 'laukiama') return !t._submitted
@@ -60,50 +74,43 @@ export function SubmissionTracker({
     }),
     [allTenants, filter])
 
-  const columns = useMemo<ColumnDef<typeof allTenants[0]>[]>(() => [
+  const columns = useMemo<ColumnDef<TenantRow>[]>(() => [
     {
       accessorKey: 'store_name',
-      header: ({ column }) => <DataGridColumnHeader title="Parduotuvė" column={column} />,
+      header: ({ column }) => <SortHeader column={column} title="Parduotuvė" />,
       cell: ({ row }) => <span className="font-medium">{row.original.store_name}</span>,
-      size: 200,
     },
     {
       accessorKey: 'category',
-      header: ({ column }) => <DataGridColumnHeader title="Kategorija" column={column} />,
+      header: ({ column }) => <SortHeader column={column} title="Kategorija" />,
       cell: ({ row }) => <span className="text-muted-foreground">{row.original.category ?? 'Kita'}</span>,
-      size: 150,
     },
     {
       id: 'status',
-      header: ({ column }) => <DataGridColumnHeader title="Būsena" column={column} />,
+      header: 'Būsena',
       cell: ({ row }) => (
         <div className="flex justify-end">
           {row.original._submitted ? (
-            <Badge variant="success-light" size="sm">
-              Pateikta
-            </Badge>
+            <Badge variant="success-light" size="sm">Pateikta</Badge>
           ) : (
-            <Badge variant="warning-light" size="sm">
-              Nepateikta
-            </Badge>
+            <Badge variant="warning-light" size="sm">Nepateikta</Badge>
           )}
         </div>
       ),
-      size: 130,
     },
   ], [])
 
-  const table = useReactTable({
+  const table = useReactTable<TenantRow>({
     data: filtered,
     columns,
+    state: { sorting },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   })
 
   return (
     <div className="space-y-4">
-      {/* Summary cards */}
       <div className="grid grid-cols-2 gap-4">
         <Card variant="accent">
           <CardHeader>
@@ -129,7 +136,6 @@ export function SubmissionTracker({
         </Card>
       </div>
 
-      {/* Progress bar */}
       {totalCount > 0 && (
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
@@ -145,42 +151,62 @@ export function SubmissionTracker({
         </div>
       )}
 
-      {/* Tenant table */}
-      <DataGrid
-        table={table}
-        recordCount={filtered.length}
-        tableLayout={{ rowBorder: true }}
-      >
-        <Card>
-          <CardHeader>
-            <CardHeading>
-              <CardTitle className="text-lg">Nuomininkų būsena</CardTitle>
-            </CardHeading>
-            <CardToolbar>
-              <div className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
-                {(['visi', 'pateike', 'laukiama'] as FilterType[]).map((f) => {
-                  const isActive = filter === f
-                  return (
-                    <button
-                      key={f}
-                      onClick={() => setFilter(f)}
-                      className={cn(
-                        "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-16",
-                        isActive ? "bg-background text-foreground shadow-xs" : "hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      {f === 'visi' ? 'Visi' : f === 'pateike' ? 'Pateikė' : 'Laukiama'}
-                    </button>
-                  )
-                })}
-              </div>
-            </CardToolbar>
-          </CardHeader>
-          <div className="w-full">
-            <DataGridTable />
-          </div>
-        </Card>
-      </DataGrid>
+      <Card>
+        <CardHeader>
+          <CardHeading>
+            <CardTitle className="text-lg">Nuomininkų būsena</CardTitle>
+          </CardHeading>
+          <CardToolbar>
+            <div className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
+              {(['visi', 'pateike', 'laukiama'] as FilterType[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={cn(
+                    "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-w-16",
+                    filter === f ? "bg-background text-foreground shadow-xs" : "hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  {f === 'visi' ? 'Visi' : f === 'pateike' ? 'Pateikė' : 'Laukiama'}
+                </button>
+              ))}
+            </div>
+          </CardToolbar>
+        </CardHeader>
+        <div className="w-full overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              {table.getHeaderGroups().map((hg) => (
+                <tr key={hg.id} className="border-b bg-muted/40">
+                  {hg.headers.map((header) => (
+                    <th key={header.id} className="px-3 h-9 font-normal text-secondary-foreground/80 align-middle">
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id} className="border-b last:border-0 hover:bg-muted/40">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="px-3 py-2 align-middle">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {table.getRowModel().rows.length === 0 && (
+                <tr>
+                  <td colSpan={columns.length} className="px-3 py-6 text-center text-muted-foreground">
+                    Įrašų nerasta
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     </div>
   )
 }

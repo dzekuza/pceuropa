@@ -92,7 +92,7 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
         rowBorder: true,
       }}
     >
-      <div className="rounded-lg border overflow-hidden">
+      <div className="rounded-lg border overflow-x-auto">
         <DataGridTable />
       </div>
     </DataGrid>

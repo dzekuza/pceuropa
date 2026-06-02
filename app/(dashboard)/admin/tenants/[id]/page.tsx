@@ -54,7 +54,7 @@ export default async function TenantDetailPage({
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6">
       {/* Back link */}
       <Link
         href="/admin/tenants"

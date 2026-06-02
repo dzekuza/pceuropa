@@ -7,6 +7,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
+  Home,
   Building2,
   BarChart2,
   HelpCircle,
@@ -27,6 +28,7 @@ import type { NavItem } from '@/lib/strings'
 
 // Icon map — resolves string icon names from lib/strings.ts to Lucide components
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Home,
   Building2,
   BarChart2,
   HelpCircle,
@@ -65,7 +67,7 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
         <SidebarMenu>
           {navItems.map((item) => {
             const Icon = ICON_MAP[item.icon]
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+            const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href + '/'))
             return (
               <SidebarMenuItem key={item.href}>
                 <SidebarMenuButton

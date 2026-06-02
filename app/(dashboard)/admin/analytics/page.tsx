@@ -127,9 +127,8 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const rangeLabel = buildRangeLabel(fromParam, toParam)
 
   return (
-    <div className="flex flex-col gap-6 py-6">
-      {/* Page header */}
-      <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analitika</h1>
           <p className="text-muted-foreground text-sm mt-1">
@@ -141,42 +140,32 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
         </Suspense>
       </div>
 
-      {/* Dashboard-01 style section cards */}
-      <div className="px-4 lg:px-6">
-        <AnalyticsSectionCards
-          totalRevenue={totalRevenue}
-          totalRevenueLabel={rangeLabel}
-          prevRevenue={prevRevenue}
-          tenantCount={tenantCount}
-          submittedCount={submissionStatus.submittedCount}
-          avgRevenue={avgRevenue}
-        />
-      </div>
+      <AnalyticsSectionCards
+        totalRevenue={totalRevenue}
+        totalRevenueLabel={rangeLabel}
+        prevRevenue={prevRevenue}
+        tenantCount={tenantCount}
+        submittedCount={submissionStatus.submittedCount}
+        avgRevenue={avgRevenue}
+      />
 
-      {/* Area chart — full span */}
-      <div className="px-4 lg:px-6">
-        <RevenueLineChart data={monthlyRevenue} />
-      </div>
+      <RevenueLineChart data={monthlyRevenue} />
 
-      {/* Category bar chart + Submission tracker */}
-      <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-5 lg:px-6">
+      <SubmissionTracker
+        submitted={submissionStatus.submitted}
+        pending={submissionStatus.pending}
+        submittedCount={submissionStatus.submittedCount}
+        totalCount={submissionStatus.totalCount}
+        targetMonth={currentMonthStr}
+      />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <CategoryBarChart data={categoryRevenue} />
+          <TenantTrendChart data={tenantTrends} />
         </div>
         <div className="lg:col-span-2">
-          <SubmissionTracker
-            submitted={submissionStatus.submitted}
-            pending={submissionStatus.pending}
-            submittedCount={submissionStatus.submittedCount}
-            totalCount={submissionStatus.totalCount}
-            targetMonth={currentMonthStr}
-          />
+          <CategoryBarChart data={categoryRevenue} />
         </div>
-      </div>
-
-      {/* Per-tenant trend chart */}
-      <div className="px-4 lg:px-6">
-        <TenantTrendChart data={tenantTrends} />
       </div>
     </div>
   )

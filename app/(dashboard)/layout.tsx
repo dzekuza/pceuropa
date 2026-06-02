@@ -45,9 +45,9 @@ export default async function DashboardLayout({
       <SidebarInset>
         {isImpersonating && <ImpersonationBanner />}
         <Header userEmail={user.email} role={role} />
-        <main className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4">
           {children}
-        </main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
     </TooltipProvider>

@@ -30,7 +30,6 @@ import { DataGrid } from '@/components/reui/data-grid/data-grid'
 import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridPagination } from '@/components/reui/data-grid/data-grid-pagination'
 import { Card, CardToolbar, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 interface TenantsTableProps {
   data: Tenant[]
@@ -147,11 +146,8 @@ export function TenantsTable({ data }: TenantsTableProps) {
             </CardToolbar>
           </CardHeader>
 
-          <div className="w-full border-y">
-            <ScrollArea>
-              <DataGridTable />
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+          <div className="w-full overflow-x-auto border-y">
+            <DataGridTable />
           </div>
 
           <CardFooter className="flex items-center justify-between px-4 py-3 bg-transparent border-none">
