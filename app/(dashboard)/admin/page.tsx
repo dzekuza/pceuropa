@@ -166,15 +166,15 @@ export default async function AdminHomePage() {
               <FileCheckIcon className="size-4 text-muted-foreground" />
             </CardToolbar>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <div className="relative w-full overflow-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-muted-foreground text-xs uppercase tracking-wider">
-                    <th className="h-10 text-left font-medium">Nuomininkas</th>
-                    <th className="h-10 text-left font-medium">Mėnuo</th>
-                    <th className="h-10 text-right font-medium">Suma</th>
-                    <th className="h-10 text-right font-medium">Sandoriai</th>
+                    <th className="h-10 px-4 sm:px-6 text-left font-medium">Nuomininkas</th>
+                    <th className="h-10 px-4 sm:px-6 text-left font-medium">Mėnuo</th>
+                    <th className="h-10 px-4 sm:px-6 text-right font-medium">Suma</th>
+                    <th className="h-10 px-4 sm:px-6 text-right font-medium">Sandoriai</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -185,16 +185,16 @@ export default async function AdminHomePage() {
                       const tenant = tenants.find(t => t.id === report.tenant_id)
                       return (
                         <tr key={report.id} className="hover:bg-muted/50 transition-colors">
-                          <td className="py-3 font-medium">{tenant?.store_name || 'Nežinomas'}</td>
-                          <td className="py-3 text-muted-foreground">
+                          <td className="py-3 px-4 sm:px-6 font-medium">{tenant?.store_name || 'Nežinomas'}</td>
+                          <td className="py-3 px-4 sm:px-6 text-muted-foreground">
                             {(() => {
                               const parts = report.month.split('-')
                               const monthIdx = parseInt(parts[1], 10) - 1
                               return `${MONTHS_LT[monthIdx]} ${parts[0]}`
                             })()}
                           </td>
-                          <td className="py-3 text-right font-semibold">{formatEur(report.amount_eur)}</td>
-                          <td className="py-3 text-right tabular-nums">{report.tx_count ?? 0}</td>
+                          <td className="py-3 px-4 sm:px-6 text-right font-semibold">{formatEur(report.amount_eur)}</td>
+                          <td className="py-3 px-4 sm:px-6 text-right tabular-nums">{report.tx_count ?? 0}</td>
                         </tr>
                       )
                     })}

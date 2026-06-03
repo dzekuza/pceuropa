@@ -6,6 +6,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSidebar } from '@/components/ui/sidebar'
 import {
   Home,
   Building2,
@@ -17,13 +18,13 @@ import {
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { ModeToggle } from '@/components/mode-toggle'
+
 import type { NavItem } from '@/lib/strings'
 
 // Icon map — resolves string icon names from lib/strings.ts to Lucide components
@@ -42,6 +43,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -74,6 +76,7 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
                   asChild
                   isActive={isActive}
                   tooltip={item.label}
+                  onClick={() => isMobile && setOpenMobile(false)}
                 >
                   <Link href={item.href}>
                     {Icon && <Icon className="size-4" />}
@@ -86,13 +89,6 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem className="flex justify-center p-2 pt-0">
-            <ModeToggle />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   )
 }

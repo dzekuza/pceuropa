@@ -1,23 +1,21 @@
 'use client'
-// components/tenants/tenants-table.tsx — Updated DataTable using ReUI DataGrid
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   useReactTable,
   getCoreRowModel,
-  getSortedRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   getPaginationRowModel,
   type SortingState,
-  type ColumnFiltersState,
   type PaginationState,
+  type ColumnFiltersState,
 } from '@tanstack/react-table'
 import { getColumns } from '@/components/tenants/tenant-columns'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
 import type { Tenant } from '@/types/database'
 import { TENANT_CATEGORIES } from '@/lib/constants'
-import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -37,21 +35,23 @@ interface TenantsTableProps {
 export function TenantsTable({ data }: TenantsTableProps) {
   const router = useRouter()
 
-  // Sheet state
   const [sheetOpen, setSheetOpen] = useState(false)
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null)
-
-  // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null)
 
-  // Table state
-  const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   })
+
+  const categoryFilter = (columnFilters.find((f) => f.id === 'category')?.value as string) ?? ''
+
+  useEffect(() => {
+    setPagination((p) => ({ ...p, pageIndex: 0 }))
+  }, [columnFilters])
 
   const handleEdit = useCallback((tenant: Tenant) => {
     setSelectedTenant(tenant)
@@ -71,33 +71,30 @@ export function TenantsTable({ data }: TenantsTableProps) {
   const columns = useMemo(() => getColumns(handleEdit, handleDelete), [handleEdit, handleDelete])
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
-    columns.map((column) => (column as { id?: string; accessorKey?: string }).id || (column as { id?: string; accessorKey?: string }).accessorKey || '')
+    columns.map((col) => (col as { id?: string; accessorKey?: string }).id || (col as { id?: string; accessorKey?: string }).accessorKey || '')
   )
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, columnFilters, pagination, columnOrder },
+    state: { sorting, pagination, columnOrder, columnFilters },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
     onColumnOrderChange: setColumnOrder,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: false, // local pagination for now
+    manualPagination: false,
+    autoResetPageIndex: false,
   })
-
-  const categoryFilterValue = (table
-    .getColumn('category')
-    ?.getFilterValue() as string) ?? ''
 
   return (
     <div className="flex flex-col gap-4">
       <DataGrid
         table={table}
-        recordCount={data.length}
+        recordCount={table.getFilteredRowModel().rows.length}
         onRowClick={(row) => router.push(`/admin/tenants/${row.id}`)}
         tableLayout={{
           columnsPinnable: true,
@@ -110,11 +107,9 @@ export function TenantsTable({ data }: TenantsTableProps) {
             <div className="flex items-center gap-4">
               <CardTitle className="text-lg">Nuomininkai</CardTitle>
               <Select
-                value={categoryFilterValue || 'all'}
+                value={categoryFilter || 'all'}
                 onValueChange={(val) => {
-                  table
-                    .getColumn('category')
-                    ?.setFilterValue(val === 'all' ? '' : val)
+                  setColumnFilters(val === 'all' ? [] : [{ id: 'category', value: val }])
                 }}
               >
                 <SelectTrigger className="w-full sm:w-[200px] h-9">
@@ -142,7 +137,6 @@ export function TenantsTable({ data }: TenantsTableProps) {
         </Card>
       </DataGrid>
 
-      {/* Sheet and Dialog */}
       <TenantFormSheet
         open={sheetOpen}
         onOpenChange={handleSheetClose}

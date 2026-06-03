@@ -499,6 +499,7 @@ function DataGridTableRowSelectAll() {
 }
 
 function DataGridTable<TData>() {
+  "use no memo"
   const { table, isLoading, props } = useDataGrid()
   const pagination = table.getState().pagination
 
