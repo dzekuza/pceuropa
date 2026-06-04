@@ -145,3 +145,38 @@ export const NUOMA_REKLAMA_STRINGS = {
   submitButton: 'Siųsti',
   successMessage: 'Ačiū! Jūsų žinutė išsiųsta. Susisieksime artimiausiu metu.',
 } as const
+
+export const LANKYTOJAMS_STRINGS = {
+  pageTitle: 'Informacija lankytojams — PC Europa',
+  pageDescription: 'Visa svarbi informacija PC Europa prekybos centro lankytojams: parkavimas, pasiekiamumas, patogumų sąrašas ir dažniausiai užduodami klausimai.',
+  heading: 'Informacija lankytojams',
+  parkingTitle: 'Parkavimas',
+  parkingBody: 'PC Europa turi nemokamą automobilių stovėjimo aikštelę su daugiau nei 500 vietų. Aikštelė veikia visą parą. Taip pat yra specialiai pažymėtos vietos neįgaliesiems.',
+  accessTitle: 'Kaip mus pasiekti',
+  accessPublicTransport: 'Viešuoju transportu: autobusai Nr. 1, 5, 14 sustoja tiesiogiai prie centro. Artimiausios stotelės — „PC Europa".',
+  accessByCar: 'Automobiliu: centras pasiekiamas iš pagrindinių miesto gatvių. Navigacijos adresas: PC Europa, Vilnius.',
+  amenitiesTitle: 'Patogumai',
+  amenities: [
+    'Vaikų žaidimų kambarys',
+    'Neįgaliųjų prieiga ir liftas',
+    'Pakrovimo stotelės elektromobiliams',
+    'Bankomatas',
+    'Informacijos langelis',
+    'Nemokamas Wi-Fi',
+  ],
+  faqTitle: 'D.U.K.',
+  faqItems: [
+    {
+      question: 'Ar galima atsivesti gyvūną?',
+      answer: 'Nedideli augintiniai gali lankytis su savininkais, tačiau prašome nešti juos ant rankų arba laikyti prisirišusius.',
+    },
+    {
+      question: 'Ar yra mama-baby kambarys?',
+      answer: 'Taip, antrame aukšte yra įrengtas mama-baby kambarys su persirengimo lentele ir maitinimo zona.',
+    },
+    {
+      question: 'Kur kreiptis radus pamestą daiktą?',
+      answer: 'Rastus daiktus prašome pristatyti į informacijos langelį prie centrinio įėjimo.',
+    },
+  ],
+} as const
