@@ -224,6 +224,99 @@ export async function createTenantAccount(
   return { success: true, userId: authData.user.id }
 }
 
+export interface TenantImportRow {
+  id?: string | null
+  store_name: string
+  operator?: string | null
+  company_code?: string | null
+  category?: string | null
+  space_m2?: number | null
+  rent_eur?: number | null
+  description?: string | null
+  logo_url?: string | null
+}
+
+/**
+ * importTenants — Bulk-inserts tenant records without creating auth accounts.
+ * Imported tenants get user_id: null. Admins can create accounts per-tenant later.
+ */
+export async function importTenants(
+  rows: TenantImportRow[]
+): Promise<{ imported: number; errors: string[] }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { imported: 0, errors: ['Neturite teisės atlikti šį veiksmą'] }
+  }
+
+  if (!rows.length) return { imported: 0, errors: [] }
+
+  const adminClient = createAdminClient()
+  const errors: string[] = []
+  let imported = 0
+
+  const toUpdate = rows.filter((r) => r.id?.trim())
+  const toInsert = rows.filter((r) => !r.id?.trim())
+
+  // Update existing tenants (matched by id)
+  const CHUNK = 50
+  for (let i = 0; i < toUpdate.length; i += CHUNK) {
+    const chunk = toUpdate.slice(i, i + CHUNK)
+    const records = chunk.map((r) => ({
+      id: r.id as string,
+      store_name: r.store_name,
+      operator: r.operator ?? null,
+      company_code: r.company_code ?? null,
+      category: r.category ?? null,
+      space_m2: r.space_m2 ?? null,
+      rent_eur: r.rent_eur ?? null,
+      description: r.description ?? null,
+      logo_url: r.logo_url ?? null,
+    }))
+
+    const { error } = await adminClient
+      .from('tenants')
+      .upsert(records, { onConflict: 'id', ignoreDuplicates: false })
+    if (error) {
+      console.error('[importTenants] upsert error:', error.message)
+      errors.push(`Atnaujinimas (eilutės ${i + 1}–${i + chunk.length}): nepavyko`)
+    } else {
+      imported += chunk.length
+    }
+  }
+
+  // Insert new tenants (no id present)
+  for (let i = 0; i < toInsert.length; i += CHUNK) {
+    const chunk = toInsert.slice(i, i + CHUNK)
+    const records = chunk.map((r) => ({
+      user_id: null,
+      store_name: r.store_name,
+      operator: r.operator ?? null,
+      company_code: r.company_code ?? null,
+      category: r.category ?? null,
+      space_m2: r.space_m2 ?? null,
+      rent_eur: r.rent_eur ?? null,
+      description: r.description ?? null,
+      logo_url: r.logo_url ?? null,
+      gallery_images: [],
+    }))
+
+    const { error } = await adminClient.from('tenants').insert(records)
+    if (error) {
+      console.error('[importTenants] insert error:', error.message)
+      errors.push(`Kūrimas (eilutės ${i + 1}–${i + chunk.length}): nepavyko`)
+    } else {
+      imported += chunk.length
+    }
+  }
+
+  if (imported > 0) revalidatePath('/admin/tenants')
+  return { imported, errors }
+}
+
 /**
  * resetPassword — Updates the auth user's password for a given tenant.
  * Requires the tenant's user_id (fetched from the tenants table first).

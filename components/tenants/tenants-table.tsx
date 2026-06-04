@@ -10,6 +10,7 @@ import {
   type SortingState,
   type PaginationState,
   type ColumnFiltersState,
+  type RowSelectionState,
 } from '@tanstack/react-table'
 import { getColumns } from '@/components/tenants/tenant-columns'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
@@ -27,6 +28,9 @@ import { DataGrid } from '@/components/reui/data-grid/data-grid'
 import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridPagination } from '@/components/reui/data-grid/data-grid-pagination'
 import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Download, Upload } from 'lucide-react'
+import { TenantImportDialog } from '@/components/tenants/tenant-import-dialog'
 
 interface TenantsTableProps {
   data: Tenant[]
@@ -46,6 +50,8 @@ export function TenantsTable({ data }: TenantsTableProps) {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [importOpen, setImportOpen] = useState(false)
 
   const categoryFilter = (columnFilters.find((f) => f.id === 'category')?.value as string) ?? ''
 
@@ -77,11 +83,13 @@ export function TenantsTable({ data }: TenantsTableProps) {
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, pagination, columnOrder, columnFilters },
+    state: { sorting, pagination, columnOrder, columnFilters, rowSelection },
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     onColumnOrderChange: setColumnOrder,
     onColumnFiltersChange: setColumnFilters,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -89,6 +97,40 @@ export function TenantsTable({ data }: TenantsTableProps) {
     manualPagination: false,
     autoResetPageIndex: false,
   })
+
+  const handleExportCsv = useCallback(() => {
+    const selectedRows = table.getSelectedRowModel().rows
+    // Always export from the full unfiltered dataset unless rows are explicitly selected
+    const rows = selectedRows.length > 0 ? selectedRows : table.getCoreRowModel().rows
+    const headers = [
+      'ID', 'Parduotuvė', 'Operatorius', 'Kategorija',
+      'Plotas (m²)', 'Nuomos kaina (EUR)', 'Įmonės kodas',
+      'Aprašymas', 'Logo URL', 'Sukurta',
+    ]
+    const csvRows = rows.map((row) => {
+      const t = row.original
+      return [
+        t.id,
+        t.store_name,
+        t.operator ?? '',
+        t.category ?? '',
+        t.space_m2 ?? '',
+        t.rent_eur ?? '',
+        t.company_code ?? '',
+        t.description ?? '',
+        t.logo_url ?? '',
+        t.created_at ?? '',
+      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')
+    })
+    const csv = [headers.join(','), ...csvRows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `nuomininkai-${new Date().toISOString().slice(0, 10)}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }, [table])
 
   return (
     <div className="flex flex-col gap-4">
@@ -125,6 +167,21 @@ export function TenantsTable({ data }: TenantsTableProps) {
                 </SelectContent>
               </Select>
             </div>
+            <div className="flex items-center gap-2">
+              {table.getSelectedRowModel().rows.length > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  {table.getSelectedRowModel().rows.length} pažymėta
+                </span>
+              )}
+              <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="gap-1.5">
+                <Upload data-icon="inline-start" />
+                Importuoti
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5">
+                <Download data-icon="inline-start" />
+                Eksportuoti CSV
+              </Button>
+            </div>
           </CardHeader>
 
           <div className="w-full overflow-x-auto border-y">
@@ -137,6 +194,7 @@ export function TenantsTable({ data }: TenantsTableProps) {
         </Card>
       </DataGrid>
 
+      <TenantImportDialog open={importOpen} onOpenChange={setImportOpen} />
       <TenantFormSheet
         open={sheetOpen}
         onOpenChange={handleSheetClose}

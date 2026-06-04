@@ -9,6 +9,7 @@ import { AppSidebar } from '@/components/dashboard/app-sidebar'
 import { Header } from '@/components/dashboard/header'
 import { ImpersonationBanner } from '@/components/dashboard/impersonation-banner'
 import { MobileBottomNav } from '@/components/dashboard/mobile-bottom-nav'
+import { ChatWidget } from '@/components/dashboard/chat-widget'
 import { ADMIN_NAV_ITEMS, SELLER_NAV_ITEMS } from '@/lib/strings'
 import {
   SidebarInset,
@@ -52,6 +53,7 @@ export default async function DashboardLayout({
       </SidebarInset>
     </SidebarProvider>
     <MobileBottomNav navItems={navItems} />
+    <ChatWidget />
     </TooltipProvider>
     </ThemeProvider>
   )

@@ -1,8 +1,8 @@
 'use client'
-// components/tenants/tenant-columns.tsx — Column definitions for TanStack Table
 import type { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, LogIn } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,18 +10,62 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import type { Tenant } from '@/types/database'
 import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
 import { Badge } from '@/components/reui/badge'
 
-/**
- * getColumns — factory that injects callbacks so column definitions stay stateless.
- */
 export function getColumns(
   onEdit: (tenant: Tenant) => void,
   onDelete: (tenant: Tenant) => void
 ): ColumnDef<Tenant>[] {
   return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Pažymėti visus"
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Pažymėti eilutę"
+          />
+        </div>
+      ),
+      size: 48,
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'logo_url',
+      id: 'logo_url',
+      header: ({ column }) => (
+        <DataGridColumnHeader title="Logo" column={column} />
+      ),
+      cell: ({ row }) => {
+        const url = row.getValue<string | null>('logo_url')
+        const name = row.getValue<string>('store_name') ?? ''
+        return (
+          <Avatar className="size-8">
+            <AvatarImage src={url ?? ''} alt={name} />
+            <AvatarFallback className="text-xs">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
+        )
+      },
+      size: 64,
+      enableSorting: false,
+    },
     {
       accessorKey: 'store_name',
       id: 'store_name',
@@ -96,6 +140,41 @@ export function getColumns(
         return val != null ? val.toFixed(2) : '—'
       },
       size: 150,
+    },
+    {
+      accessorKey: 'company_code',
+      id: 'company_code',
+      header: ({ column }) => (
+        <DataGridColumnHeader title="Įmonės kodas" column={column} />
+      ),
+      cell: ({ row }) => row.getValue('company_code') ?? '—',
+      size: 140,
+    },
+    {
+      accessorKey: 'description',
+      id: 'description',
+      header: ({ column }) => (
+        <DataGridColumnHeader title="Aprašymas" column={column} />
+      ),
+      cell: ({ row }) => {
+        const val = row.getValue<string | null>('description')
+        return val ? (
+          <span className="truncate block max-w-[220px]" title={val}>{val}</span>
+        ) : '—'
+      },
+      size: 240,
+    },
+    {
+      accessorKey: 'created_at',
+      id: 'created_at',
+      header: ({ column }) => (
+        <DataGridColumnHeader title="Sukurta" column={column} />
+      ),
+      cell: ({ row }) => {
+        const val = row.getValue<string | null>('created_at')
+        return val ? new Date(val).toLocaleDateString('lt-LT') : '—'
+      },
+      size: 120,
     },
     {
       id: 'actions',

@@ -108,6 +108,25 @@ export const SPORTAS_STRINGS = {
   loadMore: 'Rodyti daugiau',
 } as const
 
+export const CHAT_WIDGET_STRINGS = {
+  triggerLabel: 'Atidaryti pokalbį',
+  closeLabel: 'Uždaryti pokalbį',
+  minimizeLabel: 'Sumažinti',
+  expandLabel: 'Išskleisti',
+  sendLabel: 'Siųsti žinutę',
+  assistantName: 'PCEuropa Asistentė',
+  assistantStatus: 'Dabar prisijungusi',
+  inputPlaceholder: 'Rašykite žinutę...',
+  inputHint: 'Enter — siųsti · Shift+Enter — nauja eilutė',
+  greeting: 'Sveiki! Aš esu PCEuropa administracijos asistentė. Kuo galiu padėti?',
+  replies: [
+    'Puiku! Aš perduosiu šią informaciją komandai.',
+    'Supratau. Ar galite pateikti daugiau detalių?',
+    'Tai bus išspręsta per 24 valandas.',
+    'Ačiū už pranešimą. Mūsų komanda jau informuota.',
+  ],
+} as const
+
 export const NUOMA_REKLAMA_STRINGS = {
   pageTitle: 'Patalpų nuoma ir reklama — PC Europa',
   pageDescription: 'Norite įkurti verslą PC Europa ar reklamuotis mūsų erdvėse? Susisiekite su mumis ir aptarsime geriausias galimybes.',
