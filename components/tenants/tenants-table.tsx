@@ -29,8 +29,10 @@ import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridPagination } from '@/components/reui/data-grid/data-grid-pagination'
 import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Download, Upload } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Download, Upload, HelpCircle } from 'lucide-react'
 import { TenantImportDialog } from '@/components/tenants/tenant-import-dialog'
+import { toTenantFileKey } from '@/lib/utils'
 
 interface TenantsTableProps {
   data: Tenant[]
@@ -103,7 +105,7 @@ export function TenantsTable({ data }: TenantsTableProps) {
     // Always export from the full unfiltered dataset unless rows are explicitly selected
     const rows = selectedRows.length > 0 ? selectedRows : table.getCoreRowModel().rows
     const headers = [
-      'ID', 'Parduotuvė', 'Operatorius', 'Kategorija',
+      'ID', 'Parduotuvė', 'file_key', 'Operatorius', 'Kategorija',
       'Plotas (m²)', 'Nuomos kaina (EUR)', 'Įmonės kodas',
       'Aprašymas', 'Logo URL', 'Sukurta',
     ]
@@ -112,6 +114,7 @@ export function TenantsTable({ data }: TenantsTableProps) {
       return [
         t.id,
         t.store_name,
+        toTenantFileKey(t.store_name),
         t.operator ?? '',
         t.category ?? '',
         t.space_m2 ?? '',
@@ -123,7 +126,8 @@ export function TenantsTable({ data }: TenantsTableProps) {
       ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')
     })
     const csv = [headers.join(','), ...csvRows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    // BOM ensures XLSX parsers treat the file as UTF-8 (fixes Lithuanian chars in headers)
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -177,6 +181,30 @@ export function TenantsTable({ data }: TenantsTableProps) {
                 <Upload data-icon="inline-start" />
                 Importuoti
               </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+                    <HelpCircle className="size-4" />
+                    <span className="sr-only">Importavimo instrukcija</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 text-sm" align="end" sideOffset={4}>
+                  <p className="font-medium mb-2">Kaip importuoti</p>
+                  <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground leading-snug">
+                    <li>Eksportuokite CSV — gausite teisingą struktūrą.</li>
+                    <li>Redaguokite: viena eilutė — vienas nuomininkas.</li>
+                    <li>
+                      <span className="text-foreground font-medium">Logotipas:</span>{' '}
+                      <code className="bg-muted px-1 rounded text-xs break-all">{'{file_key}_logo.jpg'}</code>
+                    </li>
+                    <li>
+                      <span className="text-foreground font-medium">Galerija:</span>{' '}
+                      <code className="bg-muted px-1 rounded text-xs break-all">{'{file_key}_gallery1.jpg'}</code> ir t.t.
+                    </li>
+                    <li>Įkelkite CSV ir nuotraukas į dialogo zonas.</li>
+                  </ol>
+                </PopoverContent>
+              </Popover>
               <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5">
                 <Download data-icon="inline-start" />
                 Eksportuoti CSV

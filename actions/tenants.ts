@@ -234,6 +234,7 @@ export interface TenantImportRow {
   rent_eur?: number | null
   description?: string | null
   logo_url?: string | null
+  gallery_images?: string[] | null
 }
 
 /**
@@ -275,6 +276,7 @@ export async function importTenants(
       rent_eur: r.rent_eur ?? null,
       description: r.description ?? null,
       logo_url: r.logo_url ?? null,
+      gallery_images: r.gallery_images ?? [],
     }))
 
     const { error } = await adminClient
@@ -301,7 +303,7 @@ export async function importTenants(
       rent_eur: r.rent_eur ?? null,
       description: r.description ?? null,
       logo_url: r.logo_url ?? null,
-      gallery_images: [],
+      gallery_images: r.gallery_images ?? [],
     }))
 
     const { error } = await adminClient.from('tenants').insert(records)
