@@ -1,82 +1,54 @@
 import Link from 'next/link'
-import { DisplayHeading, BodyText } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
 
-const imgLeft1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
-const imgLeft2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
-const imgRight1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
-const imgRight2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
+const imgCat1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
+const imgCat2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
+const imgCat3 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
+const imgCat4 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
 
 const CATEGORIES = [
-  {
-    title: 'Parduotuvės ir paslaugos',
-    description:
-      'Platus parduotuvių pasirinkimas – mada, grožis, technologijos ir kasdieniai atradimai. Kasdieniai patogumai vienoje vietoje – nuo grožio iki finansinių ir kitų paslaugų.',
-    href: '/parduotuves',
-    showButton: true,
-  },
-  {
-    title: 'Restoranai ir kavinės',
-    description: 'Atrask įvairius skonius – nuo greitų užkandžių iki jaukių vakarienių miesto centre.',
-    href: '/restoranai',
-    showButton: false,
-  },
-  {
-    title: 'Akcijos ir naujienos',
-    description:
-      'Nuolatos vykstančios akcijos, renginiai, naujienos ir pasiūlymai, kurie suteikia daugiau nei tik apsipirkimą.',
-    href: '/akcijos',
-    showButton: false,
-  },
+  { title: 'Akcijos ir naujienos', href: '/akcijos', image: imgCat1 },
+  { title: 'Dialogai maisto erdvė', href: '/dialogai', image: imgCat3 },
+  { title: 'Restoranai ir kavinės', href: '/restoranai', image: imgCat2 },
+  { title: 'Parduotuvės ir paslaugos', href: '/parduotuves', image: imgCat4 },
 ]
 
 export function CategoriesSection() {
   return (
-    <section className="w-full max-w-[1300px] mx-auto px-4 lg:px-0 py-6 md:py-8 lg:py-12">
-      {/* Badge */}
-      <div className="flex justify-center mb-8 lg:mb-0">
-        <span className="inline-flex items-center bg-black/10 rounded-full px-6 lg:px-8 py-[5px] text-[14px] lg:text-[16px] font-medium leading-[22.4px] text-black whitespace-nowrap">
-          Čia rasite
-        </span>
-      </div>
-
-      {/* Layout: normal flow on mobile/tablet, absolute on desktop */}
-      <div className="xl:relative xl:h-[783px]">
-
-        {/* Floating side images — desktop only */}
-        <div className="hidden xl:block absolute inset-x-[-15px]">
-          <img src={imgLeft1} alt="" className="absolute left-[15px] top-[160px] size-[198px] rounded-[16px] object-cover" />
-          <img src={imgLeft2} alt="" className="absolute left-[60px] top-[488px] size-[198px] rounded-[16px] object-cover" />
-          <img src={imgRight1} alt="" className="absolute right-[15px] top-[150px] size-[198px] rounded-[16px] object-cover" />
-          <img src={imgRight2} alt="" className="absolute right-[60px] top-[498px] size-[198px] rounded-[16px] object-cover" />
+    <section className="w-full max-w-[1332px] mx-auto px-4 py-2 md:py-4">
+      <div className="bg-white flex flex-col gap-6 lg:gap-12 p-5 md:p-8 lg:p-[40px] rounded-[24px] lg:rounded-[32px]">
+        {/* Header */}
+        <div className="flex flex-row items-end justify-between gap-4">
+          <h2 className="text-[36px] lg:text-[48px] font-bold leading-[1.2] lg:leading-[60px] tracking-[-2px] lg:tracking-[-2.5px] text-black">
+            Čia rasite
+          </h2>
         </div>
 
-        {/* Category list */}
-        <div className="flex flex-col gap-6 md:gap-8 xl:gap-[46px] xl:absolute xl:left-[305px] xl:top-[82px] xl:w-[690px]">
+        {/* 4 category cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
           {CATEGORIES.map((cat) => (
-            <div
+            <Link
               key={cat.href}
-              className="border-b border-[#d6d6d6] flex flex-col gap-4 xl:gap-6 items-center pb-6 xl:pb-[30px] text-center"
+              href={cat.href}
+              className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group"
             >
-              <DisplayHeading>{cat.title}</DisplayHeading>
-              <BodyText className="max-w-[560px]">{cat.description}</BodyText>
-              {cat.showButton && (
-                <Link
-                  href={cat.href}
-                  className="inline-flex items-center gap-3 xl:gap-[18px] bg-[#fdf567] rounded-full px-4 xl:px-5 py-3 xl:py-[15px] text-[14px] xl:text-[16px] font-semibold leading-[24px] text-black transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
-                >
-                  Daugiau
-                  <ArrowIcon />
-                </Link>
-              )}
-            </div>
+              <img
+                src={cat.image}
+                alt={cat.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                style={{ transitionTimingFunction: 'var(--ease-out)' }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.21)] via-transparent to-[rgba(0,0,0,0.7)] from-0% via-50%" />
+              <div className="relative flex items-center justify-between px-3 md:px-4 py-3 md:py-4 gap-2">
+                <p className="font-bold text-[14px] md:text-[16px] lg:text-[20px] leading-[1.2] lg:leading-[24px] tracking-[-0.5px] text-[#f5f5f5] w-[60%]">
+                  {cat.title}
+                </p>
+                <span className="bg-[#fdf567] rounded-full p-2.5 md:p-3 lg:p-4 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110">
+                  <ArrowIcon className="size-3.5 md:size-4 lg:size-6" />
+                </span>
+              </div>
+            </Link>
           ))}
-        </div>
-
-        {/* Tablet image row — between mobile and desktop */}
-        <div className="hidden md:grid xl:hidden grid-cols-2 gap-4 mt-8">
-          <img src={imgLeft1} alt="" className="w-full aspect-square rounded-[16px] object-cover" />
-          <img src={imgRight1} alt="" className="w-full aspect-square rounded-[16px] object-cover" />
         </div>
       </div>
     </section>

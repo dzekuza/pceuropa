@@ -1,52 +1,97 @@
-const imgGiven = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-given.png'
-const imgGeraDovana = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-gera-dovana.png'
-const imgLemonGym = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/partner-lemon-gym.png'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { ArrowIcon } from './ui/arrow-icon'
+import Link from 'next/link'
 
-const LOGOS = [
-  { key: 'given-1',     content: <img src={imgGiven} alt="GIVEN" style={{ width: 95.5, height: 17.9 }} /> },
-  { key: 'gera-1',      content: <div style={{ width: 127, height: 28, overflow: 'hidden' }}><img src={imgGeraDovana} alt="Gera dovana" className="w-full h-full object-contain" /></div> },
-  { key: 'lemon',       content: <div style={{ width: 86, height: 86, overflow: 'hidden' }}><img src={imgLemonGym} alt="Lemon Gym" className="w-full h-full object-contain" /></div> },
-  { key: 'gera-2',      content: <div style={{ width: 127, height: 28, overflow: 'hidden' }}><img src={imgGeraDovana} alt="Gera dovana" className="w-full h-full object-contain" /></div> },
-  { key: 'given-2',     content: <img src={imgGiven} alt="GIVEN" style={{ width: 95.5, height: 17.9 }} /> },
-]
+type Tenant = { id: string; store_name: string; logo_url: string }
 
-function MobileCard({ children }: { children: React.ReactNode }) {
+function LogoCard({ tenant }: { tenant: Tenant | undefined }) {
+  if (!tenant) return <div className="bg-white rounded-[20px]" />
   return (
-    <div className="bg-[#f9f9f9] rounded-[16px] flex items-center justify-center h-[120px] w-[160px] shrink-0 overflow-hidden">
-      {children}
-    </div>
+    <Link
+      href="/parduotuves"
+      className="bg-white rounded-[20px] flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
+    >
+      <img
+        src={tenant.logo_url}
+        alt={tenant.store_name}
+        className="h-16 w-auto max-w-[80%] object-contain"
+      />
+    </Link>
   )
 }
 
-function DesktopCard({ children }: { children: React.ReactNode }) {
+function FeaturedCard({ tenant }: { tenant: Tenant | undefined }) {
+  if (!tenant) return <div className="bg-white rounded-[20px] row-span-2" />
   return (
-    <div className="bg-[#f9f9f9] relative rounded-[20px] flex items-center justify-center h-[220px] overflow-hidden flex-1 min-w-0">
-      {children}
-    </div>
+    <Link
+      href="/parduotuves"
+      className="bg-white rounded-[20px] row-span-2 relative flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
+    >
+      <img
+        src={tenant.logo_url}
+        alt={tenant.store_name}
+        className="h-24 w-auto max-w-[70%] object-contain"
+      />
+      <span className="absolute top-3 right-3 bg-[#fdf567] rounded-full p-2.5 flex items-center justify-center">
+        <ArrowIcon className="size-4" />
+      </span>
+    </Link>
   )
 }
 
-export function PartnerLogos() {
+export async function PartnerLogos() {
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('tenants')
+    .select('id, store_name, logo_url')
+    .not('logo_url', 'is', null)
+    .order('store_name')
+
+  const tenants = (data ?? []) as Tenant[]
+
+  const featuredIdx = tenants.findIndex((t) =>
+    t.store_name.toLowerCase().includes('gym')
+  )
+  const featured = tenants[featuredIdx >= 0 ? featuredIdx : 0]
+  const rest = tenants.filter((t) => t.id !== featured?.id).slice(0, 8)
+
   return (
-    <section className="w-full max-w-[1300px] mx-auto px-4 lg:px-0 py-6 md:py-8 lg:py-12">
-      {/* Mobile / tablet: auto-scroll marquee */}
-      <div className="lg:hidden overflow-hidden w-full">
-        <div
-          className="marquee-track flex gap-3 hover:[animation-play-state:paused]"
-          style={{ animation: 'marquee 18s linear infinite', width: 'max-content' }}
-        >
-          {/* duplicate for seamless loop */}
-          {[...LOGOS, ...LOGOS].map((logo, i) => (
-            <MobileCard key={`${logo.key}-${i}`}>{logo.content}</MobileCard>
-          ))}
-        </div>
+    <section className="w-full max-w-[1332px] mx-auto px-4 py-4 lg:py-6">
+      {/* Desktop — 5-col grid, featured center spans 2 rows */}
+      <div className="hidden lg:grid grid-cols-5 grid-rows-2 gap-3 h-[220px]">
+        {/* Cols 1-2, rows auto-fill around featured */}
+        <LogoCard tenant={rest[0]} />
+        <LogoCard tenant={rest[1]} />
+        {/* Featured — col 3, row-span-2 (explicit) */}
+        <FeaturedCard tenant={featured} />
+        {/* Cols 4-5 row 1 */}
+        <LogoCard tenant={rest[2]} />
+        <LogoCard tenant={rest[3]} />
+        {/* Cols 1-2 row 2 */}
+        <LogoCard tenant={rest[4]} />
+        <LogoCard tenant={rest[5]} />
+        {/* Cols 4-5 row 2 */}
+        <LogoCard tenant={rest[6]} />
+        <LogoCard tenant={rest[7]} />
       </div>
 
-      {/* Desktop: static row */}
-      <div className="hidden lg:flex gap-3">
-        {LOGOS.map((logo) => (
-          <DesktopCard key={logo.key}>{logo.content}</DesktopCard>
-        ))}
+      {/* Mobile / tablet — horizontal scroll */}
+      <div className="lg:hidden overflow-x-auto scrollbar-hide">
+        <div className="flex gap-3 w-max">
+          {tenants.slice(0, 12).map((t) => (
+            <Link
+              key={t.id}
+              href="/parduotuves"
+              className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
+            >
+              <img
+                src={t.logo_url}
+                alt={t.store_name}
+                className="h-12 w-auto max-w-[75%] object-contain"
+              />
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   )

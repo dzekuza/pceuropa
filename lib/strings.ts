@@ -37,6 +37,20 @@ export type NavItem = {
 
 export const REVENUE_REMINDER_TITLE = 'Artėja mėnesio pabaiga'
 
+export const AKCIJOS_STRINGS = {
+  pageTitle: 'Akcijos / Naujienos',
+  pageDescription:
+    'Svarbiausios naujienos, nauji atidarymai, sezoniniai pasiūlymai ir aktualios akcijos – viskas vienoje vietoje, kad nepraleistumėte to, kas vyksta PC EUROPA.',
+  filterAll: 'Visi pasiūlymai',
+  filterStores: 'Parduotuvės',
+  filterServices: 'Paslaugos',
+  filterFood: 'Restoranai / Kavinės / Dialogai',
+  searchPlaceholder: 'Paieška',
+  loadMore: 'Rodyti daugiau',
+  breadcrumbHome: 'Pagrindinis',
+  breadcrumbCurrent: 'Akcijos / Naujienos',
+} as const
+
 export function revenueReminderBody(daysRemaining: number): string {
   const unit =
     daysRemaining === 1
@@ -46,3 +60,69 @@ export function revenueReminderBody(daysRemaining: number): string {
       : 'dienų'
   return `Liko tik ${daysRemaining} ${unit} iki mėnesio pabaigos. Prašome įsitikinti, kad pateikėte visą reikiamą apyvartos informaciją.`
 }
+
+// Darbo laikas page strings
+export const DARBO_LAIKAS_STRINGS = {
+  pageTitle: 'Darbo laikas — PC Europa',
+  pageDescription: 'PC Europa prekybos centro darbo laikas ir parduotuvių tvarkaraščiai.',
+  breadcrumbHome: 'Pagrindinis',
+  breadcrumbCurrent: 'Darbo laikas',
+  heroHeading: 'Darbo laikas',
+  heroSubtext1: 'Prekybos centras: I–VI 10:00–21:00, VII 10:00–20:00',
+  heroSubtext2: 'Mados ir aksesuarų parduotuvės: I–VI 10:00–20:00, VII 10:00–19:00',
+  heroSubtext3: 'Sporto klubai: I–VII 24/7',
+  searchPlaceholder: 'Paieška',
+  loadMoreButton: 'Rodyti daugiau',
+  openStatus: 'Atidaryta',
+  closedStatus: 'Uždaryta',
+  howToGetHereHeading: 'Kaip atvykti?',
+  howToGetHereSubtext: 'Raskite patogiausią būdą pasiekti PC Europą.',
+  viewRouteButton: 'Žiūrėti maršrutą',
+  contactAdminLabel: 'PC Europa administracija',
+  contactAdminPhone: '+370 644 05764',
+  contactAdminEmail: 'europa@baltichorizon.com',
+  contactMarketingLabel: 'Marketingo skyrius',
+  contactMarketingEmail: 'reklama@baltichorizon.com',
+  bannerHeading: 'Mes pasiruošę jums padėti!',
+} as const
+
+export const LAISVALAIKIS_STRINGS = {
+  pageTitle: 'Laisvalaikis ir Pramogos — PC Europa',
+  pageDescription: 'Kino teatras, žaidimai, pramogos vaikams ir suaugusiems — visi laisvalaikio centrai PC Europa.',
+  heroHeading: 'Laisvalaikis / Pramogos',
+  heroDescription:
+    'Kino teatras, žaidimų zonos, pramogos vaikams ir suaugusiems — visa tai PC Europa po vienu stogu.',
+  filterAll: 'Visi',
+  searchPlaceholder: 'Paieška',
+  loadMore: 'Rodyti daugiau',
+} as const
+
+export const SPORTAS_STRINGS = {
+  pageTitle: 'Sportas ir sveikata — PC Europa',
+  pageDescription: 'PC Europa sporto klubai ir sveikatos paslaugos — rask tinkamiausią vietą aktyviam gyvenimui.',
+  heroHeading: 'Sportas / Sveikata',
+  heroDescription:
+    'Sporto klubai, pilates studijos ir sveikatos paslaugos — viskas vienoje vietoje, kad gyventum aktyviau.',
+  filterAll: 'Visi',
+  searchPlaceholder: 'Paieška',
+  loadMore: 'Rodyti daugiau',
+} as const
+
+export const NUOMA_REKLAMA_STRINGS = {
+  pageTitle: 'Patalpų nuoma ir reklama — PC Europa',
+  pageDescription: 'Norite įkurti verslą PC Europa ar reklamuotis mūsų erdvėse? Susisiekite su mumis ir aptarsime geriausias galimybes.',
+  heroHeading: 'Patalpų nuoma ir reklama',
+  contactCardLabel: 'Susiekite',
+  contactPhone: '+370 644 05764',
+  contactEmail: 'reklama@baltichorizon.com',
+  formHeading: 'Susiekite',
+  formBody: 'Pateikite trumpą informaciją apie Jūsų įmonę ir mūsų nuomos projektų vadovė susieks su Jumis artimiausiu metu.',
+  labelName: 'Jūsų vardas',
+  placeholderName: 'Vardas Pavardė',
+  labelEmail: 'El pašto adresas',
+  placeholderEmail: 'vardas@elpastas.lt',
+  labelMessage: 'Jūsų žinutė',
+  placeholderMessage: 'Jūsų tekstas, spauskite čia.',
+  submitButton: 'Siųsti',
+  successMessage: 'Ačiū! Jūsų žinutė išsiųsta. Susisieksime artimiausiu metu.',
+} as const

@@ -1,0 +1,194 @@
+'use client'
+
+import { useState } from 'react'
+import { Nav } from '@/components/marketing/nav'
+import { Footer } from '@/components/marketing/footer'
+import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
+import type { Metadata } from 'next'
+
+// TODO: replace with permanent Supabase Storage URL (Figma MCP asset expires after 7 days)
+const BANNER_IMAGE = 'https://www.figma.com/api/mcp/asset/e3689784-bcbe-40e1-a81e-db5f628d58b4'
+
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  )
+}
+
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  )
+}
+
+function TikTokIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34l-.04-8.38a8.19 8.19 0 0 0 4.79 1.52V5c-.01 0-1.02.04-1.98-.31z" />
+    </svg>
+  )
+}
+
+export default function NuomaReklamaPage() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitted(true)
+  }
+
+  return (
+    <main className="bg-[#f5f5f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
+      <Nav />
+
+      {/* Banner */}
+      <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
+        <div className="relative rounded-[24px] lg:rounded-[40px] overflow-hidden h-[240px] md:h-[280px] lg:h-[292px] flex items-center justify-between pl-6 lg:pl-10 pr-4 py-6">
+          {/* Background image + overlay */}
+          <img
+            src={BANNER_IMAGE}
+            alt=""
+            className="absolute inset-0 size-full object-cover pointer-events-none"
+          />
+          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+
+          {/* Left: heading + socials */}
+          <div className="relative flex flex-col gap-8 lg:gap-12 shrink-0 max-w-[340px]">
+            <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.15] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-white">
+              {S.heroHeading}
+            </h1>
+            <div className="flex items-center gap-3 lg:gap-[17px]">
+              {[
+                { icon: <FacebookIcon />, label: 'Facebook', href: 'https://facebook.com' },
+                { icon: <InstagramIcon />, label: 'Instagram', href: 'https://instagram.com' },
+                { icon: <TikTokIcon />, label: 'TikTok', href: 'https://tiktok.com' },
+              ].map(({ icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="bg-[#f5f5f5] rounded-full size-10 lg:size-12 flex items-center justify-center text-black shrink-0 transition-opacity duration-150 hover:opacity-70 active:scale-[0.95]"
+                >
+                  {icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: contact card */}
+          <div className="relative hidden md:flex flex-col p-4 shrink-0">
+            <div className="bg-[#f5f5f5] flex items-center gap-6 lg:gap-[45px] p-4 rounded-[20px] lg:rounded-[24px] min-w-[240px] lg:w-[280px] h-[88px] lg:h-[104px]">
+              <div className="flex flex-col gap-2">
+                <p className="text-[#575757] text-[11px] lg:text-[12px] leading-[16px]">
+                  {S.contactCardLabel}
+                </p>
+                <div className="flex flex-col text-black text-[14px] lg:text-[16px] leading-[24px]">
+                  <span>{S.contactPhone}</span>
+                  <span className="text-[12px] lg:text-[14px] leading-[20px]">{S.contactEmail}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact form section */}
+      <div className="w-full max-w-[1332px] mx-auto px-4 py-8 lg:py-12">
+        <div className="bg-white rounded-[20px] lg:rounded-[24px] p-6 md:p-8 lg:p-10 overflow-hidden">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
+            {/* Left: heading + description */}
+            <div className="flex flex-col gap-4 lg:gap-4 shrink-0 lg:w-[300px] xl:w-[360px]">
+              <h2 className="font-bold text-[32px] lg:text-[48px] leading-[1.15] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black">
+                {S.formHeading}
+              </h2>
+              <p className="text-[#575757] text-[15px] lg:text-[16px] leading-[24px]">
+                {S.formBody}
+              </p>
+            </div>
+
+            {/* Right: form */}
+            <div className="flex-1 bg-[#eeeeee] rounded-[20px] lg:rounded-[24px] p-6 lg:p-8 w-full">
+              {submitted ? (
+                <div className="flex items-center justify-center py-12">
+                  <p className="text-black text-[16px] lg:text-[18px] font-medium leading-[24px] text-center">
+                    {S.successMessage}
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                  {/* Name */}
+                  <div className="flex flex-col gap-3 lg:gap-4">
+                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
+                      {S.labelName}
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={S.placeholderName}
+                      required
+                      className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex flex-col gap-3 lg:gap-4">
+                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
+                      {S.labelEmail}
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={S.placeholderEmail}
+                      required
+                      className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
+                    />
+                  </div>
+
+                  {/* Message */}
+                  <div className="flex flex-col gap-3 lg:gap-4">
+                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
+                      {S.labelMessage}
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder={S.placeholderMessage}
+                      required
+                      rows={7}
+                      className="bg-[#e0e0e0] px-6 py-3 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full resize-none"
+                    />
+                  </div>
+
+                  {/* Submit */}
+                  <div>
+                    <button
+                      type="submit"
+                      className="bg-black text-white rounded-full px-7 py-4 text-[16px] lg:text-[18px] leading-[24px] font-normal transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+                    >
+                      {S.submitButton}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </main>
+  )
+}

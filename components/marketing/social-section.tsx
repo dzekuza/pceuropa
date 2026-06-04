@@ -9,7 +9,7 @@ const SOCIALS = [
 
 export function SocialSection() {
   return (
-    <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-8 w-full max-w-[1332px] mx-auto px-4 lg:px-0 py-6 md:py-8 lg:py-12">
+    <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-8 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
       <DisplayHeading>Sekite mus</DisplayHeading>
       <div className="flex flex-wrap gap-3">
         {SOCIALS.map((social) => (

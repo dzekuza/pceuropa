@@ -1,4 +1,6 @@
 // app/api/admin/impersonate/route.ts — Admin portal: sign-in as a tenant
+export const dynamic = 'force-dynamic'
+
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
@@ -98,7 +100,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Tenant user not found' }, { status: 404 })
   }
 
-  // Save admin refresh token before the session is overwritten
+  // Save admin refresh token before the session is overwritten.
+  // getSession() is used here intentionally: identity was already verified via getUser() above,
+  // so we're extracting the refresh token for storage, not relying on it for auth.
   const { data: { session: adminSession } } = await supabase.auth.getSession()
   if (adminSession?.refresh_token) {
     cookieStore.set('admin_refresh_token', adminSession.refresh_token, {

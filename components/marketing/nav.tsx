@@ -5,13 +5,14 @@ import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 
 const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-logo.png'
-const parkingIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-parking-icon.png'
+const timerIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
 const infoIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.png'
 
 const NAV_LINKS = [
+  { label: 'Akcijos / Naujienos', href: '/akcijos' },
   { label: 'Parduotuvės / Paslaugos', href: '/parduotuves' },
   { label: 'Restoranai / Kavinės', href: '/restoranai' },
-  { label: 'Akcijos / Naujienos', href: '/akcijos' },
+  { label: 'Dialogai / Food court', href: '/dialogai' },
   { label: 'Sportas / Sveikatingumas', href: '/sportas' },
   { label: 'Laisvalaikis / Pramogos', href: '/laisvalaikis' },
 ]
@@ -20,7 +21,7 @@ export function Nav() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-20 w-full md:rounded-b-[16px] md:overflow-hidden">
+    <nav className="sticky top-0 z-20 w-full">
       {/* Top dark bar */}
       <div className="bg-[#181818] py-3 md:py-4">
       <div className="max-w-[1300px] mx-auto px-4 lg:px-0 flex items-center justify-between">
@@ -29,49 +30,26 @@ export function Nav() {
           <img src={logoUrl} alt="PC Europa" className="h-8 md:h-10 lg:h-12 w-auto max-w-[160px] md:max-w-none" />
         </Link>
 
-        {/* Hours + link — tablet and up */}
-        <div className="hidden md:flex items-center gap-6 h-full">
-          <div className="flex flex-col">
-            <p className="text-white text-[13px] lg:text-[14px] leading-[24px]">
-              <span className="font-bold">I-VI</span>
-              <span className="font-normal"> 10:00-20:00</span>
-            </p>
-            <p className="text-white text-[13px] lg:text-[14px] leading-[24px]">
-              <span className="font-bold">VII </span>
-              <span className="font-normal">10:00-19:00</span>
-            </p>
-          </div>
-          <div className="bg-white w-px h-8" />
-          <Link
-            href="/darbo-laikai"
-            className="text-white text-[13px] lg:text-[14px] font-medium leading-[24px] underline underline-offset-2 whitespace-nowrap transition-opacity duration-150 hover:opacity-70 active:opacity-50"
-          >
-            Parduotuvių darbo laikai
-          </Link>
-        </div>
-
         {/* Right side */}
         <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
           {/* Desktop buttons */}
           <div className="hidden md:flex items-center gap-2 lg:gap-3">
             <Link
-              href="/parkavimas"
-              className="flex items-center gap-2 border-2 border-white rounded-[12px] lg:rounded-[16px] pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+              href="/darbo-laikas"
+              className="flex items-center gap-2 border border-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
-              <div className="relative size-5 lg:size-6 shrink-0">
-                <img src={parkingIconUrl} alt="" className="absolute inset-[10%] w-[80%] h-[80%]" />
-              </div>
+              <img src={timerIconUrl} alt="" className="size-5 lg:size-6 shrink-0 brightness-0 invert" />
               <span className="text-white text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
-                Parkavimas
+                Darbo laikas
               </span>
             </Link>
             <Link
               href="/lankytojams"
-              className="flex items-center gap-2 bg-white rounded-[12px] lg:rounded-[16px] pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+              className="flex items-center gap-2 bg-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
               <img src={infoIconUrl} alt="" className="size-5 lg:size-6 shrink-0" />
               <span className="text-[#181818] text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
-                Lankytojams
+                Informacija lankytojams
               </span>
             </Link>
           </div>
@@ -95,11 +73,6 @@ export function Nav() {
       >
         <div className="min-h-0 bg-[#181818]">
           <div className="px-4 pb-5 flex flex-col gap-1">
-            <div className="flex flex-col gap-1 border-t border-white/10 pt-4 mb-3">
-              <p className="text-white/60 text-[12px] font-medium uppercase tracking-wider mb-1">Darbo laikas</p>
-              <p className="text-white text-[14px]"><span className="font-bold">I-VI</span> 10:00-20:00</p>
-              <p className="text-white text-[14px]"><span className="font-bold">VII</span> 10:00-19:00</p>
-            </div>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -112,18 +85,18 @@ export function Nav() {
             ))}
             <div className="flex gap-3 mt-4">
               <Link
-                href="/parkavimas"
-                className="flex-1 flex items-center justify-center gap-2 border-2 border-white rounded-[12px] px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+                href="/darbo-laikas"
+                className="flex-1 flex items-center justify-center gap-2 border border-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
-                <img src={parkingIconUrl} alt="" className="size-5" />
-                <span className="text-white text-[14px] font-medium">Parkavimas</span>
+                <img src={timerIconUrl} alt="" className="size-5 brightness-0 invert" />
+                <span className="text-white text-[14px] font-medium">Darbo laikas</span>
               </Link>
               <Link
                 href="/lankytojams"
-                className="flex-1 flex items-center justify-center gap-2 bg-white rounded-[12px] px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+                className="flex-1 flex items-center justify-center gap-2 bg-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
                 <img src={infoIconUrl} alt="" className="size-5" />
-                <span className="text-[#181818] text-[14px] font-medium">Lankytojams</span>
+                <span className="text-[#181818] text-[14px] font-medium">Informacija</span>
               </Link>
             </div>
           </div>

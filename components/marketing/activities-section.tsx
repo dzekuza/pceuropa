@@ -9,7 +9,7 @@ const petImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/publi
 
 export function ActivitiesSection() {
   return (
-    <section className="flex flex-col gap-4 md:gap-5 px-4 md:px-6 lg:px-[55px] w-full max-w-[1410px] mx-auto py-6 md:py-8 lg:py-12">
+    <section className="flex flex-col gap-4 md:gap-5 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
       {/* Leisure card */}
       <div className="bg-[rgba(231,14,127,0.05)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0 p-6 md:p-10 lg:p-[50px] rounded-[20px] lg:rounded-[24px]">
         <div className="flex flex-col justify-between gap-6 lg:gap-0 lg:h-[379px] w-full md:max-w-[60%] lg:max-w-[710px]">
@@ -18,14 +18,14 @@ export function ActivitiesSection() {
               Laisvalaikis ir pramogos
             </span>
             <DisplayHeading className="max-w-full lg:w-[679px]">
-              Vieta ne tik apsipirkti, bet ir praleisti laiką – poilsis, susitikimai ir įspūdžiai.
+              Vieta ne tik apsipirkti, bet ir praleisti laiką – skoniai, veiklos ir patirtys vienoje vietoje.
             </DisplayHeading>
           </div>
           <Link
             href="/laisvalaikis"
             className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 lg:py-[15px] text-[14px] lg:text-[16px] font-medium w-fit transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
-            Visos veiklos
+            Daugiau
           </Link>
         </div>
         <img
@@ -36,12 +36,12 @@ export function ActivitiesSection() {
       </div>
 
       {/* Bottom two cards */}
-      <div className="flex flex-col xl:flex-row gap-4 md:gap-5">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-5">
         {/* Sports card */}
         <div className="bg-black flex flex-col justify-between py-5 xl:py-6 rounded-[20px] xl:w-[650px] shrink-0 overflow-hidden">
           <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-4 md:gap-0 px-5 xl:px-6">
             <h3 className="font-bold text-[22px] md:text-[26px] xl:text-[32px] leading-[1.3] xl:leading-[40px] tracking-[-0.5px] xl:tracking-[-1.5px] text-white xl:w-[315px]">
-              Sportuok ir prižiūrėk savo kūną PC Europoje
+              Rūpestis savimi prasideda čia
             </h3>
             <Link
               href="/sportas"
@@ -64,7 +64,7 @@ export function ActivitiesSection() {
               PC EUROPA<br />draugiška augintiniams
             </DisplayHeading>
             <BodyText className="md:max-w-[320px] xl:max-w-[378px]">
-              Jūsų augintiniai - mūsų draugai. Kviečiame atvykti į PC Europa su savo mažaisiais draugais.
+              Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.
             </BodyText>
           </div>
           <Link

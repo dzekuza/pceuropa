@@ -6,19 +6,19 @@ const phoneIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/pu
 const mapIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/map-icon.png'
 
 const LINKS = [
-  { icon: timerIcon, label: 'Parduotuvių darbo laikai', href: '/darbo-laikai', iconBg: 'bg-[#e6ffd1]' },
-  { icon: phoneIcon, label: 'Kontaktai', href: '/kontaktai', iconBg: 'bg-[#fef3f9]' },
+  { icon: timerIcon, label: 'Parkavimas', href: '/parkavimas', iconBg: 'bg-[#e6ffd1]' },
   { icon: mapIcon, label: 'Prekybos centro planas', href: '/planas', iconBg: 'bg-[#fdf567]' },
+  { icon: phoneIcon, label: 'Kontaktai', href: '/kontaktai', iconBg: 'bg-[#fef3f9]' },
 ]
 
 export function QuickLinks() {
   return (
-    <section className="flex flex-col md:flex-row gap-3 w-full max-w-[1300px] mx-auto px-4 lg:px-0 py-6 md:py-8 lg:py-12">
+    <section className="flex flex-col md:flex-row gap-3 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
       {LINKS.map((item) => (
         <Link
           key={item.href}
           href={item.href}
-          className="bg-[#fafbfc] flex flex-1 items-center justify-between p-4 md:p-5 lg:p-6 rounded-[16px] lg:rounded-[20px] transition-[transform,background-color] duration-150 hover:bg-[#f0f1f2] active:scale-[0.97]"
+          className="bg-white flex flex-1 items-center justify-between p-4 md:p-5 lg:p-6 rounded-[20px] lg:rounded-[24px] transition-[transform,background-color] duration-150 hover:bg-[#f5f5f5] active:scale-[0.97]"
         >
           <div className="flex items-center gap-3 lg:gap-4">
             <div className={`${item.iconBg} rounded-[8px] size-12 md:size-14 lg:size-[66px] relative overflow-hidden shrink-0`}>

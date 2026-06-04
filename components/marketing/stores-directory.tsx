@@ -13,6 +13,7 @@ type Store = {
 
 interface StoresDirectoryProps {
   stores: Store[]
+  excludeCategories?: string[]
 }
 
 type CategoryConfig = {
@@ -51,70 +52,96 @@ function getInitials(name: string): string {
 
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
   return (
-    <div className="group bg-white rounded-[20px] overflow-hidden border border-[#ebebeb] hover:border-[#d0d0d0] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.98] cursor-pointer">
-      {/* Cover / banner area */}
-      <div
-        className="h-[100px] md:h-[120px] flex items-center justify-center relative overflow-hidden"
-        style={store.coverUrl ? undefined : { backgroundColor: colorConfig.colorBg }}
-      >
+    <div className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+      {/* Top row: status + name on left, logo on right */}
+      <div className="flex gap-4 items-start w-full">
+        <div className="flex flex-col flex-1 min-w-0">
+          {/* Status */}
+          <div className="flex gap-[10px] items-center">
+            <div className="size-2 rounded-full bg-[#22c55e] shrink-0" />
+            <p className="font-normal leading-6 text-[#575757] text-base">Atidaryta</p>
+          </div>
+          {/* Store name */}
+          <p className="font-bold font-[family-name:var(--font-jakarta)] leading-6 text-[18px] text-black truncate w-full">
+            {store.name}
+          </p>
+        </div>
+
+        {/* Logo */}
+        {store.logoUrl ? (
+          <div className="h-14 w-[53px] overflow-hidden rounded-xl shrink-0 bg-white border border-[#ebebeb]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={store.logoUrl} alt={`${store.name} logotipas`} className="size-full object-contain" />
+          </div>
+        ) : (
+          <div
+            className="h-14 w-[53px] rounded-xl flex items-center justify-center shrink-0 font-bold text-[13px]"
+            style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
+          >
+            {getInitials(store.name)}
+          </div>
+        )}
+      </div>
+
+      {/* Cover image */}
+      <div className="relative h-[204px] rounded-[24px] w-full overflow-hidden shrink-0">
         {store.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={store.coverUrl}
             alt=""
-            className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="absolute inset-0 size-full object-cover rounded-[24px] transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <span
-            className="font-bold text-[38px] md:text-[44px] leading-none tracking-[-2px] select-none transition-transform duration-300 group-hover:scale-110"
-            style={{ color: colorConfig.textColor, opacity: 0.55 }}
-          >
-            {getInitials(store.name)}
-          </span>
-        )}
-      </div>
-
-      {/* Card body */}
-      <div className="p-4 flex items-center gap-3">
-        {/* Logo */}
-        {store.logoUrl ? (
-          <div className="size-10 rounded-xl overflow-hidden border border-[#ebebeb] bg-white shrink-0 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={store.logoUrl} alt={`${store.name} logotipas`} className="size-full object-contain p-0.5" />
-          </div>
-        ) : (
           <div
-            className="size-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-[13px]"
-            style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
+            className="absolute inset-0 rounded-[24px] flex items-center justify-center"
+            style={{ backgroundColor: colorConfig.colorBg }}
           >
-            {getInitials(store.name)}
+            <span
+              className="font-bold text-[44px] leading-none tracking-[-2px] select-none"
+              style={{ color: colorConfig.textColor, opacity: 0.4 }}
+            >
+              {getInitials(store.name)}
+            </span>
           </div>
         )}
-
-        <div className="flex flex-col gap-1 min-w-0">
-          <p className="font-semibold text-[15px] md:text-[16px] leading-[20px] text-black truncate">
-            {store.name}
-          </p>
-          <span
-            className="inline-flex items-center rounded-full px-2.5 py-[3px] text-[12px] font-medium leading-[18px] w-fit"
-            style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
-          >
-            {store.category}
-          </span>
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/36 rounded-[24px] pointer-events-none" />
+        {/* Hours overlay */}
+        <div className="absolute bottom-3 left-3 flex flex-col gap-0.5">
+          <div className="flex items-center gap-2">
+            <span className="text-white/70 text-[11px] leading-[16px] w-[26px]">I–V</span>
+            <span className="text-white text-[11px] leading-[16px]">10:00–21:00</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-white/70 text-[11px] leading-[16px] w-[26px]">VI–VII</span>
+            <span className="text-white text-[11px] leading-[16px]">10:00–20:00</span>
+          </div>
+        </div>
+        {/* Arrow button */}
+        <div className="absolute bottom-3 right-3 bg-white border border-white flex items-center justify-center p-4 rounded-[96px]">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
       </div>
     </div>
   )
 }
 
-export function StoresDirectory({ stores }: StoresDirectoryProps) {
+export function StoresDirectory({ stores, excludeCategories = [] }: StoresDirectoryProps) {
   const [activeCategory, setActiveCategory] = useState('Visos')
   const [search, setSearch] = useState('')
 
+  const visibleStores = useMemo(
+    () => excludeCategories.length ? stores.filter((s) => !excludeCategories.includes(s.category)) : stores,
+    [stores, excludeCategories],
+  )
+
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(stores.map((s) => s.category))).sort()
+    const unique = Array.from(new Set(visibleStores.map((s) => s.category))).sort()
     return ['Visos', ...unique]
-  }, [stores])
+  }, [visibleStores])
 
   const categoryIndexMap = useMemo(() => {
     const map: Record<string, number> = {}
@@ -124,63 +151,55 @@ export function StoresDirectory({ stores }: StoresDirectoryProps) {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    return stores.filter((s) => {
+    return visibleStores.filter((s) => {
       const matchCat = activeCategory === 'Visos' || s.category === activeCategory
       const matchSearch = !q || s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q)
       return matchCat && matchSearch
     })
-  }, [stores, activeCategory, search])
+  }, [visibleStores, activeCategory, search])
 
   return (
-    <section className="w-full max-w-[1300px] mx-auto px-4 lg:px-0 py-8 md:py-10 lg:py-14">
-      <div className="flex flex-col gap-4 mb-8 md:mb-10">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 lg:mx-0 lg:px-0 lg:flex-wrap">
+    <section className="w-full max-w-[1332px] mx-auto px-4 py-8 md:py-10 lg:py-14">
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-8 md:mb-10">
+        {/* Search — full width on mobile, fixed on desktop */}
+        <div className="relative w-full md:order-last md:shrink-0 md:w-[280px] lg:w-[337px]">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Paieška"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-white rounded-full pl-[52px] pr-5 py-[10px] text-[16px] text-[#575757] placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/10 transition-shadow duration-150"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-black/30 hover:text-black/60 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* Filter pills — horizontal scroll on mobile, wrap on desktop */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:flex-1">
           {categories.map((cat) => {
             const isActive = activeCategory === cat
-            const config = cat !== 'Visos' ? getCategoryConfig(cat, categoryIndexMap[cat]) : null
             return (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className="shrink-0 inline-flex items-center rounded-full px-4 py-[7px] text-[14px] font-medium leading-[20px] transition-[transform,opacity,background-color,box-shadow] duration-150 active:scale-[0.97] whitespace-nowrap"
+                className="shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap"
                 style={
                   isActive
-                    ? {
-                        backgroundColor: config ? config.colorBg : '#181818',
-                        color: config ? config.textColor : '#ffffff',
-                        boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
-                      }
-                    : { backgroundColor: '#f2f2f2', color: '#555' }
+                    ? { backgroundColor: '#000000', color: '#ffffff' }
+                    : { backgroundColor: '#ffffff', color: '#000000', border: '1px solid #ffffff' }
                 }
               >
-                {cat === 'Visos' ? 'Visos kategorijos' : cat}
+                {cat === 'Visos' ? 'Visi' : cat}
               </button>
             )
           })}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1 max-w-[360px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-black/30 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Ieškoti parduotuvės..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#f2f2f2] rounded-full pl-10 pr-10 py-[9px] text-[14px] font-medium text-black placeholder:text-black/30 outline-none focus:ring-2 focus:ring-[#181818]/10 transition-shadow duration-150"
-            />
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 size-4 text-black/30 hover:text-black/60 transition-colors"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-          <p className="text-[14px] text-black/40 font-medium whitespace-nowrap">
-            {filtered.length} {filtered.length === 1 ? 'parduotuvė' : filtered.length < 10 ? 'parduotuvės' : 'parduotuvių'}
-          </p>
         </div>
       </div>
 

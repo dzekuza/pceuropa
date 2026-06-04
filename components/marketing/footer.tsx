@@ -5,19 +5,15 @@ const facebookIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object
 const instagramIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.png'
 
 const NAV_LINKS = [
-  { label: 'Parduotuvės', href: '/parduotuves' },
-  { label: 'Paslaugos', href: '/paslaugos' },
-  { label: 'Restoranai ir kavinės', href: '/restoranai' },
+  { label: 'Nuomininkams', href: '/nuomininkai' },
+  { label: 'Patalpų nuoma ir reklama', href: '/nuoma-reklama' },
 ]
 
 const VISITOR_LINKS = [
-  { label: 'PC Planas', href: '/planas' },
-  { label: 'Akcijos', href: '/akcijos' },
-  { label: 'Kaip atvykti?', href: '/kaip-atvykti' },
-  { label: 'Naujienos', href: '/naujienos' },
-  { label: 'Renginiai', href: '/renginiai' },
-  { label: 'Parkingas', href: '/parkavimas' },
-  { label: 'Darbo laikas', href: '/darbo-laikai' },
+  { label: 'Prekybos centro taisyklės', href: '/taisykles' },
+  { label: 'Slapukų politika', href: '/slapuku-politika' },
+  { label: 'Privatumo politika', href: '/privatumo-politika' },
+  { label: 'Parkavimas', href: '/parkavimas' },
   { label: 'Kontaktai', href: '/kontaktai' },
 ]
 
@@ -40,7 +36,7 @@ export function Footer() {
         <div className="flex flex-row gap-8 md:gap-12 lg:gap-[86px] items-start">
           <div className="flex flex-col gap-6 lg:gap-[50px]">
             <div className="flex flex-col gap-1 lg:gap-2">
-              <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white">Navigacija</p>
+              <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white">Partneriams</p>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}

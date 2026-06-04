@@ -10,7 +10,7 @@ import { Footer } from '@/components/marketing/footer'
 
 export default function LandingPage() {
   return (
-    <main className="bg-white flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
+    <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
       <Hero />
 
