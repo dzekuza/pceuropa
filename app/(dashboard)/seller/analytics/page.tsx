@@ -50,7 +50,7 @@ export default async function SellerAnalyticsPage() {
     const monthlyData = aggregateMonthlyRevenue(allReports, fromMonthStr, toMonth)
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3">
             <div>
                 <h1 className="text-2xl font-bold">Mano analitika</h1>
                 <p className="text-muted-foreground text-sm mt-1">

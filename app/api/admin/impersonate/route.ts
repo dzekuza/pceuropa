@@ -1,113 +1,150 @@
 // app/api/admin/impersonate/route.ts — Admin portal: sign-in as a tenant
-// Defense-in-depth: verifies admin role before generating any link
-// The generated magic link signs the browser in as the tenant user
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { cookies } from 'next/headers'
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+// Derive a stable seller username from the store name.
+// e.g. "Archie's burger" → "archiesburger", "ALI ŠOKOLADINĖ" → "alisokoline"
+function toSellerSlug(storeName: string): string {
+  return storeName
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '') // strip diacritics
+    .replace(/[^a-z0-9]/g, '')       // keep only alphanumeric
+}
+
 export async function GET(request: NextRequest) {
-    const { searchParams } = new URL(request.url)
-    const tenantId = searchParams.get('tenantId')
+  const cookieStore = await cookies()
 
-    if (!tenantId) {
-        return NextResponse.json({ error: 'Missing tenantId' }, { status: 400 })
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          )
+        },
+      },
     }
+  )
 
-    // 1. Verify the caller is an admin (defense-in-depth)
-    const supabase = await createClient()
-    const {
-        data: { user: callerUser },
-    } = await supabase.auth.getUser()
+  // Verify caller is an admin
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || user.app_metadata?.role !== 'admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
 
-    if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-    }
+  const tenantId = request.nextUrl.searchParams.get('tenantId')
+  if (!tenantId) {
+    return NextResponse.json({ error: 'Missing tenantId' }, { status: 400 })
+  }
 
-    // Save admin refresh token so we can restore the session after impersonation ends.
-    // getSession() is used here only to extract the refresh_token value — NOT for access
-    // control. Access was already verified via getUser() above. The restore route
-    // re-validates role after refreshing, so a tampered token fails there.
-    const { data: { session: adminSession } } = await supabase.auth.getSession()
-    const cookieStore = await cookies()
-    if (adminSession?.refresh_token) {
-        cookieStore.set('admin_refresh_token', adminSession.refresh_token, {
-            path: '/',
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 60 * 60,
-        })
-    }
+  const adminClient = createAdminClient()
 
-    // 2. Fetch the tenant's user_id and email from the tenants table
-    const adminClient = createAdminClient()
+  // Look up the tenant
+  const { data: tenant, error: tenantError } = await adminClient
+    .from('tenants')
+    .select('user_id, store_name')
+    .eq('id', tenantId)
+    .single()
 
-    const { data: tenant, error: tenantError } = await adminClient
-        .from('tenants')
-        .select('user_id')
-        .eq('id', tenantId)
-        .single()
+  if (tenantError || !tenant) {
+    return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
+  }
 
-    if (tenantError || !tenant?.user_id) {
-        return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
-    }
+  let tenantUserId = tenant.user_id
 
-    // 3. Get the auth user's email via admin API
-    const { data: authUser, error: authUserError } =
-        await adminClient.auth.admin.getUserById(tenant.user_id)
+  // Provision an auth user on first access if none exists yet
+  if (!tenantUserId) {
+    const slug = toSellerSlug(tenant.store_name)
+    const email = `${slug}@pceuropa.lt`
 
-    if (authUserError || !authUser?.user?.email) {
-        return NextResponse.json({ error: 'Auth user not found' }, { status: 404 })
-    }
-
-    const email = authUser.user.email
-
-    // 4. Generate an OTP (one-time password) for the tenant user.
-    // This allows us to sign in the server-side client as the tenant.
-    const { data: linkData, error: linkError } =
-        await adminClient.auth.admin.generateLink({
-            type: 'magiclink',
-            email,
-        })
-
-    if (linkError || !linkData?.properties?.email_otp) {
-        console.error('[impersonate] generateLink error:', linkError)
-        return NextResponse.json(
-            { error: 'Failed to generate sign-in link' },
-            { status: 500 }
-        )
-    }
-
-    // 5. Use the generated OTP to sign in on the server.
-    // This establishes the session and sets the cookies for the browser.
-    const { error: verifyError } = await supabase.auth.verifyOtp({
+    const { data: created, error: createError } =
+      await adminClient.auth.admin.createUser({
         email,
-        token: linkData.properties.email_otp,
-        type: 'magiclink',
-    })
+        password: crypto.randomUUID(), // random — login is always via admin impersonation
+        email_confirm: true,
+        app_metadata: { role: 'seller' },
+      })
 
-    if (verifyError) {
-        console.error('[impersonate] verifyOtp error:', verifyError)
-        return NextResponse.json(
-            { error: 'Failed to verify sign-in link' },
-            { status: 500 }
-        )
+    if (createError || !created.user) {
+      return NextResponse.json(
+        { error: `Failed to provision tenant user: ${createError?.message}` },
+        { status: 500 }
+      )
     }
 
-    // 6. Redirect the admin's browser to the seller dashboard.
-    // The session is now the tenant's because of verifyOtp above.
-    const response = NextResponse.redirect(new URL('/seller/revenue', request.url))
+    tenantUserId = created.user.id
 
-    // Set a cookie to indicate we are in impersonation mode
-    response.cookies.set('impersonating', 'true', {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 60 * 60,
+    // Link the new auth user back to the tenant row
+    await adminClient
+      .from('tenants')
+      .update({ user_id: tenantUserId })
+      .eq('id', tenantId)
+  }
+
+  // Get the tenant user's email for magic link generation
+  const { data: { user: tenantUser }, error: userError } =
+    await adminClient.auth.admin.getUserById(tenantUserId)
+
+  if (userError || !tenantUser?.email) {
+    return NextResponse.json({ error: 'Tenant user not found' }, { status: 404 })
+  }
+
+  // Save admin refresh token before the session is overwritten
+  const { data: { session: adminSession } } = await supabase.auth.getSession()
+  if (adminSession?.refresh_token) {
+    cookieStore.set('admin_refresh_token', adminSession.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60, // 1 hour
+      path: '/',
+    })
+  }
+
+  // Generate a one-time magic link token for the tenant user
+  const { data: linkData, error: linkError } =
+    await adminClient.auth.admin.generateLink({
+      type: 'magiclink',
+      email: tenantUser.email,
     })
 
-    return response
+  if (linkError || !linkData?.properties?.hashed_token) {
+    return NextResponse.json(
+      { error: 'Failed to generate impersonation token' },
+      { status: 500 }
+    )
+  }
+
+  // Exchange the token — overwrites the current session with the tenant's session
+  const { error: otpError } = await supabase.auth.verifyOtp({
+    token_hash: linkData.properties.hashed_token,
+    type: 'email',
+  })
+
+  if (otpError) {
+    return NextResponse.json(
+      { error: 'Failed to start impersonation session' },
+      { status: 500 }
+    )
+  }
+
+  // Mark impersonation active for the "return to admin" banner in the seller dashboard
+  cookieStore.set('impersonating', tenant.store_name, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60,
+    path: '/',
+  })
+
+  return NextResponse.redirect(new URL('/seller/revenue', request.url))
 }

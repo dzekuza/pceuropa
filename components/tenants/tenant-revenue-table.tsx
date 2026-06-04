@@ -36,9 +36,9 @@ interface TenantRevenueTableProps {
 
 function efektyvumasClass(value: number | null): string {
   if (value == null) return 'text-muted-foreground'
-  if (value >= 100) return 'rounded px-1.5 py-0.5 bg-green-100 text-green-800 font-medium'
-  if (value >= 70) return 'rounded px-1.5 py-0.5 bg-yellow-100 text-yellow-800 font-medium'
-  return 'rounded px-1.5 py-0.5 bg-red-100 text-red-800 font-medium'
+  if (value >= 100) return 'rounded px-1.5 py-0.5 bg-success/10 text-success font-medium'
+  if (value >= 70) return 'rounded px-1.5 py-0.5 bg-warning/10 text-warning font-medium'
+  return 'rounded px-1.5 py-0.5 bg-destructive/10 text-destructive font-medium'
 }
 
 function fmtEur(value: number): string {
@@ -108,7 +108,7 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
     },
     {
       accessorKey: 'txCount',
-      header: ({ column }) => <DataGridColumnHeader title="Pirkimų sk." column={column} />,
+      header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
       cell: ({ row }) => <div className="text-right">{row.original.txCount}</div>,
       size: 110,
     },
@@ -177,7 +177,18 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
   )
 }
 
-function RevenueTableContent({ stats, pk, tenantSpace }: { stats: { avgAmount: number | null, avgTxCount: number | null, avgApyvartaPerM2: number | null, avgEfektyvumas: number | null }, pk: number | null, tenantSpace: number | null }) {
+interface RevenueTableContentProps {
+  stats: {
+    avgAmount: number | null
+    avgTxCount: number | null
+    avgApyvartaPerM2: number | null
+    avgEfektyvumas: number | null
+  }
+  pk: number | null
+  tenantSpace: number | null
+}
+
+function RevenueTableContent({ stats, pk, tenantSpace }: RevenueTableContentProps) {
   const { table } = useDataGrid()
 
   return (

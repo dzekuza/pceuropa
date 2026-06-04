@@ -51,14 +51,13 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg font-bold text-xs">
-                  PCE
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">PC EUROPA</span>
-                  <span className="truncate text-xs text-sidebar-foreground/60">Valdymo sistema</span>
-                </div>
+              <Link href="/" className="py-1">
+                {/* invert in light mode → black logo; dark:invert-0 keeps white in dark mode */}
+                <img
+                  src="/nav-logo.svg"
+                  alt="PC Europa"
+                  className="h-7 w-auto invert dark:invert-0"
+                />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -3,12 +3,12 @@
 import { LogOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export function ImpersonationBanner() {
+export function ImpersonationBanner({ storeName }: { storeName: string }) {
     return (
         <div className="bg-amber-400 text-gray-950 px-4 py-2 flex items-center justify-between sticky top-0 z-50 shadow-md">
             <div className="flex items-center gap-2 text-sm font-semibold">
                 <span className="animate-pulse inline-block w-2 h-2 bg-gray-950 rounded-full" />
-                Esate prisijungę kaip nuomininkas (Impersonacija)
+                Peržiūrite: <span className="font-bold">{storeName}</span>
             </div>
             <Button
                 variant="ghost"

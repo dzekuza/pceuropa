@@ -18,19 +18,24 @@ interface DeleteFaqDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   item: FaqItem | null
+  onSuccess?: (id: string) => void
 }
 
 export function DeleteFaqDialog({
   open,
   onOpenChange,
   item,
+  onSuccess,
 }: DeleteFaqDialogProps) {
   const [isPending, startTransition] = useTransition()
 
   function handleConfirm() {
     if (!item) return
     startTransition(async () => {
-      await deleteFaqItem(item.id)
+      const result = await deleteFaqItem(item.id)
+      if (!('error' in result)) {
+        onSuccess?.(item.id)
+      }
       onOpenChange(false)
     })
   }

@@ -50,7 +50,7 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
     },
     {
       accessorKey: 'tx_count',
-      header: ({ column }) => <DataGridColumnHeader title="Pirkimų sk." column={column} />,
+      header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
       cell: ({ row }) => <div className="text-right">{row.original.tx_count ?? '—'}</div>,
       size: 120,
     },

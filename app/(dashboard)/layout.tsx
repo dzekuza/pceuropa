@@ -36,7 +36,7 @@ export default async function DashboardLayout({
   const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : SELLER_NAV_ITEMS
 
   const cookieStore = await cookies()
-  const isImpersonating = cookieStore.get('impersonating')?.value === 'true'
+  const impersonatingStore = cookieStore.get('impersonating')?.value ?? null
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar navItems={navItems} className="hidden md:flex" />
       <SidebarInset>
-        {isImpersonating && <ImpersonationBanner />}
+        {impersonatingStore && <ImpersonationBanner storeName={impersonatingStore} />}
         <Header userEmail={user.email} role={role} />
         <div className="flex flex-1 flex-col gap-4 p-4 pb-20 md:pb-4">
           {children}

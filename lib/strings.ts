@@ -34,3 +34,15 @@ export type NavItem = {
   href: string
   icon: string
 }
+
+export const REVENUE_REMINDER_TITLE = 'Artėja mėnesio pabaiga'
+
+export function revenueReminderBody(daysRemaining: number): string {
+  const unit =
+    daysRemaining === 1
+      ? 'diena'
+      : daysRemaining > 1 && daysRemaining < 10
+      ? 'dienos'
+      : 'dienų'
+  return `Liko tik ${daysRemaining} ${unit} iki mėnesio pabaigos. Prašome įsitikinti, kad pateikėte visą reikiamą apyvartos informaciją.`
+}

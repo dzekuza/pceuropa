@@ -4,13 +4,14 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import type { FaqFormValues } from '@/lib/validations/faq'
+import type { FaqItem } from '@/types/database'
 
 /**
  * createFaqItem — Creates a new FAQ entry with auto-assigned sort_order.
  */
 export async function createFaqItem(
   formData: FaqFormValues
-): Promise<{ success: true } | { error: string }> {
+): Promise<{ data: FaqItem } | { error: string }> {
   const supabase = await createClient()
   const {
     data: { user: callerUser },
@@ -30,18 +31,23 @@ export async function createFaqItem(
 
   const nextSortOrder = (lastItem?.sort_order ?? 0) + 1
 
-  const { error } = await supabase.from('faq_items').insert({
-    question: formData.question,
-    answer: formData.answer,
-    sort_order: nextSortOrder,
-  })
+  const { data: created, error } = await supabase
+    .from('faq_items')
+    .insert({
+      question: formData.question,
+      answer: formData.answer,
+      attachments: formData.attachments ?? [],
+      sort_order: nextSortOrder,
+    })
+    .select()
+    .single()
 
-  if (error) {
+  if (error || !created) {
     return { error: 'Nepavyko sukurti klausimo' }
   }
 
   revalidatePath('/admin/faq')
-  return { success: true }
+  return { data: created }
 }
 
 /**
@@ -50,7 +56,7 @@ export async function createFaqItem(
 export async function updateFaqItem(
   id: string,
   formData: FaqFormValues
-): Promise<{ success: true } | { error: string }> {
+): Promise<{ data: FaqItem } | { error: string }> {
   const supabase = await createClient()
   const {
     data: { user: callerUser },
@@ -60,20 +66,23 @@ export async function updateFaqItem(
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from('faq_items')
     .update({
       question: formData.question,
       answer: formData.answer,
+      attachments: formData.attachments ?? [],
     })
     .eq('id', id)
+    .select()
+    .single()
 
-  if (error) {
+  if (error || !updated) {
     return { error: 'Nepavyko atnaujinti klausimo' }
   }
 
   revalidatePath('/admin/faq')
-  return { success: true }
+  return { data: updated }
 }
 
 /**

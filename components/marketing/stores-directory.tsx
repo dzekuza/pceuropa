@@ -4,64 +4,44 @@ import { useState, useMemo } from 'react'
 import { Search, X } from 'lucide-react'
 
 type Store = {
-  id: number
+  id: string
   name: string
   category: string
-  floor: string
+  logoUrl: string | null
+  coverUrl: string | null
 }
 
-const STORES: Store[] = [
-  // Drabužiai
-  { id: 1, name: 'Lindex', category: 'Drabužiai', floor: '1 aukštas' },
-  { id: 2, name: 'H&M', category: 'Drabužiai', floor: '1 aukštas' },
-  { id: 3, name: 'Zara', category: 'Drabužiai', floor: '2 aukštas' },
-  { id: 4, name: 'Reserved', category: 'Drabužiai', floor: '1 aukštas' },
-  { id: 5, name: 'Mango', category: 'Drabužiai', floor: '2 aukštas' },
-  { id: 6, name: 'New Yorker', category: 'Drabužiai', floor: '1 aukštas' },
-  // Grožis
-  { id: 7, name: 'Douglas', category: 'Grožis', floor: '1 aukštas' },
-  { id: 8, name: 'Watsons', category: 'Grožis', floor: '1 aukštas' },
-  { id: 9, name: 'Yves Rocher', category: 'Grožis', floor: '2 aukštas' },
-  { id: 10, name: 'Inglot', category: 'Grožis', floor: '1 aukštas' },
-  // Maistas
-  { id: 11, name: 'Maxima', category: 'Maistas', floor: '0 aukštas' },
-  { id: 12, name: 'Hesburger', category: 'Maistas', floor: '0 aukštas' },
-  { id: 13, name: 'Caffè Nero', category: 'Maistas', floor: '1 aukštas' },
-  // Technologijos
-  { id: 14, name: 'Euronics', category: 'Technologijos', floor: '2 aukštas' },
-  { id: 15, name: 'Samsung', category: 'Technologijos', floor: '1 aukštas' },
-  { id: 16, name: 'iStyle', category: 'Technologijos', floor: '1 aukštas' },
-  // Paslaugos
-  { id: 17, name: 'Luminor', category: 'Paslaugos', floor: '1 aukštas' },
-  { id: 18, name: 'Foto centras', category: 'Paslaugos', floor: '1 aukštas' },
-  { id: 19, name: 'Optika Lux', category: 'Paslaugos', floor: '2 aukštas' },
-  { id: 20, name: 'DPD', category: 'Paslaugos', floor: '0 aukštas' },
-  // Sportas
-  { id: 21, name: 'Decathlon', category: 'Sportas', floor: '0 aukštas' },
-  { id: 22, name: 'SportMax', category: 'Sportas', floor: '1 aukštas' },
-  // Namai
-  { id: 23, name: 'JYSK', category: 'Namai', floor: '2 aukštas' },
-  { id: 24, name: 'Kerama', category: 'Namai', floor: '2 aukštas' },
-  { id: 25, name: 'Porta', category: 'Namai', floor: '2 aukštas' },
-]
+interface StoresDirectoryProps {
+  stores: Store[]
+}
 
 type CategoryConfig = {
-  label: string
   colorBg: string
   textColor: string
 }
 
 const CATEGORY_CONFIG: Record<string, CategoryConfig> = {
-  Drabužiai:    { label: 'Drabužiai',     colorBg: '#b4e5ff', textColor: '#0a3a52' },
-  Grožis:       { label: 'Grožis',        colorBg: '#fce4f5', textColor: '#5c1a4a' },
-  Maistas:      { label: 'Maistas',       colorBg: '#e6ffd1', textColor: '#1a4a0a' },
-  Technologijos:{ label: 'Technologijos', colorBg: '#e0e0ff', textColor: '#1a1a6e' },
-  Paslaugos:    { label: 'Paslaugos',     colorBg: '#ffe8dc', textColor: '#5c2a0a' },
-  Sportas:      { label: 'Sportas',       colorBg: '#fdf567', textColor: '#3a3200' },
-  Namai:        { label: 'Namai',         colorBg: '#f0ede6', textColor: '#3a3220' },
+  'Drabužiai':                { colorBg: '#b4e5ff', textColor: '#0a3a52' },
+  'Grožis':                   { colorBg: '#fce4f5', textColor: '#5c1a4a' },
+  'Maistas ir restoranai':    { colorBg: '#e6ffd1', textColor: '#1a4a0a' },
+  'Maistas':                  { colorBg: '#e6ffd1', textColor: '#1a4a0a' },
+  'Technologijos':             { colorBg: '#e0e0ff', textColor: '#1a1a6e' },
+  'Paslaugos':                { colorBg: '#ffe8dc', textColor: '#5c2a0a' },
+  'Sportas':                  { colorBg: '#fdf567', textColor: '#3a3200' },
+  'Namai':                    { colorBg: '#f0ede6', textColor: '#3a3220' },
+  'Kita':                     { colorBg: '#e8e8e8', textColor: '#444444' },
 }
 
-const ALL_CATEGORIES = ['Visos', ...Object.keys(CATEGORY_CONFIG)]
+const FALLBACK_COLORS: CategoryConfig[] = [
+  { colorBg: '#d4f0e8', textColor: '#0a3a28' },
+  { colorBg: '#f5e6d4', textColor: '#5c3a0a' },
+  { colorBg: '#e8d4f5', textColor: '#3a0a5c' },
+  { colorBg: '#f5f0d4', textColor: '#5c520a' },
+]
+
+function getCategoryConfig(category: string, index: number): CategoryConfig {
+  return CATEGORY_CONFIG[category] ?? FALLBACK_COLORS[index % FALLBACK_COLORS.length]
+}
 
 function getInitials(name: string): string {
   const words = name.trim().split(/\s+/)
@@ -69,38 +49,57 @@ function getInitials(name: string): string {
   return (words[0][0] + words[1][0]).toUpperCase()
 }
 
-function StoreCard({ store }: { store: Store }) {
-  const config = CATEGORY_CONFIG[store.category] ?? { colorBg: '#f0f0f0', textColor: '#333' }
-
+function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
   return (
     <div className="group bg-white rounded-[20px] overflow-hidden border border-[#ebebeb] hover:border-[#d0d0d0] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.98] cursor-pointer">
-      {/* Colored top area */}
+      {/* Cover / banner area */}
       <div
         className="h-[100px] md:h-[120px] flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: config.colorBg }}
+        style={store.coverUrl ? undefined : { backgroundColor: colorConfig.colorBg }}
       >
-        <span
-          className="font-bold text-[38px] md:text-[44px] leading-none tracking-[-2px] select-none transition-transform duration-300 group-hover:scale-110"
-          style={{ color: config.textColor, opacity: 0.55 }}
-        >
-          {getInitials(store.name)}
-        </span>
+        {store.coverUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={store.coverUrl}
+            alt=""
+            className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <span
+            className="font-bold text-[38px] md:text-[44px] leading-none tracking-[-2px] select-none transition-transform duration-300 group-hover:scale-110"
+            style={{ color: colorConfig.textColor, opacity: 0.55 }}
+          >
+            {getInitials(store.name)}
+          </span>
+        )}
       </div>
 
       {/* Card body */}
-      <div className="p-4 flex flex-col gap-2">
-        <p className="font-semibold text-[15px] md:text-[16px] leading-[22px] text-black">
-          {store.name}
-        </p>
-        <div className="flex items-center justify-between gap-2">
+      <div className="p-4 flex items-center gap-3">
+        {/* Logo */}
+        {store.logoUrl ? (
+          <div className="size-10 rounded-xl overflow-hidden border border-[#ebebeb] bg-white shrink-0 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={store.logoUrl} alt={`${store.name} logotipas`} className="size-full object-contain p-0.5" />
+          </div>
+        ) : (
+          <div
+            className="size-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-[13px]"
+            style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
+          >
+            {getInitials(store.name)}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1 min-w-0">
+          <p className="font-semibold text-[15px] md:text-[16px] leading-[20px] text-black truncate">
+            {store.name}
+          </p>
           <span
-            className="inline-flex items-center rounded-full px-2.5 py-[3px] text-[12px] font-medium leading-[18px]"
-            style={{ backgroundColor: config.colorBg, color: config.textColor }}
+            className="inline-flex items-center rounded-full px-2.5 py-[3px] text-[12px] font-medium leading-[18px] w-fit"
+            style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
           >
             {store.category}
-          </span>
-          <span className="text-[12px] text-black/40 font-medium whitespace-nowrap">
-            {store.floor}
           </span>
         </div>
       </div>
@@ -108,28 +107,37 @@ function StoreCard({ store }: { store: Store }) {
   )
 }
 
-export function StoresDirectory() {
+export function StoresDirectory({ stores }: StoresDirectoryProps) {
   const [activeCategory, setActiveCategory] = useState('Visos')
   const [search, setSearch] = useState('')
 
+  const categories = useMemo(() => {
+    const unique = Array.from(new Set(stores.map((s) => s.category))).sort()
+    return ['Visos', ...unique]
+  }, [stores])
+
+  const categoryIndexMap = useMemo(() => {
+    const map: Record<string, number> = {}
+    categories.slice(1).forEach((cat, i) => { map[cat] = i })
+    return map
+  }, [categories])
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    return STORES.filter((s) => {
+    return stores.filter((s) => {
       const matchCat = activeCategory === 'Visos' || s.category === activeCategory
       const matchSearch = !q || s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q)
       return matchCat && matchSearch
     })
-  }, [activeCategory, search])
+  }, [stores, activeCategory, search])
 
   return (
     <section className="w-full max-w-[1300px] mx-auto px-4 lg:px-0 py-8 md:py-10 lg:py-14">
-      {/* Filter bar */}
       <div className="flex flex-col gap-4 mb-8 md:mb-10">
-        {/* Category pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 lg:mx-0 lg:px-0 lg:flex-wrap">
-          {ALL_CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isActive = activeCategory === cat
-            const config = cat !== 'Visos' ? CATEGORY_CONFIG[cat] : null
+            const config = cat !== 'Visos' ? getCategoryConfig(cat, categoryIndexMap[cat]) : null
             return (
               <button
                 key={cat}
@@ -142,19 +150,15 @@ export function StoresDirectory() {
                         color: config ? config.textColor : '#ffffff',
                         boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
                       }
-                    : {
-                        backgroundColor: '#f2f2f2',
-                        color: '#555',
-                      }
+                    : { backgroundColor: '#f2f2f2', color: '#555' }
                 }
               >
-                {cat === 'Visos' ? 'Visos kategorijos' : config?.label}
+                {cat === 'Visos' ? 'Visos kategorijos' : cat}
               </button>
             )
           })}
         </div>
 
-        {/* Search + count row */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-[360px]">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-black/30 pointer-events-none" />
@@ -180,11 +184,14 @@ export function StoresDirectory() {
         </div>
       </div>
 
-      {/* Store grid */}
       {filtered.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
           {filtered.map((store) => (
-            <StoreCard key={store.id} store={store} />
+            <StoreCard
+              key={store.id}
+              store={store}
+              colorConfig={getCategoryConfig(store.category, categoryIndexMap[store.category] ?? 0)}
+            />
           ))}
         </div>
       ) : (

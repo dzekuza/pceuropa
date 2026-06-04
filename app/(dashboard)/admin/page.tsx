@@ -13,7 +13,8 @@ import {
   UsersIcon,
   FileCheckIcon,
   EuroIcon,
-  ShoppingBagIcon
+  ShoppingBagIcon,
+  CalendarIcon,
 } from 'lucide-react'
 import { aggregateMonthlyRevenue } from '@/lib/utils/analytics'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardHeading, CardToolbar } from '@/components/ui/card'
@@ -51,14 +52,31 @@ export default async function AdminHomePage() {
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
   const startDate = `${twelveMonthsAgo.getFullYear()}-${String(twelveMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`
 
+  // Start of last year — needed so yearly comparison has full 12 months of prior year
+  const startOfLastYear = `${now.getFullYear() - 1}-01-01`
+
   // Parallel fetch
-  const [tenantsResult, reportsResult] = await Promise.all([
+  const [tenantsResult, reportsResult, yearlyReportsResult] = await Promise.all([
     supabase.from('tenants').select('*').order('created_at', { ascending: false }),
     supabase.from('revenue_reports').select('*').gte('month', startDate).order('month', { ascending: true }),
+    supabase.from('revenue_reports').select('amount_eur, month').gte('month', startOfLastYear),
   ])
 
   const tenants = tenantsResult.data ?? []
   const reports = reportsResult.data ?? []
+  const yearlyReports = yearlyReportsResult.data ?? []
+
+  // Yearly revenue stats
+  const currentYear = now.getFullYear()
+  const yearlyRevenue = yearlyReports
+    .filter((r) => r.month.startsWith(`${currentYear}-`))
+    .reduce((sum, r) => sum + r.amount_eur, 0)
+  const lastYearRevenue = yearlyReports
+    .filter((r) => r.month.startsWith(`${currentYear - 1}-`))
+    .reduce((sum, r) => sum + r.amount_eur, 0)
+  const yearlyTrend = lastYearRevenue > 0
+    ? Math.round(((yearlyRevenue - lastYearRevenue) / lastYearRevenue) * 100)
+    : 0
 
   // Derived stats
   const tenantCount = tenants.length
@@ -90,7 +108,7 @@ export default async function AdminHomePage() {
   const revenueChartData = aggregateMonthlyRevenue(reports, startDate, currentMonthDate)
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Suvestinė</h1>
         <p className="text-muted-foreground">
@@ -98,7 +116,7 @@ export default async function AdminHomePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatisticsCard
           title="Viso nuomininkų"
           value={tenantCount}
@@ -128,7 +146,18 @@ export default async function AdminHomePage() {
           description="Šį mėnesį"
         />
         <StatisticsCard
-          title="Sandorių skaičius"
+          title="Apyvarta šiais metais"
+          value={formatEur(yearlyRevenue)}
+          icon={CalendarIcon}
+          trend={{
+            value: Math.abs(yearlyTrend),
+            label: `lyginant su ${currentYear - 1} m.`,
+            isUp: yearlyTrend >= 0,
+          }}
+          description={`${currentYear} m.`}
+        />
+        <StatisticsCard
+          title="Čekių skaičius"
           value={totalTx.toLocaleString('lt-LT')}
           icon={ShoppingBagIcon}
           trend={{
@@ -140,7 +169,7 @@ export default async function AdminHomePage() {
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <RevenueAreaChart
           data={revenueChartData}
           title="Apyvartos tendencija"
@@ -148,12 +177,12 @@ export default async function AdminHomePage() {
         />
         <TxBarChart
           reports={reports}
-          title="Sandorių dinamika"
-          description="Mėnesinis sandorių aktyvumas"
+          title="Čekių dinamika"
+          description="Mėnesinis čekių aktyvumas"
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardHeading>
@@ -166,7 +195,7 @@ export default async function AdminHomePage() {
               <FileCheckIcon className="size-4 text-muted-foreground" />
             </CardToolbar>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 sm:p-0">
             <div className="relative w-full overflow-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -174,15 +203,17 @@ export default async function AdminHomePage() {
                     <th className="h-10 px-4 sm:px-6 text-left font-medium">Nuomininkas</th>
                     <th className="h-10 px-4 sm:px-6 text-left font-medium">Mėnuo</th>
                     <th className="h-10 px-4 sm:px-6 text-right font-medium">Suma</th>
-                    <th className="h-10 px-4 sm:px-6 text-right font-medium">Sandoriai</th>
+                    <th className="h-10 px-4 sm:px-6 text-right font-medium">Čekiai</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {[...reports]
+                  {(() => {
+                    const tenantById = new Map(tenants.map((t) => [t.id, t]))
+                    return [...reports]
                     .sort((a, b) => (b.submitted_at || b.month).localeCompare(a.submitted_at || a.month))
                     .slice(0, 10)
                     .map((report) => {
-                      const tenant = tenants.find(t => t.id === report.tenant_id)
+                      const tenant = report.tenant_id ? tenantById.get(report.tenant_id) : undefined
                       return (
                         <tr key={report.id} className="hover:bg-muted/50 transition-colors">
                           <td className="py-3 px-4 sm:px-6 font-medium">{tenant?.store_name || 'Nežinomas'}</td>
@@ -197,7 +228,8 @@ export default async function AdminHomePage() {
                           <td className="py-3 px-4 sm:px-6 text-right tabular-nums">{report.tx_count ?? 0}</td>
                         </tr>
                       )
-                    })}
+                    })
+                  })()}
                 </tbody>
               </table>
             </div>

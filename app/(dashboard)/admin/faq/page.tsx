@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { FaqAdminList } from '@/components/faq/faq-admin-list'
+import { FaqAdminPageClient } from '@/components/faq/faq-admin-page-client'
 
 export default async function AdminFaqPage() {
   const supabase = await createClient()
@@ -24,16 +24,5 @@ export default async function AdminFaqPage() {
     .select('*')
     .order('sort_order', { ascending: true })
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">DUK valdymas</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Kurkite ir tvarkykite dažnai užduodamus klausimus
-        </p>
-      </div>
-
-      <FaqAdminList items={items ?? []} />
-    </div>
-  )
+  return <FaqAdminPageClient items={items ?? []} />
 }

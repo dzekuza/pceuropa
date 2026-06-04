@@ -206,7 +206,7 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-20">Savaitė</TableHead>
-                  <TableHead className="text-right">Pirkimų skaičius</TableHead>
+                  <TableHead className="text-right">Čekių skaičius</TableHead>
                   <TableHead className="text-right">Apyvarta be PVM</TableHead>
                 </TableRow>
               </TableHeader>

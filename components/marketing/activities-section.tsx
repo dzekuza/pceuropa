@@ -36,21 +36,21 @@ export function ActivitiesSection() {
       </div>
 
       {/* Bottom two cards */}
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-5">
+      <div className="flex flex-col xl:flex-row gap-4 md:gap-5">
         {/* Sports card */}
-        <div className="bg-black flex flex-col justify-between py-5 lg:py-6 rounded-[20px] lg:w-[650px] shrink-0 overflow-hidden">
-          <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-4 md:gap-0 px-5 lg:px-6">
-            <h3 className="font-bold text-[22px] md:text-[26px] lg:text-[32px] leading-[1.3] lg:leading-[40px] tracking-[-0.5px] lg:tracking-[-1.5px] text-white lg:w-[315px]">
+        <div className="bg-black flex flex-col justify-between py-5 xl:py-6 rounded-[20px] xl:w-[650px] shrink-0 overflow-hidden">
+          <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-4 md:gap-0 px-5 xl:px-6">
+            <h3 className="font-bold text-[22px] md:text-[26px] xl:text-[32px] leading-[1.3] xl:leading-[40px] tracking-[-0.5px] xl:tracking-[-1.5px] text-white xl:w-[315px]">
               Sportuok ir prižiūrėk savo kūną PC Europoje
             </h3>
             <Link
               href="/sportas"
-              className="bg-[#b4e5ff] text-black rounded-full px-4 py-3 text-[13px] lg:text-[16px] font-medium leading-[24px] whitespace-nowrap transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97] shrink-0"
+              className="bg-[#b4e5ff] text-black rounded-full px-4 py-3 text-[13px] xl:text-[16px] font-medium leading-[24px] whitespace-nowrap transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97] shrink-0"
             >
               Sportas / Sveikatingumas
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-2 lg:gap-3 px-5 lg:px-6 mt-4 lg:mt-0 h-[180px] md:h-[220px] lg:h-[299px]">
+          <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[220px] xl:h-[299px]">
             <img src={sportsAd1} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
             <img src={sportsAd2} alt="" className="flex-1 h-full rounded-[9px] object-cover" />
             <img src={sportsAd3} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
@@ -58,25 +58,25 @@ export function ActivitiesSection() {
         </div>
 
         {/* Pets card */}
-        <div className="bg-[#ffe8dc] flex flex-col lg:flex-1 overflow-hidden p-6 md:p-8 lg:p-[50px] relative rounded-[20px] min-h-[300px] lg:min-h-0 lg:h-[480px]">
-          <div className="flex flex-col gap-3 lg:gap-4 w-full lg:w-[530px]">
-            <DisplayHeading className="lg:w-[530px]">
+        <div className="bg-[#ffe8dc] flex flex-col xl:flex-1 overflow-hidden p-6 md:p-8 xl:p-[50px] relative rounded-[20px] min-h-[300px] xl:min-h-0 xl:h-[480px]">
+          <div className="flex flex-col gap-3 xl:gap-4 w-full xl:max-w-[530px]">
+            <DisplayHeading>
               PC EUROPA<br />draugiška augintiniams
             </DisplayHeading>
-            <BodyText className="md:w-[320px] lg:w-[378px]">
+            <BodyText className="md:max-w-[320px] xl:max-w-[378px]">
               Jūsų augintiniai - mūsų draugai. Kviečiame atvykti į PC Europa su savo mažaisiais draugais.
             </BodyText>
           </div>
           <Link
             href="/augintiniai"
-            className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 lg:py-[15px] text-[14px] lg:text-[16px] font-medium w-fit mt-6 lg:mt-auto transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+            className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 xl:py-[15px] text-[14px] xl:text-[16px] font-medium w-fit mt-6 xl:mt-auto transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
             Sužinokite daugiau
           </Link>
           <img
             src={petImg}
             alt=""
-            className="hidden md:block absolute right-0 bottom-0 w-[40%] lg:w-[360px] lg:h-[360px] object-cover"
+            className="hidden md:block absolute right-0 bottom-0 w-[40%] xl:w-[360px] xl:h-[360px] object-cover"
           />
         </div>
       </div>

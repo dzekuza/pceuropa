@@ -30,7 +30,7 @@ interface TxBarChartProps {
 
 const chartConfig = {
     tx_count: {
-        label: 'Pirkimų sk.',
+        label: 'Čekių sk.',
         color: 'var(--chart-2)',
     },
 } satisfies ChartConfig
@@ -56,8 +56,8 @@ function buildData(reports: RevenueReport[]): TxPoint[] {
 
 export function TxBarChart({
     reports,
-    title = "Pirkimų skaičius",
-    description = "Mėnesiniai sandoriai"
+    title = "Čekių skaičius",
+    description = "Mėnesiniai čekiai"
 }: TxBarChartProps) {
     const data = buildData(reports)
     const hasData = data.length > 0 && data.some(d => d.tx_count > 0)

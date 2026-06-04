@@ -60,9 +60,9 @@ export function StatsCards({ reports }: StatsCardsProps) {
             />
 
             <StatisticsCard
-                title="Viso pirkimų"
+                title="Viso čekių"
                 value={reports.length === 0 ? '—' : totalTx.toLocaleString('lt-LT')}
-                description="Sandorių iš viso"
+                description="Čekių iš viso"
                 icon={ShoppingBagIcon}
             />
 

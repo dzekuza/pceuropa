@@ -22,6 +22,13 @@ export async function createTenant(
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
+  if (!formData.username || formData.username.length < 3) {
+    return { error: 'Vartotojo vardas turi būti bent 3 simbolių' }
+  }
+  if (!formData.password || formData.password.length < 6) {
+    return { error: 'Slaptažodis turi būti bent 6 simbolių' }
+  }
+
   const adminClient = createAdminClient()
 
   // Step 1: create auth user with seller role
@@ -50,6 +57,9 @@ export async function createTenant(
     category: formData.category,
     space_m2: parseFloat(formData.space_m2),
     rent_eur: parseFloat(formData.rent_eur),
+    description: formData.description ?? null,
+    logo_url: formData.logo_url ?? null,
+    gallery_images: formData.gallery_images ?? [],
   })
 
   if (tenantError) {
@@ -87,6 +97,9 @@ export async function updateTenant(
       category: formData.category,
       space_m2: formData.space_m2 != null ? parseFloat(formData.space_m2) : undefined,
       rent_eur: formData.rent_eur != null ? parseFloat(formData.rent_eur) : undefined,
+      description: formData.description ?? null,
+      logo_url: formData.logo_url ?? null,
+      gallery_images: formData.gallery_images ?? [],
     })
     .eq('id', tenantId)
 

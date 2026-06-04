@@ -41,10 +41,10 @@ export function CategoriesSection() {
       </div>
 
       {/* Layout: normal flow on mobile/tablet, absolute on desktop */}
-      <div className="lg:relative lg:h-[783px]">
+      <div className="xl:relative xl:h-[783px]">
 
         {/* Floating side images — desktop only */}
-        <div className="hidden lg:block absolute inset-x-[-15px]">
+        <div className="hidden xl:block absolute inset-x-[-15px]">
           <img src={imgLeft1} alt="" className="absolute left-[15px] top-[160px] size-[198px] rounded-[16px] object-cover" />
           <img src={imgLeft2} alt="" className="absolute left-[60px] top-[488px] size-[198px] rounded-[16px] object-cover" />
           <img src={imgRight1} alt="" className="absolute right-[15px] top-[150px] size-[198px] rounded-[16px] object-cover" />
@@ -52,18 +52,18 @@ export function CategoriesSection() {
         </div>
 
         {/* Category list */}
-        <div className="flex flex-col gap-6 md:gap-8 lg:gap-[46px] lg:absolute lg:left-[305px] lg:top-[82px] lg:w-[690px]">
+        <div className="flex flex-col gap-6 md:gap-8 xl:gap-[46px] xl:absolute xl:left-[305px] xl:top-[82px] xl:w-[690px]">
           {CATEGORIES.map((cat) => (
             <div
               key={cat.href}
-              className="border-b border-[#d6d6d6] flex flex-col gap-4 lg:gap-6 items-center pb-6 lg:pb-[30px] text-center"
+              className="border-b border-[#d6d6d6] flex flex-col gap-4 xl:gap-6 items-center pb-6 xl:pb-[30px] text-center"
             >
               <DisplayHeading>{cat.title}</DisplayHeading>
               <BodyText className="max-w-[560px]">{cat.description}</BodyText>
               {cat.showButton && (
                 <Link
                   href={cat.href}
-                  className="inline-flex items-center gap-3 lg:gap-[18px] bg-[#fdf567] rounded-full px-4 lg:px-5 py-3 lg:py-[15px] text-[14px] lg:text-[16px] font-semibold leading-[24px] text-black transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+                  className="inline-flex items-center gap-3 xl:gap-[18px] bg-[#fdf567] rounded-full px-4 xl:px-5 py-3 xl:py-[15px] text-[14px] xl:text-[16px] font-semibold leading-[24px] text-black transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
                 >
                   Daugiau
                   <ArrowIcon />
@@ -74,7 +74,7 @@ export function CategoriesSection() {
         </div>
 
         {/* Tablet image row — between mobile and desktop */}
-        <div className="hidden md:grid lg:hidden grid-cols-2 gap-4 mt-8">
+        <div className="hidden md:grid xl:hidden grid-cols-2 gap-4 mt-8">
           <img src={imgLeft1} alt="" className="w-full aspect-square rounded-[16px] object-cover" />
           <img src={imgRight1} alt="" className="w-full aspect-square rounded-[16px] object-cover" />
         </div>

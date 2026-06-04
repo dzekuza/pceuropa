@@ -6,9 +6,11 @@ import type { RevenueReport } from '@/types/database'
 import { RevenueForm } from '@/components/revenue/revenue-form'
 import { SubmissionHistory } from '@/components/revenue/submission-history'
 
-function getCurrentMonth(): string {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+function getPreviousMonth(): string {
+  const d = new Date()
+  d.setDate(1)
+  d.setMonth(d.getMonth() - 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
 interface RevenuePageClientProps {
@@ -16,7 +18,7 @@ interface RevenuePageClientProps {
 }
 
 export function RevenuePageClient({ reports }: RevenuePageClientProps) {
-  const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth)
+  const [selectedMonth, setSelectedMonth] = useState<string>(getPreviousMonth)
 
   return (
     <div className="flex flex-col gap-6">

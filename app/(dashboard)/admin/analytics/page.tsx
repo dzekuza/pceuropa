@@ -127,7 +127,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const rangeLabel = buildRangeLabel(fromParam, toParam)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analitika</h1>
@@ -159,7 +159,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
         targetMonth={currentMonthStr}
       />
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <TenantTrendChart data={tenantTrends} />
         </div>

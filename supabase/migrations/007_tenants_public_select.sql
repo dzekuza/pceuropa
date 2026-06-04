@@ -1,0 +1,2 @@
+-- SUPERSEDED by 008_tenants_public_view.sql
+-- Original policy dropped; replaced with a security-barrier view.

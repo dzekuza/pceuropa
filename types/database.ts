@@ -28,6 +28,9 @@ export interface Database {
           category: string | null
           space_m2: number | null
           rent_eur: number | null
+          logo_url: string | null
+          gallery_images: string[]
+          description: string | null
           created_at: string | null
         }
         Insert: {
@@ -39,6 +42,9 @@ export interface Database {
           category?: string | null
           space_m2?: number | null
           rent_eur?: number | null
+          logo_url?: string | null
+          gallery_images?: string[]
+          description?: string | null
           created_at?: string | null
         }
         Update: {
@@ -50,6 +56,9 @@ export interface Database {
           category?: string | null
           space_m2?: number | null
           rent_eur?: number | null
+          logo_url?: string | null
+          gallery_images?: string[]
+          description?: string | null
           created_at?: string | null
         }
         Relationships: [
@@ -118,6 +127,7 @@ export interface Database {
           id: string
           question: string
           answer: string
+          attachments: string[]
           sort_order: number | null
           created_at: string | null
         }
@@ -125,6 +135,7 @@ export interface Database {
           id?: string
           question: string
           answer: string
+          attachments?: string[]
           sort_order?: number | null
           created_at?: string | null
         }
@@ -132,6 +143,7 @@ export interface Database {
           id?: string
           question?: string
           answer?: string
+          attachments?: string[]
           sort_order?: number | null
           created_at?: string | null
         }
@@ -139,7 +151,16 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      tenants_public: {
+        Row: {
+          id: string
+          store_name: string
+          category: string | null
+          logo_url: string | null
+          gallery_images: string[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

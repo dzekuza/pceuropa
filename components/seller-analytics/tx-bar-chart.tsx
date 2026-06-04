@@ -25,7 +25,7 @@ interface TxBarChartProps {
 
 const chartConfig = {
     tx_count: {
-        label: 'Pirkimų sk.',
+        label: 'Čekių sk.',
         color: 'var(--chart-2)',
     },
 } satisfies ChartConfig
@@ -56,8 +56,8 @@ export function TxBarChart({ reports }: TxBarChartProps) {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Pirkimų skaičius</CardTitle>
-                    <CardDescription>Mėnesiniai sandoriai</CardDescription>
+                    <CardTitle>Čekių skaičius</CardTitle>
+                    <CardDescription>Mėnesiniai čekiai</CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center justify-center h-48">
                     <p className="text-muted-foreground text-sm">Nėra duomenų</p>
@@ -69,8 +69,8 @@ export function TxBarChart({ reports }: TxBarChartProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Pirkimų skaičius</CardTitle>
-                <CardDescription>Mėnesiniai sandoriai</CardDescription>
+                <CardTitle>Čekių skaičius</CardTitle>
+                <CardDescription>Mėnesiniai čekiai</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-64 w-full">
@@ -94,7 +94,7 @@ export function TxBarChart({ reports }: TxBarChartProps) {
                         <ChartTooltip
                             content={
                                 <ChartTooltipContent
-                                    formatter={(value) => [`${value}`, 'Pirkimų sk.']}
+                                    formatter={(value) => [`${value}`, 'Čekių sk.']}
                                     labelKey="label"
                                 />
                             }

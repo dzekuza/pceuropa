@@ -193,8 +193,13 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
             <Card>
                 <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
-                            <BuildingIcon className="h-5 w-5 text-muted-foreground" />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted overflow-hidden">
+                            {tenant.logo_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={tenant.logo_url} alt={`${tenant.store_name} logotipas`} className="size-full object-contain p-1" />
+                            ) : (
+                                <BuildingIcon className="h-5 w-5 text-muted-foreground" />
+                            )}
                         </div>
                         <div className="min-w-0">
                             <CardTitle className="text-lg">{tenant.store_name}</CardTitle>

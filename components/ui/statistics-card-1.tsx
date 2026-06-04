@@ -47,11 +47,6 @@ export function StatisticsCard({
               )}
             </div>
           </div>
-          {Icon && (
-            <div className="size-9 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <Icon className="size-4" />
-            </div>
-          )}
         </div>
 
         {description && (

@@ -5,12 +5,8 @@
 import { z } from 'zod'
 
 export const tenantSchema = z.object({
-  username: z
-    .string()
-    .min(3, 'Vartotojo vardas turi būti bent 3 simbolių'),
-  password: z
-    .string()
-    .min(6, 'Slaptažodis turi būti bent 6 simbolių'),
+  username: z.string().optional(),
+  password: z.string().optional(),
   store_name: z
     .string()
     .min(1, 'Parduotuvės pavadinimas yra privalomas'),
@@ -31,6 +27,9 @@ export const tenantSchema = z.object({
     .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
       message: 'Nuomos kaina turi būti teigiamas skaičius',
     }),
+  description: z.string().optional(),
+  logo_url: z.string().optional(),
+  gallery_images: z.array(z.string()).optional(),
 })
 
 export type TenantFormValues = z.infer<typeof tenantSchema>

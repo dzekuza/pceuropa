@@ -3,6 +3,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { RevenuePageClient } from '@/components/revenue/revenue-page-client'
+import { AlertCircle } from 'lucide-react'
+import { REVENUE_REMINDER_TITLE, revenueReminderBody } from '@/lib/strings'
 
 export default async function SellerRevenuePage() {
   const supabase = await createClient()
@@ -41,18 +43,16 @@ export default async function SellerRevenuePage() {
   const showReminder = daysRemaining <= 10
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3">
       {showReminder && (
         <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex gap-3 items-start">
-          <div className="mt-0.5 text-warning-foreground">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
-          </div>
+          <AlertCircle className="size-5 text-warning-foreground mt-0.5 shrink-0" />
           <div>
             <p className="text-warning-foreground font-semibold text-sm">
-              Artėja mėnesio pabaiga
+              {REVENUE_REMINDER_TITLE}
             </p>
             <p className="text-warning-foreground/80 text-sm mt-0.5">
-              Liko tik {daysRemaining} {daysRemaining === 1 ? 'diena' : (daysRemaining > 1 && daysRemaining < 10 ? 'dienos' : 'dienų')} iki mėnesio pabaigos. Prašome įsitikinti, kad pateikėte visą reikiamą apyvartos informaciją.
+              {revenueReminderBody(daysRemaining)}
             </p>
           </div>
         </div>
