@@ -149,6 +149,33 @@ export interface Database {
         }
         Relationships: []
       }
+      page_sections: {
+        Row: {
+          id: string
+          page_slug: string
+          section_key: string
+          content_key: string
+          value: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          page_slug: string
+          section_key: string
+          content_key: string
+          value?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          page_slug?: string
+          section_key?: string
+          content_key?: string
+          value?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       tenants_public: {
@@ -192,3 +219,15 @@ export type RevenueReportUpdate = Database['public']['Tables']['revenue_reports'
 export type FaqItem = Database['public']['Tables']['faq_items']['Row']
 export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
 export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
+
+export interface PageSection {
+  id: string
+  page_slug: string
+  section_key: string
+  content_key: string
+  value: string | null
+  updated_at: string | null
+}
+
+// Nested map: { [section_key]: { [content_key]: value } }
+export type PageContentMap = Record<string, Record<string, string>>

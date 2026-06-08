@@ -7,6 +7,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'Nuomininkai', href: '/admin/tenants', icon: 'Building2' },
   { label: 'Analitika', href: '/admin/analytics', icon: 'BarChart2' },
   { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },
+  { label: 'Puslapiai', href: '/admin/pages', icon: 'FileText' },
 ] as const
 
 export const SELLER_NAV_ITEMS = [
