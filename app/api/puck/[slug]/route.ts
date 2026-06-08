@@ -2,6 +2,11 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import type { Json } from '@/types/database'
 
+const ALLOWED_SLUGS = new Set([
+  'landing', 'akcijos', 'dialogai', 'restoranai',
+  'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams',
+])
+
 const EMPTY_DATA = { content: [], root: { props: {} }, zones: {} }
 
 export async function GET(
@@ -9,8 +14,11 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const supabase = await createClient()
+  if (!ALLOWED_SLUGS.has(slug)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
 
+  const supabase = await createClient()
   const { data } = await supabase
     .from('puck_pages')
     .select('data')
@@ -25,8 +33,12 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const supabase = await createClient()
 
+  if (!ALLOWED_SLUGS.has(slug)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -35,7 +47,12 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await req.json() as Json
+  let body: Json
+  try {
+    body = await req.json() as Json
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
 
   const { error } = await supabase.from('puck_pages').upsert(
     { page_slug: slug, data: body, updated_at: new Date().toISOString() },
@@ -43,7 +60,8 @@ export async function POST(
   )
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('puck_pages upsert error:', error)
+    return NextResponse.json({ error: 'Nepavyko išsaugoti' }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })

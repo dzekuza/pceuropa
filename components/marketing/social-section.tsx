@@ -18,6 +18,13 @@ export interface SocialSectionProps {
   socials?: SocialItem[]
 }
 
+function safeHref(href: string): string {
+  try {
+    const url = new URL(href)
+    return ['https:', 'http:'].includes(url.protocol) ? href : '#'
+  } catch { return '#' }
+}
+
 export function SocialSection({ heading, socials }: SocialSectionProps = {}) {
   const items = socials && socials.length > 0
     ? socials.map((s, i) => ({ ...SOCIALS[i % SOCIALS.length], ...s }))
@@ -30,7 +37,7 @@ export function SocialSection({ heading, socials }: SocialSectionProps = {}) {
         {items.map((social) => (
           <a
             key={social.label}
-            href={social.href}
+            href={safeHref(social.href)}
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex items-center gap-3 lg:gap-[18px] ${social.bg} rounded-full px-4 lg:px-5 py-2.5 lg:py-[15px] text-[14px] lg:text-[16px] font-medium leading-[24px] text-black transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]`}

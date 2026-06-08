@@ -17,22 +17,23 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
   const type = block.type as keyof PuckBlocks
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const props = (block.props ?? {}) as any
+  const key = (props.id as string | undefined) ?? index
 
   switch (type) {
     case 'PageBanner': {
       const slides = [props.slide1, props.slide2, props.slide3, props.slide4].filter(Boolean) as string[]
-      return <PageBannerCarousel key={index} slides={slides} />
+      return <PageBannerCarousel key={key} slides={slides} />
     }
     case 'Hero':
-      return <Hero key={index} title={props.title || undefined} subtitle={props.subtitle || undefined} />
+      return <Hero key={key} title={props.title || undefined} subtitle={props.subtitle || undefined} />
     case 'QuickLinks':
-      return <QuickLinks key={index} links={props.links} />
+      return <QuickLinks key={key} links={props.links} />
     case 'CategoriesSection':
-      return <CategoriesSection key={index} heading={props.heading} categories={props.categories} />
+      return <CategoriesSection key={key} heading={props.heading} categories={props.categories} />
     case 'ActivitiesSection':
       return (
         <ActivitiesSection
-          key={index}
+          key={key}
           leisureTag={props.leisureTag}
           leisureHeading={props.leisureHeading}
           leisureDescription={props.leisureDescription}
@@ -44,11 +45,11 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
         />
       )
     case 'PartnerLogos':
-      return <PartnerLogos key={index} />
+      return <PartnerLogos key={key} />
     case 'NewsSection':
-      return <NewsSection key={index} />
+      return <NewsSection key={key} />
     case 'SocialSection':
-      return <SocialSection key={index} heading={props.heading} socials={props.socials} />
+      return <SocialSection key={key} heading={props.heading} socials={props.socials} />
     // Preview-only blocks — render nothing on public pages (content is already rendered by the page)
     case 'OpeningHoursBlock':
     case 'HowToGetHereBlock':

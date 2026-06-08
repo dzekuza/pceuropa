@@ -17,7 +17,8 @@ const DEFAULT_BANNER_SLIDES = [
 ]
 
 export default async function SportasPage() {
-  const [bannerSlides, supabase] = await Promise.all([getPuckBannerSlides('sportas', DEFAULT_BANNER_SLIDES), createClient()])
+  const supabase = await createClient()
+  const bannerSlides = await getPuckBannerSlides('sportas', DEFAULT_BANNER_SLIDES)
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')

@@ -1,9 +1,15 @@
 import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PuckEditor } from '@/components/admin/puck-editor'
 import type { Data } from '@measured/puck'
 
-const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/marketing-assets`
+
+const ALLOWED_SLUGS = new Set([
+  'landing', 'akcijos', 'dialogai', 'restoranai',
+  'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams',
+])
 
 const DEFAULT_DATA: Record<string, Data> = {
   landing: {
@@ -106,6 +112,9 @@ interface Props {
 
 export default async function AdminPuckEditorPage({ params }: Props) {
   const { slug } = await params
+
+  if (!ALLOWED_SLUGS.has(slug)) notFound()
+
   const supabase = await createClient()
 
   const {

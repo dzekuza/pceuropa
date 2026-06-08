@@ -51,15 +51,7 @@ export function PuckEditor({ data, pageSlug, previewUrl }: PuckEditorProps) {
           <select
             value={pageSlug}
             onChange={(e) => router.push(`/admin/puck/${e.target.value}`)}
-            style={{
-              fontSize: 13,
-              padding: '4px 8px',
-              borderRadius: 6,
-              border: '1px solid #d1d5db',
-              background: '#fff',
-              cursor: 'pointer',
-              height: 32,
-            }}
+            className="text-[13px] px-2 py-1 rounded-md border border-gray-300 bg-white cursor-pointer h-8"
           >
             {PAGES.map((p) => (
               <option key={p.slug} value={p.slug}>

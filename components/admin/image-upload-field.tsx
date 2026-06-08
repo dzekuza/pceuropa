@@ -3,6 +3,15 @@
 import { useCallback, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/avif': 'avif',
+}
+const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
+
 interface ImageUploadFieldProps {
   value: string
   onChange: (url: string) => void
@@ -12,27 +21,34 @@ interface ImageUploadFieldProps {
 export function ImageUploadField({ value, onChange, label }: ImageUploadFieldProps) {
   const [dragging, setDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [hovering, setHovering] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const upload = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      setError('Tik nuotraukų failai (jpg, png, webp)')
+    const ext = MIME_TO_EXT[file.type]
+    if (!ext) {
+      setError('Palaikomi formatai: jpg, png, webp, gif, avif')
       return
     }
+    if (file.size > MAX_SIZE) {
+      setError('Maksimalus dydis — 10 MB')
+      return
+    }
+
     setUploading(true)
     setError(null)
 
     const supabase = createClient()
-    const ext = file.name.split('.').pop() ?? 'jpg'
     const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
     const { error: uploadError } = await supabase.storage
       .from('marketing-assets')
-      .upload(path, file, { cacheControl: '31536000', upsert: false })
+      .upload(path, file, { cacheControl: '31536000', upsert: false, contentType: file.type })
 
     if (uploadError) {
-      setError(uploadError.message)
+      setError('Įkėlimo klaida. Bandykite dar kartą.')
+      console.error('Storage upload error:', uploadError)
       setUploading(false)
       return
     }
@@ -54,91 +70,62 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
     if (file) upload(file)
   }, [upload])
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      {label && (
-        <span style={{ fontSize: 12, fontWeight: 500, color: '#374151' }}>{label}</span>
-      )}
+  const dropZoneClass = [
+    'relative overflow-hidden rounded-lg border-2 border-dashed cursor-pointer flex items-center justify-center transition-colors duration-150',
+    value ? 'h-[120px] border-transparent' : 'h-[80px]',
+    dragging ? 'border-indigo-500 bg-indigo-50' : value ? '' : 'border-gray-300 bg-gray-50 hover:bg-gray-100',
+  ].join(' ')
 
-      {/* Drop zone / preview */}
+  return (
+    <div className="flex flex-col gap-1.5">
+      {label && <span className="text-xs font-medium text-gray-700">{label}</span>}
+
       <div
+        className={dropZoneClass}
         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        style={{
-          position: 'relative',
-          height: value ? 120 : 80,
-          borderRadius: 8,
-          border: `2px dashed ${dragging ? '#6366f1' : value ? 'transparent' : '#d1d5db'}`,
-          background: dragging ? '#eef2ff' : value ? 'transparent' : '#f9fafb',
-          cursor: 'pointer',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'border-color 0.15s, background 0.15s',
-        }}
       >
         {value ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={value}
-              alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-            {/* Hover overlay */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'rgba(0,0,0,0.45)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              opacity: 0,
-              transition: 'opacity 0.15s',
-            }}
-              className="img-overlay"
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0')}
+            <img src={value} alt="" className="w-full h-full object-cover block" />
+            <div
+              className={[
+                'absolute inset-0 bg-black/45 flex items-center justify-center transition-opacity duration-150',
+                hovering ? 'opacity-100' : 'opacity-0',
+              ].join(' ')}
+              onMouseEnter={() => setHovering(true)}
+              onMouseLeave={() => setHovering(false)}
             >
-              <span style={{ color: '#fff', fontSize: 12, fontWeight: 500 }}>
+              <span className="text-white text-xs font-medium">
                 {uploading ? 'Įkeliama…' : 'Keisti nuotrauką'}
               </span>
             </div>
           </>
         ) : (
-          <span style={{ fontSize: 12, color: uploading ? '#6366f1' : '#9ca3af', textAlign: 'center', padding: '0 12px' }}>
+          <span className={['text-xs text-center px-3', uploading ? 'text-indigo-500' : 'text-gray-400'].join(' ')}>
             {uploading ? 'Įkeliama…' : 'Vilkite arba spustelėkite'}
           </span>
         )}
       </div>
 
-      {/* URL text input */}
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="https://..."
-        style={{
-          fontSize: 11,
-          padding: '4px 8px',
-          borderRadius: 4,
-          border: '1px solid #e5e7eb',
-          color: '#6b7280',
-          background: '#fff',
-          width: '100%',
-          boxSizing: 'border-box',
-        }}
+        className="text-[11px] px-2 py-1 rounded border border-gray-200 text-gray-500 bg-white w-full"
       />
 
-      {error && (
-        <span style={{ fontSize: 11, color: '#ef4444' }}>{error}</span>
-      )}
+      {error && <span className="text-[11px] text-red-500">{error}</span>}
 
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
+        accept={Object.keys(MIME_TO_EXT).join(',')}
+        className="hidden"
         onChange={handleFile}
       />
     </div>

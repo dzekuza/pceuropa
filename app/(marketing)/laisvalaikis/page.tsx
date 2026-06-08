@@ -16,7 +16,8 @@ const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {
-  const [bannerSlides, supabase] = await Promise.all([getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES), createClient()])
+  const supabase = await createClient()
+  const bannerSlides = await getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES)
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
