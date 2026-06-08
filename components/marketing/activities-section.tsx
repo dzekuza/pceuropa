@@ -23,6 +23,7 @@ export function ActivitiesSection() {
           </div>
           <Link
             href="/laisvalaikis"
+            prefetch={false}
             className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 lg:py-[15px] text-[14px] lg:text-[16px] font-medium w-fit transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
             Daugiau
@@ -45,6 +46,7 @@ export function ActivitiesSection() {
             </h3>
             <Link
               href="/sportas"
+              prefetch={false}
               className="bg-[#b4e5ff] text-black rounded-full px-4 py-3 text-[13px] xl:text-[16px] font-medium leading-[24px] whitespace-nowrap transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97] shrink-0"
             >
               Sportas / Sveikatingumas
@@ -63,12 +65,13 @@ export function ActivitiesSection() {
             <DisplayHeading>
               PC EUROPA<br />draugiška augintiniams
             </DisplayHeading>
-            <BodyText className="md:max-w-[320px] xl:max-w-[378px]">
+            <BodyText className="md:max-w-[320px] xl:max-w-[378px] text-neutral-600">
               Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.
             </BodyText>
           </div>
           <Link
             href="/augintiniai"
+            prefetch={false}
             className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 xl:py-[15px] text-[14px] xl:text-[16px] font-medium w-fit mt-6 xl:mt-auto transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
             Sužinokite daugiau

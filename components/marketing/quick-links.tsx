@@ -18,6 +18,7 @@ export function QuickLinks() {
         <Link
           key={item.href}
           href={item.href}
+          prefetch={false}
           className="bg-white flex flex-1 items-center justify-between p-4 md:p-5 lg:p-6 rounded-[20px] lg:rounded-[24px] transition-[transform,background-color] duration-150 hover:bg-[#f5f5f5] active:scale-[0.97]"
         >
           <div className="flex items-center gap-3 lg:gap-4">

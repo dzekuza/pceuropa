@@ -26,7 +26,7 @@ export function Nav() {
       <div className="bg-[#181818] py-3 md:py-4">
       <div className="max-w-[1300px] mx-auto px-4 lg:px-0 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center shrink-0 active:scale-[0.97] transition-transform duration-150">
+        <Link href="/" prefetch={false} className="flex items-center shrink-0 active:scale-[0.97] transition-transform duration-150">
           <img src={logoUrl} alt="PC Europa" className="h-8 md:h-10 lg:h-12 w-auto max-w-[160px] md:max-w-none" />
         </Link>
 
@@ -36,6 +36,7 @@ export function Nav() {
           <div className="hidden md:flex items-center gap-2 lg:gap-3">
             <Link
               href="/darbo-laikas"
+              prefetch={false}
               className="flex items-center gap-2 border border-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
               <img src={timerIconUrl} alt="" className="size-5 lg:size-6 shrink-0 brightness-0 invert" />
@@ -45,6 +46,7 @@ export function Nav() {
             </Link>
             <Link
               href="/lankytojams"
+              prefetch={false}
               className="flex items-center gap-2 bg-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
               <img src={infoIconUrl} alt="" className="size-5 lg:size-6 shrink-0" />
@@ -77,6 +79,7 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch={false}
                 onClick={() => setIsOpen(false)}
                 className="text-white text-[16px] font-medium py-3 border-b border-white/10 transition-opacity duration-150 hover:opacity-70 active:opacity-50"
               >
@@ -86,6 +89,7 @@ export function Nav() {
             <div className="flex gap-3 mt-4">
               <Link
                 href="/darbo-laikas"
+                prefetch={false}
                 className="flex-1 flex items-center justify-center gap-2 border border-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
                 <img src={timerIconUrl} alt="" className="size-5 brightness-0 invert" />
@@ -93,6 +97,7 @@ export function Nav() {
               </Link>
               <Link
                 href="/lankytojams"
+                prefetch={false}
                 className="flex-1 flex items-center justify-center gap-2 bg-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
                 <img src={infoIconUrl} alt="" className="size-5" />
@@ -110,6 +115,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
+              prefetch={false}
               className="text-[#181818] text-[13px] lg:text-[16px] font-medium leading-[24px] whitespace-nowrap transition-opacity duration-150 hover:opacity-60 active:opacity-40"
             >
               {link.label}

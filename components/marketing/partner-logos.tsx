@@ -9,6 +9,7 @@ function LogoCard({ tenant }: { tenant: Tenant | undefined }) {
   return (
     <Link
       href="/parduotuves"
+      prefetch={false}
       className="bg-white rounded-[20px] flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
     >
       <img
@@ -25,6 +26,7 @@ function FeaturedCard({ tenant }: { tenant: Tenant | undefined }) {
   return (
     <Link
       href="/parduotuves"
+      prefetch={false}
       className="bg-white rounded-[20px] row-span-2 relative flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
     >
       <img
@@ -82,6 +84,7 @@ export async function PartnerLogos() {
             <Link
               key={t.id}
               href="/parduotuves"
+      prefetch={false}
               className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
             >
               <img

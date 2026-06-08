@@ -43,7 +43,7 @@ export function PillButton({
   )
 
   if (href) {
-    return <Link href={href} className={classes}>{children}</Link>
+    return <Link href={href} prefetch={false} className={classes}>{children}</Link>
   }
 
   return (

@@ -13,6 +13,7 @@ export function PromoCard({ item }: { item: PromoItem }) {
   return (
     <Link
       href={item.href}
+      prefetch={false}
       className="flex flex-col gap-6 group"
     >
       {/* Image */}

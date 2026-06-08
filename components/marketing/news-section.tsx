@@ -52,6 +52,7 @@ export function NewsSection() {
         <DisplayHeading>Akcijos ir naujienos</DisplayHeading>
         <Link
           href="/akcijos"
+          prefetch={false}
           className="hidden md:flex items-center gap-2"
           aria-label="Daugiau akcijų ir naujienų"
         >
@@ -103,6 +104,7 @@ export function NewsSection() {
       {/* Mobile "Daugiau" button */}
       <Link
         href="/akcijos"
+        prefetch={false}
         className="md:hidden flex items-center gap-2"
       >
         <span className="inline-flex items-center justify-center bg-black text-white rounded-full px-6 py-3 text-[16px] font-normal leading-[24px]">
@@ -122,6 +124,7 @@ function NewsCard({ item }: { item: NewsItem }) {
   return (
     <Link
       href={item.href}
+      prefetch={false}
       className="flex flex-col gap-6 shrink-0 group snap-start w-[280px] lg:w-auto"
     >
       {/* Image */}

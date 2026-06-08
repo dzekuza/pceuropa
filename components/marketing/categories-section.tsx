@@ -30,6 +30,7 @@ export function CategoriesSection() {
             <Link
               key={cat.href}
               href={cat.href}
+              prefetch={false}
               className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group"
             >
               <img

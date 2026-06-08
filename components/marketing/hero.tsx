@@ -70,12 +70,16 @@ export function Hero() {
               key={i}
               onClick={() => handleDot(i)}
               aria-label={`Skaidrė ${i + 1}`}
-              className={`rounded-full transition-all duration-300 ${
-                i === current
-                  ? 'w-6 lg:w-8 h-2 bg-[#fdf567]'
-                  : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+              className={`inline-flex items-center justify-center transition-all duration-300 group h-6 ${
+                i === current ? 'w-6 lg:w-8' : 'w-6'
               }`}
-            />
+            >
+              <span className={`rounded-full block h-2 transition-all duration-300 ${
+                i === current
+                  ? 'w-6 lg:w-8 bg-[#fdf567]'
+                  : 'w-2 bg-white/50 group-hover:bg-white/80'
+              }`} />
+            </button>
           ))}
         </div>
 

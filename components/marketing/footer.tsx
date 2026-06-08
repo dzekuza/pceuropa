@@ -41,6 +41,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={false}
                   className="font-normal text-[14px] lg:text-[16px] leading-[28px] text-white transition-[transform,opacity] duration-150 hover:opacity-60 active:scale-[0.97]"
                 >
                   {link.label}

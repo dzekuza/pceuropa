@@ -1,4 +1,5 @@
 'use client'
+import * as XLSX from 'xlsx'
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -100,16 +101,15 @@ export function TenantsTable({ data }: TenantsTableProps) {
     autoResetPageIndex: false,
   })
 
-  const handleExportCsv = useCallback(() => {
+  const handleExportXlsx = useCallback(() => {
     const selectedRows = table.getSelectedRowModel().rows
-    // Always export from the full unfiltered dataset unless rows are explicitly selected
     const rows = selectedRows.length > 0 ? selectedRows : table.getCoreRowModel().rows
     const headers = [
       'ID', 'Parduotuvė', 'file_key', 'Operatorius', 'Kategorija',
       'Plotas (m²)', 'Nuomos kaina (EUR)', 'Įmonės kodas',
       'Aprašymas', 'Logo URL', 'Sukurta',
     ]
-    const csvRows = rows.map((row) => {
+    const data = rows.map((row) => {
       const t = row.original
       return [
         t.id,
@@ -123,17 +123,12 @@ export function TenantsTable({ data }: TenantsTableProps) {
         t.description ?? '',
         t.logo_url ?? '',
         t.created_at ?? '',
-      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')
+      ]
     })
-    const csv = [headers.join(','), ...csvRows].join('\n')
-    // BOM ensures XLSX parsers treat the file as UTF-8 (fixes Lithuanian chars in headers)
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `nuomininkai-${new Date().toISOString().slice(0, 10)}.csv`
-    link.click()
-    URL.revokeObjectURL(url)
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Nuomininkai')
+    XLSX.writeFile(wb, `nuomininkai-${new Date().toISOString().slice(0, 10)}.xlsx`)
   }, [table])
 
   return (
@@ -205,9 +200,9 @@ export function TenantsTable({ data }: TenantsTableProps) {
                   </ol>
                 </PopoverContent>
               </Popover>
-              <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5">
+              <Button variant="outline" size="sm" onClick={handleExportXlsx} className="gap-1.5">
                 <Download data-icon="inline-start" />
-                Eksportuoti CSV
+                Eksportuoti Excel
               </Button>
             </div>
           </CardHeader>
