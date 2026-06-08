@@ -1,8 +1,8 @@
 /bin/bash
 Upload all tenant-assets to the new Supabase project.
-Usage: bash scripts/upload-storage.sh eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVrbXhienVlY2h4cGlucnl0aGlzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDY0NDUwOCwiZXhwIjoyMDk2MjIwNTA4fQ.2kVGgy0-VVXhkx9Z12ftyKDjlyhLuUXKv95E6tBDclI
+Usage: bash scripts/upload-storage.sh ***REDACTED_SERVICE_ROLE_KEY***
 
-SERVICE_ROLE_KEY="${1:?Usage: $0 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVrbXhienVlY2h4cGlucnl0aGlzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDY0NDUwOCwiZXhwIjoyMDk2MjIwNTA4fQ.2kVGgy0-VVXhkx9Z12ftyKDjlyhLuUXKv95E6tBDclI}"
+SERVICE_ROLE_KEY="${1:?Usage: $0 ***REDACTED_SERVICE_ROLE_KEY***}"
 NEW_PROJECT="ukmxbzuechxpinrythis"
 BASE_URL="https://${NEW_PROJECT}.supabase.co/storage/v1/object/tenant-assets"
 LOCAL="/tmp/pceuropa-storage"
