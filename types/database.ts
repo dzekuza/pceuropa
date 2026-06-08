@@ -140,6 +140,33 @@ export interface Database {
         }
         Relationships: []
       }
+      page_sections: {
+        Row: {
+          id: string
+          page_slug: string
+          section_key: string
+          content_key: string
+          value: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          page_slug: string
+          section_key: string
+          content_key: string
+          value?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          page_slug?: string
+          section_key?: string
+          content_key?: string
+          value?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -174,3 +201,10 @@ export type RevenueReportUpdate = Database['public']['Tables']['revenue_reports'
 export type FaqItem = Database['public']['Tables']['faq_items']['Row']
 export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
 export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
+
+export type PageSection = Database['public']['Tables']['page_sections']['Row']
+export type PageSectionInsert = Database['public']['Tables']['page_sections']['Insert']
+export type PageSectionUpdate = Database['public']['Tables']['page_sections']['Update']
+
+// content[section_key][content_key] = value
+export type PageContentMap = Record<string, Record<string, string>>

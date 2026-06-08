@@ -12,6 +12,7 @@ import {
   HelpCircle,
   Settings,
   TrendingUp,
+  FileText,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -32,6 +33,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   HelpCircle,
   Settings,
   TrendingUp,
+  FileText,
 }
 
 interface AppSidebarProps {
