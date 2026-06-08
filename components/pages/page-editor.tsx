@@ -8,7 +8,9 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardHeading,
   CardTitle,
+  CardToolbar,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -68,9 +70,11 @@ export function PageEditor({ pageConfig, initialContent }: PageEditorProps) {
 
         return (
           <Card key={section.key}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-              <CardTitle className="text-base">{section.title}</CardTitle>
-              <div className="flex items-center gap-2">
+            <CardHeader>
+              <CardHeading>
+                <CardTitle>{section.title}</CardTitle>
+              </CardHeading>
+              <CardToolbar>
                 {status === 'success' && (
                   <span className="flex items-center gap-1 text-xs text-green-600">
                     <CheckCircle2 className="h-3.5 w-3.5" />
@@ -91,7 +95,7 @@ export function PageEditor({ pageConfig, initialContent }: PageEditorProps) {
                   <Save className="mr-1.5 h-3.5 w-3.5" />
                   {isSaving ? 'Saugoma...' : 'Išsaugoti'}
                 </Button>
-              </div>
+              </CardToolbar>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               {section.fields.map((field) => (
