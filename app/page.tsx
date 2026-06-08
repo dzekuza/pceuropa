@@ -1,11 +1,9 @@
 // app/page.tsx — Public landing page for PC Europa
-// Reads editable content from page_sections table (managed via /admin/pages)
-// Authenticated users are redirected to their dashboard by proxy.ts middleware
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import type { PageContentMap } from '@/types/database'
-import { MapPin, Phone, Mail, LogIn, Building2 } from 'lucide-react'
+import { MarketingShell } from '@/components/marketing/marketing-shell'
+import { MapPin, Phone, Mail, Building2 } from 'lucide-react'
 
 async function getPageContent(slug: string): Promise<PageContentMap> {
   const supabase = await createClient()
@@ -57,129 +55,78 @@ export default async function HomePage() {
   const contactEmail = contact.email || 'info@pceuropa.lt'
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg tracking-tight">PC Europa</span>
-          </div>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent transition-colors"
+    <MarketingShell currentSlug="landing">
+      {/* Hero */}
+      <section
+        className="relative flex min-h-[70vh] items-center justify-center overflow-hidden"
+        style={
+          heroImage
+            ? { backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+            : {}
+        }
+      >
+        {heroImage && <div className="absolute inset-0 bg-black/50" />}
+        <div className={`relative z-10 mx-auto max-w-3xl px-6 py-24 text-center ${heroImage ? 'text-white' : ''}`}>
+          <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-4">{heroTitle}</h1>
+          <p className="text-xl leading-relaxed mb-8 max-w-xl mx-auto opacity-90">{heroSubtitle}</p>
+          <a
+            href="#about"
+            className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow hover:opacity-90 transition-opacity"
           >
-            <LogIn className="h-4 w-4" />
-            Prisijungti
-          </Link>
+            {heroCtaText}
+          </a>
         </div>
-      </header>
+      </section>
 
-      <main className="flex-1">
-        {/* Hero */}
-        <section
-          className="relative flex min-h-[70vh] items-center justify-center overflow-hidden"
-          style={
-            heroImage
-              ? {
-                  backgroundImage: `url(${heroImage})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }
-              : {}
-          }
-        >
-          {heroImage && (
-            <div className="absolute inset-0 bg-black/50" />
-          )}
-          <div
-            className={`relative z-10 mx-auto max-w-3xl px-6 py-24 text-center ${heroImage ? 'text-white' : ''}`}
-          >
-            <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-4">
-              {heroTitle}
-            </h1>
-            <p className="text-xl leading-relaxed mb-8 max-w-xl mx-auto opacity-90">
-              {heroSubtitle}
-            </p>
-            <a
-              href="#about"
-              className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow hover:opacity-90 transition-opacity"
-            >
-              {heroCtaText}
-            </a>
-          </div>
-        </section>
-
-        {/* About */}
-        <section id="about" className="py-20 bg-muted/40">
-          <div className="mx-auto max-w-6xl px-6">
-            <div className="grid gap-12 md:grid-cols-2 items-center">
-              <div>
-                <h2 className="text-3xl font-bold mb-4">{aboutHeading}</h2>
-                <p className="text-muted-foreground leading-relaxed text-base">
-                  {aboutDescription}
-                </p>
+      {/* About */}
+      <section id="about" className="py-20 bg-muted/40">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-12 md:grid-cols-2 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-4">{aboutHeading}</h2>
+              <p className="text-muted-foreground leading-relaxed text-base">{aboutDescription}</p>
+            </div>
+            {aboutImage ? (
+              <div className="overflow-hidden rounded-2xl shadow-lg aspect-video">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={aboutImage} alt={aboutHeading} className="h-full w-full object-cover" />
               </div>
-              {aboutImage ? (
-                <div className="overflow-hidden rounded-2xl shadow-lg aspect-video">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={aboutImage}
-                    alt={aboutHeading}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-2xl bg-muted flex items-center justify-center aspect-video">
-                  <Building2 className="h-20 w-20 text-muted-foreground/30" />
-                </div>
-              )}
-            </div>
+            ) : (
+              <div className="overflow-hidden rounded-2xl bg-muted flex items-center justify-center aspect-video">
+                <Building2 className="h-20 w-20 text-muted-foreground/30" />
+              </div>
+            )}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Contact */}
-        <section id="contact" className="py-20">
-          <div className="mx-auto max-w-6xl px-6">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              {contactHeading}
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-3 max-w-2xl mx-auto">
-              <ContactCard
-                icon={<MapPin className="h-5 w-5" />}
-                label="Adresas"
-                value={contactAddress}
-              />
-              <ContactCard
-                icon={<Phone className="h-5 w-5" />}
-                label="Telefonas"
-                value={contactPhone}
-                href={`tel:${contactPhone.replace(/\s/g, '')}`}
-              />
-              <ContactCard
-                icon={<Mail className="h-5 w-5" />}
-                label="El. paštas"
-                value={contactEmail}
-                href={`mailto:${contactEmail}`}
-              />
-            </div>
+      {/* Contact */}
+      <section id="contact" className="py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-3xl font-bold text-center mb-12">{contactHeading}</h2>
+          <div className="grid gap-6 sm:grid-cols-3 max-w-2xl mx-auto">
+            <ContactCard icon={<MapPin className="h-5 w-5" />} label="Adresas" value={contactAddress} />
+            <ContactCard
+              icon={<Phone className="h-5 w-5" />}
+              label="Telefonas"
+              value={contactPhone}
+              href={`tel:${contactPhone.replace(/\s/g, '')}`}
+            />
+            <ContactCard
+              icon={<Mail className="h-5 w-5" />}
+              label="El. paštas"
+              value={contactEmail}
+              href={`mailto:${contactEmail}`}
+            />
           </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t py-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} PC Europa. Visos teisės saugomos.</p>
-      </footer>
-    </div>
+        </div>
+      </section>
+    </MarketingShell>
   )
 }
 
 function ContactCard({
-  icon,
-  label,
-  value,
-  href,
+  icon, label, value, href,
 }: {
   icon: React.ReactNode
   label: string
@@ -191,13 +138,9 @@ function ContactCard({
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
         {icon}
       </div>
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        {label}
-      </p>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</p>
       {href ? (
-        <a href={href} className="text-sm font-medium hover:text-primary transition-colors">
-          {value}
-        </a>
+        <a href={href} className="text-sm font-medium hover:text-primary transition-colors">{value}</a>
       ) : (
         <p className="text-sm font-medium">{value}</p>
       )}

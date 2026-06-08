@@ -58,14 +58,12 @@ export default async function AdminPageEditorPage({ params }: Props) {
             {pageConfig.description}
           </p>
         </div>
-        {slug === 'landing' && (
-          <Button asChild variant="outline" size="sm" className="shrink-0">
-            <Link href="/" target="_blank">
-              <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
-              Peržiūrėti
-            </Link>
-          </Button>
-        )}
+        <Button asChild variant="outline" size="sm" className="shrink-0">
+          <Link href={pageConfig.previewUrl} target="_blank">
+            <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+            Peržiūrėti
+          </Link>
+        </Button>
       </div>
 
       <PageEditor pageConfig={pageConfig} initialContent={content} />
