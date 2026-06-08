@@ -29,250 +29,139 @@ export const PAGES_CONFIG: PageConfig[] = [
     slug: 'landing',
     title: 'Pagrindinis puslapis',
     navLabel: 'Pagrindinis',
-    description: 'Viešas pirkimų centro puslapis — antraštė, aprašymas, kontaktai',
+    description: 'Pagrindinės svetainės hero nuotraukos ir antraštės',
     previewUrl: '/',
     sections: [
       {
         key: 'hero',
-        title: 'Pagrindinė sekcija',
+        title: 'Hero karuselė',
         fields: [
-          { key: 'title', label: 'Antraštė', type: 'text', placeholder: 'PC Europa' },
-          {
-            key: 'subtitle',
-            label: 'Paantraštė',
-            type: 'textarea',
-            placeholder: 'Pirkimų centras Vilniaus centre...',
-          },
-          {
-            key: 'cta_text',
-            label: 'Mygtuko tekstas',
-            type: 'text',
-            placeholder: 'Sužinoti daugiau',
-          },
-          { key: 'image_url', label: 'Fono nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'about',
-        title: 'Apie mus (sekcija)',
-        fields: [
-          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Apie PC Europa' },
-          {
-            key: 'description',
-            label: 'Aprašymas',
-            type: 'textarea',
-            placeholder: 'PC Europa yra modernus pirkimų centras...',
-          },
-          { key: 'image_url', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'contact',
-        title: 'Kontaktai (sekcija)',
-        fields: [
-          {
-            key: 'heading',
-            label: 'Antraštė',
-            type: 'text',
-            placeholder: 'Susisiekite su mumis',
-          },
-          { key: 'address', label: 'Adresas', type: 'text', placeholder: 'Naugarduko g. 76, Vilnius' },
-          { key: 'phone', label: 'Telefonas', type: 'text', placeholder: '+370 5 123 4567' },
-          { key: 'email', label: 'El. paštas', type: 'text', placeholder: 'info@pceuropa.lt' },
+          { key: 'title', label: 'Antraštė (overlay)', type: 'text', placeholder: '' },
+          { key: 'subtitle', label: 'Paantraštė (overlay)', type: 'textarea', placeholder: '' },
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_3', label: 'Nuotrauka 3', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_4', label: 'Nuotrauka 4', type: 'image', placeholder: 'https://...' },
         ],
       },
     ],
   },
   {
-    slug: 'about',
-    title: 'Apie mus',
-    navLabel: 'Apie mus',
-    description: 'Istorija, faktai ir skaičiai apie pirkimų centrą',
-    previewUrl: '/about',
+    slug: 'akcijos',
+    title: 'Akcijos ir Naujienos',
+    navLabel: 'Akcijos',
+    description: 'Akcijų puslapio viršelio nuotraukos',
+    previewUrl: '/akcijos',
     sections: [
       {
-        key: 'hero',
-        title: 'Antraštė',
+        key: 'banner',
+        title: 'Viršelio nuotraukos',
         fields: [
-          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Apie PC Europa' },
-          {
-            key: 'tagline',
-            label: 'Šūkis',
-            type: 'text',
-            placeholder: 'Jūsų mėgstamiausias pirkimų centras',
-          },
-          { key: 'image_url', label: 'Viršelio nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'story',
-        title: 'Mūsų istorija',
-        fields: [
-          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Mūsų istorija' },
-          {
-            key: 'description',
-            label: 'Tekstas',
-            type: 'textarea',
-            placeholder: 'PC Europa įkurta...',
-          },
-          { key: 'image_url', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'stats',
-        title: 'Skaičiai ir faktai',
-        fields: [
-          { key: 'stat1_value', label: '1 skaičius (reikšmė)', type: 'text', placeholder: '15+' },
-          { key: 'stat1_label', label: '1 skaičius (pavadinimas)', type: 'text', placeholder: 'Metai rinkoje' },
-          { key: 'stat2_value', label: '2 skaičius (reikšmė)', type: 'text', placeholder: '80+' },
-          { key: 'stat2_label', label: '2 skaičius (pavadinimas)', type: 'text', placeholder: 'Parduotuvių' },
-          { key: 'stat3_value', label: '3 skaičius (reikšmė)', type: 'text', placeholder: '2M+' },
-          { key: 'stat3_label', label: '3 skaičius (pavadinimas)', type: 'text', placeholder: 'Lankytojų per metus' },
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
         ],
       },
     ],
   },
   {
-    slug: 'contact',
-    title: 'Kontaktai',
-    navLabel: 'Kontaktai',
-    description: 'Adresas, telefonas, el. paštas ir žemėlapis',
-    previewUrl: '/contact',
+    slug: 'parduotuves',
+    title: 'Parduotuvės ir Paslaugos',
+    navLabel: 'Parduotuvės',
+    description: 'Parduotuvių puslapio viršelio nuotrauka',
+    previewUrl: '/parduotuves',
     sections: [
       {
-        key: 'hero',
-        title: 'Antraštė',
+        key: 'banner',
+        title: 'Viršelio nuotrauka',
         fields: [
-          {
-            key: 'heading',
-            label: 'Antraštė',
-            type: 'text',
-            placeholder: 'Susisiekite su mumis',
-          },
-          {
-            key: 'subtitle',
-            label: 'Paantraštė',
-            type: 'textarea',
-            placeholder: 'Esame pasiruošę atsakyti į Jūsų klausimus...',
-          },
-        ],
-      },
-      {
-        key: 'info',
-        title: 'Kontaktinė informacija',
-        fields: [
-          { key: 'address', label: 'Adresas', type: 'text', placeholder: 'Naugarduko g. 76, Vilnius' },
-          { key: 'phone', label: 'Telefonas', type: 'text', placeholder: '+370 5 123 4567' },
-          { key: 'email', label: 'El. paštas', type: 'text', placeholder: 'info@pceuropa.lt' },
-          {
-            key: 'hours',
-            label: 'Darbo laikas',
-            type: 'text',
-            placeholder: 'I–VII: 10:00–21:00',
-          },
-        ],
-      },
-      {
-        key: 'map',
-        title: 'Žemėlapis',
-        fields: [
-          {
-            key: 'embed_url',
-            label: 'Google Maps embed URL',
-            type: 'text',
-            placeholder: 'https://www.google.com/maps/embed?...',
-          },
-          {
-            key: 'note',
-            label: 'Pastaba',
-            type: 'text',
-            placeholder: 'Nemokamas parkavimas 3 val.',
-          },
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
         ],
       },
     ],
   },
   {
-    slug: 'events',
-    title: 'Renginiai',
-    navLabel: 'Renginiai',
-    description: 'Artėjantys renginiai ir akcijos',
-    previewUrl: '/events',
+    slug: 'restoranai',
+    title: 'Restoranai ir Kavinės',
+    navLabel: 'Restoranai',
+    description: 'Restoranų puslapio viršelio nuotraukos',
+    previewUrl: '/restoranai',
     sections: [
       {
-        key: 'hero',
-        title: 'Antraštė',
+        key: 'banner',
+        title: 'Viršelio nuotraukos',
         fields: [
-          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Renginiai ir akcijos' },
-          {
-            key: 'subtitle',
-            label: 'Paantraštė',
-            type: 'textarea',
-            placeholder: 'Sekite naujausias akcijas ir renginius...',
-          },
-        ],
-      },
-      {
-        key: 'event1',
-        title: '1 renginys',
-        fields: [
-          { key: 'title', label: 'Pavadinimas', type: 'text', placeholder: 'Vasaros išpardavimas' },
-          { key: 'date', label: 'Data', type: 'text', placeholder: '2025-07-01 – 2025-07-31' },
-          {
-            key: 'description',
-            label: 'Aprašymas',
-            type: 'textarea',
-            placeholder: 'Iki 50% nuolaida daugelyje parduotuvių...',
-          },
-          { key: 'image_url', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'event2',
-        title: '2 renginys',
-        fields: [
-          { key: 'title', label: 'Pavadinimas', type: 'text', placeholder: '' },
-          { key: 'date', label: 'Data', type: 'text', placeholder: '' },
-          { key: 'description', label: 'Aprašymas', type: 'textarea', placeholder: '' },
-          { key: 'image_url', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
-        ],
-      },
-      {
-        key: 'event3',
-        title: '3 renginys',
-        fields: [
-          { key: 'title', label: 'Pavadinimas', type: 'text', placeholder: '' },
-          { key: 'date', label: 'Data', type: 'text', placeholder: '' },
-          { key: 'description', label: 'Aprašymas', type: 'textarea', placeholder: '' },
-          { key: 'image_url', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_3', label: 'Nuotrauka 3', type: 'image', placeholder: 'https://...' },
         ],
       },
     ],
   },
   {
-    slug: 'hours',
+    slug: 'dialogai',
+    title: 'Dialogai Food Court',
+    navLabel: 'Dialogai',
+    description: 'Dialogai puslapio viršelio nuotraukos',
+    previewUrl: '/dialogai',
+    sections: [
+      {
+        key: 'banner',
+        title: 'Viršelio nuotraukos',
+        fields: [
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_3', label: 'Nuotrauka 3', type: 'image', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'sportas',
+    title: 'Sportas ir Sveikatingumas',
+    navLabel: 'Sportas',
+    description: 'Sporto puslapio viršelio nuotrauka',
+    previewUrl: '/sportas',
+    sections: [
+      {
+        key: 'banner',
+        title: 'Viršelio nuotrauka',
+        fields: [
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'laisvalaikis',
+    title: 'Laisvalaikis ir Pramogos',
+    navLabel: 'Laisvalaikis',
+    description: 'Laisvalaikio puslapio viršelio nuotraukos',
+    previewUrl: '/laisvalaikis',
+    sections: [
+      {
+        key: 'banner',
+        title: 'Viršelio nuotraukos',
+        fields: [
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'darbo-laikas',
     title: 'Darbo laikas',
     navLabel: 'Darbo laikas',
-    description: 'Pirkimų centro darbo valandos',
-    previewUrl: '/hours',
+    description: 'Puslapio antraštė ir darbo valandų aprašymas',
+    previewUrl: '/darbo-laikas',
     sections: [
       {
         key: 'hero',
         title: 'Antraštė',
         fields: [
           { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Darbo laikas' },
-          {
-            key: 'subtitle',
-            label: 'Paantraštė',
-            type: 'text',
-            placeholder: 'Laukiame Jūsų kiekvieną dieną',
-          },
-          {
-            key: 'note',
-            label: 'Pastaba',
-            type: 'textarea',
-            placeholder: 'Švenčių dienomis darbo laikas gali keistis.',
-          },
+          { key: 'subtitle', label: 'Paantraštė', type: 'text', placeholder: 'Laukiame Jūsų kiekvieną dieną' },
+          { key: 'note', label: 'Pastaba', type: 'textarea', placeholder: 'Švenčių dienomis darbo laikas gali keistis.' },
         ],
       },
       {
@@ -285,8 +174,44 @@ export const PAGES_CONFIG: PageConfig[] = [
           { key: 'saturday_hours', label: 'Šeštadienis (laikas)', type: 'text', placeholder: '10:00 – 21:00' },
           { key: 'sunday_label', label: 'Sekmadienis (pavadinimas)', type: 'text', placeholder: 'Sekmadienis' },
           { key: 'sunday_hours', label: 'Sekmadienis (laikas)', type: 'text', placeholder: '10:00 – 20:00' },
-          { key: 'holidays_label', label: 'Šventės (pavadinimas)', type: 'text', placeholder: 'Valstybinės šventės' },
-          { key: 'holidays_hours', label: 'Šventės (laikas)', type: 'text', placeholder: '11:00 – 18:00' },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'lankytojams',
+    title: 'Informacija lankytojams',
+    navLabel: 'Lankytojams',
+    description: 'Lankytojų informacijos puslapio antraštės ir turinys',
+    previewUrl: '/lankytojams',
+    sections: [
+      {
+        key: 'hero',
+        title: 'Antraštė',
+        fields: [
+          { key: 'heading', label: 'Puslapio antraštė', type: 'text', placeholder: 'Informacija lankytojams' },
+        ],
+      },
+      {
+        key: 'parking',
+        title: 'Parkavimas',
+        fields: [
+          { key: 'title', label: 'Skyriaus antraštė', type: 'text', placeholder: 'Parkavimas' },
+          { key: 'body', label: 'Tekstas', type: 'textarea', placeholder: '' },
+        ],
+      },
+      {
+        key: 'amenities',
+        title: 'Patogumai',
+        fields: [
+          { key: 'title', label: 'Skyriaus antraštė', type: 'text', placeholder: 'Patogumai' },
+        ],
+      },
+      {
+        key: 'services',
+        title: 'Paslaugos',
+        fields: [
+          { key: 'title', label: 'Skyriaus antraštė', type: 'text', placeholder: 'Papildomos paslaugos' },
         ],
       },
     ],

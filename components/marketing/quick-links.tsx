@@ -11,10 +11,23 @@ const LINKS = [
   { icon: phoneIcon, label: 'Kontaktai', href: '/kontaktai', iconBg: 'bg-[#fef3f9]' },
 ]
 
-export function QuickLinks() {
+export interface QuickLinkItem {
+  label: string
+  href: string
+}
+
+export interface QuickLinksProps {
+  links?: QuickLinkItem[]
+}
+
+export function QuickLinks({ links }: QuickLinksProps = {}) {
+  const items = links && links.length > 0
+    ? links.map((l, i) => ({ ...LINKS[i % LINKS.length], ...l }))
+    : LINKS
+
   return (
     <section className="flex flex-col md:flex-row gap-3 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
-      {LINKS.map((item) => (
+      {items.map((item) => (
         <Link
           key={item.href}
           href={item.href}

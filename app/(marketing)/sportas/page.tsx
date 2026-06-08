@@ -5,18 +5,19 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
 import { SPORTAS_STRINGS } from '@/lib/strings'
+import { getPuckBannerSlides } from '@/lib/page-content'
 
 export const metadata = {
   title: SPORTAS_STRINGS.pageTitle,
   description: SPORTAS_STRINGS.pageDescription,
 }
 
-const BANNER_SLIDES: (string | null)[] = [
+const DEFAULT_BANNER_SLIDES = [
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-sportas-carousel.jpg',
 ]
 
 export default async function SportasPage() {
-  const supabase = await createClient()
+  const [bannerSlides, supabase] = await Promise.all([getPuckBannerSlides('sportas', DEFAULT_BANNER_SLIDES), createClient()])
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
@@ -42,7 +43,7 @@ export default async function SportasPage() {
       <Nav />
 
       <h1 className="sr-only">Sportas — PC Europa</h1>
-      <PageBannerCarousel slides={BANNER_SLIDES} />
+      <PageBannerCarousel slides={bannerSlides} />
 
       {/* Sports stores directory */}
       <div className="w-full flex flex-col items-center">

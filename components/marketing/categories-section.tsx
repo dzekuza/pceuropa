@@ -1,3 +1,4 @@
+import type React from 'react'
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
 
@@ -13,20 +14,34 @@ const CATEGORIES = [
   { title: 'Parduotuvės ir paslaugos', href: '/parduotuves', image: imgCat4 },
 ]
 
-export function CategoriesSection() {
+export interface CategoryItem {
+  title: string
+  href: string
+  image: string
+}
+
+export interface CategoriesSectionProps {
+  heading?: React.ReactNode
+  categories?: CategoryItem[]
+}
+
+export function CategoriesSection({ heading, categories }: CategoriesSectionProps = {}) {
+  const items = categories && categories.length > 0 ? categories : CATEGORIES
+  const h = heading || 'Čia rasite'
+
   return (
     <section className="w-full max-w-[1332px] mx-auto px-4 py-2 md:py-4">
       <div className="bg-white flex flex-col gap-6 lg:gap-12 p-5 md:p-8 lg:p-[40px] rounded-[24px] lg:rounded-[32px]">
         {/* Header */}
         <div className="flex flex-row items-end justify-between gap-4">
           <h2 className="text-[36px] lg:text-[48px] font-bold leading-[1.2] lg:leading-[60px] tracking-[-2px] lg:tracking-[-2.5px] text-black">
-            Čia rasite
+            {h}
           </h2>
         </div>
 
         {/* 4 category cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
-          {CATEGORIES.map((cat) => (
+          {items.map((cat) => (
             <Link
               key={cat.href}
               href={cat.href}

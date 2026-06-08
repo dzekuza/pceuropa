@@ -16,7 +16,7 @@ import {
   CardToolbar,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FileText, ChevronRight, Layers } from 'lucide-react'
+import { FileText, Layers, PanelsTopLeft } from 'lucide-react'
 
 export default async function AdminPagesPage() {
   const supabase = await createClient()
@@ -30,11 +30,13 @@ export default async function AdminPagesPage() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">Puslapių valdymas</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Redaguokite puslapių turinį, nuotraukas ir tekstus
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Puslapių valdymas</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Redaguokite puslapių turinį, nuotraukas ir tekstus
+          </p>
+        </div>
       </div>
 
       {PAGES_CONFIG.length === 0 ? (
@@ -60,9 +62,9 @@ export default async function AdminPagesPage() {
                 </div>
                 <CardToolbar>
                   <Button asChild size="sm" variant="outline">
-                    <Link href={`/admin/pages/${page.slug}`}>
+                    <Link href={`/admin/puck/${page.slug}`}>
+                      <PanelsTopLeft className="mr-1.5 h-4 w-4" />
                       Redaguoti
-                      <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
                 </CardToolbar>

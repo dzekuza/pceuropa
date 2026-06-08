@@ -5,6 +5,7 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { DialogaiFoodCourtDirectory } from '@/components/marketing/dialogai-food-court-directory'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
+import { getPuckBannerSlides } from '@/lib/page-content'
 
 export const metadata = {
   title: 'Dialogai Food Court — PC Europa',
@@ -12,14 +13,14 @@ export const metadata = {
     'Vieta susitikimams, skoniams ir trumpam atokvėpiui miesto ritme. „Dialogai" food court erdvėje laukia įvairūs skoniai, jauki atmosfera ir patogus laikas tiek greitiems pietums, tiek ilgesniems pokalbiams.',
 }
 
-const BANNER_SLIDES: (string | null)[] = [
+const DEFAULT_BANNER_SLIDES = [
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-1.jpg',
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-2.jpg',
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-3.jpg',
 ]
 
 export default async function DialogaiPage() {
-  const supabase = await createClient()
+  const [bannerSlides, supabase] = await Promise.all([getPuckBannerSlides('dialogai', DEFAULT_BANNER_SLIDES), createClient()])
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
@@ -38,7 +39,7 @@ export default async function DialogaiPage() {
       <Nav />
 
       <h1 className="sr-only">Dialogai Food Court — PC Europa</h1>
-      <PageBannerCarousel slides={BANNER_SLIDES} />
+      <PageBannerCarousel slides={bannerSlides} />
 
       {/* Food court directory grid */}
       <div className="w-full flex flex-col items-center">

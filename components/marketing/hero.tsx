@@ -1,21 +1,30 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import type React from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
 
 const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
 
-const SLIDES = [
+const DEFAULT_SLIDES = [
   { src: `${BASE}/hero-bg.jpg`,          alt: 'PC Europa' },
   { src: `${BASE}/activities-coffee.jpg`, alt: 'PC Europa — laisvalaikis' },
   { src: `${BASE}/categories-1.jpg`,      alt: 'PC Europa — akcijos' },
   { src: `${BASE}/news-1.jpg`,            alt: 'PC Europa — naujienos' },
 ]
 
-export function Hero() {
+interface HeroSlide { src: string; alt: string }
+
+interface HeroProps {
+  slides?: HeroSlide[]
+  title?: React.ReactNode
+  subtitle?: React.ReactNode
+}
+
+export function Hero({ slides = DEFAULT_SLIDES, title, subtitle }: HeroProps) {
   const [current, setCurrent] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const count = SLIDES.length
+  const count = slides.length
 
   const go = useCallback((index: number) => {
     setCurrent((index + count) % count)
@@ -53,7 +62,7 @@ export function Hero() {
         onMouseLeave={startTimer}
       >
         {/* Slides */}
-        {SLIDES.map((slide, i) => (
+        {slides.map((slide, i) => (
           <img
             key={slide.src}
             src={slide.src}
@@ -63,9 +72,25 @@ export function Hero() {
           />
         ))}
 
+        {/* CMS text overlay */}
+        {(title || subtitle) && (
+          <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-10 lg:p-14 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+            {title && (
+              <h1 className="text-white font-bold text-[28px] md:text-[40px] lg:text-[56px] leading-tight tracking-tight drop-shadow-md">
+                {title}
+              </h1>
+            )}
+            {subtitle && (
+              <p className="text-white/85 text-[14px] md:text-[18px] mt-2 max-w-xl drop-shadow-sm">
+                {subtitle}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Dots — bottom center */}
         <div className="absolute bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 lg:gap-2 z-10">
-          {SLIDES.map((_, i) => (
+          {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => handleDot(i)}

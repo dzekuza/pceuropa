@@ -1,3 +1,4 @@
+import type React from 'react'
 import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
 
@@ -7,7 +8,27 @@ const sportsAd2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/pu
 const sportsAd3 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
 const petImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
 
-export function ActivitiesSection() {
+export interface ActivitiesSectionProps {
+  leisureTag?: React.ReactNode
+  leisureHeading?: React.ReactNode
+  leisureDescription?: React.ReactNode
+  leisureImage?: string
+  sportsHeading?: React.ReactNode
+  petsHeading?: React.ReactNode
+  petsDescription?: React.ReactNode
+  petImage?: string
+}
+
+export function ActivitiesSection({
+  leisureTag,
+  leisureHeading,
+  leisureDescription,
+  leisureImage,
+  sportsHeading,
+  petsHeading,
+  petsDescription,
+  petImage,
+}: ActivitiesSectionProps = {}) {
   return (
     <section className="flex flex-col gap-4 md:gap-5 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
       {/* Leisure card */}
@@ -15,10 +36,10 @@ export function ActivitiesSection() {
         <div className="flex flex-col justify-between gap-6 lg:gap-0 lg:h-[379px] w-full md:max-w-[60%] lg:max-w-[710px]">
           <div className="flex flex-col gap-3 lg:gap-4">
             <span className="inline-flex items-center bg-black/10 rounded-full px-3 py-[5px] text-[14px] lg:text-[16px] font-medium text-black w-fit">
-              Laisvalaikis ir pramogos
+              {leisureTag || 'Laisvalaikis ir pramogos'}
             </span>
             <DisplayHeading className="max-w-full lg:w-[679px]">
-              Vieta ne tik apsipirkti, bet ir praleisti laiką – skoniai, veiklos ir patirtys vienoje vietoje.
+              {leisureHeading || 'Vieta ne tik apsipirkti, bet ir praleisti laiką – skoniai, veiklos ir patirtys vienoje vietoje.'}
             </DisplayHeading>
           </div>
           <Link
@@ -30,7 +51,7 @@ export function ActivitiesSection() {
           </Link>
         </div>
         <img
-          src={coffeeImg}
+          src={leisureImage || coffeeImg}
           alt="Laisvalaikis PC Europa"
           className="w-full md:w-[280px] lg:w-[425px] md:h-[280px] lg:h-[379px] rounded-[12px] object-cover shrink-0"
         />
@@ -39,10 +60,10 @@ export function ActivitiesSection() {
       {/* Bottom two cards */}
       <div className="flex flex-col md:flex-row gap-4 md:gap-5">
         {/* Sports card */}
-        <div className="bg-black flex flex-col justify-between py-5 xl:py-6 rounded-[20px] xl:w-[650px] shrink-0 overflow-hidden">
+        <div className="bg-black flex flex-col justify-between py-5 xl:py-6 rounded-[20px] md:w-[340px] lg:w-[460px] xl:w-[650px] shrink-0 overflow-hidden">
           <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-4 md:gap-0 px-5 xl:px-6">
             <h3 className="font-bold text-[22px] md:text-[26px] xl:text-[32px] leading-[1.3] xl:leading-[40px] tracking-[-0.5px] xl:tracking-[-1.5px] text-white xl:w-[315px]">
-              Rūpestis savimi prasideda čia
+              {sportsHeading || 'Rūpestis savimi prasideda čia'}
             </h3>
             <Link
               href="/sportas"
@@ -52,7 +73,7 @@ export function ActivitiesSection() {
               Sportas / Sveikatingumas
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[220px] xl:h-[299px]">
+          <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[200px] lg:h-[240px] xl:h-[299px]">
             <img src={sportsAd1} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
             <img src={sportsAd2} alt="" className="flex-1 h-full rounded-[9px] object-cover" />
             <img src={sportsAd3} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
@@ -60,13 +81,13 @@ export function ActivitiesSection() {
         </div>
 
         {/* Pets card */}
-        <div className="bg-[#ffe8dc] flex flex-col xl:flex-1 overflow-hidden p-6 md:p-8 xl:p-[50px] relative rounded-[20px] min-h-[300px] xl:min-h-0 xl:h-[480px]">
+        <div className="bg-[#ffe8dc] flex flex-col md:flex-1 overflow-hidden p-6 md:p-8 xl:p-[50px] relative rounded-[20px] min-h-[300px] xl:min-h-0 xl:h-[480px]">
           <div className="flex flex-col gap-3 xl:gap-4 w-full xl:max-w-[530px]">
             <DisplayHeading>
-              PC EUROPA<br />draugiška augintiniams
+              {petsHeading || 'PC EUROPA\ndraugiška augintiniams'}
             </DisplayHeading>
             <BodyText className="md:max-w-[320px] xl:max-w-[378px] text-neutral-600">
-              Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.
+              {petsDescription || 'Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.'}
             </BodyText>
           </div>
           <Link
@@ -77,7 +98,7 @@ export function ActivitiesSection() {
             Sužinokite daugiau
           </Link>
           <img
-            src={petImg}
+            src={petImage || petImg}
             alt=""
             className="hidden md:block absolute right-0 bottom-0 w-[40%] xl:w-[360px] xl:h-[360px] object-cover"
           />

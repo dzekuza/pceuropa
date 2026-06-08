@@ -1,3 +1,4 @@
+import type React from 'react'
 import { DisplayHeading } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
 
@@ -7,12 +8,26 @@ const SOCIALS = [
   { label: 'Tik Tok', href: 'https://tiktok.com', bg: 'bg-[#e6ffd1]' },
 ]
 
-export function SocialSection() {
+export interface SocialItem {
+  label: string
+  href: string
+}
+
+export interface SocialSectionProps {
+  heading?: React.ReactNode
+  socials?: SocialItem[]
+}
+
+export function SocialSection({ heading, socials }: SocialSectionProps = {}) {
+  const items = socials && socials.length > 0
+    ? socials.map((s, i) => ({ ...SOCIALS[i % SOCIALS.length], ...s }))
+    : SOCIALS
+
   return (
     <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-8 w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
-      <DisplayHeading>Sekite mus</DisplayHeading>
+      <DisplayHeading>{heading || 'Sekite mus'}</DisplayHeading>
       <div className="flex flex-wrap gap-3">
-        {SOCIALS.map((social) => (
+        {items.map((social) => (
           <a
             key={social.label}
             href={social.href}

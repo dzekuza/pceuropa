@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 
 const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-logo.png'
 const timerIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
@@ -17,8 +17,28 @@ const NAV_LINKS = [
   { label: 'Laisvalaikis / Pramogos', href: '/laisvalaikis' },
 ]
 
+const INFO_LINKS = [
+  { label: 'Naujienos', href: '/naujienos' },
+  { label: 'Kontaktai', href: '/kontaktai' },
+  { label: 'Kaip atvykti', href: '/kaip-atvykti' },
+  { label: 'Darbo laikas', href: '/darbo-laikas' },
+]
+
 export function Nav() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isInfoOpen, setIsInfoOpen] = useState(false)
+  const [isMobileInfoOpen, setIsMobileInfoOpen] = useState(false)
+  const infoRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (infoRef.current && !infoRef.current.contains(e.target as Node)) {
+        setIsInfoOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <nav className="sticky top-0 z-20 w-full">
@@ -44,16 +64,39 @@ export function Nav() {
                 Darbo laikas
               </span>
             </Link>
-            <Link
-              href="/lankytojams"
-              prefetch={false}
-              className="flex items-center gap-2 bg-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
-            >
-              <img src={infoIconUrl} alt="" className="size-5 lg:size-6 shrink-0" />
-              <span className="text-[#181818] text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
-                Informacija lankytojams
-              </span>
-            </Link>
+
+            {/* Informacija lankytojams dropdown */}
+            <div ref={infoRef} className="relative">
+              <button
+                onClick={() => setIsInfoOpen((o) => !o)}
+                className="flex items-center gap-2 bg-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
+              >
+                <img src={infoIconUrl} alt="" className="size-5 lg:size-6 shrink-0" />
+                <span className="text-[#181818] text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
+                  Informacija lankytojams
+                </span>
+              </button>
+
+              {isInfoOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-lg overflow-hidden z-30">
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#E5E5E5]">
+                    <img src={infoIconUrl} alt="" className="size-5 shrink-0" />
+                    <span className="text-[#181818] text-[13px] font-medium">Informacija lankytojams</span>
+                  </div>
+                  {INFO_LINKS.map((link, i) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      prefetch={false}
+                      onClick={() => setIsInfoOpen(false)}
+                      className={`block text-center text-[#181818] text-[14px] font-medium px-4 py-3 hover:bg-gray-50 transition-colors duration-150${i < INFO_LINKS.length - 1 ? ' border-b border-[#E5E5E5]' : ''}`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile hamburger */}
@@ -86,6 +129,36 @@ export function Nav() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Mobile info accordion */}
+            <button
+              onClick={() => setIsMobileInfoOpen((o) => !o)}
+              className="flex items-center justify-between w-full text-left text-white text-[16px] font-medium py-3 border-b border-white/10 transition-opacity duration-150 hover:opacity-70 active:opacity-50"
+            >
+              Informacija lankytojams
+              <ChevronDown
+                size={18}
+                className={`shrink-0 transition-transform duration-200 ${isMobileInfoOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+            <div
+              className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${isMobileInfoOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+            >
+              <div className="min-h-0">
+                {INFO_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    prefetch={false}
+                    onClick={() => { setIsOpen(false); setIsMobileInfoOpen(false) }}
+                    className="block text-white/75 text-[15px] font-medium py-2.5 pl-4 border-b border-white/10 transition-opacity duration-150 hover:opacity-70 active:opacity-50"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             <div className="flex gap-3 mt-4">
               <Link
                 href="/darbo-laikas"
@@ -94,14 +167,6 @@ export function Nav() {
               >
                 <img src={timerIconUrl} alt="" className="size-5 brightness-0 invert" />
                 <span className="text-white text-[14px] font-medium">Darbo laikas</span>
-              </Link>
-              <Link
-                href="/lankytojams"
-                prefetch={false}
-                className="flex-1 flex items-center justify-center gap-2 bg-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
-              >
-                <img src={infoIconUrl} alt="" className="size-5" />
-                <span className="text-[#181818] text-[14px] font-medium">Informacija</span>
               </Link>
             </div>
           </div>

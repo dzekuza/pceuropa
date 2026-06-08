@@ -176,6 +176,27 @@ export interface Database {
         }
         Relationships: []
       }
+      puck_pages: {
+        Row: {
+          id: string
+          page_slug: string
+          data: Json
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          page_slug: string
+          data?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          page_slug?: string
+          data?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       tenants_public: {

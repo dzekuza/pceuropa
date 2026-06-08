@@ -5,6 +5,7 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
 import { LAISVALAIKIS_STRINGS } from '@/lib/strings'
+import { getPuckBannerSlides } from '@/lib/page-content'
 
 export const metadata = {
   title: LAISVALAIKIS_STRINGS.pageTitle,
@@ -12,13 +13,10 @@ export const metadata = {
 }
 
 const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
-const BANNER_SLIDES: (string | null)[] = [
-  `${BASE}/hero-bg.jpg`,
-  `${BASE}/activities-coffee.jpg`,
-]
+const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {
-  const supabase = await createClient()
+  const [bannerSlides, supabase] = await Promise.all([getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES), createClient()])
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
@@ -44,7 +42,7 @@ export default async function LaisvalaikisPage() {
       <Nav />
 
       <h1 className="sr-only">Laisvalaikis — PC Europa</h1>
-      <PageBannerCarousel slides={BANNER_SLIDES} />
+      <PageBannerCarousel slides={bannerSlides} />
 
       {/* Leisure & entertainment directory */}
       <div className="w-full flex flex-col items-center">
