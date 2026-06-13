@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Building2, BarChart2, HelpCircle, TrendingUp } from 'lucide-react'
+import { Home, Building2, BarChart2, HelpCircle, TrendingUp, Plug } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavItem } from '@/lib/strings'
 
@@ -12,6 +12,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   BarChart2,
   HelpCircle,
   TrendingUp,
+  Plug,
 }
 
 export function MobileBottomNav({ navItems }: { navItems: readonly NavItem[] }) {

@@ -15,6 +15,7 @@ import {
   Settings,
   TrendingUp,
   FileText,
+  Plug,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -37,6 +38,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Settings,
   TrendingUp,
   FileText,
+  Plug,
 }
 
 interface AppSidebarProps {

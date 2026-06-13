@@ -8,6 +8,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'Analitika', href: '/admin/analytics', icon: 'BarChart2' },
   { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },
   { label: 'Puslapiai', href: '/admin/pages', icon: 'FileText' },
+  { label: 'Integracijos', href: '/admin/integrations', icon: 'Plug' },
 ] as const
 
 export const SELLER_NAV_ITEMS = [
@@ -145,6 +146,24 @@ export const NUOMA_REKLAMA_STRINGS = {
   placeholderMessage: 'Jūsų tekstas, spauskite čia.',
   submitButton: 'Siųsti',
   successMessage: 'Ačiū! Jūsų žinutė išsiųsta. Susisieksime artimiausiu metu.',
+} as const
+
+export const MODERAN_SYNC_STRINGS = {
+  pageTitle: 'Integracijos',
+  pageDescription: 'Išorinių sistemų sinchronizavimas',
+  sectionTitle: 'Moderan – apyvartos sinchronizavimas',
+  sectionDescription: 'Siųsti mėnesio apyvartos duomenis į Moderan nuomos valdymo sistemą.',
+  monthLabel: 'Mėnuo',
+  syncButton: 'Testuoti (dry run)',
+  syncButtonLoading: 'Tikrinama...',
+  colStore: 'Parduotuvė',
+  colAmount: 'Apyvarta (€)',
+  colMonth: 'Mėn. data',
+  colStatus: 'Būsena',
+  statusReady: 'Paruošta',
+  noData: 'Šiam mėnesiui apyvartos duomenų nėra.',
+  envMissing: 'Trūksta konfigūracijos: MODERAN_API_TOKEN, MODERAN_DOMAIN_ID arba MODERAN_PROPERTYSET_ID.',
+  errorGeneric: 'Klaida tikrinant duomenis. Bandykite dar kartą.',
 } as const
 
 export const LANKYTOJAMS_STRINGS = {
