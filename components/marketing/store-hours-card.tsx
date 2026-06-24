@@ -8,6 +8,7 @@ export type HoursEntry = {
 }
 
 export type StoreHoursCardProps = {
+  id: string
   name: string
   logoUrl: string | null
   logoAlt: string

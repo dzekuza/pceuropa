@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 
 type Store = {
@@ -52,7 +53,7 @@ function getInitials(name: string): string {
 
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
   return (
-    <div className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+    <Link href={`/parduotuves/${store.id}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       {/* Top row: status + name on left, logo on right */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col flex-1 min-w-0">
@@ -76,6 +77,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         ) : (
           <div
             className="h-14 w-[53px] rounded-xl flex items-center justify-center shrink-0 font-bold text-[13px]"
+            // Runtime color from category map — Tailwind cannot handle dynamic arbitrary values
             style={{ backgroundColor: colorConfig.colorBg, color: colorConfig.textColor }}
           >
             {getInitials(store.name)}
@@ -95,11 +97,13 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         ) : (
           <div
             className="absolute inset-0 rounded-[24px] flex items-center justify-center"
+            // Runtime color from category map — Tailwind cannot handle dynamic arbitrary values
             style={{ backgroundColor: colorConfig.colorBg }}
           >
             <span
-              className="font-bold text-[44px] leading-none tracking-[-2px] select-none"
-              style={{ color: colorConfig.textColor, opacity: 0.4 }}
+              className="font-bold text-[44px] leading-none tracking-[-2px] select-none opacity-40"
+              // Runtime color from category map — Tailwind cannot handle dynamic arbitrary values
+              style={{ color: colorConfig.textColor }}
             >
               {getInitials(store.name)}
             </span>
@@ -110,11 +114,11 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         {/* Hours overlay */}
         <div className="absolute bottom-3 left-3 flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-white/70 text-[11px] leading-[16px] w-[26px]">I–V</span>
+            <span className="text-white/70 text-[11px] leading-[16px] w-[36px] whitespace-nowrap">I–V</span>
             <span className="text-white text-[11px] leading-[16px]">10:00–21:00</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-white/70 text-[11px] leading-[16px] w-[26px]">VI–VII</span>
+            <span className="text-white/70 text-[11px] leading-[16px] w-[36px] whitespace-nowrap">VI–VII</span>
             <span className="text-white text-[11px] leading-[16px]">10:00–20:00</span>
           </div>
         </div>
@@ -125,7 +129,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
           </svg>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -189,12 +193,7 @@ export function StoresDirectory({ stores, excludeCategories = [] }: StoresDirect
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className="shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap"
-                style={
-                  isActive
-                    ? { backgroundColor: '#000000', color: '#ffffff' }
-                    : { backgroundColor: '#ffffff', color: '#000000', border: '1px solid #ffffff' }
-                }
+                className={`shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap ${isActive ? 'bg-black text-white' : 'bg-white text-black border border-transparent'}`}
               >
                 {cat === 'Visos' ? 'Visi' : cat}
               </button>

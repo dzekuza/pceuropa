@@ -86,6 +86,25 @@ export const DARBO_LAIKAS_STRINGS = {
   contactMarketingLabel: 'Marketingo skyrius',
   contactMarketingEmail: 'reklama@baltichorizon.com',
   bannerHeading: 'Mes pasiruošę jums padėti!',
+  mapAlt: 'PC Europa žemėlapis',
+  transportCards: [
+    {
+      title: 'Lengvas privažiavimas',
+      subtitle: 'iš Konstitucijos pr. ir Ozo g.',
+    },
+    {
+      title: 'Didelis parkingas',
+      subtitle: 'pirma valanda — nemokama.',
+    },
+    {
+      title: 'Dviračių stovai',
+      subtitle: 'prie pagrindinio įėjimo.',
+    },
+    {
+      title: 'Pritaikyta visiems',
+      subtitle: 'lengvas privažiavimas.',
+    },
+  ],
 } as const
 
 export const LAISVALAIKIS_STRINGS = {
@@ -199,4 +218,138 @@ export const LANKYTOJAMS_STRINGS = {
       answer: 'Rastus daiktus prašome pristatyti į informacijos langelį prie centrinio įėjimo.',
     },
   ],
+} as const
+
+export const KONTAKTAI_STRINGS = {
+  pageTitle: 'Kontaktai — PC Europa',
+  pageDescription: 'PC Europa prekybos centro kontaktinė informacija, adresas ir darbo laikas.',
+  heading: 'Kontaktai',
+  addressTitle: 'Adresas',
+  address: 'Fabijoniškių g. 13, Vilnius LT-07150',
+  phoneTitle: 'Telefonas',
+  phone: '+370 644 05764',
+  phoneHref: 'tel:+37064405764',
+  emailTitle: 'El. paštas',
+  email: 'reklama@baltichorizon.com',
+  emailHref: 'mailto:reklama@baltichorizon.com',
+  hoursTitle: 'Darbo laikas',
+  hoursWeekdays: 'I–V: 10:00–21:00',
+  hoursSaturday: 'VI: 10:00–20:00',
+  hoursSunday: 'VII: 10:00–20:00',
+} as const
+
+export const KAIP_ATVYKTI_STRINGS = {
+  pageTitle: 'Kaip atvykti — PC Europa',
+  pageDescription: 'Kaip pasiekti PC Europa prekybos centrą viešuoju transportu ar automobiliu.',
+  heading: 'Kaip mus pasiekti',
+  publicTransportTitle: 'Viešasis transportas',
+  publicTransport: 'Viešuoju transportu: autobusai Nr. 1, 5, 14 sustoja tiesiogiai prie centro. Artimiausios stotelės — „PC Europa".',
+  byCarTitle: 'Automobiliu',
+  byCar: 'Automobiliu: centras pasiekiamas iš pagrindinių miesto gatvių. Navigacijos adresas: PC Europa, Vilnius.',
+  addressTitle: 'Mūsų adresas',
+  address: 'Fabijoniškių g. 13, Vilnius',
+  addressNote: 'PC Europa yra lengvai pasiekiamas viešuoju transportu ir automobiliu.',
+  mapLabel: 'Žemėlapis',
+} as const
+
+export const PARKAVIMAS_STRINGS = {
+  pageTitle: 'Parkavimas — PC Europa',
+  pageDescription:
+    'Nemokamas parkavimas PC Europa: daugiau nei 500 vietų, elektromobilių įkrovimas ir specialios vietos neįgaliesiems.',
+  heading: 'Parkavimas',
+  mainTitle: 'Parkavimas',
+  mainBody:
+    'PC Europa turi nemokamą automobilių stovėjimo aikštelę su daugiau nei 500 vietų. Aikštelė veikia visą parą. Taip pat yra specialiai pažymėtos vietos neįgaliesiems.',
+  evTitle: 'Elektromobilių įkrovimas',
+  evBody:
+    'PC Europa stovėjimo aikštelėje yra įrengtos elektromobilių įkrovimo stotelės. Naudojimasis nemokamas pirmąsias 2 valandas.',
+  disabledTitle: 'Neįgaliųjų vietos',
+  disabledBody:
+    'Specialios stovėjimo vietos neįgaliesiems pažymėtos arčiausiai centrinių įėjimų.',
+} as const
+
+export const TAISYKLES_STRINGS = {
+  pageTitle: 'Prekybos centro taisyklės — PC Europa',
+  pageDescription: 'PC Europa prekybos centro lankytojų elgesio taisyklės ir tvarka.',
+  heading: 'Prekybos centro taisyklės',
+  generalTitle: 'Bendrosios taisyklės',
+  generalItems: [
+    'Lankytojų prašoma elgtis pagarbiai kitų svečių ir darbuotojų atžvilgiu.',
+    'Rūkyti prekybos centro viduje griežtai draudžiama.',
+    'Alkoholinių gėrimų vartojimas viešose centro erdvėse yra draudžiamas.',
+    'Garsios muzikos grojimas ar triukšmavimas, trukdantis kitiems lankytojams, nėra toleruojamas.',
+  ],
+  securityTitle: 'Saugumas',
+  securityItems: [
+    'Vaizdo kameros veikia visą parą, 7 dienas per savaitę.',
+    'Pastebėję įtartiną elgesį, nedelsiant informuokite apsaugos darbuotojus arba informacijos langelį.',
+    'Avarinio išėjimo durys yra pažymėtos žaliais ženklais kiekviename aukšte.',
+  ],
+  childrenTitle: 'Vaikų saugumas',
+  childrenBody:
+    'Vaikai iki 12 metų privalo būti lydimi suaugusiojo. Tėvai ar globėjai yra visiškai atsakingi už savo vaikų elgesį ir saugumą prekybos centro teritorijoje.',
+  petsTitle: 'Gyvūnai',
+  petsBody:
+    'Nedideli augintiniai gali lankytis centre, jei yra nešami ant rankų arba laikomi pririšti pavadėliu. Savininkas yra visiškai atsakingas už augintinio elgesį ir švarą.',
+  liabilityTitle: 'Atsakomybė',
+  liabilityBody:
+    'Prekybos centras neatsako už lankytojų prarastus ar pavogtus asmeninius daiktus. Rekomenduojame naudotis prie įėjimų esančiomis bagažo saugojimo spintomis.',
+} as const
+
+export const SLAPUKU_POLITIKA_STRINGS = {
+  pageTitle: 'Slapukų politika — PC Europa',
+  pageDescription: 'PC Europa svetainės slapukų naudojimo politika.',
+  heading: 'Slapukų politika',
+  whatTitle: 'Kas yra slapukai',
+  whatBody:
+    'Slapukai (angl. cookies) — tai nedideli tekstiniai failai, kurie išsaugomi Jūsų įrenginyje, kai lankotės svetainėje. Jie padeda svetainei prisiminti Jūsų nustatymus ir pagerinti naršymo patirtį.',
+  typesTitle: 'Kokius slapukus naudojame',
+  necessaryLabel: 'Būtinieji slapukai',
+  necessaryBody:
+    'Šie slapukai yra būtini tinkamam svetainės veikimui — jie valdo sesiją ir autentifikaciją. Jų išjungti negalima.',
+  analyticsLabel: 'Analitiniai slapukai',
+  analyticsBody:
+    'Naudojame „Google Analytics" slapukus lankytojų srautui analizuoti ir svetainei tobulinti. Duomenys renkami anonimiškai.',
+  marketingLabel: 'Rinkodaros slapukai',
+  marketingBody:
+    'Neprivalomieji slapukai, skirti tinkamesnių reklamų rodymui. Galite juos atšaukti bet kuriuo metu naršyklės nustatymuose.',
+  controlTitle: 'Kaip valdyti slapukus',
+  controlBody:
+    'Slapukus galite valdyti ir ištrinti per savo naršyklės nustatymus. Atkreipiame dėmesį, kad išjungus būtinuosius slapukus, tam tikros svetainės funkcijos gali neveikti tinkamai.',
+  contactTitle: 'Susisiekite',
+  contactBody: 'Klausimams dėl slapukų rašykite: reklama@baltichorizon.com',
+} as const
+
+export const PRIVATUMO_POLITIKA_STRINGS = {
+  pageTitle: 'Privatumo politika — PC Europa',
+  pageDescription: 'PC Europa svetainės privatumo politika ir asmens duomenų tvarkymas.',
+  heading: 'Privatumo politika',
+  controllerTitle: 'Duomenų valdytojas',
+  controllerBody:
+    'Baltic Horizon UAB, Fabijoniškių g. 13, Vilnius. El. paštas: reklama@baltichorizon.com',
+  collectedTitle: 'Kokie duomenys renkami',
+  collectedItems: [
+    'Kontaktinės formos duomenys: vardas, el. pašto adresas, žinutės turinys.',
+    'Analitiniai duomenys: apsilankymo laikas, naršyklė, įrenginio tipas (anonimiškai per „Google Analytics").',
+  ],
+  usageTitle: 'Kaip naudojame duomenis',
+  usageItems: [
+    'Atsakyti į Jūsų užklausas ir susisiekti su Jumis.',
+    'Tobulinti svetainės veikimą ir turinį.',
+    'Vykdyti teisinius įpareigojimus pagal galiojančius teisės aktus.',
+  ],
+  retentionTitle: 'Duomenų saugojimas',
+  retentionBody:
+    'Duomenys saugomi ne ilgiau, nei tai būtina nurodytam tikslui pasiekti. Kontaktinės formos duomenys ištrinami po 2 metų nuo paskutinio susisiekimo.',
+  rightsTitle: 'Jūsų teisės',
+  rightsItems: [
+    'Teisė susipažinti su savo asmens duomenimis.',
+    'Teisė reikalauti ištaisyti netikslius duomenis.',
+    'Teisė reikalauti ištrinti duomenis.',
+  ],
+  rightsContact: 'Norėdami pasinaudoti savo teisėmis, rašykite: reklama@baltichorizon.com',
+  cookiesTitle: 'Slapukai',
+  cookiesBody: 'Informacija apie slapukų naudojimą pateikta mūsų ',
+  cookiesLinkText: 'slapukų politikoje',
+  cookiesLinkHref: '/slapuku-politika',
 } as const
