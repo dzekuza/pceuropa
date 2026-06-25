@@ -15,7 +15,6 @@ import {
   SidebarInset,
   SidebarProvider,
 } from '@/components/ui/sidebar'
-import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export default async function DashboardLayout({
@@ -40,7 +39,6 @@ export default async function DashboardLayout({
   const impersonatingStore = cookieStore.get('impersonating')?.value ?? null
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     <TooltipProvider>
     <SidebarProvider>
       <AppSidebar navItems={navItems} className="hidden md:flex" />
@@ -55,6 +53,5 @@ export default async function DashboardLayout({
     <MobileBottomNav navItems={navItems} />
     <ChatWidget />
     </TooltipProvider>
-    </ThemeProvider>
   )
 }

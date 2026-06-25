@@ -1,8 +1,10 @@
-/bin/bash
-Upload all tenant-assets to the new Supabase project.
-Usage: bash scripts/upload-storage.sh ***REDACTED_SERVICE_ROLE_KEY***
+#!/bin/bash
+# Upload all tenant-assets to the new Supabase project.
+# Usage: SUPABASE_SERVICE_ROLE_KEY=<key> bash scripts/upload-storage.sh
 
-SERVICE_ROLE_KEY="${1:?Usage: $0 ***REDACTED_SERVICE_ROLE_KEY***}"
+set -euo pipefail
+
+SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY:?Set SUPABASE_SERVICE_ROLE_KEY env var before running}"
 NEW_PROJECT="ukmxbzuechxpinrythis"
 BASE_URL="https://${NEW_PROJECT}.supabase.co/storage/v1/object/tenant-assets"
 LOCAL="/tmp/pceuropa-storage"

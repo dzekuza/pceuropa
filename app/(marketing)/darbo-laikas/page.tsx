@@ -24,8 +24,19 @@ const DEFAULT_HOURS = {
 
 function isCurrentlyOpen(): boolean {
   const now = new Date()
-  const ltHour = (now.getUTCHours() + 3) % 24
-  return ltHour >= 10 && ltHour < 21
+  const tz = 'Europe/Vilnius'
+
+  const vilniusHour = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hour12: false }).format(now),
+    10,
+  )
+  const vilniusMinute = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: 'numeric', hour12: false }).format(now),
+    10,
+  )
+  const h = vilniusHour + vilniusMinute / 60
+
+  return h >= 10 && h < 21
 }
 
 export default async function DarboLaikasPage() {
@@ -38,6 +49,7 @@ export default async function DarboLaikasPage() {
   const open = isCurrentlyOpen()
 
   const stores: StoreHoursCardProps[] = (tenants ?? []).map((t) => ({
+    id: t.id,
     name: t.store_name,
     logoUrl: t.logo_url ?? null,
     logoAlt: t.store_name,

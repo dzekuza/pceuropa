@@ -67,8 +67,7 @@ export function Hero({ slides = DEFAULT_SLIDES, title, subtitle }: HeroProps) {
             key={slide.src}
             src={slide.src}
             alt={slide.alt}
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-            style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0'}`}
           />
         ))}
 

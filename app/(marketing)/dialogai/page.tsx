@@ -25,6 +25,7 @@ export default async function DialogaiPage() {
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
+    .in('category', ['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])
     .order('store_name', { ascending: true })
 
   const places = (tenants ?? []).map((t) => ({
@@ -44,7 +45,7 @@ export default async function DialogaiPage() {
 
       {/* Food court directory grid */}
       <div className="w-full flex flex-col items-center">
-        <DialogaiFoodCourtDirectory places={places} allowCategories={['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai']} />
+        <DialogaiFoodCourtDirectory places={places} />
       </div>
 
       {/* Dialogai promo section */}

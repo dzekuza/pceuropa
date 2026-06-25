@@ -1,12 +1,15 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
 
+export type PromoCategory = 'stores' | 'services' | 'food'
+
 export type PromoItem = {
   id: string
   image: string
   title: string
   date: string
   href: string
+  category: PromoCategory
 }
 
 export function PromoCard({ item }: { item: PromoItem }) {

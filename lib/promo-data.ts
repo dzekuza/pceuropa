@@ -7,6 +7,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Papildoma nuolaida Rieker!',
     date: 'Nuo 2026.03.25 iki 2026.03.29',
     href: '/akcijos/rieker',
+    category: 'stores',
   },
   {
     id: 'pavasaris',
@@ -14,6 +15,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Kvepia pavasariu',
     date: 'Nuo 2026.03.25 iki 2026.03.29',
     href: '/akcijos/pavasaris',
+    category: 'stores',
   },
   {
     id: 'samsung',
@@ -21,6 +23,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Samsung naujienos',
     date: 'Nuo 2026.03.25 iki 2026.03.29',
     href: '/akcijos/samsung',
+    category: 'stores',
   },
   {
     id: 'vision-express',
@@ -28,6 +31,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Vision Express akcija',
     date: 'Nuo 2026.03.25 iki 2026.03.29',
     href: '/akcijos/vision-express',
+    category: 'services',
   },
   {
     id: 'lindex',
@@ -35,6 +39,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Nauja kolekcija Lindex',
     date: 'Nuo 2026.04.01 iki 2026.04.14',
     href: '/akcijos/lindex',
+    category: 'stores',
   },
   {
     id: 'vasara',
@@ -42,6 +47,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Vasaros išpardavimas',
     date: 'Nuo 2026.06.01 iki 2026.06.30',
     href: '/akcijos/vasara',
+    category: 'stores',
   },
   {
     id: 'sportas',
@@ -49,6 +55,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Sporto prekių nuolaidos',
     date: 'Nuo 2026.05.15 iki 2026.05.31',
     href: '/akcijos/sportas',
+    category: 'services',
   },
   {
     id: 'caffeine',
@@ -56,6 +63,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Caffeine kavos diena',
     date: 'Nuo 2026.06.10 iki 2026.06.10',
     href: '/akcijos/caffeine',
+    category: 'food',
   },
   {
     id: 'iki',
@@ -63,6 +71,7 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'IKI maisto akcija',
     date: 'Nuo 2026.06.05 iki 2026.06.11',
     href: '/akcijos/iki',
+    category: 'food',
   },
   {
     id: 'miyako',
@@ -70,5 +79,6 @@ export const PROMO_ITEMS: PromoItem[] = [
     title: 'Miyako sushi akcija',
     date: 'Nuo 2026.06.01 iki 2026.06.07',
     href: '/akcijos/miyako',
+    category: 'food',
   },
 ]

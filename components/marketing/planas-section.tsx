@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
 
-const MAP_IMAGE = 'https://www.figma.com/api/mcp/asset/5fd0e0d3-d6f5-48f0-86b0-32d9d26512f3'
+const MAP_IMAGE: string | null = null
 
 const FLOORS = ['Pirmas aukštas', 'Antras aukštas', 'Trečias aukštas'] as const
 type Floor = (typeof FLOORS)[number]
@@ -87,9 +87,13 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
         </div>
 
         {/* Map + floor switcher */}
-        <div className="hidden lg:block flex-1 relative rounded-[24px] overflow-hidden" style={{ height: '692px' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={MAP_IMAGE} alt="Prekybos centro planas" className="size-full object-cover" />
+        <div className="hidden lg:block flex-1 relative rounded-[24px] overflow-hidden h-[692px]">
+          {MAP_IMAGE ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={MAP_IMAGE} alt="Prekybos centro planas" className="size-full object-cover" />
+          ) : (
+            <div className="absolute inset-0 bg-[#e8e8e5]" />
+          )}
 
           {/* Floor switcher */}
           <div className="absolute top-4 right-4 flex flex-col gap-1">
@@ -97,12 +101,11 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
               <button
                 key={floor}
                 onClick={() => setActiveFloor(floor)}
-                className="px-7 py-3 rounded-full text-[14px] font-medium leading-[16px] transition-[background-color,color] duration-150 whitespace-nowrap"
-                style={
+                className={`px-7 py-3 rounded-full text-[14px] font-medium leading-[16px] transition-[background-color,color] duration-150 whitespace-nowrap ${
                   activeFloor === floor
-                    ? { backgroundColor: '#000000', color: '#ffffff' }
-                    : { backgroundColor: '#ffffff', color: '#000000' }
-                }
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black'
+                }`}
               >
                 {floor}
               </button>

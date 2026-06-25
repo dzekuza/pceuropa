@@ -1,13 +1,17 @@
-'use client'
-
-import { useState } from 'react'
+import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
+import { NuomaReklamaForm } from '@/components/marketing/nuoma-reklama-form'
 import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
-import type { Metadata } from 'next'
 
-// TODO: replace with permanent Supabase Storage URL (Figma MCP asset expires after 7 days)
-const BANNER_IMAGE = 'https://www.figma.com/api/mcp/asset/e3689784-bcbe-40e1-a81e-db5f628d58b4'
+// NOTE: Figma MCP asset URL — replace with permanent Supabase Storage URL when available.
+// Set to null until a permanent URL is uploaded; null renders a placeholder div below.
+const BANNER_IMAGE: string | null = null
+
+export const metadata: Metadata = {
+  title: S.pageTitle,
+  description: S.pageDescription,
+}
 
 function FacebookIcon() {
   return (
@@ -36,16 +40,6 @@ function TikTokIcon() {
 }
 
 export default function NuomaReklamaPage() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSubmitted(true)
-  }
-
   return (
     <main className="bg-[#f5f5f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
@@ -54,11 +48,16 @@ export default function NuomaReklamaPage() {
       <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
         <div className="relative rounded-[24px] lg:rounded-[40px] overflow-hidden h-[240px] md:h-[280px] lg:h-[292px] flex items-center justify-between pl-6 lg:pl-10 pr-4 py-6">
           {/* Background image + overlay */}
-          <img
-            src={BANNER_IMAGE}
-            alt=""
-            className="absolute inset-0 size-full object-cover pointer-events-none"
-          />
+          {BANNER_IMAGE ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={BANNER_IMAGE}
+              alt=""
+              className="absolute inset-0 size-full object-cover pointer-events-none"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-[#e8e8e5]" />
+          )}
           <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
           {/* Left: heading + socials */}
@@ -117,73 +116,8 @@ export default function NuomaReklamaPage() {
               </p>
             </div>
 
-            {/* Right: form */}
-            <div className="flex-1 bg-[#eeeeee] rounded-[20px] lg:rounded-[24px] p-6 lg:p-8 w-full">
-              {submitted ? (
-                <div className="flex items-center justify-center py-12">
-                  <p className="text-black text-[16px] lg:text-[18px] font-medium leading-[24px] text-center">
-                    {S.successMessage}
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                  {/* Name */}
-                  <div className="flex flex-col gap-3 lg:gap-4">
-                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-                      {S.labelName}
-                    </label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={S.placeholderName}
-                      required
-                      className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex flex-col gap-3 lg:gap-4">
-                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-                      {S.labelEmail}
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={S.placeholderEmail}
-                      required
-                      className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
-                    />
-                  </div>
-
-                  {/* Message */}
-                  <div className="flex flex-col gap-3 lg:gap-4">
-                    <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-                      {S.labelMessage}
-                    </label>
-                    <textarea
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder={S.placeholderMessage}
-                      required
-                      rows={7}
-                      className="bg-[#e0e0e0] px-6 py-3 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full resize-none"
-                    />
-                  </div>
-
-                  {/* Submit */}
-                  <div>
-                    <button
-                      type="submit"
-                      className="bg-black text-white rounded-full px-7 py-4 text-[16px] lg:text-[18px] leading-[24px] font-normal transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
-                    >
-                      {S.submitButton}
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
+            {/* Right: form (client component) */}
+            <NuomaReklamaForm />
           </div>
         </div>
       </div>

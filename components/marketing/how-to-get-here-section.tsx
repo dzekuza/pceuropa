@@ -1,31 +1,11 @@
 import { Car, SquareParking, Bike, Accessibility } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 
 // TODO: replace with permanent Supabase Storage URL
 const mapImage: string | null = null
 
-const TRANSPORT_CARDS = [
-  {
-    Icon: Car,
-    title: 'Lengvas privažiavimas',
-    subtitle: 'iš Konstitucijos pr. ir Ozo g.',
-  },
-  {
-    Icon: SquareParking,
-    title: 'Didelis parkingas',
-    subtitle: 'pirma valanda — nemokama.',
-  },
-  {
-    Icon: Bike,
-    title: 'Dviračių stovai',
-    subtitle: 'prie pagrindinio įėjimo.',
-  },
-  {
-    Icon: Accessibility,
-    title: 'Pritaikyta visiems',
-    subtitle: 'lengvas privažiavimas.',
-  },
-]
+const TRANSPORT_ICONS: LucideIcon[] = [Car, SquareParking, Bike, Accessibility]
 
 export function HowToGetHereSection() {
   return (
@@ -45,8 +25,8 @@ export function HowToGetHereSection() {
         {/* Map */}
         <div className="relative w-full lg:flex-1 rounded-3xl overflow-hidden h-[260px] md:h-[340px] lg:h-[428px]">
           {mapImage
-            ? <img src={mapImage} alt="PC Europa žemėlapis" className="absolute inset-0 size-full object-cover" /> // eslint-disable-line @next/next/no-img-element
-            : <div className="absolute inset-0 bg-[#e8e8e5]" aria-label="PC Europa žemėlapis" />}
+            ? <img src={mapImage} alt={DARBO_LAIKAS_STRINGS.mapAlt} className="absolute inset-0 size-full object-cover" /> // eslint-disable-line @next/next/no-img-element
+            : <div className="absolute inset-0 bg-[#e8e8e5]" aria-label={DARBO_LAIKAS_STRINGS.mapAlt} />}
           {/* View route button */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <a
@@ -62,22 +42,25 @@ export function HowToGetHereSection() {
 
         {/* Transport cards */}
         <div className="flex flex-col gap-6 w-full lg:w-[328px] shrink-0">
-          {TRANSPORT_CARDS.map(({ Icon, title, subtitle }) => (
-            <div
-              key={title}
-              className="bg-white border border-[#f0f0ee] flex gap-4 items-center p-4 rounded-3xl"
-            >
-              <span className="size-12 shrink-0 flex items-center justify-center text-black" aria-hidden>
-                <Icon size={28} strokeWidth={1.5} />
-              </span>
-              <div className="flex flex-col gap-1">
-                <p className="font-bold text-[18px] leading-6 text-black font-[family-name:var(--font-jakarta)]">
-                  {title}
-                </p>
-                <p className="text-[#575757] text-base leading-6">{subtitle}</p>
+          {DARBO_LAIKAS_STRINGS.transportCards.map(({ title, subtitle }, index) => {
+            const Icon = TRANSPORT_ICONS[index]
+            return (
+              <div
+                key={title}
+                className="bg-white border border-[#f0f0ee] flex gap-4 items-center p-4 rounded-3xl"
+              >
+                <span className="size-12 shrink-0 flex items-center justify-center text-black" aria-hidden>
+                  <Icon size={28} strokeWidth={1.5} />
+                </span>
+                <div className="flex flex-col gap-1">
+                  <p className="font-bold text-[18px] leading-6 text-black font-[family-name:var(--font-jakarta)]">
+                    {title}
+                  </p>
+                  <p className="text-[#575757] text-base leading-6">{subtitle}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

@@ -11,37 +11,82 @@ import type { PuckBlocks } from './puck-config'
 
 type BlockEntry = Data['content'][number]
 
+const ALLOWED_IMAGE_HOSTNAMES = new Set([
+  'hfnsbhovdjqnfzjpugwa.supabase.co',
+  'localhost',
+])
+
+function isSafeImageUrl(url: unknown): url is string {
+  if (typeof url !== 'string' || url === '') return false
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'https:' && ALLOWED_IMAGE_HOSTNAMES.has(parsed.hostname)
+  } catch {
+    return false
+  }
+}
+
+function safeString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
 // Renders a single Puck block as its real marketing component.
 // Used on public pages — runs server-side so async components work.
 export function renderPuckBlock(block: BlockEntry, index: number) {
   const type = block.type as keyof PuckBlocks
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const props = (block.props ?? {}) as any
-  const key = (props.id as string | undefined) ?? index
+  const props = (block.props ?? {}) as Record<string, unknown>
+  const key = (typeof props.id === 'string' ? props.id : undefined) ?? index
 
   switch (type) {
     case 'PageBanner': {
-      const slides = [props.slide1, props.slide2, props.slide3, props.slide4].filter(Boolean) as string[]
+      const slides = [props.slide1, props.slide2, props.slide3, props.slide4].filter(isSafeImageUrl)
       return <PageBannerCarousel key={key} slides={slides} />
     }
     case 'Hero':
-      return <Hero key={key} title={props.title || undefined} subtitle={props.subtitle || undefined} />
+      return (
+        <Hero
+          key={key}
+          title={safeString(props.title) || undefined}
+          subtitle={safeString(props.subtitle) || undefined}
+        />
+      )
     case 'QuickLinks':
-      return <QuickLinks key={key} links={props.links} />
-    case 'CategoriesSection':
-      return <CategoriesSection key={key} heading={props.heading} categories={props.categories} />
+      return <QuickLinks key={key} links={props.links as PuckBlocks['QuickLinks']['links']} />
+    case 'CategoriesSection': {
+      const rawCategories = Array.isArray(props.categories) ? props.categories : []
+      const categories = (rawCategories as unknown[]).flatMap((cat) => {
+        if (
+          cat !== null &&
+          typeof cat === 'object' &&
+          'title' in cat &&
+          'href' in cat &&
+          'image' in cat &&
+          isSafeImageUrl((cat as Record<string, unknown>).image)
+        ) {
+          return [cat as PuckBlocks['CategoriesSection']['categories'][number]]
+        }
+        return []
+      })
+      return (
+        <CategoriesSection
+          key={key}
+          heading={safeString(props.heading) ?? ''}
+          categories={categories}
+        />
+      )
+    }
     case 'ActivitiesSection':
       return (
         <ActivitiesSection
           key={key}
-          leisureTag={props.leisureTag}
-          leisureHeading={props.leisureHeading}
-          leisureDescription={props.leisureDescription}
-          leisureImage={props.leisureImage}
-          sportsHeading={props.sportsHeading}
-          petsHeading={props.petsHeading}
-          petsDescription={props.petsDescription}
-          petImage={props.petImage}
+          leisureTag={safeString(props.leisureTag)}
+          leisureHeading={safeString(props.leisureHeading)}
+          leisureDescription={safeString(props.leisureDescription)}
+          leisureImage={isSafeImageUrl(props.leisureImage) ? props.leisureImage : undefined}
+          sportsHeading={safeString(props.sportsHeading)}
+          petsHeading={safeString(props.petsHeading)}
+          petsDescription={safeString(props.petsDescription)}
+          petImage={isSafeImageUrl(props.petImage) ? props.petImage : undefined}
         />
       )
     case 'PartnerLogos':
@@ -49,7 +94,13 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
     case 'NewsSection':
       return <NewsSection key={key} />
     case 'SocialSection':
-      return <SocialSection key={key} heading={props.heading} socials={props.socials} />
+      return (
+        <SocialSection
+          key={key}
+          heading={safeString(props.heading) ?? ''}
+          socials={props.socials as PuckBlocks['SocialSection']['socials']}
+        />
+      )
     // Preview-only blocks — render nothing on public pages (content is already rendered by the page)
     case 'OpeningHoursBlock':
     case 'HowToGetHereBlock':

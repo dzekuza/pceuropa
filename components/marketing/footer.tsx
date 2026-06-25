@@ -22,13 +22,13 @@ export function Footer() {
     <footer className="bg-[#181818] flex flex-col gap-8 md:gap-10 items-center px-4 md:px-8 lg:px-[60px] py-10 md:py-12 lg:py-[68px] rounded-tl-[20px] rounded-tr-[20px] w-full font-[family-name:var(--font-montserrat)]">
       <div className="flex flex-col md:flex-row items-start gap-8 md:gap-6 lg:gap-0 md:justify-between w-full">
         {/* Logo */}
-        <div style={{ width: 'min(700px, 100%)', height: 'auto' }}>
+        <div className="w-full max-w-[700px]">
           <img
             src={logoUrl}
             alt="PC Europa"
             width={700}
             height={172}
-            style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
+            className="object-contain max-w-full h-auto"
           />
         </div>
 

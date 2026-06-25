@@ -113,8 +113,7 @@ export function Nav() {
 
       {/* Mobile dropdown — animated with grid-rows */}
       <div
-        className={`md:hidden grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-        style={{ transitionTimingFunction: 'var(--ease-out)' }}
+        className={`md:hidden grid overflow-hidden transition-[grid-template-rows] duration-200 [transition-timing-function:var(--ease-out)] ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
       >
         <div className="min-h-0 bg-[#181818]">
           <div className="px-4 pb-5 flex flex-col gap-1">

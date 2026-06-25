@@ -28,10 +28,11 @@ export function AkcijosGrid({ items }: Props) {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     return items.filter((item) => {
+      if (activeFilter !== 'all' && item.category !== activeFilter) return false
       if (q && !item.title.toLowerCase().includes(q)) return false
       return true
     })
-  }, [items, search])
+  }, [items, search, activeFilter])
 
   const visible = filtered.slice(0, visibleCount)
   const hasMore = visibleCount < filtered.length
