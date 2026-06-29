@@ -45,8 +45,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect authenticated users away from login/landing to their dashboard
-  if (user && (pathname === '/login' || pathname === '/')) {
+  // Redirect authenticated users away from login to their dashboard
+  if (user && pathname === '/login') {
     const role = user.app_metadata?.role
     const destination = role === 'admin' ? '/admin' : '/seller'
     return NextResponse.redirect(new URL(destination, request.url))
