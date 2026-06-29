@@ -28,7 +28,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
       className={`group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow ${featured ? 'md:flex-row' : ''}`}
     >
       <div
-        className={`relative overflow-hidden bg-muted ${featured ? 'md:w-1/2 h-48 md:h-auto' : 'h-48'}`}
+        className={`relative overflow-hidden bg-[#e8e8e5] ${featured ? 'md:w-1/2 h-48 md:h-auto' : 'h-48'}`}
       >
         {article.cover_image ? (
           <img
@@ -37,11 +37,11 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-muted" />
+          <div className="w-full h-full bg-[#e8e8e5]" />
         )}
         {featured && (
           <span className="absolute top-3 left-3">
-            <Badge className="bg-primary text-primary-foreground text-xs">
+            <Badge className="bg-black text-white text-xs border-0">
               {NAUJIENOS_STRINGS.featuredLabel}
             </Badge>
           </span>
@@ -50,20 +50,20 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
 
       <div className={`flex flex-col gap-2 p-4 ${featured ? 'md:w-1/2 md:p-6' : ''}`}>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs">
+          <span className="text-xs font-medium border border-black/20 rounded-full px-2 py-0.5 text-[#575757]">
             {article.category}
-          </Badge>
-          {date && <span className="text-xs text-muted-foreground">{date}</span>}
+          </span>
+          {date && <span className="text-xs text-[#888]">{date}</span>}
         </div>
         <h2
-          className={`font-semibold leading-snug group-hover:text-primary transition-colors ${featured ? 'text-xl' : 'text-base'}`}
+          className={`font-semibold leading-snug text-black group-hover:opacity-70 transition-opacity ${featured ? 'text-xl' : 'text-base'}`}
         >
           {article.title}
         </h2>
         {excerpt && (
-          <p className="text-sm text-muted-foreground line-clamp-2">{excerpt}&hellip;</p>
+          <p className="text-sm text-[#575757] line-clamp-2">{excerpt}&hellip;</p>
         )}
-        <span className="text-sm text-primary font-medium mt-auto">
+        <span className="text-sm font-medium mt-auto text-black group-hover:opacity-70 transition-opacity">
           {NAUJIENOS_STRINGS.readMore} &rarr;
         </span>
       </div>
