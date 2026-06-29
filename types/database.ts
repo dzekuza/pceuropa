@@ -137,7 +137,6 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
-          id?: string
           title: string
           slug: string
           content?: string
@@ -146,11 +145,8 @@ export interface Database {
           featured?: boolean
           published?: boolean
           published_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Update: {
-          id?: string
           title?: string
           slug?: string
           content?: string
@@ -159,8 +155,6 @@ export interface Database {
           featured?: boolean
           published?: boolean
           published_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -285,8 +279,8 @@ export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
 export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
 
 export type Article = Database['public']['Tables']['articles']['Row']
-export type ArticleInsert = Database['public']['Tables']['articles']['Insert']
-export type ArticleUpdate = Database['public']['Tables']['articles']['Update']
+export type ArticleInsert = Omit<Article, 'id' | 'created_at' | 'updated_at'>
+export type ArticleUpdate = Partial<ArticleInsert>
 
 export interface PageSection {
   id: string
