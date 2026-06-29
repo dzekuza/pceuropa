@@ -186,7 +186,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
   ]
 
   return (
-    <div className="flex flex-col gap-0 min-h-screen">
+    <div className="flex flex-col gap-0 min-h-screen -mx-4 -mt-4 -mb-20 md:-mb-4">
       {/* Top bar */}
       <div className="sticky top-0 z-10 bg-background border-b px-6 py-3 flex items-center gap-4">
         <Button
