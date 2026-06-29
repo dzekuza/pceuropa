@@ -6,6 +6,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'Pagrindinis', href: '/admin', icon: 'Home' },
   { label: 'Nuomininkai', href: '/admin/tenants', icon: 'Building2' },
   { label: 'Analitika', href: '/admin/analytics', icon: 'BarChart2' },
+  { label: 'Straipsniai', href: '/admin/articles', icon: 'Newspaper' },
   { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },
   { label: 'Puslapiai', href: '/admin/pages', icon: 'FileText' },
   { label: 'Integracijos', href: '/admin/integrations', icon: 'Plug' },
@@ -165,6 +166,42 @@ export const NUOMA_REKLAMA_STRINGS = {
   placeholderMessage: 'Jūsų tekstas, spauskite čia.',
   submitButton: 'Siųsti',
   successMessage: 'Ačiū! Jūsų žinutė išsiųsta. Susisieksime artimiausiu metu.',
+} as const
+
+export const NAUJIENOS_STRINGS = {
+  pageTitle: 'Naujienos — PC Europa',
+  pageDescription:
+    'Naujausi PC Europa prekybos centro atidarymai, renginiai ir aktualijos – viskas vienoje vietoje.',
+  featuredLabel: 'Rekomenduojama',
+  emptyState: 'Kol kas straipsnių nėra. Grįžkite netrukus.',
+  readMore: 'Skaityti daugiau',
+} as const
+
+export const ARTICLES_STRINGS = {
+  pageTitle: 'Straipsniai',
+  pageDescription: 'Kurkite ir valdykite naujienų straipsnius',
+  newButton: 'Naujas straipsnis',
+  editTitle: 'Redaguoti straipsnį',
+  newTitle: 'Naujas straipsnis',
+  saveDraft: 'Išsaugoti juodraštį',
+  publish: 'Publikuoti',
+  titlePlaceholder: 'Straipsnio pavadinimas',
+  slugLabel: 'Nuoroda (URL)',
+  categoryLabel: 'Kategorija',
+  featuredLabel: 'Rekomenduojamas',
+  coverLabel: 'Viršelio nuotrauka',
+  deleteConfirmTitle: 'Ištrinti straipsnį?',
+  deleteConfirmDesc: 'Šis veiksmas negrįžtamas. Straipsnis bus ištrintas visam laikui.',
+  deleteConfirm: 'Ištrinti',
+  deleteCancel: 'Atšaukti',
+  colTitle: 'Pavadinimas',
+  colCategory: 'Kategorija',
+  colFeatured: 'Rekomenduojamas',
+  colPublished: 'Publikuotas',
+  colDate: 'Data',
+  colActions: 'Veiksmai',
+  errorSave: 'Nepavyko išsaugoti straipsnio',
+  errorDelete: 'Nepavyko ištrinti straipsnio',
 } as const
 
 export const MODERAN_SYNC_STRINGS = {
