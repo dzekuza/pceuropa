@@ -56,6 +56,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
     article?.cover_image ?? null
   )
   const [uploadingCover, setUploadingCover] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
 
   const {
     register,
@@ -292,7 +293,22 @@ export function ArticleForm({ article }: ArticleFormProps) {
                 </Button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-md cursor-pointer text-muted-foreground hover:bg-muted/40 transition-colors">
+              <label
+                className={`flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-md cursor-pointer text-muted-foreground transition-colors ${
+                  isDragging
+                    ? 'border-primary bg-primary/5'
+                    : 'hover:bg-muted/40'
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+                onDragEnter={(e) => { e.preventDefault(); setIsDragging(true) }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setIsDragging(false)
+                  const f = e.dataTransfer.files?.[0]
+                  if (f && f.type.startsWith('image/')) uploadCoverImage(f)
+                }}
+              >
                 {uploadingCover ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
