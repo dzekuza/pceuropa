@@ -20,14 +20,14 @@ const VISITOR_LINKS = [
 export function Footer() {
   return (
     <footer className="bg-[#181818] flex flex-col gap-8 md:gap-10 items-center px-4 md:px-8 lg:px-[60px] py-10 md:py-12 lg:py-[68px] rounded-tl-[20px] rounded-tr-[20px] w-full font-[family-name:var(--font-montserrat)]">
-      <div className="flex flex-col md:flex-row items-start gap-8 md:gap-6 lg:gap-0 md:justify-between w-full">
+      <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16 lg:gap-24 md:justify-between w-full">
         {/* Logo */}
-        <div className="w-full max-w-[700px]">
+        <div className="w-full max-w-[260px] lg:max-w-[320px]">
           <img
             src={logoUrl}
             alt="PC Europa"
-            width={700}
-            height={172}
+            width={320}
+            height={79}
             className="object-contain max-w-full h-auto"
           />
         </div>
@@ -81,9 +81,6 @@ export function Footer() {
       </div>
 
       <div className="flex flex-col items-center gap-2 text-center w-full max-w-[530px]">
-        <p className="font-normal text-[13px] lg:text-[16px] leading-[24px] text-[rgba(245,241,232,0.56)]">
-          Paspausdamas „Prenumeruoti&rdquo; sutinki gauti PC Europa naujienas.
-        </p>
         <p className="font-normal text-[13px] lg:text-[16px] leading-[24px] text-[rgba(245,241,232,0.56)]">
           2026 | Web sprendimai P.idea
         </p>
