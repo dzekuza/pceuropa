@@ -24,6 +24,7 @@ interface DeleteArticleDialogProps {
 
 export function DeleteArticleDialog({ id, onSuccess }: DeleteArticleDialogProps) {
   const [open, setOpen] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleConfirm() {
@@ -32,12 +33,14 @@ export function DeleteArticleDialog({ id, onSuccess }: DeleteArticleDialogProps)
       if ('success' in result) {
         onSuccess(id)
         setOpen(false)
+      } else {
+        setErrorMsg(result.error)
       }
     })
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setErrorMsg(null) }}>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
           <Trash2 className="h-4 w-4" />
@@ -48,6 +51,9 @@ export function DeleteArticleDialog({ id, onSuccess }: DeleteArticleDialogProps)
           <AlertDialogTitle>{ARTICLES_STRINGS.deleteConfirmTitle}</AlertDialogTitle>
           <AlertDialogDescription>{ARTICLES_STRINGS.deleteConfirmDesc}</AlertDialogDescription>
         </AlertDialogHeader>
+        {errorMsg && (
+          <p className="text-sm text-destructive px-6 pb-2">{errorMsg}</p>
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel>{ARTICLES_STRINGS.deleteCancel}</AlertDialogCancel>
           <AlertDialogAction
