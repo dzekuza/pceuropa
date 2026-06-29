@@ -261,7 +261,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
           <div className="flex-1 px-6 py-4">
             <EditorContent
               editor={editor}
-              className="prose prose-sm max-w-none min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[400px]"
+              className="min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[400px] [&_.ProseMirror]:text-foreground [&_.ProseMirror_h2]:text-foreground [&_.ProseMirror_h3]:text-foreground [&_.ProseMirror_p]:text-foreground"
             />
           </div>
         </div>
