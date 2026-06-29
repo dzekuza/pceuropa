@@ -122,6 +122,48 @@ export interface Database {
           }
         ]
       }
+      articles: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          content: string
+          cover_image: string | null
+          category: 'Naujiena' | 'Akcija' | 'Renginys'
+          featured: boolean
+          published: boolean
+          published_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          content?: string
+          cover_image?: string | null
+          category?: 'Naujiena' | 'Akcija' | 'Renginys'
+          featured?: boolean
+          published?: boolean
+          published_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          content?: string
+          cover_image?: string | null
+          category?: 'Naujiena' | 'Akcija' | 'Renginys'
+          featured?: boolean
+          published?: boolean
+          published_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       faq_items: {
         Row: {
           id: string
@@ -206,6 +248,7 @@ export interface Database {
           category: string | null
           logo_url: string | null
           gallery_images: string[] | null
+          description: string | null
         }
         Relationships: []
       }
@@ -240,6 +283,10 @@ export type RevenueReportUpdate = Database['public']['Tables']['revenue_reports'
 export type FaqItem = Database['public']['Tables']['faq_items']['Row']
 export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
 export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
+
+export type Article = Database['public']['Tables']['articles']['Row']
+export type ArticleInsert = Database['public']['Tables']['articles']['Insert']
+export type ArticleUpdate = Database['public']['Tables']['articles']['Update']
 
 export interface PageSection {
   id: string
