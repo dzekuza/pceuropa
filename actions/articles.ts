@@ -3,6 +3,7 @@
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { ArticleFormValues } from '@/lib/validations/article'
 import type { Article } from '@/types/database'
 
@@ -10,7 +11,8 @@ async function getAdminClient() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.app_metadata?.role !== 'admin') return null
-  return supabase
+  // Use service role client so mutations bypass RLS (no admin INSERT/UPDATE/DELETE policies)
+  return createAdminClient()
 }
 
 export async function createArticle(

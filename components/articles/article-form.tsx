@@ -86,8 +86,9 @@ export function ArticleForm({ article }: ArticleFormProps) {
   }, [title, article, setValue])
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
-      StarterKit,
+      StarterKit.configure({ link: false }),
       TiptapImage,
       Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder: ARTICLES_STRINGS.editorPlaceholder }),
