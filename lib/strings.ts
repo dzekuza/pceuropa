@@ -203,6 +203,11 @@ export const ARTICLES_STRINGS = {
   errorSave: 'Nepavyko išsaugoti straipsnio',
   errorDelete: 'Nepavyko ištrinti straipsnio',
   emptyState: 'Straipsnių kol kas nėra.',
+  uploadCover: 'Įkelti nuotrauką',
+  removeCover: 'Pašalinti',
+  editorPlaceholder: 'Pradėkite rašyti straipsnį...',
+  statusPublished: 'Publikuotas',
+  statusDraft: 'Juodraštis',
 } as const
 
 export const MODERAN_SYNC_STRINGS = {

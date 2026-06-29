@@ -90,7 +90,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
       StarterKit,
       TiptapImage,
       Link.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: 'Pradėkite rašyti straipsnį...' }),
+      Placeholder.configure({ placeholder: ARTICLES_STRINGS.editorPlaceholder }),
     ],
     content: article?.content ?? '',
     onUpdate: ({ editor }) => {
@@ -287,7 +287,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   }}
                   type="button"
                 >
-                  Pašalinti
+                  {ARTICLES_STRINGS.removeCover}
                 </Button>
               </div>
             ) : (
@@ -297,7 +297,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
                 ) : (
                   <>
                     <ImageIcon className="h-5 w-5 mb-1" />
-                    <span className="text-xs">Įkelti nuotrauką</span>
+                    <span className="text-xs">{ARTICLES_STRINGS.uploadCover}</span>
                   </>
                 )}
                 <input
@@ -357,9 +357,9 @@ export function ArticleForm({ article }: ArticleFormProps) {
           {/* Published status badge */}
           <div className="text-sm text-muted-foreground">
             {watch('published') ? (
-              <Badge variant="default">Publikuotas</Badge>
+              <Badge variant="default">{ARTICLES_STRINGS.statusPublished}</Badge>
             ) : (
-              <Badge variant="secondary">Juodraštis</Badge>
+              <Badge variant="secondary">{ARTICLES_STRINGS.statusDraft}</Badge>
             )}
           </div>
         </aside>
