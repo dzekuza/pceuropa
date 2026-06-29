@@ -62,7 +62,7 @@ export default async function StoreDetailPage({ params }: Props) {
 
   const { data: tenant } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images')
+    .select('id, store_name, category, logo_url, gallery_images, description')
     .eq('id', id)
     .single()
 
@@ -129,6 +129,9 @@ export default async function StoreDetailPage({ params }: Props) {
               </div>
             </div>
 
+            {tenant.description && (
+              <p className="text-[#575757] text-[15px] leading-relaxed">{tenant.description}</p>
+            )}
           </div>
 
           {/* Right: hours */}

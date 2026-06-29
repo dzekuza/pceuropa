@@ -24,6 +24,7 @@ export default async function RestoranaiPage() {
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
+    .in('category', ['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])
     .order('store_name', { ascending: true })
 
   const restaurants = (tenants ?? []).map((t) => ({
@@ -43,7 +44,7 @@ export default async function RestoranaiPage() {
 
       {/* Restaurants grid */}
       <div className="w-full flex flex-col items-center">
-        <RestaurantsDirectory restaurants={restaurants} allowCategories={['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai']} />
+        <RestaurantsDirectory restaurants={restaurants} />
       </div>
 
       {/* Dialogai section */}

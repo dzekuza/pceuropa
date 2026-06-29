@@ -1,8 +1,4 @@
-const IMAGES = [
-  'https://www.figma.com/api/mcp/asset/ebfc79f4-21df-494c-a7e6-87244ff1711a',
-  'https://www.figma.com/api/mcp/asset/07cf08c4-5eab-4cae-b2d5-354c817b1f8b',
-  'https://www.figma.com/api/mcp/asset/c67b40b4-07e6-47f9-a304-5b3208a678e9',
-]
+const IMAGES: (string | null)[] = [null, null, null]
 
 export function DialogaiSection() {
   return (
@@ -11,9 +7,13 @@ export function DialogaiSection() {
         {/* Photos */}
         <div className="flex items-center gap-3 lg:gap-4 shrink-0">
           {IMAGES.map((src, i) => (
-            <div key={i} className="h-[220px] lg:h-[344px] w-[120px] lg:w-[200px] rounded-[20px] lg:rounded-[24px] overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="size-full object-cover" />
+            <div key={i} className="relative h-[220px] lg:h-[344px] w-[120px] lg:w-[200px] rounded-[20px] lg:rounded-[24px] overflow-hidden">
+              {src ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={src} alt="" className="size-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-[#e8e8e5]" />
+              )}
             </div>
           ))}
         </div>
