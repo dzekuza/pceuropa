@@ -202,6 +202,7 @@ export const ARTICLES_STRINGS = {
   colActions: 'Veiksmai',
   errorSave: 'Nepavyko išsaugoti straipsnio',
   errorDelete: 'Nepavyko ištrinti straipsnio',
+  emptyState: 'Straipsnių kol kas nėra.',
 } as const
 
 export const MODERAN_SYNC_STRINGS = {
