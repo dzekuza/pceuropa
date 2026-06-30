@@ -41,12 +41,18 @@ export default function KaipAtvyktiPage() {
           </section>
         </div>
 
-        {/* Map placeholder */}
-        <div
-          className="bg-[#e8e8e4] rounded-[24px] h-[300px] flex items-center justify-center text-[#575757]"
-          aria-label={s.mapLabel}
-        >
-          {s.mapLabel}
+        {/* Map */}
+        <div className="rounded-[24px] overflow-hidden h-[400px] md:h-[500px]">
+          <iframe
+            src="https://maps.google.com/maps?q=Fabijoniskiu+g.+13,+Vilnius&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            width="100%"
+            height="100%"
+            className="border-0"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title={s.mapLabel}
+          />
         </div>
       </div>
 

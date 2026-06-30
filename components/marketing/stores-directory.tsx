@@ -53,7 +53,7 @@ function getInitials(name: string): string {
 
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
   return (
-    <Link href={`/parduotuves/${store.id}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+    <Link href={`/parduotuves/${store.id}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       {/* Top row: status + name on left, logo on right */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col flex-1 min-w-0">
@@ -123,7 +123,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
           </div>
         </div>
         {/* Arrow button */}
-        <div className="absolute bottom-3 right-3 bg-white border border-white flex items-center justify-center p-4 rounded-[96px]">
+        <div className="absolute bottom-3 right-3 bg-white border border-white flex items-center justify-center p-4 rounded-full">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -193,7 +193,7 @@ export function StoresDirectory({ stores, excludeCategories = [] }: StoresDirect
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap ${isActive ? 'bg-black text-white' : 'bg-white text-black border border-transparent'}`}
+                className={`shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap border ${isActive ? 'bg-black text-white border-black' : 'bg-white text-black border-[#e5e5e3]'}`}
               >
                 {cat === 'Visos' ? 'Visi' : cat}
               </button>

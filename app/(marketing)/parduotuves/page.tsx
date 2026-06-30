@@ -5,6 +5,7 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
 import { getPuckBannerSlides } from '@/lib/page-content'
+import { normalizeCategory } from '@/lib/constants'
 
 export const metadata = {
   title: 'Parduotuvės ir Paslaugos — PC Europa',
@@ -26,7 +27,7 @@ export default async function ParduotuvesPage() {
   const stores = (tenants ?? []).map((t) => ({
     id: t.id,
     name: t.store_name,
-    category: t.category ?? 'Kita',
+    category: normalizeCategory(t.category),
     logoUrl: t.logo_url ?? null,
     coverUrl: t.gallery_images?.[0] ?? null,
   }))
@@ -40,7 +41,7 @@ export default async function ParduotuvesPage() {
 
       {/* Stores directory */}
       <div className="w-full flex flex-col items-center">
-        <StoresDirectory stores={stores} excludeCategories={['Maistas ir restoranai', 'Maistas']} />
+        <StoresDirectory stores={stores} excludeCategories={['Maistas ir restoranai']} />
       </div>
 
       {/* Floor plan */}

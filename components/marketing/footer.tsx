@@ -19,7 +19,7 @@ const VISITOR_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#181818] flex flex-col gap-8 md:gap-10 items-center px-4 md:px-8 lg:px-[60px] py-10 md:py-12 lg:py-[68px] rounded-tl-[20px] rounded-tr-[20px] w-full font-[family-name:var(--font-montserrat)]">
+    <footer className="bg-[#181818] flex flex-col gap-8 md:gap-10 items-center px-4 py-8 lg:py-12 rounded-tl-[20px] rounded-tr-[20px] w-full max-w-[1332px] mx-auto font-[family-name:var(--font-montserrat)]">
       <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16 lg:gap-24 md:justify-between w-full">
         {/* Logo */}
         <div className="w-full max-w-[260px] lg:max-w-[320px]">

@@ -51,8 +51,7 @@ export function CategoriesSection({ heading, categories }: CategoriesSectionProp
               <img
                 src={cat.image}
                 alt={cat.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                style={{ transitionTimingFunction: 'var(--ease-out)' }}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ease-out-custom"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.21)] via-transparent to-[rgba(0,0,0,0.7)] from-0% via-50%" />
               <div className="relative flex items-center justify-between px-3 md:px-4 py-3 md:py-4 gap-2">

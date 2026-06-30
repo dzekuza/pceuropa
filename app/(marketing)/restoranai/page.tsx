@@ -6,6 +6,7 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
 import { getPuckBannerSlides } from '@/lib/page-content'
+import { normalizeCategory } from '@/lib/constants'
 
 export const metadata = {
   title: 'Restoranai ir Kavinės — PC Europa',
@@ -30,7 +31,7 @@ export default async function RestoranaiPage() {
   const restaurants = (tenants ?? []).map((t) => ({
     id: t.id,
     name: t.store_name,
-    category: t.category ?? 'Kita',
+    category: normalizeCategory(t.category),
     logoUrl: t.logo_url ?? null,
     coverUrl: t.gallery_images?.[0] ?? null,
   }))

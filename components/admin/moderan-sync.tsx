@@ -46,6 +46,7 @@ function StatusBadge({ status }: { status: SyncResult['status'] }) {
 export function ModeranSync() {
   const [month, setMonth] = useState(MONTH_OPTIONS[0].value)
   const [loading, setLoading] = useState(false)
+  const [sending, setSending] = useState(false)
   const [result, setResult] = useState<SyncResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -77,6 +78,35 @@ export function ModeranSync() {
     }
   }
 
+  async function handleSend() {
+    if (!confirm(S.sendConfirm)) return
+
+    setSending(true)
+    setError(null)
+
+    try {
+      const res = await fetch('/api/admin/moderan/sync-turnover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ month, dryRun: false }),
+      })
+
+      const json = await res.json()
+
+      if (!res.ok) {
+        const msg = json?.error?.message ?? S.errorGeneric
+        setError(msg)
+        return
+      }
+
+      setResult(json as SyncResponse)
+    } catch {
+      setError(S.errorGeneric)
+    } finally {
+      setSending(false)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -100,8 +130,11 @@ export function ModeranSync() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={handleSync} disabled={loading}>
+          <Button variant="outline" onClick={handleSync} disabled={loading || sending}>
             {loading ? S.syncButtonLoading : S.syncButton}
+          </Button>
+          <Button onClick={handleSend} disabled={loading || sending}>
+            {sending ? S.sendButtonLoading : S.sendButton}
           </Button>
         </div>
 

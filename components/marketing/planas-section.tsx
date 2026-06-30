@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Search } from 'lucide-react'
+import { DisplayHeading } from './ui/typography'
 
 const MAP_IMAGE: string | null = null
 
@@ -31,9 +32,9 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
   return (
     <section className="w-full max-w-[1332px] mx-auto px-4 py-8 lg:py-12">
       {/* Heading */}
-      <h2 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] tracking-[-2px] lg:tracking-[-2.5px] text-black mb-6">
+      <DisplayHeading className="mb-6">
         Prekybos centro planas
-      </h2>
+      </DisplayHeading>
 
       <div className="flex gap-6 items-start">
         {/* Left sidebar */}

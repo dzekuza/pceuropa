@@ -256,6 +256,25 @@
   }
 }
 
+/* Custom scrollbar for horizontal nav bar */
+.nav-scrollbar::-webkit-scrollbar {
+  height: 3px;
+}
+.nav-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(24, 24, 24, 0.25);
+  border-radius: 9999px;
+}
+.nav-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(24, 24, 24, 0.5);
+}
+
+.ease-out-custom {
+  transition-timing-function: var(--ease-out);
+}
+
 /* Tiptap editor prose styles */
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);

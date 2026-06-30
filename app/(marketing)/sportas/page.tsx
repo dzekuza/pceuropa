@@ -6,6 +6,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
 import { SPORTAS_STRINGS } from '@/lib/strings'
 import { getPuckBannerSlides } from '@/lib/page-content'
+import { normalizeCategory } from '@/lib/constants'
 
 export const metadata = {
   title: SPORTAS_STRINGS.pageTitle,
@@ -22,13 +23,13 @@ export default async function SportasPage() {
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
-    .eq('category', 'Sportas')
+    .in('category', ['Sportas ir laisvalaikis', 'Sportas', 'SPORTAS IR SVEIKATINGUMAS', 'LAISVALAIKIS IR PRAMOGOS', 'Laisvalaikis'])
     .order('store_name', { ascending: true })
 
   const stores = (tenants ?? []).map((t) => ({
     id: t.id,
     name: t.store_name,
-    category: t.category ?? 'Sportas',
+    category: normalizeCategory(t.category),
     logoUrl: t.logo_url ?? null,
     coverUrl: t.gallery_images?.[0] ?? null,
   }))

@@ -90,7 +90,6 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
 }
 
 export function RestaurantsDirectory({ restaurants, allowCategories }: RestaurantsDirectoryProps) {
-  const [activeCategory, setActiveCategory] = useState('Visi')
   const [search, setSearch] = useState('')
 
   const visibleRestaurants = useMemo(
@@ -98,26 +97,19 @@ export function RestaurantsDirectory({ restaurants, allowCategories }: Restauran
     [restaurants, allowCategories],
   )
 
-  const categories = useMemo(() => {
-    const unique = Array.from(new Set(visibleRestaurants.map((r) => r.category))).sort()
-    return ['Visi', ...unique]
-  }, [visibleRestaurants])
-
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    return visibleRestaurants.filter((r) => {
-      const matchCat = activeCategory === 'Visi' || r.category === activeCategory
-      const matchSearch = !q || r.name.toLowerCase().includes(q) || r.category.toLowerCase().includes(q)
-      return matchCat && matchSearch
-    })
-  }, [visibleRestaurants, activeCategory, search])
+    if (!q) return visibleRestaurants
+    return visibleRestaurants.filter((r) =>
+      r.name.toLowerCase().includes(q) || r.category.toLowerCase().includes(q),
+    )
+  }, [visibleRestaurants, search])
 
   return (
     <section className="w-full max-w-[1332px] mx-auto px-4 py-8 md:py-10 lg:py-14">
-      {/* Filters + search */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-8 md:mb-10">
-        {/* Search — full width on mobile, fixed on desktop */}
-        <div className="relative w-full md:order-last md:shrink-0 md:w-[280px] lg:w-[337px]">
+      {/* Search */}
+      <div className="flex justify-end mb-8 md:mb-10">
+        <div className="relative w-full md:w-[280px] lg:w-[337px]">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
           <input
             type="text"
@@ -134,27 +126,6 @@ export function RestaurantsDirectory({ restaurants, allowCategories }: Restauran
               <X size={16} />
             </button>
           )}
-        </div>
-
-        {/* Filter pills — horizontal scroll on mobile, wrap on desktop */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:flex-1">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className="shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap"
-                style={
-                  isActive
-                    ? { backgroundColor: '#000000', color: '#ffffff' }
-                    : { backgroundColor: '#ffffff', color: '#000000', border: '1px solid #ffffff' }
-                }
-              >
-                {cat}
-              </button>
-            )
-          })}
         </div>
       </div>
 

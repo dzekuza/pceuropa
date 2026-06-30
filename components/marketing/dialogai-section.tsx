@@ -1,3 +1,5 @@
+import { DisplayHeading } from './ui/typography'
+
 const IMAGES: (string | null)[] = [null, null, null]
 
 export function DialogaiSection() {
@@ -21,9 +23,9 @@ export function DialogaiSection() {
         {/* Text */}
         <div className="flex flex-col gap-8 lg:max-w-[648px]">
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] tracking-[-2px] lg:tracking-[-2.5px] text-black">
+            <DisplayHeading>
               Dialogai – atraskite vietas, kur norisi sugrįžti
-            </h2>
+            </DisplayHeading>
             <p className="text-[#575757] text-[15px] lg:text-[16px] leading-[24px]">
               Lorem ipsum dolor sit amet consectetur. Condimentum ullamcorper scelerisque
               pellentesque et amet ut nisl ipsum cursus. Ac amet non facilisi malesuada

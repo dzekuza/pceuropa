@@ -42,7 +42,7 @@ export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
         </div>
 
         {/* Search pill */}
-        <label className="hidden lg:flex bg-white gap-2 items-center pl-6 pr-5 py-2.5 rounded-full shrink-0 w-[337px] cursor-text">
+        <label className="hidden lg:flex bg-white gap-2 items-center pl-4 pr-5 py-2.5 rounded-full shrink-0 w-[337px] cursor-text">
           <Search size={24} className="shrink-0 text-[#575757]" aria-hidden />
           <input
             type="search"

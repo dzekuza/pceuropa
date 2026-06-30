@@ -1,9 +1,7 @@
 import { Car, SquareParking, Bike, Accessibility } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
-
-// TODO: replace with permanent Supabase Storage URL
-const mapImage: string | null = null
+import { DisplayHeading } from './ui/typography'
 
 const TRANSPORT_ICONS: LucideIcon[] = [Car, SquareParking, Bike, Accessibility]
 
@@ -12,9 +10,9 @@ export function HowToGetHereSection() {
     <section className="bg-white w-full rounded-[32px] lg:rounded-[40px] p-6 lg:p-10 flex flex-col gap-10">
       {/* Heading */}
       <div className="flex flex-col gap-4">
-        <h2 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black font-[family-name:var(--font-jakarta)]">
+        <DisplayHeading>
           {DARBO_LAIKAS_STRINGS.howToGetHereHeading}
-        </h2>
+        </DisplayHeading>
         <p className="text-[#575757] text-base leading-6">
           {DARBO_LAIKAS_STRINGS.howToGetHereSubtext}
         </p>
@@ -24,9 +22,14 @@ export function HowToGetHereSection() {
       <div className="flex flex-col lg:flex-row gap-10 items-start">
         {/* Map */}
         <div className="relative w-full lg:flex-1 rounded-3xl overflow-hidden h-[260px] md:h-[340px] lg:h-[428px]">
-          {mapImage
-            ? <img src={mapImage} alt={DARBO_LAIKAS_STRINGS.mapAlt} className="absolute inset-0 size-full object-cover" /> // eslint-disable-line @next/next/no-img-element
-            : <div className="absolute inset-0 bg-[#e8e8e5]" aria-label={DARBO_LAIKAS_STRINGS.mapAlt} />}
+          <iframe
+            src="https://maps.google.com/maps?q=Fabijoniskiu+g.+13,+Vilnius&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            className="absolute inset-0 size-full border-0"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title={DARBO_LAIKAS_STRINGS.mapAlt}
+          />
           {/* View route button */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <a
@@ -41,7 +44,7 @@ export function HowToGetHereSection() {
         </div>
 
         {/* Transport cards */}
-        <div className="flex flex-col gap-6 w-full lg:w-[328px] shrink-0">
+        <div className="flex flex-col gap-3 w-full lg:w-[328px] shrink-0">
           {DARBO_LAIKAS_STRINGS.transportCards.map(({ title, subtitle }, index) => {
             const Icon = TRANSPORT_ICONS[index]
             return (

@@ -75,7 +75,7 @@ export default async function StoreDetailPage({ params }: Props) {
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
 
-      <section className="w-full max-w-[1332px] mx-auto px-4 py-10 md:py-14 flex flex-col gap-8">
+      <section className="w-full max-w-[1332px] mx-auto px-4 pt-4 pb-10 md:pb-14 flex flex-col gap-8">
         {/* Back */}
         <Link
           href="/parduotuves"

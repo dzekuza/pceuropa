@@ -5,7 +5,7 @@ type Props = { children: ReactNode; className?: string }
 
 export function DisplayHeading({ children, className }: Props) {
   return (
-    <h2 className={cn('font-semibold text-balance text-[28px] leading-[1.2] tracking-[-1px] md:text-[36px] md:tracking-[-1.5px] lg:text-[48px] lg:leading-[60px] lg:tracking-[-2.5px] text-black', className)}>
+    <h2 className={cn('font-bold text-balance text-[32px] leading-[1.1] tracking-[-2px] md:text-[40px] lg:text-[48px] lg:leading-[60px] lg:tracking-[-2.5px] text-black', className)}>
       {children}
     </h2>
   )

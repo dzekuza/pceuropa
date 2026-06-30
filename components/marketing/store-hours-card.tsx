@@ -22,7 +22,7 @@ export type StoreHoursCardProps = {
 function StatusDot({ isOpen }: { isOpen: boolean }) {
   return (
     <span
-      className={`inline-block size-2 rounded-full shrink-0 ${isOpen ? 'bg-green-500' : 'bg-red-400'}`}
+      className={`inline-block size-2 rounded-full shrink-0 ${isOpen ? 'bg-[#22c55e]' : 'bg-red-400'}`}
       aria-hidden
     />
   )
@@ -43,7 +43,7 @@ export function StoreHoursCard({
     : DARBO_LAIKAS_STRINGS.closedStatus
 
   return (
-    <article className="bg-white flex flex-col gap-4 items-start p-4 rounded-[40px] w-full">
+    <article className="bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] w-full">
       {/* Top row: status + name + logo */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col flex-1 min-w-0 items-start">
@@ -98,7 +98,7 @@ export function StoreHoursCard({
           className="absolute bottom-3 right-3 bg-white border border-white rounded-full p-4 flex items-center justify-center hover:bg-white/90 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           aria-label={`Peržiūrėti ${name}`}
         >
-          <ArrowRight size={24} aria-hidden />
+          <ArrowRight size={24} aria-hidden className="text-black" />
         </Link>
       </div>
     </article>

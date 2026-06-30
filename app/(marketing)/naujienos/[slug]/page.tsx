@@ -73,14 +73,14 @@ export default async function ArticleDetailPage({ params }: Props) {
         </div>
       )}
 
-      <article className="w-full max-w-[800px] mx-auto px-4 py-10">
+      <article className="flex-1 w-full max-w-[800px] mx-auto px-4 py-10 md:py-14">
         <div className="flex items-center gap-3 mb-4">
           {article.category && (
             <Badge variant="outline">{article.category}</Badge>
           )}
           {date && <span className="text-sm text-muted-foreground">{date}</span>}
         </div>
-        <h1 className="text-3xl font-bold mb-6">{article.title}</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-900">{article.title}</h1>
         <div
           className="prose prose-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: safeHtml }}
