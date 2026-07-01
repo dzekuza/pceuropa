@@ -26,7 +26,7 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
         </section>
       )}
       {rest.length > 0 && (
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {rest.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
