@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import DOMPurify from 'isomorphic-dompurify'
+import sanitizeHtml from 'sanitize-html'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { Badge } from '@/components/ui/badge'
@@ -47,7 +47,13 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   if (!article) notFound()
 
-  const safeHtml = DOMPurify.sanitize(article.content ?? '')
+  const safeHtml = sanitizeHtml(article.content ?? '', {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ['src', 'alt'],
+    },
+  })
 
   const date = article.published_at
     ? new Date(article.published_at).toLocaleDateString('lt-LT', {
