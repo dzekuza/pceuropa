@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Search, X, ArrowRight } from 'lucide-react'
+import { Search, X } from 'lucide-react'
+import { ArrowIcon } from './ui/arrow-icon'
 
 type Restaurant = {
   id: string
@@ -83,10 +84,10 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
 
         {/* Arrow button */}
         <div
-          className="absolute bottom-3 right-3 size-11 rounded-full bg-white flex items-center justify-center shadow-sm"
+          className="absolute bottom-3 right-3 size-11 rounded-full bg-white flex items-center justify-center shadow-sm transition-opacity duration-150 group-hover:opacity-80"
           aria-hidden="true"
         >
-          <ArrowRight size={18} className="text-black" />
+          <ArrowIcon className="text-black size-5 transition-transform duration-150 group-hover:rotate-[-25deg]" />
         </div>
       </div>
     </Link>
