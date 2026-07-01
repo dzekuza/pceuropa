@@ -4,7 +4,6 @@ import Image from 'next/image'
 import sanitizeHtml from 'sanitize-html'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
-import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 
 interface Props {
@@ -67,7 +66,7 @@ export default async function ArticleDetailPage({ params }: Props) {
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
 
-      <article className="flex-1 w-full max-w-[800px] mx-auto px-4 py-10 md:py-14">
+      <article className="flex-1 w-full max-w-[1332px] mx-auto px-4 lg:px-4 py-10">
         {article.cover_image && (
           <div className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
             <Image
@@ -82,9 +81,11 @@ export default async function ArticleDetailPage({ params }: Props) {
 
         <div className="flex items-center gap-3 mb-4">
           {article.category && (
-            <Badge variant="outline">{article.category}</Badge>
+            <span className="text-xs font-medium border border-black/20 rounded-full px-2 py-0.5 text-[#575757]">
+              {article.category}
+            </span>
           )}
-          {date && <span className="text-sm text-muted-foreground">{date}</span>}
+          {date && <span className="text-sm text-[#888]">{date}</span>}
         </div>
         <h1 className="text-3xl font-bold mb-6 text-gray-900">{article.title}</h1>
         <div
