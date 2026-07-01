@@ -58,8 +58,8 @@ export function CategoriesSection({ heading, categories }: CategoriesSectionProp
                 <p className="font-bold text-[14px] md:text-[16px] lg:text-[20px] leading-[1.2] lg:leading-[24px] tracking-[-0.5px] text-[#f5f5f5] w-[60%]">
                   {cat.title}
                 </p>
-                <span className="bg-[#fdf567] rounded-full p-2.5 md:p-3 lg:p-4 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110">
-                  <ArrowIcon className="size-3.5 md:size-4 lg:size-6" />
+                <span className="bg-[#fdf567] text-black rounded-full p-2.5 md:p-3 lg:p-4 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110">
+                  <ArrowIcon className="size-3.5 md:size-4 lg:size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
                 </span>
               </div>
             </Link>

@@ -1,45 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { ArrowIcon } from './ui/arrow-icon'
+import { LogoCard } from './logo-card'
 import Link from 'next/link'
 
 type Tenant = { id: string; store_name: string; logo_url: string }
-
-function LogoCard({ tenant }: { tenant: Tenant | undefined }) {
-  if (!tenant) return <div className="bg-white rounded-[20px]" />
-  return (
-    <Link
-      href="/parduotuves"
-      prefetch={false}
-      className="bg-white rounded-[20px] flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
-    >
-      <img
-        src={tenant.logo_url}
-        alt={tenant.store_name}
-        className="h-16 w-auto max-w-[80%] object-contain"
-      />
-    </Link>
-  )
-}
-
-function FeaturedCard({ tenant }: { tenant: Tenant | undefined }) {
-  if (!tenant) return <div className="bg-white rounded-[20px] row-span-2" />
-  return (
-    <Link
-      href="/parduotuves"
-      prefetch={false}
-      className="bg-white rounded-[20px] row-span-2 relative flex items-center justify-center overflow-hidden transition-[transform,box-shadow] duration-150 hover:shadow-md active:scale-[0.97]"
-    >
-      <img
-        src={tenant.logo_url}
-        alt={tenant.store_name}
-        className="h-24 w-auto max-w-[70%] object-contain"
-      />
-      <span className="absolute top-3 right-3 bg-[#fdf567] rounded-full p-2.5 flex items-center justify-center">
-        <ArrowIcon className="size-4" />
-      </span>
-    </Link>
-  )
-}
 
 export async function PartnerLogos() {
   const supabase = createAdminClient()
@@ -52,7 +15,7 @@ export async function PartnerLogos() {
   const tenants = (data ?? []) as Tenant[]
 
   const featuredIdx = tenants.findIndex((t) =>
-    t.store_name.toLowerCase().includes('gym')
+    t.store_name.toLowerCase().includes('lemon gym')
   )
   const featured = tenants[featuredIdx >= 0 ? featuredIdx : 0]
   const rest = tenants.filter((t) => t.id !== featured?.id).slice(0, 8)
@@ -65,7 +28,7 @@ export async function PartnerLogos() {
         <LogoCard tenant={rest[0]} />
         <LogoCard tenant={rest[1]} />
         {/* Featured — col 3, row-span-2 (explicit) */}
-        <FeaturedCard tenant={featured} />
+        <LogoCard tenant={featured} featured />
         {/* Cols 4-5 row 1 */}
         <LogoCard tenant={rest[2]} />
         <LogoCard tenant={rest[3]} />

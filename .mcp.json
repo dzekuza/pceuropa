@@ -23,6 +23,13 @@
                 "puppeteer-mcp-server"
             ],
             "env": {}
+        },
+        "css-studio": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "cssstudio"
+            ]
         }
     }
 }

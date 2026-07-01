@@ -43,7 +43,7 @@ export function Nav() {
   return (
     <nav className="sticky top-0 z-20 w-full">
       {/* Top dark bar */}
-      <div className="bg-[#181818] py-3 md:py-4">
+      <div className="bg-[#181818] py-3 md:py-4 rounded-t-[20px]">
       <div className="max-w-[1332px] mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" prefetch={false} className="flex items-center shrink-0 active:scale-[0.97] transition-transform duration-150">

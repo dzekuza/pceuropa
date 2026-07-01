@@ -1,6 +1,15 @@
-export function ArrowIcon({ className }: { className?: string }) {
+import type { Ref } from 'react'
+
+export function ArrowIcon({
+  className,
+  ref,
+}: {
+  className?: string
+  ref?: Ref<SVGSVGElement>
+}) {
   return (
     <svg
+      ref={ref}
       width="22"
       height="22"
       viewBox="0 0 22 22"

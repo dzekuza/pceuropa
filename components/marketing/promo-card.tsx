@@ -39,7 +39,7 @@ export function PromoCard({ item }: { item: PromoItem }) {
           </p>
         </div>
         <span className="inline-flex items-center justify-center bg-black rounded-full size-[56px] shrink-0 transition-opacity duration-150 group-hover:opacity-70 active:scale-95">
-          <ArrowIcon className="text-white size-6" />
+          <ArrowIcon className="text-white size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
         </span>
       </div>
     </Link>

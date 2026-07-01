@@ -32,7 +32,7 @@ export function QuickLinks({ links }: QuickLinksProps = {}) {
           key={item.href}
           href={item.href}
           prefetch={false}
-          className="bg-white flex flex-1 items-center justify-between p-4 md:p-5 lg:p-6 rounded-[20px] lg:rounded-[24px] transition-[transform,background-color] duration-150 hover:bg-[#f5f5f5] active:scale-[0.97]"
+          className="group bg-white text-black flex flex-1 items-center justify-between p-4 md:p-5 lg:p-6 rounded-[20px] lg:rounded-[24px] transition-[transform,background-color] duration-150 hover:bg-[#f5f5f5] active:scale-[0.97]"
         >
           <div className="flex items-center gap-3 lg:gap-4">
             <div className={`${item.iconBg} rounded-[8px] size-12 md:size-14 lg:size-[66px] relative overflow-hidden shrink-0`}>
@@ -46,7 +46,7 @@ export function QuickLinks({ links }: QuickLinksProps = {}) {
               {item.label}
             </span>
           </div>
-          <ArrowIcon className="shrink-0" />
+          <ArrowIcon className="shrink-0 transition-transform duration-150 group-hover:rotate-[-25deg]" />
         </Link>
       ))}
     </section>

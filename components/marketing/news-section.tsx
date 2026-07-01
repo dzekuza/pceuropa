@@ -59,8 +59,8 @@ export function NewsSection() {
           <span className="inline-flex items-center justify-center bg-black text-white rounded-full px-7 py-4 text-[18px] font-normal leading-[24px] font-['Geist'] transition-opacity duration-150 hover:opacity-80">
             Daugiau
           </span>
-          <span className="inline-flex items-center justify-center bg-black rounded-full size-[56px] transition-opacity duration-150 hover:opacity-80 active:scale-95">
-            <ArrowIcon className="text-white size-6" />
+          <span className="group inline-flex items-center justify-center bg-black rounded-full size-[56px] transition-opacity duration-150 hover:opacity-80 active:scale-95">
+            <ArrowIcon className="text-white size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
           </span>
         </Link>
       </div>
@@ -147,7 +147,7 @@ function NewsCard({ item }: { item: NewsItem }) {
           </p>
         </div>
         <span className="inline-flex items-center justify-center bg-black rounded-full size-[56px] shrink-0 transition-opacity duration-150 group-hover:opacity-70">
-          <ArrowIcon className="text-white size-6" />
+          <ArrowIcon className="text-white size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
         </span>
       </div>
     </Link>

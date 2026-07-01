@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { Search, X, ArrowRight } from 'lucide-react'
 
 type Restaurant = {
@@ -24,7 +25,11 @@ function getInitials(name: string): string {
 
 function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   return (
-    <article className="bg-white rounded-[32px] lg:rounded-[40px] p-4 flex flex-col gap-4 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-200" aria-label={restaurant.name}>
+    <Link
+      href={`/parduotuves/${restaurant.id}`}
+      className="group bg-white rounded-[32px] lg:rounded-[40px] p-4 flex flex-col gap-4 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-200"
+      aria-label={restaurant.name}
+    >
       {/* Top row: info + logo */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-0.5 min-w-0">
@@ -63,7 +68,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
           <img
             src={restaurant.coverUrl}
             alt=""
-            className="absolute inset-0 size-full object-cover"
+            className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -79,13 +84,12 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
         {/* Arrow button */}
         <div
           className="absolute bottom-3 right-3 size-11 rounded-full bg-white flex items-center justify-center shadow-sm"
-          aria-label={`Peržiūrėti ${restaurant.name}`}
           aria-hidden="true"
         >
           <ArrowRight size={18} className="text-black" />
         </div>
       </div>
-    </article>
+    </Link>
   )
 }
 
