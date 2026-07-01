@@ -67,19 +67,19 @@ export default async function ArticleDetailPage({ params }: Props) {
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
 
-      {article.cover_image && (
-        <div className="w-full max-h-80 overflow-hidden relative h-80">
-          <Image
-            src={article.cover_image}
-            alt={article.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
-
       <article className="flex-1 w-full max-w-[800px] mx-auto px-4 py-10 md:py-14">
+        {article.cover_image && (
+          <div className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
+            <Image
+              src={article.cover_image}
+              alt={article.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-4">
           {article.category && (
             <Badge variant="outline">{article.category}</Badge>
