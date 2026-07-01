@@ -271,7 +271,7 @@ export const KONTAKTAI_STRINGS = {
   pageDescription: 'PC Europa prekybos centro kontaktinė informacija, adresas ir darbo laikas.',
   heading: 'Kontaktai',
   addressTitle: 'Adresas',
-  address: 'Fabijoniškių g. 13, Vilnius LT-07150',
+  address: 'Konstitucijos pr. 7A, Vilnius, 09308 Vilniaus m. sav.',
   phoneTitle: 'Telefonas',
   phone: '+370 644 05764',
   phoneHref: 'tel:+37064405764',
@@ -293,7 +293,7 @@ export const KAIP_ATVYKTI_STRINGS = {
   byCarTitle: 'Automobiliu',
   byCar: 'Automobiliu: centras pasiekiamas iš pagrindinių miesto gatvių. Navigacijos adresas: PC Europa, Vilnius.',
   addressTitle: 'Mūsų adresas',
-  address: 'Fabijoniškių g. 13, Vilnius',
+  address: 'Konstitucijos pr. 7A, Vilnius, 09308 Vilniaus m. sav.',
   addressNote: 'PC Europa yra lengvai pasiekiamas viešuoju transportu ir automobiliu.',
   mapLabel: 'Žemėlapis',
 } as const
@@ -372,7 +372,7 @@ export const PRIVATUMO_POLITIKA_STRINGS = {
   heading: 'Privatumo politika',
   controllerTitle: 'Duomenų valdytojas',
   controllerBody:
-    'Baltic Horizon UAB, Fabijoniškių g. 13, Vilnius. El. paštas: reklama@baltichorizon.com',
+    'Baltic Horizon UAB, Konstitucijos pr. 7A, Vilnius, 09308 Vilniaus m. sav. El. paštas: reklama@baltichorizon.com',
   collectedTitle: 'Kokie duomenys renkami',
   collectedItems: [
     'Kontaktinės formos duomenys: vardas, el. pašto adresas, žinutės turinys.',

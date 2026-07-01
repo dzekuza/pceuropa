@@ -40,13 +40,13 @@ export function CategoriesSection({ heading, categories }: CategoriesSectionProp
         </div>
 
         {/* 4 category cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
+        <div className="grid grid-cols-2 lg:flex gap-3 lg:gap-6">
           {items.map((cat) => (
             <Link
               key={cat.href}
               href={cat.href}
               prefetch={false}
-              className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group"
+              className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group lg:flex-1 lg:min-w-0 lg:transition-[flex-grow] lg:duration-500 lg:ease-out-custom lg:hover:flex-[2.2]"
             >
               <img
                 src={cat.image}

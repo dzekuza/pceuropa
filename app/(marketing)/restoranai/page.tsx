@@ -1,7 +1,7 @@
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { RestaurantsDirectory } from '@/components/marketing/restaurants-directory'
-import { DialogaiSection } from '@/components/marketing/dialogai-section'
+import { DialogaiSection, RESTORANAI_SECTION_PROPS } from '@/components/marketing/dialogai-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { createClient } from '@/lib/supabase/server'
@@ -49,7 +49,7 @@ export default async function RestoranaiPage() {
       </div>
 
       {/* Dialogai section */}
-      <DialogaiSection />
+      <DialogaiSection {...RESTORANAI_SECTION_PROPS} />
 
       {/* Planas section */}
       <div className="w-full bg-[#f7f7f5]">

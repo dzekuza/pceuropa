@@ -36,3 +36,4 @@ logs/
 eslint-output.txt
 .vercel
 CLAUDE.local.md
+.env*

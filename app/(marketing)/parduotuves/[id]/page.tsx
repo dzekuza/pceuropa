@@ -153,7 +153,7 @@ export default async function StoreDetailPage({ params }: Props) {
             {/* Location hint */}
             <div className="flex flex-col gap-1">
               <p className="text-[#575757] text-[13px]">Adresas</p>
-              <p className="font-medium text-[14px] text-black">Fabijoniškių g. 13, Vilnius</p>
+              <p className="font-medium text-[14px] text-black">Konstitucijos pr. 7A, Vilnius</p>
             </div>
           </div>
         </div>

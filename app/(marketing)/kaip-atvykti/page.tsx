@@ -44,7 +44,7 @@ export default function KaipAtvyktiPage() {
         {/* Map */}
         <div className="rounded-[24px] overflow-hidden h-[400px] md:h-[500px]">
           <iframe
-            src="https://maps.google.com/maps?q=Fabijoniskiu+g.+13,+Vilnius&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="100%"
             className="border-0"

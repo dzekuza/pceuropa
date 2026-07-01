@@ -4,9 +4,7 @@ import { Footer } from '@/components/marketing/footer'
 import { NuomaReklamaForm } from '@/components/marketing/nuoma-reklama-form'
 import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
 
-// NOTE: Figma MCP asset URL — replace with permanent Supabase Storage URL when available.
-// Set to null until a permanent URL is uploaded; null renders a placeholder div below.
-const BANNER_IMAGE: string | null = null
+const BANNER_IMAGE = 'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/nuoma-reklama/banner.jpg'
 
 export const metadata: Metadata = {
   title: S.pageTitle,
@@ -48,16 +46,12 @@ export default function NuomaReklamaPage() {
       <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
         <div className="relative rounded-[24px] lg:rounded-[40px] overflow-hidden h-[240px] md:h-[280px] lg:h-[292px] flex items-center justify-between pl-6 lg:pl-10 pr-4 py-6">
           {/* Background image + overlay */}
-          {BANNER_IMAGE ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={BANNER_IMAGE}
-              alt=""
-              className="absolute inset-0 size-full object-cover pointer-events-none"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-[#e8e8e5]" />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={BANNER_IMAGE}
+            alt=""
+            className="absolute inset-0 size-full object-cover pointer-events-none"
+          />
           <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
           {/* Left: heading + socials */}
