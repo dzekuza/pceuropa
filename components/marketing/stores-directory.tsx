@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, X } from 'lucide-react'
+import { ArrowIcon } from './ui/arrow-icon'
 
 type Store = {
   id: string
@@ -123,11 +124,9 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
           </div>
         </div>
         {/* Arrow button */}
-        <div className="absolute bottom-3 right-3 bg-white border border-white flex items-center justify-center p-4 rounded-full">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
+        <span className="absolute bottom-3 right-3 bg-white border border-white flex items-center justify-center p-4 rounded-full transition-opacity duration-150 group-hover:opacity-80">
+          <ArrowIcon className="text-black size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
+        </span>
       </div>
     </Link>
   )
