@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { CardArrowButton } from './ui/card-arrow-button'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 
 export type HoursEntry = {
@@ -91,15 +90,7 @@ export function StoreHoursCard({
           </div>
         </div>
 
-        {/* Arrow button */}
-        <Link
-          href={href}
-          prefetch={false}
-          className="absolute bottom-3 right-3 bg-white border border-white rounded-full p-4 flex items-center justify-center hover:bg-white/90 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-          aria-label={`Peržiūrėti ${name}`}
-        >
-          <ArrowRight size={24} aria-hidden className="text-black" />
-        </Link>
+        <CardArrowButton href={href} ariaLabel={`Peržiūrėti ${name}`} />
       </div>
     </article>
   )

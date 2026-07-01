@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Search, X } from 'lucide-react'
-import { ArrowIcon } from './ui/arrow-icon'
+import { CardArrowButton } from './ui/card-arrow-button'
 
 type Place = {
   id: string
@@ -78,12 +78,7 @@ function PlaceCard({ place }: { place: Place }) {
           <div className="absolute inset-0 bg-black/36 rounded-[24px]" />
         )}
 
-        <div
-          className="absolute bottom-3 right-3 size-11 rounded-full bg-white flex items-center justify-center shadow-sm transition-opacity duration-150 group-hover:opacity-80"
-          aria-hidden="true"
-        >
-          <ArrowIcon className="text-black size-5 transition-transform duration-150 group-hover:rotate-[-25deg]" />
-        </div>
+        <CardArrowButton />
       </div>
     </Link>
   )
