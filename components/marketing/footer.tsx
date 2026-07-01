@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-logo.png'
+const logoUrl = '/pc-europa-logo.svg'
 const facebookIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.png'
 const instagramIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.png'
 
@@ -27,9 +27,9 @@ export function Footer() {
             <img
               src={logoUrl}
               alt="PC Europa"
-              width={320}
-              height={79}
-              className="object-contain max-w-full h-auto"
+              width={195}
+              height={48}
+              className="w-auto h-10 md:h-12 lg:h-14 max-w-full"
             />
           </div>
 

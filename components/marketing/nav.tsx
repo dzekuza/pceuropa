@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, ChevronDown } from 'lucide-react'
 
-const logoUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-logo.png'
+const logoUrl = '/pc-europa-logo.svg'
 const timerIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
 const infoIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.png'
 
@@ -47,7 +47,7 @@ export function Nav() {
       <div className="max-w-[1332px] mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" prefetch={false} className="flex items-center shrink-0 active:scale-[0.97] transition-transform duration-150">
-          <img src={logoUrl} alt="PC Europa" className="h-8 md:h-10 lg:h-12 w-auto max-w-[160px] md:max-w-none" />
+          <img src={logoUrl} alt="PC Europa" className="h-8 md:h-10 lg:h-12 w-auto" />
         </Link>
 
         {/* Right side */}
