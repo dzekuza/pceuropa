@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageFile, imageExtension } from '@/lib/image-compression'
 
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -39,12 +40,13 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
     setUploading(true)
     setError(null)
 
+    const compressed = await compressImageFile(file)
     const supabase = createClient()
-    const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2)}.${imageExtension(compressed)}`
 
     const { error: uploadError } = await supabase.storage
       .from('marketing-assets')
-      .upload(path, file, { cacheControl: '31536000', upsert: false, contentType: file.type })
+      .upload(path, compressed, { cacheControl: '31536000', upsert: false, contentType: compressed.type })
 
     if (uploadError) {
       setError('Įkėlimo klaida. Bandykite dar kartą.')

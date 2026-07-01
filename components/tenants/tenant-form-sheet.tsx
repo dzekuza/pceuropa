@@ -7,6 +7,7 @@ import { createTenant, updateTenant } from '@/actions/tenants'
 import { tenantSchema, type TenantFormValues } from '@/lib/validations/tenant'
 import { TENANT_CATEGORIES } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import type { Tenant } from '@/types/database'
 import {
   Sheet,
@@ -42,11 +43,13 @@ interface TenantFormSheetProps {
   tenant: Tenant | null
 }
 
-async function uploadFile(file: File, path: string): Promise<string> {
+async function uploadFile(file: File, folder: 'logos' | 'gallery'): Promise<string> {
+  const compressed = await compressImageFile(file)
   const supabase = createClient()
+  const path = `${folder}/${crypto.randomUUID()}.${imageExtension(compressed)}`
   const { error } = await supabase.storage
     .from('tenant-assets')
-    .upload(path, file, { upsert: true })
+    .upload(path, compressed, { upsert: true, contentType: compressed.type })
   if (error) throw new Error(error.message)
   const { data } = supabase.storage.from('tenant-assets').getPublicUrl(path)
   return data.publicUrl
@@ -67,9 +70,7 @@ function LogoUploader({
     setUploading(true)
     setUploadError(null)
     try {
-      const ext = file.name.split('.').pop()
-      const path = `logos/${crypto.randomUUID()}.${ext}`
-      const url = await uploadFile(file, path)
+      const url = await uploadFile(file, 'logos')
       onChange(url)
     } catch (err) {
       console.error('[LogoUploader] upload failed:', err)
@@ -142,11 +143,7 @@ function GalleryUploader({
     setUploading(true)
     setUploadError(null)
     try {
-      const uploads = Array.from(files).map(async (file) => {
-        const ext = file.name.split('.').pop()
-        const path = `gallery/${crypto.randomUUID()}.${ext}`
-        return uploadFile(file, path)
-      })
+      const uploads = Array.from(files).map((file) => uploadFile(file, 'gallery'))
       const urls = await Promise.all(uploads)
       onChange([...value, ...urls])
     } catch (err) {

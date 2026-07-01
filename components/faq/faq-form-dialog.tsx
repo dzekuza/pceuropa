@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X, Paperclip, FileText, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { createFaqItem, updateFaqItem } from '@/actions/faq'
 import { faqFormSchema, type FaqFormValues } from '@/lib/validations/faq'
 import type { FaqItem } from '@/types/database'
@@ -90,10 +91,11 @@ export function FaqFormDialog({
         return
       }
 
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-      const path = `${crypto.randomUUID()}/${safeName}`
+      const compressed = await compressImageFile(file)
+      const safeStem = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '_')
+      const path = `${crypto.randomUUID()}/${safeStem}.${imageExtension(compressed)}`
 
-      const { error } = await supabase.storage.from(BUCKET).upload(path, file)
+      const { error } = await supabase.storage.from(BUCKET).upload(path, compressed, { contentType: compressed.type })
       if (error) {
         form.setError('root', { message: `Nepavyko įkelti: ${file.name}` })
         setUploading(false)

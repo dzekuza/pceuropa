@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { importTenants, type TenantImportRow } from '@/actions/tenants'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { cn, toTenantFileKey } from '@/lib/utils'
 
 const HEADER_MAP: Record<string, keyof TenantImportRow> = {
@@ -136,12 +137,12 @@ function parseSheet(sheet: XLSX.WorkSheet): ParsedRow[] {
 }
 
 async function uploadToStorage(file: File, folder: 'logos' | 'gallery'): Promise<string> {
+  const compressed = await compressImageFile(file)
   const supabase = createClient()
-  const ext = file.name.split('.').pop() ?? 'jpg'
-  const path = `${folder}/${crypto.randomUUID()}.${ext}`
+  const path = `${folder}/${crypto.randomUUID()}.${imageExtension(compressed)}`
   const { error } = await supabase.storage
     .from('tenant-assets')
-    .upload(path, file, { upsert: true })
+    .upload(path, compressed, { upsert: true, contentType: compressed.type })
   if (error) throw new Error(`Nepavyko įkelti ${file.name}: ${error.message}`)
   const { data } = supabase.storage.from('tenant-assets').getPublicUrl(path)
   return data.publicUrl

@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { createClient } from '@/lib/supabase/client'
+import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { createArticle, updateArticle } from '@/actions/articles'
 import {
   articleFormSchema,
@@ -102,12 +103,12 @@ export function ArticleForm({ article }: ArticleFormProps) {
 
   async function uploadCoverImage(file: File) {
     setUploadingCover(true)
+    const compressed = await compressImageFile(file)
     const supabase = createClient()
-    const ext = file.name.split('.').pop()
-    const path = `articles/${Date.now()}.${ext}`
+    const path = `articles/${Date.now()}.${imageExtension(compressed)}`
     const { error } = await supabase.storage
       .from('marketing-assets')
-      .upload(path, file)
+      .upload(path, compressed, { contentType: compressed.type })
     if (error) {
       setUploadingCover(false)
       return
