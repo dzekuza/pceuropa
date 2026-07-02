@@ -6,6 +6,12 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+// Weekly revenue breakdown — 5 weeks per month
+export interface WeekData {
+  tx_count: number
+  amount_eur: number
+}
+
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -41,7 +47,7 @@ export type Database = {
     Tables: {
       articles: {
         Row: {
-          category: string
+          category: 'Naujiena' | 'Akcija' | 'Renginys'
           content: string
           cover_image: string | null
           created_at: string | null
@@ -54,7 +60,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          category?: string
+          category?: 'Naujiena' | 'Akcija' | 'Renginys'
           content?: string
           cover_image?: string | null
           created_at?: string | null
@@ -67,7 +73,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          category?: string
+          category?: 'Naujiena' | 'Akcija' | 'Renginys'
           content?: string
           cover_image?: string | null
           created_at?: string | null
@@ -190,7 +196,7 @@ export type Database = {
           tenant_id: string | null
           tx_count: number | null
           user_id: string | null
-          weeks: Json | null
+          weeks: WeekData[] | null
         }
         Insert: {
           amount_eur: number
@@ -201,7 +207,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: Json | null
+          weeks?: WeekData[] | null
         }
         Update: {
           amount_eur?: number
@@ -212,7 +218,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: Json | null
+          weeks?: WeekData[] | null
         }
         Relationships: [
           {
@@ -286,17 +292,17 @@ export type Database = {
           category: string | null
           description: string | null
           gallery_images: string[] | null
-          id: string | null
+          id: string
           logo_url: string | null
-          store_name: string | null
+          store_name: string
         }
         Insert: {
           category?: string | null
           description?: string | null
           gallery_images?: string[] | null
-          id?: string | null
+          id?: string
           logo_url?: string | null
-          store_name?: string | null
+          store_name?: string
         }
         Update: {
           category?: string | null
@@ -454,3 +460,32 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// Convenience type aliases for common usage patterns
+export type Tenant = Database['public']['Tables']['tenants']['Row']
+export type TenantInsert = Database['public']['Tables']['tenants']['Insert']
+export type TenantUpdate = Database['public']['Tables']['tenants']['Update']
+
+export type RevenueReport = Database['public']['Tables']['revenue_reports']['Row']
+export type RevenueReportInsert = Database['public']['Tables']['revenue_reports']['Insert']
+export type RevenueReportUpdate = Database['public']['Tables']['revenue_reports']['Update']
+
+export type FaqItem = Database['public']['Tables']['faq_items']['Row']
+export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
+export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
+
+export type Article = Database['public']['Tables']['articles']['Row']
+export type ArticleInsert = Omit<Article, 'id' | 'created_at' | 'updated_at'>
+export type ArticleUpdate = Partial<ArticleInsert>
+
+export interface PageSection {
+  id: string
+  page_slug: string
+  section_key: string
+  content_key: string
+  value: string | null
+  updated_at: string | null
+}
+
+// Nested map: { [section_key]: { [content_key]: value } }
+export type PageContentMap = Record<string, Record<string, string>>
