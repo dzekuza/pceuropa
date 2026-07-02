@@ -142,6 +142,15 @@ export function ModeranSync() {
           <p className="text-sm text-destructive">{error}</p>
         )}
 
+        {result?.lastSentAt && (
+          <p className="text-sm text-muted-foreground">
+            {S.lastSentLabel}{' '}
+            <span className="font-medium text-foreground">
+              {new Date(result.lastSentAt).toLocaleString('lt-LT')}
+            </span>
+          </p>
+        )}
+
         {result && (
           result.results.length === 0 ? (
             <p className="text-sm text-muted-foreground">{S.noData}</p>

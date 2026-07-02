@@ -26,6 +26,7 @@ export type SyncResponse = {
   dryRun: boolean
   month: string
   results: SyncResult[]
+  lastSentAt?: string | null
 }
 
 export async function POST(req: NextRequest) {
@@ -73,7 +74,19 @@ export async function POST(req: NextRequest) {
 
   if (dryRun) {
     const results: SyncResult[] = payloads.map((p) => ({ ...p, status: 'ready' }))
-    return NextResponse.json({ dryRun: true, month, results } satisfies SyncResponse)
+
+    const { data: logEntry } = await supabase
+      .from('moderan_sync_log')
+      .select('sent_at')
+      .eq('month', monthDate)
+      .maybeSingle()
+
+    return NextResponse.json({
+      dryRun: true,
+      month,
+      results,
+      lastSentAt: logEntry?.sent_at ?? null,
+    } satisfies SyncResponse)
   }
 
   // Real send — requires env vars
@@ -114,6 +127,19 @@ export async function POST(req: NextRequest) {
       }
     })
   )
+
+  const anySuccess = results.some((r) => r.status === 'sent')
+  if (anySuccess) {
+    await supabase.from('moderan_sync_log').upsert(
+      {
+        month: monthDate,
+        sent_at: new Date().toISOString(),
+        sent_by: user.id,
+        results: JSON.parse(JSON.stringify(results)),
+      },
+      { onConflict: 'month' }
+    )
+  }
 
   return NextResponse.json({ dryRun: false, month, results } satisfies SyncResponse)
 }

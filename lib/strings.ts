@@ -229,6 +229,7 @@ export const MODERAN_SYNC_STRINGS = {
   noData: 'Šiam mėnesiui apyvartos duomenų nėra.',
   envMissing: 'Trūksta konfigūracijos: MODERAN_API_TOKEN, MODERAN_DOMAIN_ID arba MODERAN_PROPERTYSET_ID.',
   errorGeneric: 'Klaida tikrinant duomenis. Bandykite dar kartą.',
+  lastSentLabel: 'Paskutinį kartą išsiųsta:',
 } as const
 
 export const LANKYTOJAMS_STRINGS = {
