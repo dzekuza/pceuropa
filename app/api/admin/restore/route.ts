@@ -5,8 +5,13 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { isSameSiteNavigation } from '@/lib/auth/same-site-navigation'
 
 export async function GET(request: NextRequest) {
+    if (!isSameSiteNavigation(request)) {
+        return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const cookieStore = await cookies()
     const adminRefreshToken = cookieStore.get('admin_refresh_token')?.value
 

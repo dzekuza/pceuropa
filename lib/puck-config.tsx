@@ -1,13 +1,20 @@
 'use client'
 
 import type { Config } from '@measured/puck'
-import { Hero } from '@/components/marketing/hero'
+import { Hero, HERO_DEFAULT_SLIDES } from '@/components/marketing/hero'
 import { QuickLinks } from '@/components/marketing/quick-links'
 import { CategoriesSection } from '@/components/marketing/categories-section'
 import { ActivitiesSection } from '@/components/marketing/activities-section'
 import { SocialSection } from '@/components/marketing/social-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { ImageUploadField } from '@/components/admin/image-upload-field'
+import { NewsSection } from '@/components/marketing/news-section'
+import { HowToGetHereSection } from '@/components/marketing/how-to-get-here-section'
+import { OpeningHoursSection } from '@/components/marketing/opening-hours-section'
+import { LankytojamsContent } from '@/components/marketing/lankytojams-content'
+import { AkcijosGrid } from '@/components/marketing/akcijos-grid'
+import { PROMO_ITEMS } from '@/lib/promo-data'
+import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS } from '@/lib/strings'
 
 function SectionPreview({
   label,
@@ -30,7 +37,7 @@ function SectionPreview({
 
 export type PuckBlocks = {
   PageBanner: { slide1: string; slide2: string; slide3: string; slide4: string }
-  Hero: { title: string; subtitle: string }
+  Hero: { title: string; subtitle: string; slides: { src: string; alt: string }[] }
   QuickLinks: {
     links: { label: string; href: string }[]
   }
@@ -49,17 +56,53 @@ export type PuckBlocks = {
     petImage: string
   }
   PartnerLogos: Record<string, never>
-  NewsSection: Record<string, never>
+  NewsSection: {
+    heading: string
+    ctaLabel: string
+    items: { image: string; title: string; date: string; href: string }[]
+  }
   SocialSection: {
     heading: string
     socials: { label: string; href: string }[]
   }
   // Preview-only blocks for pages with DB/hardcoded content
-  OpeningHoursBlock: Record<string, never>
-  HowToGetHereBlock: Record<string, never>
+  OpeningHoursBlock: {
+    heroHeading: string
+    heroSubtext1: string
+    heroSubtext2: string
+    heroSubtext3: string
+    searchPlaceholder: string
+    loadMoreButton: string
+  }
+  HowToGetHereBlock: {
+    heading: string
+    subtext: string
+    mapEmbedUrl: string
+    mapLinkUrl: string
+    viewRouteLabel: string
+    transportCards: { title: string; subtitle: string }[]
+  }
   StoresDirectoryBlock: Record<string, never>
-  LankytojamsBlock: Record<string, never>
-  AkcijosGridBlock: Record<string, never>
+  LankytojamsBlock: {
+    heading: string
+    parkingTitle: string
+    parkingBody: string
+    accessTitle: string
+    accessPublicTransport: string
+    accessByCar: string
+    amenitiesTitle: string
+    amenities: { value: string }[]
+    faqTitle: string
+    faqItems: { question: string; answer: string }[]
+  }
+  AkcijosGridBlock: {
+    filterAllLabel: string
+    filterStoresLabel: string
+    filterServicesLabel: string
+    filterFoodLabel: string
+    searchPlaceholder: string
+    loadMoreLabel: string
+  }
   DialogaiFoodCourtBlock: Record<string, never>
 }
 
@@ -100,10 +143,24 @@ export const puckConfig: Config<PuckBlocks> = {
       fields: {
         title: { type: 'text', label: 'Antraštė', contentEditable: true },
         subtitle: { type: 'text', label: 'Paantraštė', contentEditable: true },
+        slides: {
+          type: 'array',
+          label: 'Karuselės nuotraukos',
+          arrayFields: {
+            src: {
+              type: 'custom',
+              label: 'Nuotrauka',
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+            },
+            alt: { type: 'text', label: 'Aprašymas (alt)' },
+          },
+          defaultItemProps: { src: '', alt: 'PC Europa' },
+          getItemSummary: (item) => item.alt || 'Skaidrė',
+        },
       },
-      defaultProps: { title: '', subtitle: '' },
-      render: ({ title, subtitle }) => (
-        <Hero title={title || undefined} subtitle={subtitle || undefined} />
+      defaultProps: { title: '', subtitle: '', slides: HERO_DEFAULT_SLIDES.map((s) => ({ ...s })) },
+      render: ({ title, subtitle, slides }) => (
+        <Hero title={title || undefined} subtitle={subtitle || undefined} slides={slides} />
       ),
     },
 
@@ -141,7 +198,11 @@ export const puckConfig: Config<PuckBlocks> = {
           arrayFields: {
             title: { type: 'text', label: 'Pavadinimas' },
             href: { type: 'text', label: 'URL' },
-            image: { type: 'text', label: 'Nuotraukos URL' },
+            image: {
+              type: 'custom',
+              label: 'Nuotrauka',
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+            },
           },
           defaultItemProps: { title: '', href: '/', image: '' },
           getItemSummary: (item) => item.title || 'Kategorija',
@@ -167,11 +228,19 @@ export const puckConfig: Config<PuckBlocks> = {
         leisureTag: { type: 'text', label: 'Laisvalaikio žyma', contentEditable: true },
         leisureHeading: { type: 'textarea', label: 'Laisvalaikio antraštė', contentEditable: true },
         leisureDescription: { type: 'textarea', label: 'Laisvalaikio aprašymas', contentEditable: true },
-        leisureImage: { type: 'text', label: 'Laisvalaikio nuotrauka (URL)' },
+        leisureImage: {
+          type: 'custom',
+          label: 'Laisvalaikio nuotrauka',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
         sportsHeading: { type: 'text', label: 'Sporto kortelės antraštė', contentEditable: true },
         petsHeading: { type: 'text', label: 'Augintinių kortelės antraštė', contentEditable: true },
         petsDescription: { type: 'textarea', label: 'Augintinių aprašymas', contentEditable: true },
-        petImage: { type: 'text', label: 'Augintinių nuotrauka (URL)' },
+        petImage: {
+          type: 'custom',
+          label: 'Augintinių nuotrauka',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
       },
       defaultProps: {
         leisureTag: 'Laisvalaikis ir pramogos',
@@ -194,20 +263,86 @@ export const puckConfig: Config<PuckBlocks> = {
 
     NewsSection: {
       label: 'Naujienos',
-      fields: {},
-      render: () => <SectionPreview label="Naujienos ir akcijos" bg="#fff7ed" height={320} />,
+      fields: {
+        heading: { type: 'text', label: 'Antraštė', contentEditable: true },
+        ctaLabel: { type: 'text', label: 'Mygtuko tekstas', contentEditable: true },
+        items: {
+          type: 'array',
+          label: 'Naujienos',
+          arrayFields: {
+            image: {
+              type: 'custom',
+              label: 'Nuotrauka',
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+            },
+            title: { type: 'text', label: 'Pavadinimas' },
+            date: { type: 'text', label: 'Data' },
+            href: { type: 'text', label: 'URL' },
+          },
+          defaultItemProps: { image: '', title: '', date: '', href: '/akcijos' },
+          getItemSummary: (item) => item.title || 'Naujiena',
+        },
+      },
+      defaultProps: {
+        heading: NEWS_SECTION_STRINGS.heading,
+        ctaLabel: NEWS_SECTION_STRINGS.ctaLabel,
+        items: NEWS_SECTION_STRINGS.items.map((item) => ({ ...item })),
+      },
+      render: ({ heading, ctaLabel, items }) => (
+        <NewsSection heading={heading} ctaLabel={ctaLabel} items={items} />
+      ),
     },
 
     OpeningHoursBlock: {
-      label: 'Darbo laikas (automatinis)',
-      fields: {},
-      render: () => <SectionPreview label="Darbo laikas — parduotuvių sąrašas (iš DB)" bg="#f0fdf4" height={400} />,
+      label: 'Darbo laikas',
+      fields: {
+        heroHeading: { type: 'text', label: 'Antraštė', contentEditable: true },
+        heroSubtext1: { type: 'text', label: 'Eilutė 1 (prekybos centras)', contentEditable: true },
+        heroSubtext2: { type: 'text', label: 'Eilutė 2 (parduotuvės)', contentEditable: true },
+        heroSubtext3: { type: 'text', label: 'Eilutė 3 (sporto klubai)', contentEditable: true },
+        searchPlaceholder: { type: 'text', label: 'Paieškos placeholder', contentEditable: true },
+        loadMoreButton: { type: 'text', label: '"Rodyti daugiau" mygtukas', contentEditable: true },
+      },
+      defaultProps: {
+        heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
+        heroSubtext1: DARBO_LAIKAS_STRINGS.heroSubtext1,
+        heroSubtext2: DARBO_LAIKAS_STRINGS.heroSubtext2,
+        heroSubtext3: DARBO_LAIKAS_STRINGS.heroSubtext3,
+        searchPlaceholder: DARBO_LAIKAS_STRINGS.searchPlaceholder,
+        loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
+      },
+      render: (props) => <OpeningHoursSection stores={[]} {...props} />,
     },
 
     HowToGetHereBlock: {
-      label: 'Kaip mus rasti (automatinis)',
-      fields: {},
-      render: () => <SectionPreview label="Kaip mus rasti — žemėlapis ir nurodymai" bg="#eff6ff" height={280} />,
+      label: 'Kaip mus rasti',
+      fields: {
+        heading: { type: 'text', label: 'Antraštė', contentEditable: true },
+        subtext: { type: 'textarea', label: 'Paantraštė', contentEditable: true },
+        mapEmbedUrl: { type: 'text', label: 'Žemėlapio embed URL' },
+        mapLinkUrl: { type: 'text', label: 'Maršruto nuoroda' },
+        viewRouteLabel: { type: 'text', label: 'Mygtuko tekstas', contentEditable: true },
+        transportCards: {
+          type: 'array',
+          label: 'Transporto kortelės',
+          arrayFields: {
+            title: { type: 'text', label: 'Pavadinimas' },
+            subtitle: { type: 'text', label: 'Paaiškinimas' },
+          },
+          defaultItemProps: { title: '', subtitle: '' },
+          getItemSummary: (item) => item.title || 'Kortelė',
+          max: 4,
+        },
+      },
+      defaultProps: {
+        heading: DARBO_LAIKAS_STRINGS.howToGetHereHeading,
+        subtext: DARBO_LAIKAS_STRINGS.howToGetHereSubtext,
+        mapEmbedUrl: 'https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed',
+        mapLinkUrl: 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
+        viewRouteLabel: DARBO_LAIKAS_STRINGS.viewRouteButton,
+        transportCards: DARBO_LAIKAS_STRINGS.transportCards.map((c) => ({ ...c })),
+      },
+      render: (props) => <HowToGetHereSection {...props} />,
     },
 
     StoresDirectoryBlock: {
@@ -217,15 +352,72 @@ export const puckConfig: Config<PuckBlocks> = {
     },
 
     LankytojamsBlock: {
-      label: 'Lankytojų informacija (automatinė)',
-      fields: {},
-      render: () => <SectionPreview label="Parkavimas, patogumai, paslaugos (statinis)" bg="#fdf4ff" height={400} />,
+      label: 'Lankytojų informacija',
+      fields: {
+        heading: { type: 'text', label: 'Antraštė', contentEditable: true },
+        parkingTitle: { type: 'text', label: 'Parkavimo antraštė', contentEditable: true },
+        parkingBody: { type: 'textarea', label: 'Parkavimo aprašymas', contentEditable: true },
+        accessTitle: { type: 'text', label: 'Pasiekiamumo antraštė', contentEditable: true },
+        accessPublicTransport: { type: 'textarea', label: 'Viešasis transportas', contentEditable: true },
+        accessByCar: { type: 'textarea', label: 'Automobiliu', contentEditable: true },
+        amenitiesTitle: { type: 'text', label: 'Patogumų antraštė', contentEditable: true },
+        amenities: {
+          type: 'array',
+          label: 'Patogumai',
+          arrayFields: {
+            value: { type: 'text', label: 'Punktas' },
+          },
+          defaultItemProps: { value: '' },
+          getItemSummary: (item) => item.value || 'Punktas',
+        },
+        faqTitle: { type: 'text', label: 'D.U.K. antraštė', contentEditable: true },
+        faqItems: {
+          type: 'array',
+          label: 'Klausimai',
+          arrayFields: {
+            question: { type: 'text', label: 'Klausimas' },
+            answer: { type: 'textarea', label: 'Atsakymas' },
+          },
+          defaultItemProps: { question: '', answer: '' },
+          getItemSummary: (item) => item.question || 'Klausimas',
+        },
+      },
+      defaultProps: {
+        heading: LANKYTOJAMS_STRINGS.heading,
+        parkingTitle: LANKYTOJAMS_STRINGS.parkingTitle,
+        parkingBody: LANKYTOJAMS_STRINGS.parkingBody,
+        accessTitle: LANKYTOJAMS_STRINGS.accessTitle,
+        accessPublicTransport: LANKYTOJAMS_STRINGS.accessPublicTransport,
+        accessByCar: LANKYTOJAMS_STRINGS.accessByCar,
+        amenitiesTitle: LANKYTOJAMS_STRINGS.amenitiesTitle,
+        amenities: LANKYTOJAMS_STRINGS.amenities.map((value) => ({ value })),
+        faqTitle: LANKYTOJAMS_STRINGS.faqTitle,
+        faqItems: LANKYTOJAMS_STRINGS.faqItems.map((item) => ({ ...item })),
+      },
+      render: ({ amenities, faqItems, ...rest }) => (
+        <LankytojamsContent {...rest} amenities={amenities.map((a) => a.value)} faqItems={faqItems} />
+      ),
     },
 
     AkcijosGridBlock: {
-      label: 'Akcijų tinklelis (automatinis)',
-      fields: {},
-      render: () => <SectionPreview label="Akcijų kortelės — iš duomenų bazės" bg="#fff7ed" height={480} />,
+      label: 'Akcijų tinklelis',
+      fields: {
+        filterAllLabel: { type: 'text', label: 'Filtras: Visi', contentEditable: true },
+        filterStoresLabel: { type: 'text', label: 'Filtras: Parduotuvės', contentEditable: true },
+        filterServicesLabel: { type: 'text', label: 'Filtras: Paslaugos', contentEditable: true },
+        filterFoodLabel: { type: 'text', label: 'Filtras: Maistas', contentEditable: true },
+        searchPlaceholder: { type: 'text', label: 'Paieškos placeholder', contentEditable: true },
+        loadMoreLabel: { type: 'text', label: '"Rodyti daugiau" mygtukas', contentEditable: true },
+      },
+      defaultProps: {
+        filterAllLabel: AKCIJOS_STRINGS.filterAll,
+        filterStoresLabel: AKCIJOS_STRINGS.filterStores,
+        filterServicesLabel: AKCIJOS_STRINGS.filterServices,
+        filterFoodLabel: AKCIJOS_STRINGS.filterFood,
+        searchPlaceholder: AKCIJOS_STRINGS.searchPlaceholder,
+        loadMoreLabel: AKCIJOS_STRINGS.loadMore,
+      },
+      render: (props) => <AkcijosGrid items={PROMO_ITEMS} {...props} />,
     },
 
     DialogaiFoodCourtBlock: {

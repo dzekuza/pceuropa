@@ -5,8 +5,27 @@ import { OpeningHoursSection } from '@/components/marketing/opening-hours-sectio
 import { HowToGetHereSection } from '@/components/marketing/how-to-get-here-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { createClient } from '@/lib/supabase/server'
+import { getPuckBlockProps } from '@/lib/page-content'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
+
+const DEFAULT_OPENING_HOURS_TEXT = {
+  heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
+  heroSubtext1: DARBO_LAIKAS_STRINGS.heroSubtext1,
+  heroSubtext2: DARBO_LAIKAS_STRINGS.heroSubtext2,
+  heroSubtext3: DARBO_LAIKAS_STRINGS.heroSubtext3,
+  searchPlaceholder: DARBO_LAIKAS_STRINGS.searchPlaceholder,
+  loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
+}
+
+const DEFAULT_HOW_TO_GET_HERE = {
+  heading: DARBO_LAIKAS_STRINGS.howToGetHereHeading,
+  subtext: DARBO_LAIKAS_STRINGS.howToGetHereSubtext,
+  mapEmbedUrl: 'https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  mapLinkUrl: 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
+  viewRouteLabel: DARBO_LAIKAS_STRINGS.viewRouteButton,
+  transportCards: DARBO_LAIKAS_STRINGS.transportCards.map((c) => ({ ...c })),
+}
 
 export const metadata = {
   title: DARBO_LAIKAS_STRINGS.pageTitle,
@@ -47,6 +66,8 @@ export default async function DarboLaikasPage() {
     .order('store_name', { ascending: true })
 
   const open = isCurrentlyOpen()
+  const openingHoursText = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', DEFAULT_OPENING_HOURS_TEXT)
+  const howToGetHere = await getPuckBlockProps('darbo-laikas', 'HowToGetHereBlock', DEFAULT_HOW_TO_GET_HERE)
 
   const stores: StoreHoursCardProps[] = (tenants ?? []).map((t) => ({
     id: t.id,
@@ -76,8 +97,8 @@ export default async function DarboLaikasPage() {
 
       {/* Main content */}
       <div className="w-full max-w-[1332px] mx-auto px-4 py-10 md:py-14 flex flex-col gap-10 md:gap-14">
-        <OpeningHoursSection stores={stores} />
-        <HowToGetHereSection />
+        <OpeningHoursSection stores={stores} {...openingHoursText} />
+        <HowToGetHereSection {...howToGetHere} />
       </div>
 
       {/* Floor plan */}

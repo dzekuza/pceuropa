@@ -5,22 +5,35 @@ import { Search } from 'lucide-react'
 import { PromoCard, type PromoItem } from './promo-card'
 import { AKCIJOS_STRINGS } from '@/lib/strings'
 
-const FILTERS = [
-  { key: 'all', label: AKCIJOS_STRINGS.filterAll },
-  { key: 'stores', label: AKCIJOS_STRINGS.filterStores },
-  { key: 'services', label: AKCIJOS_STRINGS.filterServices },
-  { key: 'food', label: AKCIJOS_STRINGS.filterFood },
-] as const
-
-type FilterKey = (typeof FILTERS)[number]['key']
+type FilterKey = 'all' | 'stores' | 'services' | 'food'
 
 const PAGE_SIZE = 8
 
 type Props = {
   items: PromoItem[]
+  filterAllLabel?: string
+  filterStoresLabel?: string
+  filterServicesLabel?: string
+  filterFoodLabel?: string
+  searchPlaceholder?: string
+  loadMoreLabel?: string
 }
 
-export function AkcijosGrid({ items }: Props) {
+export function AkcijosGrid({
+  items,
+  filterAllLabel = AKCIJOS_STRINGS.filterAll,
+  filterStoresLabel = AKCIJOS_STRINGS.filterStores,
+  filterServicesLabel = AKCIJOS_STRINGS.filterServices,
+  filterFoodLabel = AKCIJOS_STRINGS.filterFood,
+  searchPlaceholder = AKCIJOS_STRINGS.searchPlaceholder,
+  loadMoreLabel = AKCIJOS_STRINGS.loadMore,
+}: Props) {
+  const FILTERS = [
+    { key: 'all', label: filterAllLabel },
+    { key: 'stores', label: filterStoresLabel },
+    { key: 'services', label: filterServicesLabel },
+    { key: 'food', label: filterFoodLabel },
+  ] as const
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all')
   const [search, setSearch] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
@@ -65,7 +78,7 @@ export function AkcijosGrid({ items }: Props) {
           <Search className="size-5 text-[#575757] shrink-0" />
           <input
             type="text"
-            placeholder={AKCIJOS_STRINGS.searchPlaceholder}
+            placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value)
@@ -90,7 +103,7 @@ export function AkcijosGrid({ items }: Props) {
             onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
             className="bg-black text-white rounded-full px-7 py-4 text-[16px] lg:text-[18px] font-normal leading-[24px] transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
-            {AKCIJOS_STRINGS.loadMore}
+            {loadMoreLabel}
           </button>
         </div>
       )}

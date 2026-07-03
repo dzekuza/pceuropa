@@ -40,6 +40,38 @@ export type NavItem = {
 
 export const REVENUE_REMINDER_TITLE = 'Artėja mėnesio pabaiga'
 
+// Landing page news/promo cards
+export const NEWS_SECTION_STRINGS = {
+  heading: 'Akcijos ir naujienos',
+  ctaLabel: 'Daugiau',
+  items: [
+    {
+      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
+      title: 'Papildoma nuolaida Rieker!',
+      date: 'Nuo 2026.03.25 iki 2026.03.29',
+      href: '/akcijos/rieker',
+    },
+    {
+      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
+      title: 'Kvepia pavasariu',
+      date: 'Nuo 2026.03.25 iki 2026.03.29',
+      href: '/akcijos/pavasaris',
+    },
+    {
+      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
+      title: 'Kvepia pavasariu',
+      date: 'Nuo 2026.03.25 iki 2026.03.29',
+      href: '/akcijos/samsung',
+    },
+    {
+      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-4.jpg',
+      title: 'Kvepia pavasariu',
+      date: 'Nuo 2026.03.25 iki 2026.03.29',
+      href: '/akcijos/vision-express',
+    },
+  ],
+} as const
+
 export const AKCIJOS_STRINGS = {
   pageTitle: 'Akcijos / Naujienos',
   pageDescription:

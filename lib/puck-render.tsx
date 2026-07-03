@@ -11,10 +11,15 @@ import type { PuckBlocks } from './puck-config'
 
 type BlockEntry = Data['content'][number]
 
-const ALLOWED_IMAGE_HOSTNAMES = new Set([
-  'hfnsbhovdjqnfzjpugwa.supabase.co',
-  'localhost',
-])
+// hfnsbhovdjqnfzjpugwa.supabase.co is a legacy asset host still referenced by default/fallback
+// content that predates the current Supabase project — kept trusted until those assets are migrated.
+const ALLOWED_IMAGE_HOSTNAMES = new Set(
+  [
+    process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null,
+    'hfnsbhovdjqnfzjpugwa.supabase.co',
+    'localhost',
+  ].filter((hostname): hostname is string => hostname !== null),
+)
 
 function isSafeImageUrl(url: unknown): url is string {
   if (typeof url !== 'string' || url === '') return false
@@ -42,14 +47,28 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
       const slides = [props.slide1, props.slide2, props.slide3, props.slide4].filter(isSafeImageUrl)
       return <PageBannerCarousel key={key} slides={slides} />
     }
-    case 'Hero':
+    case 'Hero': {
+      const rawSlides = Array.isArray(props.slides) ? props.slides : []
+      const slides = (rawSlides as unknown[]).flatMap((slide) => {
+        if (
+          slide !== null &&
+          typeof slide === 'object' &&
+          isSafeImageUrl((slide as Record<string, unknown>).src)
+        ) {
+          const s = slide as Record<string, unknown>
+          return [{ src: s.src as string, alt: safeString(s.alt) ?? '' }]
+        }
+        return []
+      })
       return (
         <Hero
           key={key}
           title={safeString(props.title) || undefined}
           subtitle={safeString(props.subtitle) || undefined}
+          slides={slides.length ? slides : undefined}
         />
       )
+    }
     case 'QuickLinks':
       return <QuickLinks key={key} links={props.links as PuckBlocks['QuickLinks']['links']} />
     case 'CategoriesSection': {
@@ -91,8 +110,30 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
       )
     case 'PartnerLogos':
       return <PartnerLogos key={key} />
-    case 'NewsSection':
-      return <NewsSection key={key} />
+    case 'NewsSection': {
+      const rawItems = Array.isArray(props.items) ? props.items : []
+      const items = (rawItems as unknown[]).flatMap((item) => {
+        if (
+          item !== null &&
+          typeof item === 'object' &&
+          'title' in item &&
+          'date' in item &&
+          'href' in item &&
+          isSafeImageUrl((item as Record<string, unknown>).image)
+        ) {
+          return [item as PuckBlocks['NewsSection']['items'][number]]
+        }
+        return []
+      })
+      return (
+        <NewsSection
+          key={key}
+          heading={safeString(props.heading)}
+          ctaLabel={safeString(props.ctaLabel)}
+          items={items.length ? items : undefined}
+        />
+      )
+    }
     case 'SocialSection':
       return (
         <SocialSection

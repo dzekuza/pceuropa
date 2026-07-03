@@ -47,18 +47,21 @@ export function PuckEditor({ data, pageSlug, previewUrl }: PuckEditorProps) {
         if (previewUrl) router.push(previewUrl)
       }}
       overrides={{
-        headerActions: () => (
-          <select
-            value={pageSlug}
-            onChange={(e) => router.push(`/admin/puck/${e.target.value}`)}
-            className="text-[13px] px-2 py-1 rounded-md border border-gray-300 bg-white cursor-pointer h-8"
-          >
-            {PAGES.map((p) => (
-              <option key={p.slug} value={p.slug}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+        headerActions: ({ children }) => (
+          <>
+            <select
+              value={pageSlug}
+              onChange={(e) => router.push(`/admin/puck/${e.target.value}`)}
+              className="text-[13px] px-2 py-1 rounded-md border border-gray-300 bg-white cursor-pointer h-8"
+            >
+              {PAGES.map((p) => (
+                <option key={p.slug} value={p.slug}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+            {children}
+          </>
         ),
       }}
     />

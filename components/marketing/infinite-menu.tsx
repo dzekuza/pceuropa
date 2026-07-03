@@ -1015,15 +1015,6 @@ export default function InfiniteMenu({ items = [], scale = 1.0 }: { items?: Infi
     }
   }, [items, scale])
 
-  const handleButtonClick = () => {
-    if (!activeItem?.link) return
-    if (activeItem.link.startsWith('http')) {
-      window.open(activeItem.link, '_blank')
-    } else {
-      window.location.href = activeItem.link
-    }
-  }
-
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas id="infinite-grid-menu-canvas" ref={canvasRef} />
@@ -1033,10 +1024,6 @@ export default function InfiniteMenu({ items = [], scale = 1.0 }: { items?: Infi
           <h2 className={`face-title ${isMoving ? 'inactive' : 'active'}`}>{activeItem.title}</h2>
 
           <p className={`face-description ${isMoving ? 'inactive' : 'active'}`}> {activeItem.description}</p>
-
-          <div onClick={handleButtonClick} className={`action-button ${isMoving ? 'inactive' : 'active'}`}>
-            <p className="action-button-icon">&#x2197;</p>
-          </div>
         </>
       )}
     </div>

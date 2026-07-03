@@ -5,16 +5,34 @@ import { DisplayHeading } from './ui/typography'
 
 const TRANSPORT_ICONS: LucideIcon[] = [Car, SquareParking, Bike, Accessibility]
 
-export function HowToGetHereSection() {
+export type TransportCard = { title: string; subtitle: string }
+
+type HowToGetHereSectionProps = {
+  heading?: string
+  subtext?: string
+  mapEmbedUrl?: string
+  mapLinkUrl?: string
+  viewRouteLabel?: string
+  transportCards?: TransportCard[]
+}
+
+export function HowToGetHereSection({
+  heading = DARBO_LAIKAS_STRINGS.howToGetHereHeading,
+  subtext = DARBO_LAIKAS_STRINGS.howToGetHereSubtext,
+  mapEmbedUrl = 'https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  mapLinkUrl = 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
+  viewRouteLabel = DARBO_LAIKAS_STRINGS.viewRouteButton,
+  transportCards = DARBO_LAIKAS_STRINGS.transportCards as unknown as TransportCard[],
+}: HowToGetHereSectionProps) {
   return (
     <section className="bg-white w-full rounded-[32px] lg:rounded-[40px] p-6 lg:p-10 flex flex-col gap-10">
       {/* Heading */}
       <div className="flex flex-col gap-4">
         <DisplayHeading>
-          {DARBO_LAIKAS_STRINGS.howToGetHereHeading}
+          {heading}
         </DisplayHeading>
         <p className="text-[#575757] text-base leading-6">
-          {DARBO_LAIKAS_STRINGS.howToGetHereSubtext}
+          {subtext}
         </p>
       </div>
 
@@ -23,7 +41,7 @@ export function HowToGetHereSection() {
         {/* Map */}
         <div className="relative w-full lg:flex-1 rounded-3xl overflow-hidden h-[260px] md:h-[340px] lg:h-[428px]">
           <iframe
-            src="https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            src={mapEmbedUrl}
             className="absolute inset-0 size-full border-0"
             allowFullScreen
             loading="lazy"
@@ -33,19 +51,19 @@ export function HowToGetHereSection() {
           {/* View route button */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <a
-              href="https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308"
+              href={mapLinkUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white border border-white text-black text-sm leading-4 font-normal px-7 py-3 rounded-full whitespace-nowrap hover:bg-white/90 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
             >
-              {DARBO_LAIKAS_STRINGS.viewRouteButton}
+              {viewRouteLabel}
             </a>
           </div>
         </div>
 
         {/* Transport cards */}
         <div className="flex flex-col gap-3 w-full lg:w-[328px] shrink-0">
-          {DARBO_LAIKAS_STRINGS.transportCards.map(({ title, subtitle }, index) => {
+          {transportCards.map(({ title, subtitle }, index) => {
             const Icon = TRANSPORT_ICONS[index]
             return (
               <div

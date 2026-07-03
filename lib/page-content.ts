@@ -23,6 +23,32 @@ export async function getPuckBannerSlides(
   return slides.length ? slides : defaults
 }
 
+/** Returns a Puck block's saved props for a page/type, shallow-merged over defaults (empty/missing values keep the default). */
+export async function getPuckBlockProps<T extends Record<string, unknown>>(
+  slug: string,
+  blockType: string,
+  defaults: T,
+): Promise<T> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('puck_pages')
+    .select('data')
+    .eq('page_slug', slug)
+    .single()
+
+  const puckData = data?.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> } | null
+  const block = puckData?.content?.find((b) => b.type === blockType)
+  if (!block?.props) return defaults
+
+  const merged: Record<string, unknown> = { ...defaults }
+  for (const key of Object.keys(defaults)) {
+    const value = block.props[key]
+    const isEmpty = value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)
+    if (!isEmpty) merged[key] = value
+  }
+  return merged as T
+}
+
 export type CmsSections = Record<string, Record<string, string>>
 
 export async function getPageContent(slug: string): Promise<CmsSections> {

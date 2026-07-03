@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isSameSiteNavigation } from '@/lib/auth/same-site-navigation'
 
 // Derive a stable seller username from the store name.
 // e.g. "Archie's burger" → "archiesburger", "ALI ŠOKOLADINĖ" → "alisokoline"
@@ -18,6 +19,13 @@ function toSellerSlug(storeName: string): string {
 }
 
 export async function GET(request: NextRequest) {
+  // This route signs the caller into a different account and is reached via
+  // full-page navigation rather than fetch, so it can't carry a body-based
+  // CSRF token — reject cross-site navigations instead (CSRF via a lured click).
+  if (!isSameSiteNavigation(request)) {
+    return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+  }
+
   const cookieStore = await cookies()
 
   const supabase = createServerClient(

@@ -4,39 +4,30 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { DisplayHeading } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
+import { NEWS_SECTION_STRINGS } from '@/lib/strings'
 
-const news = [
-  {
-    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
-    title: 'Papildoma nuolaida Rieker!',
-    date: 'Nuo 2026.03.25 iki 2026.03.29',
-    href: '/akcijos/rieker',
-    imageRounded: 'rounded-[40px]',
-  },
-  {
-    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
-    title: 'Kvepia pavasariu',
-    date: 'Nuo 2026.03.25 iki 2026.03.29',
-    href: '/akcijos/pavasaris',
-    imageRounded: 'rounded-[20px]',
-  },
-  {
-    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
-    title: 'Kvepia pavasariu',
-    date: 'Nuo 2026.03.25 iki 2026.03.29',
-    href: '/akcijos/samsung',
-    imageRounded: 'rounded-[20px]',
-  },
-  {
-    image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-4.jpg',
-    title: 'Kvepia pavasariu',
-    date: 'Nuo 2026.03.25 iki 2026.03.29',
-    href: '/akcijos/vision-express',
-    imageRounded: 'rounded-[20px]',
-  },
-]
+export type NewsSectionItem = {
+  image: string
+  title: string
+  date: string
+  href: string
+}
 
-export function NewsSection() {
+type NewsSectionProps = {
+  heading?: string
+  ctaLabel?: string
+  items?: NewsSectionItem[]
+}
+
+export function NewsSection({
+  heading = NEWS_SECTION_STRINGS.heading,
+  ctaLabel = NEWS_SECTION_STRINGS.ctaLabel,
+  items = NEWS_SECTION_STRINGS.items as unknown as NewsSectionItem[],
+}: NewsSectionProps) {
+  const news = items.map((item, index) => ({
+    ...item,
+    imageRounded: index === 0 ? 'rounded-[40px]' : 'rounded-[20px]',
+  }))
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const scroll = (dir: 'left' | 'right') => {
@@ -49,15 +40,15 @@ export function NewsSection() {
     <section className="flex flex-col gap-8 lg:gap-12 items-center w-full max-w-[1332px] mx-auto px-4 py-6 md:py-8 lg:py-12">
       {/* Header */}
       <div className="flex items-center justify-between w-full">
-        <DisplayHeading>Akcijos ir naujienos</DisplayHeading>
+        <DisplayHeading>{heading}</DisplayHeading>
         <Link
           href="/akcijos"
           prefetch={false}
           className="hidden md:flex items-center gap-2"
-          aria-label="Daugiau akcijų ir naujienų"
+          aria-label={`${ctaLabel} akcijų ir naujienų`}
         >
           <span className="inline-flex items-center justify-center bg-black text-white rounded-full px-7 py-4 text-[18px] font-normal leading-[24px] font-['Geist'] transition-opacity duration-150 hover:opacity-80">
-            Daugiau
+            {ctaLabel}
           </span>
           <span className="group inline-flex items-center justify-center bg-black rounded-full size-[56px] transition-opacity duration-150 hover:opacity-80 active:scale-95">
             <ArrowIcon className="text-white size-6 transition-transform duration-150 group-hover:rotate-[-25deg]" />
@@ -101,14 +92,14 @@ export function NewsSection() {
         </button>
       </div>
 
-      {/* Mobile "Daugiau" button */}
+      {/* Mobile CTA button */}
       <Link
         href="/akcijos"
         prefetch={false}
         className="md:hidden flex items-center gap-2"
       >
         <span className="inline-flex items-center justify-center bg-black text-white rounded-full px-6 py-3 text-[16px] font-normal leading-[24px]">
-          Daugiau
+          {ctaLabel}
         </span>
         <span className="inline-flex items-center justify-center bg-black rounded-full size-[48px]">
           <ArrowIcon className="text-white size-5" />
@@ -118,7 +109,7 @@ export function NewsSection() {
   )
 }
 
-type NewsItem = (typeof news)[number]
+type NewsItem = NewsSectionItem & { imageRounded: string }
 
 function NewsCard({ item }: { item: NewsItem }) {
   return (

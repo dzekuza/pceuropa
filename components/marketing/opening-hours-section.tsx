@@ -11,9 +11,23 @@ type Store = Omit<StoreHoursCardProps, never>
 
 type OpeningHoursSectionProps = {
   stores: Store[]
+  heroHeading?: string
+  heroSubtext1?: string
+  heroSubtext2?: string
+  heroSubtext3?: string
+  searchPlaceholder?: string
+  loadMoreButton?: string
 }
 
-export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
+export function OpeningHoursSection({
+  stores,
+  heroHeading = DARBO_LAIKAS_STRINGS.heroHeading,
+  heroSubtext1 = DARBO_LAIKAS_STRINGS.heroSubtext1,
+  heroSubtext2 = DARBO_LAIKAS_STRINGS.heroSubtext2,
+  heroSubtext3 = DARBO_LAIKAS_STRINGS.heroSubtext3,
+  searchPlaceholder = DARBO_LAIKAS_STRINGS.searchPlaceholder,
+  loadMoreButton = DARBO_LAIKAS_STRINGS.loadMoreButton,
+}: OpeningHoursSectionProps) {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
@@ -32,12 +46,12 @@ export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
       <div className="flex items-end justify-between gap-6 mb-6">
         <div className="flex-1 min-w-0">
           <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black font-[family-name:var(--font-jakarta)] mb-2">
-            {DARBO_LAIKAS_STRINGS.heroHeading}
+            {heroHeading}
           </h1>
           <div className="text-[#575757] text-[14px] md:text-base leading-6 space-y-0.5">
-            <p>{DARBO_LAIKAS_STRINGS.heroSubtext1}</p>
-            <p>{DARBO_LAIKAS_STRINGS.heroSubtext2}</p>
-            <p>{DARBO_LAIKAS_STRINGS.heroSubtext3}</p>
+            <p>{heroSubtext1}</p>
+            <p>{heroSubtext2}</p>
+            <p>{heroSubtext3}</p>
           </div>
         </div>
 
@@ -51,9 +65,9 @@ export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
               setQuery(e.target.value)
               setVisibleCount(PAGE_SIZE)
             }}
-            placeholder={DARBO_LAIKAS_STRINGS.searchPlaceholder}
+            placeholder={searchPlaceholder}
             className="flex-1 bg-transparent text-[#575757] text-base leading-6 outline-none placeholder:text-[#575757]"
-            aria-label={DARBO_LAIKAS_STRINGS.searchPlaceholder}
+            aria-label={searchPlaceholder}
           />
         </label>
       </div>
@@ -68,9 +82,9 @@ export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
             setQuery(e.target.value)
             setVisibleCount(PAGE_SIZE)
           }}
-          placeholder={DARBO_LAIKAS_STRINGS.searchPlaceholder}
+          placeholder={searchPlaceholder}
           className="flex-1 bg-transparent text-[#575757] text-base leading-6 outline-none placeholder:text-[#575757]"
-          aria-label={DARBO_LAIKAS_STRINGS.searchPlaceholder}
+          aria-label={searchPlaceholder}
         />
       </label>
 
@@ -89,7 +103,7 @@ export function OpeningHoursSection({ stores }: OpeningHoursSectionProps) {
             onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
             className="bg-white text-black font-normal text-sm leading-4 px-7 py-4 rounded-full border border-[#e5e5e3] hover:bg-[#f0f0ee] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           >
-            {DARBO_LAIKAS_STRINGS.loadMoreButton}
+            {loadMoreButton}
           </button>
         </div>
       )}

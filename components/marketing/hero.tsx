@@ -6,7 +6,7 @@ import { ArrowIcon } from './ui/arrow-icon'
 
 const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
 
-const DEFAULT_SLIDES = [
+export const HERO_DEFAULT_SLIDES = [
   { src: `${BASE}/hero-bg.jpg`,          alt: 'PC Europa' },
   { src: `${BASE}/activities-coffee.jpg`, alt: 'PC Europa — laisvalaikis' },
   { src: `${BASE}/categories-1.jpg`,      alt: 'PC Europa — akcijos' },
@@ -21,7 +21,7 @@ interface HeroProps {
   subtitle?: React.ReactNode
 }
 
-export function Hero({ slides = DEFAULT_SLIDES, title, subtitle }: HeroProps) {
+export function Hero({ slides = HERO_DEFAULT_SLIDES, title, subtitle }: HeroProps) {
   const [current, setCurrent] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const count = slides.length

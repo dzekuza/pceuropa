@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Move } from 'lucide-react'
 import InfiniteMenu, { type InfiniteMenuItem } from '@/components/marketing/infinite-menu'
@@ -18,8 +19,18 @@ export function ComingSoonInfiniteMenu({
   items: InfiniteMenuItem[]
   redirectTo: string
 }) {
+  const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [state, formAction, isPending] = useActionState(unlockSite, initialState)
+
+  // Navigate here instead of inside the Server Action — calling redirect() from
+  // an action bound to useActionState throws mid-transition and triggers
+  // React's "useInsertionEffect must not schedule updates" error.
+  useEffect(() => {
+    if (!state.error && state.redirectTo) {
+      router.push(state.redirectTo)
+    }
+  }, [state, router])
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black">
