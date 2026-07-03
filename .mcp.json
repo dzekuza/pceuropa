@@ -8,8 +8,18 @@
             ]
         },
         "supabase": {
-            "type": "http",
-            "url": "https://mcp.supabase.com/mcp"
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@supabase/mcp-server-supabase@latest",
+                "--read-only",
+                "--project-ref",
+                "ukmxbzuechxpinrythis"
+            ],
+            "env": {
+                "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+            }
         },
         "figma-desktop": {
             "type": "http",
@@ -23,13 +33,6 @@
                 "puppeteer-mcp-server"
             ],
             "env": {}
-        },
-        "css-studio": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "cssstudio"
-            ]
         }
     }
 }

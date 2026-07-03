@@ -1,12 +1,11 @@
 'use client'
 // components/tenants/tenant-revenue-table.tsx — Updated to use DataGrid aesthetic
 import { useMemo } from 'react'
-import { MONTHS_LT } from '@/lib/constants'
 import {
-  calculatePK,
-  calculateApyvartaPerM2,
-  calculateEfektyvumas,
-} from '@/lib/utils/calculations'
+  formatEur as fmtEur,
+  formatPct as fmtPct,
+} from '@/lib/utils/format'
+import { buildTenantRevenueRows } from '@/components/tenants/tenant-revenue-rows'
 import type { Tenant, RevenueReport } from '@/types/database'
 import {
   useReactTable,
@@ -41,45 +40,11 @@ function efektyvumasClass(value: number | null): string {
   return 'rounded px-1.5 py-0.5 bg-destructive/10 text-destructive font-medium'
 }
 
-function fmtEur(value: number): string {
-  return value.toFixed(2)
-}
-
-function fmtPct(value: number): string {
-  return value.toFixed(1) + '%'
-}
-
 export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTableProps) {
-  const reportMap = useMemo(() => {
-    const map = new Map<string, RevenueReport>()
-    for (const report of reports) {
-      map.set(report.month.slice(0, 7), report)
-    }
-    return map
-  }, [reports])
-
-  const pk = useMemo(() => calculatePK(tenant.rent_eur, tenant.space_m2), [tenant])
-
-  const rows = useMemo(() => MONTHS_LT.map((monthName, idx) => {
-    const monthNum = idx + 1
-    const monthKey = `${year}-${String(monthNum).padStart(2, '0')}`
-    const report = reportMap.get(monthKey) ?? null
-
-    const hasData = report !== null
-    const amount = hasData ? report!.amount_eur : 0
-    const txCount = hasData ? (report!.tx_count ?? 0) : 0
-    const apyvartaPerM2 = hasData ? calculateApyvartaPerM2(amount, tenant.space_m2) : null
-    const efektyvumas = hasData ? calculateEfektyvumas(amount, tenant.rent_eur) : null
-
-    return {
-      monthName,
-      hasData,
-      amount,
-      txCount,
-      apyvartaPerM2,
-      efektyvumas,
-    }
-  }), [year, reportMap, tenant])
+  const { rows, pk } = useMemo(
+    () => buildTenantRevenueRows(tenant, reports, year),
+    [tenant, reports, year],
+  )
 
   const stats = useMemo(() => {
     const dataRows = rows.filter((r) => r.hasData)
@@ -101,22 +66,30 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
       size: 130,
     },
     {
-      id: 'space',
-      header: ({ column }) => <DataGridColumnHeader title="Plotas (m²)" column={column} />,
-      cell: () => <div className="text-right">{tenant.space_m2 ?? '—'}</div>,
-      size: 110,
+      accessorKey: 'amount',
+      header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR)" column={column} />,
+      cell: ({ row }) => (
+        <div className="text-right">
+          {row.original.hasData ? fmtEur(row.original.amount) : '—'}
+        </div>
+      ),
+      size: 130,
     },
     {
       accessorKey: 'txCount',
       header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
-      cell: ({ row }) => <div className="text-right">{row.original.txCount}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">
+          {row.original.hasData ? row.original.txCount : '—'}
+        </div>
+      ),
       size: 110,
     },
     {
-      accessorKey: 'amount',
-      header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR)" column={column} />,
-      cell: ({ row }) => <div className="text-right">{fmtEur(row.original.amount)}</div>,
-      size: 130,
+      id: 'space',
+      header: ({ column }) => <DataGridColumnHeader title="Plotas (m²)" column={column} />,
+      cell: () => <div className="text-right">{tenant.space_m2 ?? '—'}</div>,
+      size: 110,
     },
     {
       id: 'pk',
@@ -167,9 +140,6 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
       tableLayout={{
         width: 'fixed',
         rowBorder: true,
-        columnsPinnable: true,
-        columnsMovable: true,
-        columnsVisibility: true,
       }}
     >
       <RevenueTableContent stats={stats} pk={pk} tenantSpace={tenant.space_m2} />
@@ -192,7 +162,7 @@ function RevenueTableContent({ stats, pk, tenantSpace }: RevenueTableContentProp
   const { table } = useDataGrid()
 
   return (
-    <div className="rounded-md border overflow-x-auto">
+    <div className="overflow-x-auto rounded-b-xl">
       <DataGridTableBase>
         <DataGridTableHead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -221,9 +191,9 @@ function RevenueTableContent({ stats, pk, tenantSpace }: RevenueTableContentProp
         <TableFooter>
           <TableRow className="font-bold hover:bg-muted/50 transition-colors">
             <TableCell className="px-3 py-3">Vidurkis</TableCell>
-            <TableCell className="text-right px-3 py-3">{tenantSpace ?? '—'}</TableCell>
-            <TableCell className="text-right px-3 py-3">{stats.avgTxCount != null ? stats.avgTxCount.toFixed(0) : '—'}</TableCell>
             <TableCell className="text-right px-3 py-3">{stats.avgAmount != null ? fmtEur(stats.avgAmount) : '—'}</TableCell>
+            <TableCell className="text-right px-3 py-3">{stats.avgTxCount != null ? stats.avgTxCount.toFixed(0) : '—'}</TableCell>
+            <TableCell className="text-right px-3 py-3">{tenantSpace ?? '—'}</TableCell>
             <TableCell className="text-right bg-muted/40 px-3 py-3">{pk != null ? fmtEur(pk) : '—'}</TableCell>
             <TableCell className="text-right bg-muted/40 px-3 py-3">{stats.avgApyvartaPerM2 != null ? fmtEur(stats.avgApyvartaPerM2) : '—'}</TableCell>
             <TableCell className="text-right bg-muted/40 px-3 py-3">

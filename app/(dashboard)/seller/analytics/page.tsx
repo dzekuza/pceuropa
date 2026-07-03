@@ -39,15 +39,18 @@ export default async function SellerAnalyticsPage() {
 
     const allReports = reports ?? []
 
-    // Build monthly revenue series (last 12 months, gap-filled)
+    // Build monthly revenue series clipped to the current calendar year
+    // (Sausis → current month), so analytics never spill into the prior year.
     const now = new Date()
-    const toMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-    let fromYear = now.getFullYear()
-    let fromMonth = now.getMonth() + 1 - 11
-    if (fromMonth < 1) { fromMonth += 12; fromYear -= 1 }
-    const fromMonthStr = `${fromYear}-${String(fromMonth).padStart(2, '0')}-01`
+    const currentYear = now.getFullYear()
+    const toMonth = `${currentYear}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
+    const fromMonthStr = `${currentYear}-01-01`
 
-    const monthlyData = aggregateMonthlyRevenue(allReports, fromMonthStr, toMonth)
+    const clippedReports = allReports.filter(
+        (r) => r.month >= fromMonthStr && r.month <= toMonth,
+    )
+
+    const monthlyData = aggregateMonthlyRevenue(clippedReports, fromMonthStr, toMonth)
 
     return (
         <div className="flex flex-col gap-3">
@@ -63,7 +66,7 @@ export default async function SellerAnalyticsPage() {
 
             {/* Charts — stacked vertically for clarity */}
             <RevenueAreaChart data={monthlyData} />
-            <TxBarChart reports={allReports} />
+            <TxBarChart reports={clippedReports} />
         </div>
     )
 }

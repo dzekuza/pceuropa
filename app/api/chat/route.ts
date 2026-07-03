@@ -81,32 +81,94 @@ ${JSON.stringify(tenantSummaries, null, 2)}
 `
 }
 
+function buildSellerSystemPrompt(tenant: TenantRow, revenue: RevenueRow[]): string {
+  const today = new Date().toLocaleDateString('lt-LT', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const months = revenue.map(
+    (r) => `${r.month}: €${r.amount_eur.toLocaleString('lt-LT')} (${r.tx_count ?? 0} čekių)`,
+  )
+  const totalRevenue = revenue.reduce((s, r) => s + r.amount_eur, 0)
+
+  const summary = {
+    parduotuvė: tenant.store_name,
+    operatorius: tenant.operator ?? '—',
+    kategorija: tenant.category ?? '—',
+    plotasM2: tenant.space_m2 ?? '—',
+    nuomaEurMėn: tenant.rent_eur ?? '—',
+    pajamosVisoEur: totalRevenue,
+    pajamosVisoFormatas: `€${totalRevenue.toLocaleString('lt-LT')}`,
+    pajamosPoMenesius: months,
+  }
+
+  return `Tu esi PCEuropa nuomininkų portalo AI asistentė parduotuvei "${tenant.store_name}". Šiandien yra ${today}.
+
+## Tavo vaidmuo
+Padedi šios parduotuvės atstovui suprasti savo apyvartos ir čekių duomenis.
+Atsakyk tiksliai, dalykiškai ir trumpai. Visada atsakyk lietuviškai.
+
+## Šios parduotuvės duomenys
+${JSON.stringify(summary, null, 2)}
+
+## Instrukcijos
+- Kalbėk TIK apie šios parduotuvės duomenis.
+- Jei klausiama apie kitas parduotuves ar bendrą prekybos centro statistiką — mandagiai paaiškink, kad turi prieigą tik prie šios parduotuvės duomenų.
+- Neminėk "duomenų bazės" ar "JSON" — kalbėk kaip apie realius faktus.
+- Jei duomenų nėra, pasakyk "šiam laikotarpiui duomenų nėra".
+`
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return new Response('Unauthorized', { status: 401 })
   }
-  if (user.app_metadata?.role !== 'admin') {
+
+  const role = user.app_metadata?.role
+  if (role !== 'admin' && role !== 'seller') {
     return new Response('Forbidden', { status: 403 })
   }
 
   const { messages } = await req.json()
 
-  const admin = createAdminClient()
-  const [{ data: tenants }, { data: revenue }] = await Promise.all([
-    admin
+  let systemPrompt: string
+  if (role === 'admin') {
+    // Admin: full-center context via the service-role client.
+    const admin = createAdminClient()
+    const [{ data: tenants }, { data: revenue }] = await Promise.all([
+      admin
+        .from('tenants')
+        .select('id, store_name, operator, company_code, category, space_m2, rent_eur, description')
+        .order('store_name'),
+      admin
+        .from('revenue_reports')
+        .select('tenant_id, month, amount_eur, tx_count')
+        .order('month', { ascending: false })
+        .limit(120),
+    ])
+    systemPrompt = buildSystemPrompt(tenants ?? [], revenue ?? [])
+  } else {
+    // Seller: scope strictly to their own tenant using the RLS-bound user client.
+    const { data: tenant } = await supabase
       .from('tenants')
       .select('id, store_name, operator, company_code, category, space_m2, rent_eur, description')
-      .order('store_name'),
-    admin
+      .eq('user_id', user.id)
+      .single()
+    if (!tenant) {
+      return new Response('Forbidden', { status: 403 })
+    }
+    const { data: revenue } = await supabase
       .from('revenue_reports')
       .select('tenant_id, month, amount_eur, tx_count')
+      .eq('tenant_id', tenant.id)
       .order('month', { ascending: false })
-      .limit(120),
-  ])
-
-  const systemPrompt = buildSystemPrompt(tenants ?? [], revenue ?? [])
+      .limit(120)
+    systemPrompt = buildSellerSystemPrompt(tenant, revenue ?? [])
+  }
 
   const result = streamText({
     model: google('gemini-2.5-flash'),

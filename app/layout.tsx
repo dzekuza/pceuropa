@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Plus_Jakarta_Sans, Montserrat } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { CssStudio } from '@/components/dev/css-studio'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,7 +42,11 @@ export default function RootLayout({
   return (
     <html lang="lt" suppressHydrationWarning>
       <head>
-        {process.env.NODE_ENV === "development" && (
+        {/* react-grab element inspector — dev only, and opt-in via env flag so its
+            noisy "useInsertionEffect must not schedule updates" console warnings
+            stay off by default. Enable with NEXT_PUBLIC_ENABLE_REACT_GRAB=true. */}
+        {process.env.NODE_ENV === "development" &&
+          process.env.NEXT_PUBLIC_ENABLE_REACT_GRAB === "true" && (
           <Script
             src="//unpkg.com/react-grab/dist/index.global.js"
             crossOrigin="anonymous"
@@ -55,7 +58,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
-        <CssStudio />
       </body>
     </html>
   )

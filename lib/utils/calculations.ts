@@ -36,3 +36,16 @@ export function calculateEfektyvumas(
   if (rentEur == null || rentEur === 0) return null
   return (amountEur / rentEur) * 100
 }
+
+/**
+ * Year-over-year change as a percentage: (current - previous) / previous * 100.
+ * Returns null when a comparison isn't meaningful (missing data or zero base),
+ * e.g. same month last year had no submission.
+ */
+export function calculateYoYPercent(
+  current: number | null,
+  previous: number | null
+): number | null {
+  if (current == null || previous == null || previous === 0) return null
+  return ((current - previous) / previous) * 100
+}

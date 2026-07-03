@@ -23,9 +23,10 @@ interface HeaderProps {
   userEmail?: string
   pageTitle?: string
   role?: 'admin' | 'seller'
+  impersonating?: boolean
 }
 
-export function Header({ userEmail, pageTitle = 'Pagrindinis', role }: HeaderProps) {
+export function Header({ userEmail, pageTitle = 'Pagrindinis', impersonating = false }: HeaderProps) {
   const initials = userEmail
     ? userEmail.charAt(0).toUpperCase()
     : 'U'
@@ -66,15 +67,13 @@ export function Header({ userEmail, pageTitle = 'Pagrindinis', role }: HeaderPro
               <DropdownMenuSeparator />
             </>
           )}
-          {role === 'seller' && (
+          {impersonating && (
             <>
               <DropdownMenuItem asChild className="text-warning focus:text-warning focus:bg-warning/10">
-                <form action={logout}>
-                  <button type="submit" className="flex w-full items-center gap-2">
-                    <LogOut className="size-4" />
-                    Grįžti į Admin
-                  </button>
-                </form>
+                <a href="/api/admin/restore" className="flex w-full items-center gap-2">
+                  <LogOut className="size-4" />
+                  Grįžti į Admin
+                </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>

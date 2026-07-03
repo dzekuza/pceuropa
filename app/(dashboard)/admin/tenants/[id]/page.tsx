@@ -7,8 +7,13 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { TenantInfoCard } from '@/components/tenants/tenant-info-card'
 import { TenantRevenueTable } from '@/components/tenants/tenant-revenue-table'
+import { TenantRevenueExportButton } from '@/components/tenants/tenant-revenue-export-button'
 import { YearSelector } from '@/components/tenants/year-selector'
 import { Card, CardHeader, CardTitle, CardDescription, CardToolbar } from '@/components/ui/card'
+
+// Revenue data is filtered by the ?year= search param; force-dynamic keeps the
+// segment out of the client Router Cache so switching years refetches without a reload.
+export const dynamic = 'force-dynamic'
 
 interface TenantDetailPageProps {
   params: Promise<{ id: string }>
@@ -77,17 +82,20 @@ export default async function TenantDetailPage({
               Metinė apyvarta pagal mėnesius ({safeYear})
             </CardDescription>
           </div>
-          <CardToolbar>
+          <CardToolbar className="flex-wrap">
             <YearSelector currentYear={safeYear} />
+            <TenantRevenueExportButton
+              tenant={tenant}
+              reports={reports ?? []}
+              year={safeYear}
+            />
           </CardToolbar>
         </CardHeader>
-        <div className="border-y">
-          <TenantRevenueTable
-            tenant={tenant}
-            reports={reports ?? []}
-            year={safeYear}
-          />
-        </div>
+        <TenantRevenueTable
+          tenant={tenant}
+          reports={reports ?? []}
+          year={safeYear}
+        />
       </Card>
     </div>
   )

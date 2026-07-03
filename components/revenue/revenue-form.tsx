@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { revenueFormSchema, type RevenueFormValues } from '@/lib/validations/revenue'
 import { submitRevenue } from '@/actions/revenue'
 import { MONTHS_LT } from '@/lib/constants'
+import { formatEur, formatInt } from '@/lib/utils/format'
 import type { RevenueReport } from '@/types/database'
 import {
   Form,
@@ -78,6 +79,12 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
   // Find existing report for currently selected month
   const existingReport = reports.find((r) => r.month.startsWith(selectedMonth))
   const isEditing = !!existingReport
+  // Reports imported without a weekly breakdown (e.g. Moderan turnover sync) have
+  // totals but no `weeks` — the form grid would otherwise render blank and a save
+  // would overwrite the real total with 0. Detect that to warn the user.
+  const existingHasWeeks =
+    Array.isArray(existingReport?.weeks) && existingReport.weeks.length > 0
+  const missingWeeklyBreakdown = isEditing && !existingHasWeeks
 
   // Convert existing weekly data back to form strings
   function existingWeeksToForm(): RevenueFormValues['weeks'] {
@@ -149,9 +156,19 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {/* Editing indicator */}
-          {isEditing && (
+          {isEditing && !missingWeeklyBreakdown && (
             <div className="rounded-md bg-info/10 border border-info/20 px-3 py-2 text-sm text-info-foreground">
               Redaguojate jau pateiktus duomenis
+            </div>
+          )}
+
+          {/* Imported data without a weekly breakdown — show stored totals + warn */}
+          {missingWeeklyBreakdown && (
+            <div className="rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning-foreground">
+              Šio mėnesio duomenys įvesti be savaitinio suskirstymo. Įrašyta apyvarta:{' '}
+              <strong>{formatEur(existingReport!.amount_eur)} EUR</strong>, čekių:{' '}
+              <strong>{formatInt(existingReport!.tx_count)}</strong>. Įvedus savaitinius
+              duomenis ir išsaugojus, esami bendri skaičiai bus perrašyti.
             </div>
           )}
 

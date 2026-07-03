@@ -104,8 +104,12 @@ export default async function AdminHomePage() {
     ? Math.round((submittedCount / tenants.length) * 100)
     : 0
 
-  // Chart data
-  const revenueChartData = aggregateMonthlyRevenue(reports, startDate, currentMonthDate)
+  // Chart data — clipped to the current calendar year (Sausis → current month)
+  // so charts never spill into the prior year. The trailing-12-month `reports`
+  // set is still used above for the January month-over-month comparison.
+  const yearStartDate = `${currentYear}-01-01`
+  const chartReports = reports.filter((r) => r.month >= yearStartDate)
+  const revenueChartData = aggregateMonthlyRevenue(chartReports, yearStartDate, currentMonthDate)
 
   return (
     <div className="flex flex-col gap-3">
@@ -173,10 +177,10 @@ export default async function AdminHomePage() {
         <RevenueAreaChart
           data={revenueChartData}
           title="Apyvartos tendencija"
-          description="Paskutinių 12 mėnesių apyvarta"
+          description="Šių metų apyvarta (nuo sausio)"
         />
         <TxBarChart
-          reports={reports}
+          reports={chartReports}
           title="Čekių dinamika"
           description="Mėnesinis čekių aktyvumas"
         />

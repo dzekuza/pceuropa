@@ -44,7 +44,7 @@ export default async function DashboardLayout({
       <AppSidebar navItems={navItems} className="hidden md:flex" />
       <SidebarInset>
         {impersonatingStore && <ImpersonationBanner storeName={impersonatingStore} />}
-        <Header userEmail={user.email} role={role} />
+        <Header userEmail={user.email} role={role} impersonating={!!impersonatingStore} />
         <div className="flex flex-1 flex-col gap-4 p-4 pb-20 md:pb-4">
           {children}
         </div>

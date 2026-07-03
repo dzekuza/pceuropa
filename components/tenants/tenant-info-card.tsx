@@ -170,10 +170,12 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
     const [editOpen, setEditOpen] = useState(false)
     const [passwordOpen, setPasswordOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
+    const [navigating, setNavigating] = useState(false)
     const [enterError, setEnterError] = useState<string | null>(null)
 
     function handleEnter() {
         setEnterError(null)
+        setNavigating(true)
         if (tenant.user_id) {
             router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
             return
@@ -182,6 +184,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
             const result = await createTenantAccount(tenant.id)
             if ('error' in result) {
                 setEnterError(result.error)
+                setNavigating(false)
             } else {
                 router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
             }
@@ -218,10 +221,10 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                             variant="default"
                             size="sm"
                             onClick={handleEnter}
-                            disabled={isPending}
+                            disabled={isPending || navigating}
                         >
                             <LogInIcon className="h-4 w-4 mr-1.5" />
-                            {isPending ? 'Kuriama...' : 'Įeiti'}
+                            {isPending ? 'Kuriama...' : navigating ? 'Įeinama...' : 'Įeiti'}
                         </Button>
                         <Button
                             variant="outline"

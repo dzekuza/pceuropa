@@ -1,7 +1,7 @@
 'use client'
 // components/revenue/submission-history.tsx — Updated to use DataGrid aesthetic
 import { useMemo } from 'react'
-import { MONTHS_LT } from '@/lib/constants'
+import { Download } from 'lucide-react'
 import type { RevenueReport } from '@/types/database'
 import {
   useReactTable,
@@ -12,6 +12,13 @@ import {
 import { DataGrid } from '@/components/reui/data-grid/data-grid'
 import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
+import { Button } from '@/components/ui/button'
+import {
+  formatEur,
+  formatInt,
+  formatMonthLabel,
+  exportRowsToXlsx,
+} from '@/lib/utils/format'
 
 interface SubmissionHistoryProps {
   reports: RevenueReport[]
@@ -23,35 +30,44 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
     [...reports].sort((a, b) => b.month.localeCompare(a.month)),
     [reports])
 
-  function formatMonth(monthStr: string): string {
-    const parts = monthStr.split('-')
-    const year = parts[0]
-    const monthIdx = parseInt(parts[1], 10) - 1
-    return `${MONTHS_LT[monthIdx]} ${year}`
-  }
-
   function formatDate(dateStr: string | null): string {
     if (!dateStr) return '—'
     return dateStr.slice(0, 10)
+  }
+
+  function handleExport() {
+    const headers = ['Mėnuo', 'Apyvarta (EUR)', 'Čekių sk.', 'Užpildė', 'Pateikta']
+    const rows = sorted.map((r) => [
+      formatMonthLabel(r.month),
+      r.amount_eur,
+      r.tx_count ?? '',
+      r.submitted_by ?? '',
+      formatDate(r.submitted_at),
+    ])
+    exportRowsToXlsx(
+      [headers, ...rows],
+      `apyvarta-${new Date().toISOString().slice(0, 10)}.xlsx`,
+      'Apyvarta',
+    )
   }
 
   const columns = useMemo<ColumnDef<RevenueReport>[]>(() => [
     {
       accessorKey: 'month',
       header: ({ column }) => <DataGridColumnHeader title="Mėnuo" column={column} />,
-      cell: ({ row }) => <span className="font-medium">{formatMonth(row.original.month)}</span>,
+      cell: ({ row }) => <span className="font-medium">{formatMonthLabel(row.original.month)}</span>,
       size: 150,
     },
     {
       accessorKey: 'amount_eur',
       header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR)" column={column} />,
-      cell: ({ row }) => <div className="text-right">{row.original.amount_eur.toFixed(2)}</div>,
+      cell: ({ row }) => <div className="text-right">{formatEur(row.original.amount_eur)}</div>,
       size: 140,
     },
     {
       accessorKey: 'tx_count',
       header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
-      cell: ({ row }) => <div className="text-right">{row.original.tx_count ?? '—'}</div>,
+      cell: ({ row }) => <div className="text-right">{formatInt(row.original.tx_count)}</div>,
       size: 120,
     },
     {
@@ -92,8 +108,16 @@ export function SubmissionHistory({ reports, onSelectMonth }: SubmissionHistoryP
         rowBorder: true,
       }}
     >
-      <div className="rounded-lg border overflow-x-auto">
-        <DataGridTable />
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-end">
+          <Button variant="outline" size="sm" onClick={handleExport}>
+            <Download className="size-4" />
+            Eksportuoti (Excel)
+          </Button>
+        </div>
+        <div className="rounded-lg border overflow-x-auto">
+          <DataGridTable />
+        </div>
       </div>
     </DataGrid>
   )

@@ -25,21 +25,14 @@ interface AnalyticsPageProps {
   searchParams: Promise<{ from?: string; to?: string }>
 }
 
-/** Default "from" = 12 months ago, "to" = current month (YYYY-MM) */
+/** Default range = current calendar year to date: Sausis → current month (YYYY-MM) */
 function getDefaultRange(): { from: string; to: string } {
   const now = new Date()
   const toYear = now.getFullYear()
   const toMonth = now.getMonth() + 1
 
-  let fromYear = toYear
-  let fromMonth = toMonth - 11
-  if (fromMonth < 1) {
-    fromMonth += 12
-    fromYear -= 1
-  }
-
   return {
-    from: `${fromYear}-${String(fromMonth).padStart(2, '0')}`,
+    from: `${toYear}-01`,
     to: `${toYear}-${String(toMonth).padStart(2, '0')}`,
   }
 }

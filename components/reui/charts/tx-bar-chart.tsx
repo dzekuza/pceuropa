@@ -41,15 +41,21 @@ interface TxPoint {
 }
 
 function buildData(reports: RevenueReport[]): TxPoint[] {
-    return [...reports]
-        .sort((a, b) => a.month.localeCompare(b.month))
-        .map((r) => {
-            const parts = r.month.split('-')
-            const monthIdx = parseInt(parts[1], 10) - 1
-            const year = parts[0]
+    // Aggregate receipt counts by calendar month (YYYY-MM), summing across all
+    // reports/tenants that share a month, so each month renders as one total bar.
+    const totals = new Map<string, number>()
+    for (const r of reports) {
+        const key = r.month.slice(0, 7)
+        totals.set(key, (totals.get(key) ?? 0) + (r.tx_count ?? 0))
+    }
+    return [...totals.entries()]
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([key, tx_count]) => {
+            const [year, month] = key.split('-')
+            const monthIdx = parseInt(month, 10) - 1
             return {
                 label: `${MONTHS_LT[monthIdx]} ${year}`,
-                tx_count: r.tx_count ?? 0,
+                tx_count,
             }
         })
 }

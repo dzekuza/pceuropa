@@ -327,6 +327,7 @@ export function AnimatedLoginForm({ onSubmit, isLoading, error, strings }: Anima
                             alt="PC EUROPA"
                             width={180}
                             height={66}
+                            priority
                             className="brightness-0 invert h-auto w-44"
                         />
                     </div>
@@ -500,6 +501,7 @@ export function AnimatedLoginForm({ onSubmit, isLoading, error, strings }: Anima
                             alt="PC EUROPA"
                             width={160}
                             height={58}
+                            priority
                             className="brightness-0 invert h-auto w-40"
                         />
                     </div>

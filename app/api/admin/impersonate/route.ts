@@ -158,5 +158,7 @@ export async function GET(request: NextRequest) {
     path: '/',
   })
 
-  return NextResponse.redirect(new URL('/seller/revenue', request.url))
+  // Land on the seller overview (yearly revenue grid) so the admin immediately
+  // sees the tenant's data rather than an empty submission form.
+  return NextResponse.redirect(new URL('/seller', request.url))
 }
