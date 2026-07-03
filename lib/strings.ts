@@ -230,6 +230,21 @@ export const MODERAN_SYNC_STRINGS = {
   envMissing: 'Trūksta konfigūracijos: MODERAN_API_TOKEN, MODERAN_DOMAIN_ID arba MODERAN_PROPERTYSET_ID.',
   errorGeneric: 'Klaida tikrinant duomenis. Bandykite dar kartą.',
   lastSentLabel: 'Paskutinį kartą išsiųsta:',
+  viewJsonButton: 'Peržiūrėti JSON',
+  jsonDialogTitle: 'Siunčiamų duomenų peržiūra',
+  jsonDialogDescription: 'Kiekvienai parduotuvei siunčiama atskira POST užklausa su tokiu turiniu (JSON).',
+} as const
+
+export const UNDER_CONSTRUCTION_STRINGS = {
+  title: 'Svetainė ruošiama',
+  description: 'PC Europa svetainė šiuo metu atnaujinama. Netrukus grįšime su nauju turiniu.',
+  adminLoginButton: 'Prisijungti kaip administratorius',
+  passwordPlaceholder: 'Slaptažodis',
+  submitButton: 'Prisijungti',
+  submitLoading: 'Tikrinama...',
+  errorRequired: 'Įveskite slaptažodį.',
+  errorWrongPassword: 'Neteisingas slaptažodis.',
+  dragHint: 'Vilkite, kad pamatytumėte visas parduotuves',
 } as const
 
 export const LANKYTOJAMS_STRINGS = {

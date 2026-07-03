@@ -8,6 +8,7 @@
 //   (CVE-2025-29927: middleware can be bypassed with x-middleware-subrequest header)
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { SITE_LOCK_COOKIE } from '@/lib/constants'
 
 // Next.js 16 proxy.ts requires the exported function to be named "proxy" (not "middleware")
 export async function proxy(request: NextRequest) {
@@ -42,18 +43,36 @@ export async function proxy(request: NextRequest) {
 
   // Dashboard portal lives on the nuomininkai subdomain — login is not reachable
   // from the public marketing domain (pceuropa.lt), and the subdomain root sends
-  // visitors straight to login.
+  // visitors straight to login. Skipped on localhost so both the marketing site
+  // and the dashboard remain reachable during local development.
   const hostname = request.headers.get('host') || ''
+  const isLocalDev = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1')
   const isTenantSubdomain = hostname.startsWith('nuomininkai.')
 
-  if (!isTenantSubdomain && (pathname === '/login' || isDashboardRoute)) {
+  if (!isLocalDev && !isTenantSubdomain && (pathname === '/login' || isDashboardRoute)) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (isTenantSubdomain && pathname === '/') {
+  if (!isLocalDev && isTenantSubdomain && pathname === '/') {
     const role = user?.app_metadata?.role
     const destination = user ? (role === 'admin' ? '/admin' : '/seller') : '/login'
     return NextResponse.redirect(new URL(destination, request.url))
+  }
+
+  // Public marketing pages are gated behind an under-construction screen until
+  // unlocked with the maintenance password. Dashboard/login/API routes and the
+  // gate page itself are exempt so the unlock flow and admin access still work.
+  const isGateExempt =
+    isTenantSubdomain ||
+    isDashboardRoute ||
+    pathname === '/login' ||
+    pathname === '/under-construction' ||
+    pathname.startsWith('/api/')
+
+  if (!isGateExempt && request.cookies.get(SITE_LOCK_COOKIE)?.value !== '1') {
+    const url = new URL('/under-construction', request.url)
+    url.searchParams.set('from', pathname)
+    return NextResponse.redirect(url)
   }
 
   // Redirect unauthenticated users away from protected dashboard routes

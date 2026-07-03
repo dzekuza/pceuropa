@@ -21,7 +21,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { SyncResponse, SyncResult } from '@/app/api/admin/moderan/sync-turnover/route'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import type { SyncPayload, SyncResponse, SyncResult } from '@/app/api/admin/moderan/sync-turnover/route'
 
 function generateMonthOptions(): { value: string; label: string }[] {
   const options: { value: string; label: string }[] = []
@@ -36,6 +44,14 @@ function generateMonthOptions(): { value: string; label: string }[] {
 }
 
 const MONTH_OPTIONS = generateMonthOptions()
+
+function toPayload(result: SyncResult): SyncPayload {
+  return {
+    shopName: result.shopName,
+    turnoverRentMonth: result.turnoverRentMonth,
+    turnoverRentAmount: result.turnoverRentAmount,
+  }
+}
 
 function StatusBadge({ status }: { status: SyncResult['status'] }) {
   if (status === 'sent') return <Badge variant="default">Išsiųsta</Badge>
@@ -149,6 +165,27 @@ export function ModeranSync() {
               {new Date(result.lastSentAt).toLocaleString('lt-LT')}
             </span>
           </p>
+        )}
+
+        {result && result.results.length > 0 && (
+          <div className="flex justify-end">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  {S.viewJsonButton}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>{S.jsonDialogTitle}</DialogTitle>
+                  <DialogDescription>{S.jsonDialogDescription}</DialogDescription>
+                </DialogHeader>
+                <pre className="overflow-x-auto rounded-md bg-muted p-4 text-xs">
+                  {JSON.stringify(result.results.map(toPayload), null, 2)}
+                </pre>
+              </DialogContent>
+            </Dialog>
+          </div>
         )}
 
         {result && (
