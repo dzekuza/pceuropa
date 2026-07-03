@@ -40,6 +40,22 @@ export async function proxy(request: NextRequest) {
   const isDashboardRoute =
     pathname.startsWith('/admin') || pathname.startsWith('/seller')
 
+  // Dashboard portal lives on the nuomininkai subdomain — login is not reachable
+  // from the public marketing domain (pceuropa.lt), and the subdomain root sends
+  // visitors straight to login.
+  const hostname = request.headers.get('host') || ''
+  const isTenantSubdomain = hostname.startsWith('nuomininkai.')
+
+  if (!isTenantSubdomain && (pathname === '/login' || isDashboardRoute)) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  if (isTenantSubdomain && pathname === '/') {
+    const role = user?.app_metadata?.role
+    const destination = user ? (role === 'admin' ? '/admin' : '/seller') : '/login'
+    return NextResponse.redirect(new URL(destination, request.url))
+  }
+
   // Redirect unauthenticated users away from protected dashboard routes
   if (!user && isDashboardRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
