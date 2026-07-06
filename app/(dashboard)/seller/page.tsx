@@ -105,6 +105,7 @@ export default async function SellerHomePage({ searchParams }: SellerHomePagePro
         </CardHeader>
         <div className="border-t p-4">
           <SellerYearGrid
+            key={year}
             reports={reports ?? []}
             prevReports={prevReports ?? []}
             year={year}

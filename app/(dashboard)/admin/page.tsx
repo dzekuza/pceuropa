@@ -45,8 +45,8 @@ export default async function AdminHomePage() {
   const currentMonthDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
   const currentMonthLabel = `${MONTHS_LT[now.getMonth()]} ${now.getFullYear()}`
 
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-  const lastMonthDate = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}-01`
+  // Same calendar month, one year back — all monthly stat cards compare against this
+  const lastYearSameMonthDate = `${now.getFullYear() - 1}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
 
   // Twelve months ago for charts
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
@@ -56,15 +56,20 @@ export default async function AdminHomePage() {
   const startOfLastYear = `${now.getFullYear() - 1}-01-01`
 
   // Parallel fetch
-  const [tenantsResult, reportsResult, yearlyReportsResult] = await Promise.all([
+  const [tenantsResult, reportsResult, yearlyReportsResult, lastYearSameMonthResult] = await Promise.all([
     supabase.from('tenants').select('*').order('created_at', { ascending: false }),
     supabase.from('revenue_reports').select('*').gte('month', startDate).order('month', { ascending: true }),
     supabase.from('revenue_reports').select('amount_eur, month').gte('month', startOfLastYear),
+    supabase.from('revenue_reports').select('amount_eur, tx_count').eq('month', lastYearSameMonthDate),
   ])
 
   const tenants = tenantsResult.data ?? []
   const reports = reportsResult.data ?? []
   const yearlyReports = yearlyReportsResult.data ?? []
+  const lastYearSameMonthReports = lastYearSameMonthResult.data ?? []
+  const lastYearSameMonthCount = lastYearSameMonthReports.length
+  const lastYearSameMonthRevenue = lastYearSameMonthReports.reduce((sum, r) => sum + r.amount_eur, 0)
+  const lastYearSameMonthTx = lastYearSameMonthReports.reduce((sum, r) => sum + (r.tx_count ?? 0), 0)
 
   // Yearly revenue stats
   const currentYear = now.getFullYear()
@@ -82,26 +87,22 @@ export default async function AdminHomePage() {
   const tenantCount = tenants.length
 
   const currentMonthReports = reports.filter(r => r.month === currentMonthDate)
-  const lastMonthReports = reports.filter(r => r.month === lastMonthDate)
 
   const submittedCount = currentMonthReports.length
   const totalRevenue = currentMonthReports.reduce((sum, r) => sum + r.amount_eur, 0)
-  const lastMonthRevenue = lastMonthReports.reduce((sum, r) => sum + r.amount_eur, 0)
-
   const totalTx = currentMonthReports.reduce((sum, r) => sum + (r.tx_count ?? 0), 0)
-  const lastMonthTx = lastMonthReports.reduce((sum, r) => sum + (r.tx_count ?? 0), 0)
 
-  // Trend calculations
-  const revenueTrend = lastMonthRevenue > 0
-    ? Math.round(((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100)
+  // Trend calculations — all compare the current month against the same month last year
+  const revenueTrend = lastYearSameMonthRevenue > 0
+    ? Math.round(((totalRevenue - lastYearSameMonthRevenue) / lastYearSameMonthRevenue) * 100)
     : 0
 
-  const txTrend = lastMonthTx > 0
-    ? Math.round(((totalTx - lastMonthTx) / lastMonthTx) * 100)
+  const txTrend = lastYearSameMonthTx > 0
+    ? Math.round(((totalTx - lastYearSameMonthTx) / lastYearSameMonthTx) * 100)
     : 0
 
-  const submissionTrend = tenants.length > 0
-    ? Math.round((submittedCount / tenants.length) * 100)
+  const submissionTrend = lastYearSameMonthCount > 0
+    ? Math.round(((submittedCount - lastYearSameMonthCount) / lastYearSameMonthCount) * 100)
     : 0
 
   // Chart data — clipped to the current calendar year (Sausis → current month)
@@ -133,7 +134,7 @@ export default async function AdminHomePage() {
           icon={EuroIcon}
           trend={{
             value: Math.abs(revenueTrend),
-            label: "lyginant su praėjusiu mėn.",
+            label: `lyginant su ${currentYear - 1} m. ${MONTHS_LT[now.getMonth()]}`,
             isUp: revenueTrend >= 0
           }}
           description={currentMonthLabel}
@@ -143,9 +144,9 @@ export default async function AdminHomePage() {
           value={`${submittedCount} / ${tenantCount}`}
           icon={FileCheckIcon}
           trend={{
-            value: submissionTrend,
-            label: "nuomininkų pateikė duomenis",
-            isUp: true
+            value: Math.abs(submissionTrend),
+            label: `lyginant su ${currentYear - 1} m. ${MONTHS_LT[now.getMonth()]}`,
+            isUp: submissionTrend >= 0
           }}
           description="Šį mėnesį"
         />
@@ -166,7 +167,7 @@ export default async function AdminHomePage() {
           icon={ShoppingBagIcon}
           trend={{
             value: Math.abs(txTrend),
-            label: "lyginant su praėjusiu mėn.",
+            label: `lyginant su ${currentYear - 1} m. ${MONTHS_LT[now.getMonth()]}`,
             isUp: txTrend >= 0
           }}
           description="Šį mėnesį"

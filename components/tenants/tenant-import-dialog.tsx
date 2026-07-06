@@ -15,6 +15,7 @@ import { importTenants, type TenantImportRow } from '@/actions/tenants'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { cn, toTenantFileKey } from '@/lib/utils'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const HEADER_MAP: Record<string, keyof TenantImportRow> = {
   // exact export column names (English) — reliable for round-trip
@@ -449,7 +450,7 @@ export function TenantImportDialog({ open, onOpenChange }: TenantImportDialogPro
                         </td>
                         <td className="px-3 py-2">
                           {logoPreview
-                            ? <img src={logoPreview} alt="" className="size-6 rounded object-cover" title={row.logoFile ?? row.data.logo_url ?? undefined} />
+                            ? <img src={resizeSupabaseImage(logoPreview, { width: 48, height: 48 })} alt="" className="size-6 rounded object-cover" title={row.logoFile ?? row.data.logo_url ?? undefined} />
                             : '—'}
                         </td>
                         <td className="px-3 py-2 text-muted-foreground">

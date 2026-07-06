@@ -92,6 +92,7 @@ export default async function TenantDetailPage({
           </CardToolbar>
         </CardHeader>
         <TenantRevenueTable
+          key={safeYear}
           tenant={tenant}
           reports={reports ?? []}
           year={safeYear}

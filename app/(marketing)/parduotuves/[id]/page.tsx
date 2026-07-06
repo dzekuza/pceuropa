@@ -6,6 +6,7 @@ import { Footer } from '@/components/marketing/footer'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 import { StoreGallery } from '@/components/marketing/store-gallery'
 import { createClient } from '@/lib/supabase/server'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -99,7 +100,7 @@ export default async function StoreDetailPage({ params }: Props) {
                 <div className="h-[72px] w-[72px] rounded-[20px] overflow-hidden border border-[#ebebeb] shrink-0 bg-white">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={tenant.logo_url}
+                    src={resizeSupabaseImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
                     alt={`${tenant.store_name} logotipas`}
                     className="size-full object-contain p-1"
                   />

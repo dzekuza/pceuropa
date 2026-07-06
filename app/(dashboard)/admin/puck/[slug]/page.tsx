@@ -4,7 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { PuckEditor } from '@/components/admin/puck-editor'
 import type { Data } from '@measured/puck'
 
-const BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/marketing-assets`
+// Default/fallback banner images were seeded on the legacy Supabase project and
+// never migrated to the current one — matches the DEFAULT_BANNER_SLIDES host used
+// by every public marketing page (e.g. app/(marketing)/dialogai/page.tsx).
+const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
 
 const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',

@@ -17,8 +17,8 @@ export function YearSelector({ currentYear }: YearSelectorProps) {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Range: currentYear - 2 to currentYear + 1
-  const years = Array.from({ length: 4 }, (_, i) => currentYear - 2 + i)
+  // Range: currentYear - 10 to currentYear + 1; long enough to need the dropdown's scroll
+  const years = Array.from({ length: 12 }, (_, i) => currentYear - 10 + i)
 
   function handleYearChange(value: string) {
     router.push(`${pathname}?year=${value}`)

@@ -8,6 +8,7 @@ import { tenantSchema, type TenantFormValues } from '@/lib/validations/tenant'
 import { TENANT_CATEGORIES } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import type { Tenant } from '@/types/database'
 import {
   Sheet,
@@ -85,7 +86,7 @@ function LogoUploader({
       {value ? (
         <div className="relative size-16 rounded-lg overflow-hidden border bg-muted shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="Logo" className="size-full object-cover" />
+          <img src={resizeSupabaseImage(value, { width: 128, height: 128 })} alt="Logo" className="size-full object-cover" />
           <button
             type="button"
             onClick={() => onChange('')}
@@ -164,7 +165,7 @@ function GalleryUploader({
         {value.map((url, i) => (
           <div key={url} className="relative size-20 rounded-lg overflow-hidden border bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={url} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
+            <img src={resizeSupabaseImage(url, { width: 160, height: 160 })} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
             <button
               type="button"
               onClick={() => remove(i)}

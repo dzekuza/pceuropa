@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Store = {
   id: string
@@ -73,7 +74,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         {store.logoUrl ? (
           <div className="h-14 w-[53px] overflow-hidden rounded-xl shrink-0 bg-white border border-[#ebebeb]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={store.logoUrl} alt={`${store.name} logotipas`} className="size-full object-contain" />
+            <img src={resizeSupabaseImage(store.logoUrl, { width: 110, height: 106, fit: 'contain' })} alt={`${store.name} logotipas`} loading="lazy" className="size-full object-contain" />
           </div>
         ) : (
           <div
@@ -91,8 +92,9 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         {store.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={store.coverUrl}
+            src={resizeSupabaseImage(store.coverUrl, { width: 800, height: 408 })}
             alt=""
+            loading="lazy"
             className="absolute inset-0 size-full object-cover rounded-[24px] transition-transform duration-300 group-hover:scale-105"
           />
         ) : (

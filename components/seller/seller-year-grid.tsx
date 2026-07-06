@@ -2,19 +2,31 @@
 // components/seller/seller-year-grid.tsx — Seller full-year submission grid
 // Shows every month (Sausis–Gruodis) for the selected year with turnover,
 // receipt counts, and a same-month-last-year (YoY) delta.
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { calculateYoYPercent } from '@/lib/utils/calculations'
 import { formatEur, formatInt, formatPct } from '@/lib/utils/format'
 import { buildSellerYearRows } from './seller-year-rows'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  ColumnDef,
+  ColumnOrderState,
+  flexRender,
+} from '@tanstack/react-table'
+import { DataGrid, useDataGrid } from '@/components/reui/data-grid/data-grid'
+import {
+  DataGridTableBase,
+  DataGridTableHead,
+  DataGridTableBody,
+  DataGridTableHeadRow,
+  DataGridTableHeadRowCell,
+  DataGridTableBodyRow,
+  DataGridTableBodyRowCell,
+} from '@/components/reui/data-grid/data-grid-table'
+import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
+import { TableFooter, TableRow, TableCell } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
 import type { RevenueReport } from '@/types/database'
 
 interface SellerYearGridProps {
@@ -45,45 +57,131 @@ export function SellerYearGrid({ reports, prevReports, year }: SellerYearGridPro
     return { amount, tx, yoy: calculateYoYPercent(amount, prevAmount || null) }
   }, [rows, prevReports])
 
-  const totalYoy = yoyDisplay(totals.yoy)
+  const columns = useMemo<ColumnDef<typeof rows[0]>[]>(() => [
+    {
+      id: 'monthName',
+      accessorKey: 'monthName',
+      header: ({ column }) => <DataGridColumnHeader title="Mėnuo" column={column} />,
+      cell: ({ row }) => (
+        <span className={cn('font-medium', !row.original.hasData && 'text-muted-foreground')}>
+          {row.original.monthName}
+        </span>
+      ),
+      footer: () => 'Iš viso',
+      size: 130,
+    },
+    {
+      id: 'amount',
+      accessorKey: 'amount',
+      header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR)" column={column} />,
+      cell: ({ row }) => (
+        <div className="text-right">
+          {row.original.hasData ? formatEur(row.original.amount ?? 0) : '—'}
+        </div>
+      ),
+      footer: () => <div className="text-right">{formatEur(totals.amount)}</div>,
+      size: 150,
+    },
+    {
+      id: 'tx',
+      accessorKey: 'tx',
+      header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
+      cell: ({ row }) => (
+        <div className="text-right">
+          {row.original.hasData ? formatInt(row.original.tx ?? 0) : '—'}
+        </div>
+      ),
+      footer: () => <div className="text-right">{formatInt(totals.tx)}</div>,
+      size: 120,
+    },
+    {
+      id: 'yoy',
+      accessorKey: 'yoy',
+      header: ({ column }) => <DataGridColumnHeader title={`vs ${year - 1}`} column={column} />,
+      cell: ({ row }) => {
+        const yoy = yoyDisplay(row.original.yoy)
+        return <div className={cn('text-right', yoy.cls)}>{yoy.text}</div>
+      },
+      footer: () => {
+        const totalYoy = yoyDisplay(totals.yoy)
+        return <div className={cn('text-right', totalYoy.cls)}>{totalYoy.text}</div>
+      },
+      size: 120,
+    },
+  ], [totals, year])
+
+  const defaultColumnOrder = useMemo(() => ['monthName', 'amount', 'tx', 'yoy'], [])
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(defaultColumnOrder)
+
+  const table = useReactTable({
+    data: rows,
+    columns,
+    state: { columnOrder },
+    onColumnOrderChange: setColumnOrder,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
+
+  return (
+    <DataGrid
+      table={table}
+      recordCount={rows.length}
+      tableLayout={{
+        width: 'fixed',
+        rowBorder: true,
+        columnsMovable: true,
+      }}
+    >
+      <SellerYearGridContent />
+    </DataGrid>
+  )
+}
+
+function SellerYearGridContent() {
+  "use no memo"
+  const { table } = useDataGrid()
 
   return (
     <div className="rounded-lg border overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Mėnuo</TableHead>
-            <TableHead className="text-right">Apyvarta (EUR)</TableHead>
-            <TableHead className="text-right">Čekių sk.</TableHead>
-            <TableHead className="text-right">vs {year - 1}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((r) => {
-            const yoy = yoyDisplay(r.yoy)
-            return (
-              <TableRow key={r.monthName} className={r.hasData ? '' : 'text-muted-foreground'}>
-                <TableCell className="font-medium">{r.monthName}</TableCell>
-                <TableCell className="text-right">
-                  {r.hasData ? formatEur(r.amount) : '—'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {r.hasData ? formatInt(r.tx) : '—'}
-                </TableCell>
-                <TableCell className={`text-right ${yoy.cls}`}>{yoy.text}</TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
+      <DataGridTableBase>
+        <DataGridTableHead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <DataGridTableHeadRow headerGroup={headerGroup} key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <DataGridTableHeadRowCell header={header} key={header.id}>
+                  {flexRender(header.column.columnDef.header, header.getContext())}
+                </DataGridTableHeadRowCell>
+              ))}
+            </DataGridTableHeadRow>
+          ))}
+        </DataGridTableHead>
+
+        <DataGridTableBody>
+          {table.getRowModel().rows.map((row) => (
+            <DataGridTableBodyRow row={row} key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <DataGridTableBodyRowCell cell={cell} key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </DataGridTableBodyRowCell>
+              ))}
+            </DataGridTableBodyRow>
+          ))}
+        </DataGridTableBody>
+
         <TableFooter>
-          <TableRow className="font-bold">
-            <TableCell>Iš viso</TableCell>
-            <TableCell className="text-right">{formatEur(totals.amount)}</TableCell>
-            <TableCell className="text-right">{formatInt(totals.tx)}</TableCell>
-            <TableCell className={`text-right ${totalYoy.cls}`}>{totalYoy.text}</TableCell>
-          </TableRow>
+          {table.getFooterGroups().map((footerGroup) => (
+            <TableRow key={footerGroup.id} className="font-bold">
+              {footerGroup.headers.map((header) => (
+                <TableCell key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.footer, header.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableFooter>
-      </Table>
+      </DataGridTableBase>
     </div>
   )
 }

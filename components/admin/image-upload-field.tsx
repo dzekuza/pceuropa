@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -92,7 +93,7 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
         {value ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={value} alt="" className="w-full h-full object-cover block" />
+            <img src={resizeSupabaseImage(value, { width: 480, height: 240 })} alt="" className="w-full h-full object-cover block" />
             <div
               className={[
                 'absolute inset-0 bg-black/45 flex items-center justify-center transition-opacity duration-150',

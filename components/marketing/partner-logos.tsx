@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { LogoCard } from './logo-card'
 import Link from 'next/link'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Tenant = { id: string; store_name: string; logo_url: string }
 
@@ -51,8 +52,9 @@ export async function PartnerLogos() {
               className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
             >
               <img
-                src={t.logo_url}
+                src={resizeSupabaseImage(t.logo_url, { width: 120, height: 120, fit: 'contain' })}
                 alt={t.store_name}
+                loading="lazy"
                 className="h-12 w-auto max-w-[75%] object-contain"
               />
             </Link>

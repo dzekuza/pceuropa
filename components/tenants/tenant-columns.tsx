@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import type { Tenant } from '@/types/database'
 import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
 import { Badge } from '@/components/reui/badge'
@@ -58,7 +59,7 @@ export function getColumns(
         const name = row.getValue<string>('store_name') ?? ''
         return (
           <Avatar className="size-8">
-            <AvatarImage src={url ?? ''} alt={name} />
+            <AvatarImage src={resizeSupabaseImage(url, { width: 64, height: 64 })} alt={name} loading="lazy" />
             <AvatarFallback className="text-xs">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         )
@@ -185,16 +186,16 @@ export function getColumns(
             className="flex items-center justify-end gap-2"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Enter Profile — opens tenant portal in new tab */}
+            {/* Enter Profile — same-tab navigation. Auth is cookie-based and
+                shared across all tabs, so opening this in a new tab would
+                silently sign the admin's other tab into the tenant session
+                too; the "Grįžti į Admin" banner is the only way back. */}
             <Button
               variant="outline"
               size="sm"
               className="h-8 gap-1.5 text-xs"
               onClick={() => {
-                window.open(
-                  `/api/admin/impersonate?tenantId=${tenant.id}`,
-                  '_blank'
-                )
+                window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
               }}
             >
               <LogIn className="h-3.5 w-3.5" />

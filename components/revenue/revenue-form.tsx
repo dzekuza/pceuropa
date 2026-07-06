@@ -48,6 +48,28 @@ const EMPTY_WEEKS: RevenueFormValues['weeks'] = [
   { tx_count: '', amount_eur: '' },
 ]
 
+// Convert a report's weekly data back to form strings. Reports imported
+// without a weekly breakdown have only totals — put those into Week I so
+// the Suma matches the stored total and the seller can redistribute them.
+function reportToWeeksForm(report: RevenueReport | undefined): RevenueFormValues['weeks'] {
+  if (report?.weeks && Array.isArray(report.weeks) && report.weeks.length > 0) {
+    return report.weeks.map((w) => ({
+      tx_count: w.tx_count ? String(w.tx_count) : '',
+      amount_eur: w.amount_eur ? String(w.amount_eur) : '',
+    })) as RevenueFormValues['weeks']
+  }
+  if (report) {
+    return [
+      { tx_count: String(report.tx_count ?? ''), amount_eur: String(report.amount_eur ?? '') },
+      { tx_count: '', amount_eur: '' },
+      { tx_count: '', amount_eur: '' },
+      { tx_count: '', amount_eur: '' },
+      { tx_count: '', amount_eur: '' },
+    ]
+  }
+  return EMPTY_WEEKS
+}
+
 // Generate last 12 months as "YYYY-MM" values, most recent first
 function generateMonthOptions(): { value: string; label: string }[] {
   const options: { value: string; label: string }[] = []
@@ -86,20 +108,11 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
     Array.isArray(existingReport?.weeks) && existingReport.weeks.length > 0
   const missingWeeklyBreakdown = isEditing && !existingHasWeeks
 
-  // Convert existing weekly data back to form strings
-  function existingWeeksToForm(): RevenueFormValues['weeks'] {
-    if (!existingReport?.weeks || !Array.isArray(existingReport.weeks)) return EMPTY_WEEKS
-    return existingReport.weeks.map((w) => ({
-      tx_count: w.tx_count ? String(w.tx_count) : '',
-      amount_eur: w.amount_eur ? String(w.amount_eur) : '',
-    })) as RevenueFormValues['weeks']
-  }
-
   const form = useForm<RevenueFormValues>({
     resolver: zodResolver(revenueFormSchema),
     defaultValues: {
       month: selectedMonth,
-      weeks: existingWeeksToForm(),
+      weeks: reportToWeeksForm(existingReport),
       submitted_by: existingReport?.submitted_by ?? '',
     },
   })
@@ -122,15 +135,9 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
   // Re-sync form values when selectedMonth or reports change
   useEffect(() => {
     const existing = reports.find((r) => r.month.startsWith(selectedMonth))
-    const weeks = existing?.weeks && Array.isArray(existing.weeks)
-      ? (existing.weeks.map((w) => ({
-        tx_count: w.tx_count ? String(w.tx_count) : '',
-        amount_eur: w.amount_eur ? String(w.amount_eur) : '',
-      })) as RevenueFormValues['weeks'])
-      : EMPTY_WEEKS
     form.reset({
       month: selectedMonth,
-      weeks,
+      weeks: reportToWeeksForm(existing),
       submitted_by: existing?.submitted_by ?? '',
     })
   }, [selectedMonth, reports, form])
@@ -162,13 +169,13 @@ export function RevenueForm({ reports, selectedMonth, onSelectMonth }: RevenueFo
             </div>
           )}
 
-          {/* Imported data without a weekly breakdown — show stored totals + warn */}
+          {/* Imported data without a weekly breakdown — totals were placed in I savaitė */}
           {missingWeeklyBreakdown && (
             <div className="rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning-foreground">
-              Šio mėnesio duomenys įvesti be savaitinio suskirstymo. Įrašyta apyvarta:{' '}
-              <strong>{formatEur(existingReport!.amount_eur)} EUR</strong>, čekių:{' '}
-              <strong>{formatInt(existingReport!.tx_count)}</strong>. Įvedus savaitinius
-              duomenis ir išsaugojus, esami bendri skaičiai bus perrašyti.
+              Šio mėnesio duomenys įvesti be savaitinio suskirstymo — bendra apyvarta{' '}
+              <strong>{formatEur(existingReport!.amount_eur)} EUR</strong> ir čekių sk.{' '}
+              <strong>{formatInt(existingReport!.tx_count)}</strong> įrašyti į I savaitę.
+              Paskirstykite juos tarp savaičių, jei reikia, ir išsaugokite.
             </div>
           )}
 

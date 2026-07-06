@@ -1,0 +1,16 @@
+-- 20260703180647 set tenants_public to security_invoker to satisfy the
+-- security_definer_view advisor lint. That broke every public marketing page
+-- (parduotuves, restoranai, sportas, laisvalaikis, darbo-laikas, planas,
+-- dialogai): tenants has no anon/public RLS policy, and this project relies
+-- on Supabase's default project-level table grants rather than explicit
+-- per-role GRANTs, so an invoker-mode view has no way to let anon or a
+-- logged-in seller read rows through it — `tenants_select` only allows
+-- admins or a seller's own row.
+--
+-- tenants_public's column list (id, store_name, category, logo_url,
+-- gallery_images) is a hardcoded, non-sensitive projection with no
+-- caller-supplied filtering, so running it as security definer does not
+-- leak anything beyond what it's designed to expose publicly. Revert to
+-- restore the public directory pages; the advisor lint is informational
+-- for this specific view, not a real exposure.
+ALTER VIEW public.tenants_public SET (security_invoker = off);

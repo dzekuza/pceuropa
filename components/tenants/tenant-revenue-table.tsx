@@ -1,6 +1,6 @@
 'use client'
 // components/tenants/tenant-revenue-table.tsx — Updated to use DataGrid aesthetic
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   formatEur as fmtEur,
   formatPct as fmtPct,
@@ -12,6 +12,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   ColumnDef,
+  ColumnOrderState,
   flexRender,
 } from '@tanstack/react-table'
 import { DataGrid, useDataGrid } from '@/components/reui/data-grid/data-grid'
@@ -26,6 +27,7 @@ import {
 } from '@/components/reui/data-grid/data-grid-table'
 import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
 import { TableFooter, TableRow, TableCell } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
 
 interface TenantRevenueTableProps {
   tenant: Tenant
@@ -60,12 +62,15 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
 
   const columns = useMemo<ColumnDef<typeof rows[0]>[]>(() => [
     {
+      id: 'monthName',
       accessorKey: 'monthName',
       header: ({ column }) => <DataGridColumnHeader title="Mėnuo" column={column} />,
       cell: ({ row }) => <span className="font-medium">{row.original.monthName}</span>,
+      footer: () => 'Vidurkis',
       size: 130,
     },
     {
+      id: 'amount',
       accessorKey: 'amount',
       header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR)" column={column} />,
       cell: ({ row }) => (
@@ -73,9 +78,13 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
           {row.original.hasData ? fmtEur(row.original.amount) : '—'}
         </div>
       ),
+      footer: () => (
+        <div className="text-right">{stats.avgAmount != null ? fmtEur(stats.avgAmount) : '—'}</div>
+      ),
       size: 130,
     },
     {
+      id: 'txCount',
       accessorKey: 'txCount',
       header: ({ column }) => <DataGridColumnHeader title="Čekių sk." column={column} />,
       cell: ({ row }) => (
@@ -83,22 +92,28 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
           {row.original.hasData ? row.original.txCount : '—'}
         </div>
       ),
+      footer: () => (
+        <div className="text-right">{stats.avgTxCount != null ? stats.avgTxCount.toFixed(0) : '—'}</div>
+      ),
       size: 110,
     },
     {
       id: 'space',
       header: ({ column }) => <DataGridColumnHeader title="Plotas (m²)" column={column} />,
       cell: () => <div className="text-right">{tenant.space_m2 ?? '—'}</div>,
+      footer: () => <div className="text-right">{tenant.space_m2 ?? '—'}</div>,
       size: 110,
     },
     {
       id: 'pk',
       header: ({ column }) => <DataGridColumnHeader title="P.K (EUR/m²)" column={column} />,
       cell: () => <div className="text-right text-muted-foreground">{pk != null ? fmtEur(pk) : '—'}</div>,
+      footer: () => <div className="text-right">{pk != null ? fmtEur(pk) : '—'}</div>,
       size: 130,
       meta: { cellClassName: 'bg-muted/30' }
     },
     {
+      id: 'apyvartaPerM2',
       accessorKey: 'apyvartaPerM2',
       header: ({ column }) => <DataGridColumnHeader title="Apyvarta (EUR/m²)" column={column} />,
       cell: ({ row }) => (
@@ -106,10 +121,14 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
           {row.original.apyvartaPerM2 != null ? fmtEur(row.original.apyvartaPerM2) : '—'}
         </div>
       ),
+      footer: () => (
+        <div className="text-right">{stats.avgApyvartaPerM2 != null ? fmtEur(stats.avgApyvartaPerM2) : '—'}</div>
+      ),
       size: 150,
       meta: { cellClassName: 'bg-muted/30' }
     },
     {
+      id: 'efektyvumas',
       accessorKey: 'efektyvumas',
       header: ({ column }) => <DataGridColumnHeader title="Efektyvumas (%)" column={column} />,
       cell: ({ row }) => (
@@ -121,14 +140,31 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
           ) : '—'}
         </div>
       ),
+      footer: () => (
+        <div className="text-right">
+          {stats.avgEfektyvumas != null ? (
+            <span className={efektyvumasClass(stats.avgEfektyvumas)}>
+              {fmtPct(stats.avgEfektyvumas)}
+            </span>
+          ) : '—'}
+        </div>
+      ),
       size: 140,
       meta: { cellClassName: 'bg-muted/30' }
     }
-  ], [tenant, pk])
+  ], [tenant, pk, stats])
+
+  const defaultColumnOrder = useMemo(
+    () => ['monthName', 'amount', 'txCount', 'space', 'pk', 'apyvartaPerM2', 'efektyvumas'],
+    [],
+  )
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(defaultColumnOrder)
 
   const table = useReactTable({
     data: rows,
     columns,
+    state: { columnOrder },
+    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
@@ -140,25 +176,16 @@ export function TenantRevenueTable({ tenant, reports, year }: TenantRevenueTable
       tableLayout={{
         width: 'fixed',
         rowBorder: true,
+        columnsMovable: true,
       }}
     >
-      <RevenueTableContent stats={stats} pk={pk} tenantSpace={tenant.space_m2} />
+      <RevenueTableContent />
     </DataGrid>
   )
 }
 
-interface RevenueTableContentProps {
-  stats: {
-    avgAmount: number | null
-    avgTxCount: number | null
-    avgApyvartaPerM2: number | null
-    avgEfektyvumas: number | null
-  }
-  pk: number | null
-  tenantSpace: number | null
-}
-
-function RevenueTableContent({ stats, pk, tenantSpace }: RevenueTableContentProps) {
+function RevenueTableContent() {
+  "use no memo"
   const { table } = useDataGrid()
 
   return (
@@ -189,21 +216,20 @@ function RevenueTableContent({ stats, pk, tenantSpace }: RevenueTableContentProp
         </DataGridTableBody>
 
         <TableFooter>
-          <TableRow className="font-bold hover:bg-muted/50 transition-colors">
-            <TableCell className="px-3 py-3">Vidurkis</TableCell>
-            <TableCell className="text-right px-3 py-3">{stats.avgAmount != null ? fmtEur(stats.avgAmount) : '—'}</TableCell>
-            <TableCell className="text-right px-3 py-3">{stats.avgTxCount != null ? stats.avgTxCount.toFixed(0) : '—'}</TableCell>
-            <TableCell className="text-right px-3 py-3">{tenantSpace ?? '—'}</TableCell>
-            <TableCell className="text-right bg-muted/40 px-3 py-3">{pk != null ? fmtEur(pk) : '—'}</TableCell>
-            <TableCell className="text-right bg-muted/40 px-3 py-3">{stats.avgApyvartaPerM2 != null ? fmtEur(stats.avgApyvartaPerM2) : '—'}</TableCell>
-            <TableCell className="text-right bg-muted/40 px-3 py-3">
-              {stats.avgEfektyvumas != null ? (
-                <span className={efektyvumasClass(stats.avgEfektyvumas)}>
-                  {fmtPct(stats.avgEfektyvumas)}
-                </span>
-              ) : '—'}
-            </TableCell>
-          </TableRow>
+          {table.getFooterGroups().map((footerGroup) => (
+            <TableRow key={footerGroup.id} className="font-bold hover:bg-muted/50 transition-colors">
+              {footerGroup.headers.map((header) => (
+                <TableCell
+                  key={header.id}
+                  className={cn('px-3 py-3', header.column.columnDef.meta?.cellClassName)}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.footer, header.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableFooter>
       </DataGridTableBase>
     </div>
