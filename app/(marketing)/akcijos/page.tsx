@@ -4,8 +4,10 @@ import { Footer } from '@/components/marketing/footer'
 import { AkcijosGrid } from '@/components/marketing/akcijos-grid'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { AKCIJOS_STRINGS } from '@/lib/strings'
-import { PROMO_ITEMS } from '@/lib/promo-data'
+import { createClient } from '@/lib/supabase/server'
+import { formatPromoDateRange } from '@/lib/utils/format-promo-date'
 import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
+import type { PromoItem } from '@/components/marketing/promo-card'
 
 const DEFAULT_BANNER_SLIDES = [
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
@@ -30,6 +32,22 @@ export default async function AkcijosPage() {
   const bannerSlides = await getPuckBannerSlides('akcijos', DEFAULT_BANNER_SLIDES)
   const gridCopy = await getPuckBlockProps('akcijos', 'AkcijosGridBlock', DEFAULT_GRID_COPY)
 
+  const supabase = await createClient()
+  const { data: promos } = await supabase
+    .from('promos')
+    .select('*')
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+
+  const items: PromoItem[] = (promos ?? []).map((p) => ({
+    id: p.slug,
+    image: p.image,
+    title: p.title,
+    date: formatPromoDateRange(p.starts_at, p.ends_at),
+    href: `/akcijos/${p.slug}`,
+    category: p.category,
+  }))
+
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
@@ -39,7 +57,7 @@ export default async function AkcijosPage() {
 
       {/* Promo grid with filters */}
       <section className="w-full max-w-[1332px] mx-auto px-4 py-8 md:py-10 lg:py-14">
-        <AkcijosGrid items={PROMO_ITEMS} {...gridCopy} />
+        <AkcijosGrid items={items} {...gridCopy} />
       </section>
 
       <Footer />

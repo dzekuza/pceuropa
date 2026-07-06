@@ -3,28 +3,43 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
-import { PROMO_ITEMS } from '@/lib/promo-data'
+import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { formatPromoDateRange } from '@/lib/utils/format-promo-date'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateStaticParams() {
-  return PROMO_ITEMS.map((item) => ({ slug: item.id }))
+  const supabase = createAdminClient()
+  const { data: promos } = await supabase.from('promos').select('slug').eq('published', true)
+  return (promos ?? []).map((p) => ({ slug: p.slug }))
+}
+
+async function getPromo(slug: string) {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('promos')
+    .select('*')
+    .eq('slug', slug)
+    .eq('published', true)
+    .single()
+  return data
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const item = PROMO_ITEMS.find((p) => p.id === slug)
+  const item = await getPromo(slug)
   if (!item) return {}
   return {
     title: `${item.title} — PC Europa`,
-    description: item.date,
+    description: formatPromoDateRange(item.starts_at, item.ends_at),
   }
 }
 
 export default async function PromoDetailPage({ params }: Props) {
   const { slug } = await params
-  const item = PROMO_ITEMS.find((p) => p.id === slug)
+  const item = await getPromo(slug)
   if (!item) notFound()
 
   return (
@@ -40,16 +55,18 @@ export default async function PromoDetailPage({ params }: Props) {
           Visos akcijos
         </Link>
 
-        <div className="relative w-full max-h-[480px] rounded-[32px] lg:rounded-[40px] overflow-hidden">
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-[480px] object-cover"
-          />
+        <div className="relative w-full max-h-[480px] rounded-[32px] lg:rounded-[40px] overflow-hidden bg-muted">
+          {item.image && (
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full h-[480px] object-cover"
+            />
+          )}
         </div>
 
         <div className="flex flex-col gap-3 max-w-2xl">
-          <p className="text-[#575757] text-base">{item.date}</p>
+          <p className="text-[#575757] text-base">{formatPromoDateRange(item.starts_at, item.ends_at)}</p>
           <h1 className="font-bold text-[32px] leading-[40px] text-black">{item.title}</h1>
         </div>
       </section>

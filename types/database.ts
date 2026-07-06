@@ -87,6 +87,45 @@ export type Database = {
         }
         Relationships: []
       }
+      promos: {
+        Row: {
+          category: 'stores' | 'services' | 'food'
+          created_at: string | null
+          ends_at: string
+          id: string
+          image: string | null
+          published: boolean
+          slug: string
+          starts_at: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: 'stores' | 'services' | 'food'
+          created_at?: string | null
+          ends_at: string
+          id?: string
+          image?: string | null
+          published?: boolean
+          slug: string
+          starts_at: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: 'stores' | 'services' | 'food'
+          created_at?: string | null
+          ends_at?: string
+          id?: string
+          image?: string | null
+          published?: boolean
+          slug?: string
+          starts_at?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       faq_items: {
         Row: {
           answer: string
@@ -475,6 +514,7 @@ export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
 export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
 
 export type Article = Database['public']['Tables']['articles']['Row']
+export type Promo = Database['public']['Tables']['promos']['Row']
 export type ArticleInsert = Omit<Article, 'id' | 'created_at' | 'updated_at'>
 export type ArticleUpdate = Partial<ArticleInsert>
 

@@ -13,7 +13,6 @@ import { HowToGetHereSection } from '@/components/marketing/how-to-get-here-sect
 import { OpeningHoursSection } from '@/components/marketing/opening-hours-section'
 import { LankytojamsContent } from '@/components/marketing/lankytojams-content'
 import { AkcijosGrid } from '@/components/marketing/akcijos-grid'
-import { PROMO_ITEMS } from '@/lib/promo-data'
 import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS } from '@/lib/strings'
 
 function SectionPreview({
@@ -417,7 +416,7 @@ export const puckConfig: Config<PuckBlocks> = {
         searchPlaceholder: AKCIJOS_STRINGS.searchPlaceholder,
         loadMoreLabel: AKCIJOS_STRINGS.loadMore,
       },
-      render: (props) => <AkcijosGrid items={PROMO_ITEMS} {...props} />,
+      render: (props) => <AkcijosGrid items={[]} {...props} />,
     },
 
     DialogaiFoodCourtBlock: {
