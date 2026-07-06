@@ -1,4 +1,4 @@
-// app/(dashboard)/admin/articles/page.tsx — Admin articles list page
+// app/(dashboard)/admin/articles/page.tsx — Admin articles + akcijos list page
 // Server Component — Defense-in-depth auth check (middleware alone is not sufficient)
 // CVE-2025-29927: middleware can be bypassed via x-middleware-subrequest header
 export const dynamic = 'force-dynamic'
@@ -8,10 +8,19 @@ import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ArticlesTable } from '@/components/articles/articles-table'
-import { ARTICLES_STRINGS } from '@/lib/strings'
+import { PromosTable } from '@/components/promos/promos-table'
+import { ARTICLES_STRINGS, ADMIN_PROMOS_STRINGS } from '@/lib/strings'
 
-export default async function AdminArticlesPage() {
+interface Props {
+  searchParams: Promise<{ tab?: string }>
+}
+
+export default async function AdminArticlesPage({ searchParams }: Props) {
+  const { tab } = await searchParams
+  const activeTab = tab === 'akcijos' ? 'akcijos' : 'articles'
+
   const supabase = await createClient()
 
   const {
@@ -22,27 +31,54 @@ export default async function AdminArticlesPage() {
     redirect('/login')
   }
 
-  const { data: articles } = await supabase
-    .from('articles')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const [{ data: articles }, { data: promos }] = await Promise.all([
+    supabase.from('articles').select('*').order('created_at', { ascending: false }),
+    supabase.from('promos').select('*').order('created_at', { ascending: false }),
+  ])
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">{ARTICLES_STRINGS.pageTitle}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{ARTICLES_STRINGS.pageDescription}</p>
+      <Tabs defaultValue={activeTab}>
+        <div className="flex items-start justify-between gap-4">
+          <TabsList>
+            <TabsTrigger value="articles" asChild>
+              <Link href="/admin/articles?tab=articles">{ADMIN_PROMOS_STRINGS.tabArticles}</Link>
+            </TabsTrigger>
+            <TabsTrigger value="akcijos" asChild>
+              <Link href="/admin/articles?tab=akcijos">{ADMIN_PROMOS_STRINGS.tabPromos}</Link>
+            </TabsTrigger>
+          </TabsList>
+          <Button size="sm" asChild>
+            {activeTab === 'akcijos' ? (
+              <Link href="/admin/articles/akcijos/new">
+                <Plus className="mr-2 h-4 w-4" />
+                {ADMIN_PROMOS_STRINGS.newButton}
+              </Link>
+            ) : (
+              <Link href="/admin/articles/new">
+                <Plus className="mr-2 h-4 w-4" />
+                {ARTICLES_STRINGS.newButton}
+              </Link>
+            )}
+          </Button>
         </div>
-        <Button size="sm" asChild>
-          <Link href="/admin/articles/new">
-            <Plus className="mr-2 h-4 w-4" />
-            {ARTICLES_STRINGS.newButton}
-          </Link>
-        </Button>
-      </div>
 
-      <ArticlesTable data={articles ?? []} />
+        <TabsContent value="articles">
+          <div className="mb-3">
+            <h1 className="text-2xl font-bold">{ARTICLES_STRINGS.pageTitle}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{ARTICLES_STRINGS.pageDescription}</p>
+          </div>
+          <ArticlesTable data={articles ?? []} />
+        </TabsContent>
+
+        <TabsContent value="akcijos">
+          <div className="mb-3">
+            <h1 className="text-2xl font-bold">{ADMIN_PROMOS_STRINGS.pageTitle}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{ADMIN_PROMOS_STRINGS.pageDescription}</p>
+          </div>
+          <PromosTable data={promos ?? []} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
