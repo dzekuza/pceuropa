@@ -5,7 +5,7 @@ export type PromoCategory = 'stores' | 'services' | 'food'
 
 export type PromoItem = {
   id: string
-  image: string
+  image: string | null
   title: string
   date: string
   href: string
@@ -20,12 +20,14 @@ export function PromoCard({ item }: { item: PromoItem }) {
       className="flex flex-col gap-6 group"
     >
       {/* Image */}
-      <div className="relative w-full h-[236px] rounded-[32px] lg:rounded-[40px] overflow-hidden shrink-0">
-        <img
-          src={item.image}
-          alt={item.title}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
-        />
+      <div className="relative w-full h-[236px] rounded-[32px] lg:rounded-[40px] overflow-hidden shrink-0 bg-muted">
+        {item.image && (
+          <img
+            src={item.image}
+            alt={item.title}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
+          />
+        )}
       </div>
 
       {/* Info row */}
