@@ -8,7 +8,6 @@ import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-colu
 import { DeletePromoDialog } from './delete-promo-dialog'
 import type { Promo } from '@/types/database'
 import { ADMIN_PROMOS_STRINGS } from '@/lib/strings'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const CATEGORY_LABEL: Record<Promo['category'], string> = {
   stores: ADMIN_PROMOS_STRINGS.categoryStores,
@@ -41,7 +40,7 @@ export function getPromoColumns(
       cell: ({ row }) => {
         const src = row.getValue<string | null>('image')
         return src ? (
-          <img src={resizeSupabaseImage(src, { width: 80, height: 80 })} alt="" loading="lazy" className="h-10 w-10 rounded object-cover" />
+          <img src={src} alt="" className="h-10 w-10 rounded object-cover" />
         ) : (
           <div className="h-10 w-10 rounded bg-muted" />
         )
