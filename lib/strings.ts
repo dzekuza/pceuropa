@@ -5,6 +5,7 @@
 export const ADMIN_NAV_ITEMS = [
   { label: 'Pagrindinis', href: '/admin', icon: 'Home' },
   { label: 'Nuomininkai', href: '/admin/tenants', icon: 'Building2' },
+  { label: 'Metų apžvalga', href: '/admin/overview', icon: 'LayoutGrid' },
   { label: 'Analitika', href: '/admin/analytics', icon: 'BarChart2' },
   { label: 'Straipsniai', href: '/admin/articles', icon: 'Newspaper' },
   { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },

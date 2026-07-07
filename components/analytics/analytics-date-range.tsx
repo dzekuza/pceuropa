@@ -1,9 +1,5 @@
 'use client'
 
-// components/analytics/analytics-date-range.tsx
-// Date range picker — two Select dropdowns for "Nuo" and "Iki" month filters
-// On change, pushes ?from=YYYY-MM&to=YYYY-MM to URL → triggers Server Component refetch
-
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
   Select,
@@ -14,73 +10,67 @@ import {
 } from '@/components/ui/select'
 import { MONTHS_LT } from '@/lib/constants'
 
-interface AnalyticsDateRangeProps {
-  from: string  // current "YYYY-MM" value
-  to: string    // current "YYYY-MM" value
+interface AnalyticsYearFilterProps {
+  year: string  // "YYYY"
+  month: string // "1"–"12" or "" for full year
 }
 
-interface MonthOption {
-  value: string   // "YYYY-MM"
-  label: string   // "Sausis 2026"
-}
-
-/** Generate last N months as options, newest first */
-function generateMonthOptions(count: number = 24): MonthOption[] {
-  const options: MonthOption[] = []
-  const now = new Date()
-  let year = now.getFullYear()
-  let month = now.getMonth() + 1 // 1-indexed
-
-  for (let i = 0; i < count; i++) {
-    const value = `${year}-${String(month).padStart(2, '0')}`
-    const label = `${MONTHS_LT[month - 1]} ${year}`
-    options.push({ value, label })
-
-    month--
-    if (month < 1) {
-      month = 12
-      year--
-    }
-  }
-
-  return options
-}
-
-export function AnalyticsDateRange({ from, to }: AnalyticsDateRangeProps) {
+export function AnalyticsYearFilter({ year, month }: AnalyticsYearFilterProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const options = generateMonthOptions(24)
+  const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth() + 1
+  const selectedYear = parseInt(year)
 
-  function updateParam(key: 'from' | 'to', value: string) {
+  const years = Array.from({ length: 5 }, (_, i) => String(currentYear - i))
+
+  // Cap months at current month when viewing the current year
+  const maxMonth = selectedYear === currentYear ? currentMonth : 12
+  const monthOptions = Array.from({ length: maxMonth }, (_, i) => ({
+    value: String(i + 1),
+    label: MONTHS_LT[i],
+  }))
+
+  function update(key: 'year' | 'month', value: string) {
     const params = new URLSearchParams(searchParams.toString())
-    params.set(key, value)
+    params.delete('from')
+    params.delete('to')
+
+    if (key === 'year') {
+      params.set('year', value)
+      params.delete('month')
+    } else if (value === 'all') {
+      params.delete('month')
+    } else {
+      params.set('month', value)
+    }
+
     router.push(`/admin/analytics?${params.toString()}`)
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-sm text-muted-foreground whitespace-nowrap">Nuo</span>
-      <Select value={from} onValueChange={(v) => updateParam('from', v)}>
-        <SelectTrigger className="w-36 min-w-0">
+    <div className="flex items-center gap-2">
+      <Select value={year} onValueChange={(v) => update('year', v)}>
+        <SelectTrigger className="w-24">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {options.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>
-              {opt.label}
+          {years.map((y) => (
+            <SelectItem key={y} value={y}>
+              {y}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
 
-      <span className="text-sm text-muted-foreground whitespace-nowrap">Iki</span>
-      <Select value={to} onValueChange={(v) => updateParam('to', v)}>
-        <SelectTrigger className="w-36 min-w-0">
+      <Select value={month || 'all'} onValueChange={(v) => update('month', v)}>
+        <SelectTrigger className="w-36">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {options.map((opt) => (
+          <SelectItem value="all">Visi mėnesiai</SelectItem>
+          {monthOptions.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
               {opt.label}
             </SelectItem>

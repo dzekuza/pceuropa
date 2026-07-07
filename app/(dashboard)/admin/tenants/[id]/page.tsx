@@ -26,33 +26,28 @@ export default async function TenantDetailPage({
 }: TenantDetailPageProps) {
   const supabase = await createClient()
 
-  // Defense-in-depth: validate JWT and verify admin role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
-    redirect('/login')
-  }
-
-  // Await dynamic params (Next.js 15+ async params)
+  // Resolve params and compute year before the parallel fetch
   const { id } = await params
   const { year: yearParam } = await searchParams
-
   const currentYear = new Date().getFullYear()
   const year = yearParam ? parseInt(yearParam, 10) : currentYear
   const safeYear = isNaN(year) ? currentYear : year
 
-  // Parallel fetches for tenant + revenue reports
-  const [{ data: tenant }, { data: reports }] = await Promise.all([
+  // Auth + both data fetches run concurrently.
+  const [{ data: { user } }, { data: tenant }, { data: reports }] = await Promise.all([
+    supabase.auth.getUser(),
     supabase.from('tenants').select('*').eq('id', id).single(),
     supabase
       .from('revenue_reports')
-      .select('*')
+      .select('id, month, amount_eur, tx_count, submitted_at, submitted_by, tenant_id, user_id, weeks')
       .eq('tenant_id', id)
       .gte('month', `${safeYear}-01-01`)
       .lte('month', `${safeYear}-12-31`),
   ])
+
+  if (!user || user.app_metadata?.role !== 'admin') {
+    redirect('/login')
+  }
 
   if (!tenant) {
     redirect('/admin/tenants')

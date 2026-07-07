@@ -31,37 +31,34 @@ function formatEur(value: number): string {
 export default async function AdminHomePage() {
   const supabase = await createClient()
 
-  // Defense-in-depth: validate JWT and verify admin role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Pre-compute date strings before the parallel fetch so they're ready immediately.
+  const now = new Date()
+  const currentMonthDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
+  const currentMonthLabel = `${MONTHS_LT[now.getMonth()]} ${now.getFullYear()}`
+  const lastYearSameMonthDate = `${now.getFullYear() - 1}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
+  const startDate = `${twelveMonthsAgo.getFullYear()}-${String(twelveMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`
+  const startOfLastYear = `${now.getFullYear() - 1}-01-01`
+
+  // Defense-in-depth auth + all data fetches run concurrently.
+  // RLS protects every query; redirect fires after all resolve if auth fails.
+  const [
+    { data: { user } },
+    tenantsResult,
+    reportsResult,
+    yearlyReportsResult,
+    lastYearSameMonthResult,
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from('tenants').select('id, store_name, operator, created_at').order('created_at', { ascending: false }),
+    supabase.from('revenue_reports').select('id, amount_eur, tx_count, month, tenant_id, submitted_at, submitted_by, user_id, weeks').gte('month', startDate).order('month', { ascending: true }),
+    supabase.from('revenue_reports').select('amount_eur, month').gte('month', startOfLastYear),
+    supabase.from('revenue_reports').select('amount_eur, tx_count').eq('month', lastYearSameMonthDate),
+  ])
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')
   }
-
-  // Current month processing
-  const now = new Date()
-  const currentMonthDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-  const currentMonthLabel = `${MONTHS_LT[now.getMonth()]} ${now.getFullYear()}`
-
-  // Same calendar month, one year back — all monthly stat cards compare against this
-  const lastYearSameMonthDate = `${now.getFullYear() - 1}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-
-  // Twelve months ago for charts
-  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
-  const startDate = `${twelveMonthsAgo.getFullYear()}-${String(twelveMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`
-
-  // Start of last year — needed so yearly comparison has full 12 months of prior year
-  const startOfLastYear = `${now.getFullYear() - 1}-01-01`
-
-  // Parallel fetch
-  const [tenantsResult, reportsResult, yearlyReportsResult, lastYearSameMonthResult] = await Promise.all([
-    supabase.from('tenants').select('*').order('created_at', { ascending: false }),
-    supabase.from('revenue_reports').select('*').gte('month', startDate).order('month', { ascending: true }),
-    supabase.from('revenue_reports').select('amount_eur, month').gte('month', startOfLastYear),
-    supabase.from('revenue_reports').select('amount_eur, tx_count').eq('month', lastYearSameMonthDate),
-  ])
 
   const tenants = tenantsResult.data ?? []
   const reports = reportsResult.data ?? []

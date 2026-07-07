@@ -17,6 +17,7 @@ import {
   TrendingUp,
   FileText,
   Plug,
+  LayoutGrid,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -41,6 +42,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp,
   FileText,
   Plug,
+  LayoutGrid,
 }
 
 interface AppSidebarProps {

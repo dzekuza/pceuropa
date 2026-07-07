@@ -1,5 +1,5 @@
 'use client'
-import * as XLSX from 'xlsx'
+import dynamic from 'next/dynamic'
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -32,7 +32,9 @@ import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Download, Upload, HelpCircle } from 'lucide-react'
-import { TenantImportDialog } from '@/components/tenants/tenant-import-dialog'
+const TenantImportDialog = dynamic(() =>
+  import('@/components/tenants/tenant-import-dialog').then((m) => m.TenantImportDialog)
+)
 import { toTenantFileKey } from '@/lib/utils'
 
 interface TenantsTableProps {
@@ -101,7 +103,8 @@ export function TenantsTable({ data }: TenantsTableProps) {
     autoResetPageIndex: false,
   })
 
-  const handleExportXlsx = useCallback(() => {
+  const handleExportXlsx = useCallback(async () => {
+    const XLSX = await import('xlsx')
     const selectedRows = table.getSelectedRowModel().rows
     const rows = selectedRows.length > 0 ? selectedRows : table.getCoreRowModel().rows
     const headers = [

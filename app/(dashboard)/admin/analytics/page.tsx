@@ -10,40 +10,18 @@ import { RevenueLineChart } from '@/components/analytics/revenue-line-chart'
 import { CategoryBarChart } from '@/components/analytics/category-bar-chart'
 import { TenantTrendChart } from '@/components/analytics/tenant-trend-chart'
 import { SubmissionTracker } from '@/components/analytics/submission-tracker'
-import { AnalyticsDateRange } from '@/components/analytics/analytics-date-range'
+import { AnalyticsYearFilter } from '@/components/analytics/analytics-date-range'
 import { AnalyticsSectionCards } from '@/components/analytics/section-cards'
 import {
   aggregateMonthlyRevenue,
   aggregateCategoryRevenue,
   getSubmissionStatus,
   aggregateTenantTrends,
-  getDateRangeMonths,
 } from '@/lib/utils/analytics'
 import { MONTHS_LT } from '@/lib/constants'
 
 interface AnalyticsPageProps {
-  searchParams: Promise<{ from?: string; to?: string }>
-}
-
-/** Default range = current calendar year to date: Sausis → current month (YYYY-MM) */
-function getDefaultRange(): { from: string; to: string } {
-  const now = new Date()
-  const toYear = now.getFullYear()
-  const toMonth = now.getMonth() + 1
-
-  return {
-    from: `${toYear}-01`,
-    to: `${toYear}-${String(toMonth).padStart(2, '0')}`,
-  }
-}
-
-/** Friendly Lithuanian label for a date range */
-function buildRangeLabel(fromParam: string, toParam: string): string {
-  const [fy, fm] = fromParam.split('-').map(Number)
-  const [ty, tm] = toParam.split('-').map(Number)
-  const fromLabel = `${MONTHS_LT[fm - 1]} ${fy}`
-  const toLabel = `${MONTHS_LT[tm - 1]} ${ty}`
-  return fromLabel === toLabel ? fromLabel : `${fromLabel} – ${toLabel}`
+  searchParams: Promise<{ year?: string; month?: string }>
 }
 
 export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPageProps) {
@@ -58,29 +36,39 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
     redirect('/login')
   }
 
-  // Parse query params for date range
+  // Parse year + month params
   const params = await searchParams
-  const defaults = getDefaultRange()
-  const fromParam = params.from ?? defaults.from
-  const toParam = params.to ?? defaults.to
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth() + 1
+  const year = parseInt(params.year ?? String(currentYear))
+  const month = params.month ? parseInt(params.month) : null
 
-  // Convert YYYY-MM to YYYY-MM-01 for DB queries
-  const fromDate = `${fromParam}-01`
-  const toDate = `${toParam}-01`
+  // Date range: single month or full year (capped at current month)
+  const mm = (m: number) => String(m).padStart(2, '0')
+  const fromDate = month ? `${year}-${mm(month)}-01` : `${year}-01-01`
+  const toDate = month
+    ? `${year}-${mm(month)}-01`
+    : year === currentYear
+      ? `${year}-${mm(currentMonth)}-01`
+      : `${year}-12-01`
+
+  // Previous period: for a selected month → previous calendar month; for full year → same year range one year back
+  const prevYear = month
+    ? (month === 1 ? year - 1 : year)
+    : year - 1
+  const prevMonth = month
+    ? (month === 1 ? 12 : month - 1)
+    : null
+  const prevFromDate = prevMonth ? `${prevYear}-${mm(prevMonth)}-01` : `${prevYear}-01-01`
+  const prevToDate = prevMonth
+    ? `${prevYear}-${mm(prevMonth)}-01`
+    : year === currentYear
+      ? `${prevYear}-${mm(currentMonth)}-01`
+      : `${prevYear}-12-01`
 
   // Current month for submission tracker
-  const now = new Date()
-  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-
-  // Build previous period of same length for trend comparison
-  const months = getDateRangeMonths(fromDate, toDate)
-  const periodLen = months.length
-  const firstDate = new Date(fromDate)
-  firstDate.setMonth(firstDate.getMonth() - periodLen)
-  const prevFromDate = `${firstDate.getFullYear()}-${String(firstDate.getMonth() + 1).padStart(2, '0')}-01`
-  const prevToMs = new Date(fromDate)
-  prevToMs.setMonth(prevToMs.getMonth() - 1)
-  const prevToDate = `${prevToMs.getFullYear()}-${String(prevToMs.getMonth() + 1).padStart(2, '0')}-01`
+  const currentMonthStr = `${currentYear}-${mm(currentMonth)}-01`
 
   // Parallel fetch: tenants + current period reports + previous period reports
   const [tenantsResult, reportsResult, prevReportsResult] = await Promise.all([
@@ -117,7 +105,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
     ? totalRevenue / submissionStatus.submittedCount
     : 0
 
-  const rangeLabel = buildRangeLabel(fromParam, toParam)
+  const rangeLabel = month ? `${MONTHS_LT[month - 1]} ${year}` : String(year)
 
   return (
     <div className="flex flex-col gap-3">
@@ -129,7 +117,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
           </p>
         </div>
         <Suspense fallback={null}>
-          <AnalyticsDateRange from={fromParam} to={toParam} />
+          <AnalyticsYearFilter year={String(year)} month={month ? String(month) : ''} />
         </Suspense>
       </div>
 
