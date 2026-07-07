@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import type { RevenueFormValues } from '@/lib/validations/revenue'
 import type { WeekData } from '@/types/database'
+import { postTurnover } from '@/lib/moderan/client'
 
 /**
  * submitRevenue — Upserts a revenue_report with weekly breakdown.
@@ -24,10 +25,10 @@ export async function submitRevenue(
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  // Fetch the seller's tenant record
+  // Fetch the seller's tenant record (store_name needed for Moderan)
   const { data: tenant, error: tenantError } = await supabase
     .from('tenants')
-    .select('id')
+    .select('id, store_name')
     .eq('user_id', user.id)
     .single()
 
@@ -66,6 +67,12 @@ export async function submitRevenue(
 
   if (upsertError) {
     return { error: 'Nepavyko išsaugoti duomenų' }
+  }
+
+  // Forward to Moderan — non-blocking: log failure but don't surface it to seller
+  const moderanResult = await postTurnover(tenant.store_name, formData.month, amount_eur)
+  if (!moderanResult.ok) {
+    console.error('[Moderan] POST failed:', moderanResult.error)
   }
 
   revalidatePath('/seller/revenue')
