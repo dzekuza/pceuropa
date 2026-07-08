@@ -40,6 +40,7 @@ const securityHeaders = [
       imgSrc,
       fontSrc,
       `connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST}`,
+      "frame-src 'self' https://www.google.com https://maps.google.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",
