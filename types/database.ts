@@ -90,6 +90,7 @@ export type Database = {
       promos: {
         Row: {
           category: 'stores' | 'services' | 'food'
+          content: string
           created_at: string | null
           ends_at: string
           id: string
@@ -102,6 +103,7 @@ export type Database = {
         }
         Insert: {
           category?: 'stores' | 'services' | 'food'
+          content?: string
           created_at?: string | null
           ends_at: string
           id?: string
@@ -114,6 +116,7 @@ export type Database = {
         }
         Update: {
           category?: 'stores' | 'services' | 'food'
+          content?: string
           created_at?: string | null
           ends_at?: string
           id?: string

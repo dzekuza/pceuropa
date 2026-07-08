@@ -15,6 +15,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardHeading,
   CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,7 @@ import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -144,28 +146,31 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="w-full">
-        <CardHeader className="flex flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <CardTitle className="text-lg">Nuomininkai</CardTitle>
-            <form onSubmit={handleSearchSubmit} className="flex w-full flex-col gap-2 sm:flex-row">
-              <div className="relative min-w-0 sm:w-[280px]">
+      <Card className="w-full overflow-hidden rounded-[1.75rem] border-border/70 shadow-sm">
+        <CardHeader className="flex flex-col items-stretch gap-5 px-5 py-5 sm:px-6 sm:py-6">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+            <CardHeading>
+              <CardTitle className="text-2xl font-semibold tracking-[-0.02em]">Nuomininkai</CardTitle>
+            </CardHeading>
+
+            <form onSubmit={handleSearchSubmit} className="flex w-full flex-col gap-3 lg:max-w-[42rem] lg:flex-row">
+              <div className="relative min-w-0 flex-1">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={searchDraft}
                   onChange={(event) => setSearchDraft(event.target.value)}
                   placeholder="Ieškoti pagal pavadinimą, operatorių, kodą"
-                  className="pl-9"
+                  className="h-11 rounded-xl border-border/80 pl-10"
                 />
               </div>
-              <Button type="submit" variant="outline" size="sm">
+              <Button type="submit" variant="outline" className="h-11 rounded-xl px-5">
                 Ieškoti
               </Button>
               {state.search && (
                 <Button
                   type="button"
                   variant="ghost"
-                  size="sm"
+                  className="h-11 rounded-xl px-4"
                   onClick={() => {
                     setSearchDraft('')
                     pushParams({ search: null, page: '1' })
@@ -177,74 +182,80 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
             </form>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <Select
               value={state.category || 'all'}
               onValueChange={(value) => pushParams({ category: value === 'all' ? null : value, page: '1' })}
             >
-              <SelectTrigger className="h-9 w-full sm:w-[200px]">
+              <SelectTrigger className="h-11 w-full rounded-xl border-border/80 sm:w-[220px]">
                 <SelectValue placeholder="Visos kategorijos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Visos kategorijos</SelectItem>
-                {TENANT_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  <SelectItem value="all">Visos kategorijos</SelectItem>
+                  {TENANT_CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="gap-1.5">
-              <Upload className="size-4" />
-              Importuoti
-            </Button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
-                  <HelpCircle className="size-4" />
-                  <span className="sr-only">Importavimo instrukcija</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 text-sm" align="end" sideOffset={4}>
-                <p className="mb-2 font-medium">Kaip importuoti</p>
-                <ol className="list-decimal list-inside space-y-1.5 leading-snug text-muted-foreground">
-                  <li>Atsisiųskite eksportą arba paruoškite tą pačią stulpelių struktūrą.</li>
-                  <li>Viena eilutė turi atitikti vieną nuomininką.</li>
-                  <li>Logotipas: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_logo.jpg'}</code></li>
-                  <li>Galerija: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_gallery1.jpg'}</code></li>
-                </ol>
-              </PopoverContent>
-            </Popover>
-            <Button asChild variant="outline" size="sm" className="gap-1.5">
-              <Link href={exportHref}>
-                <Download className="size-4" />
-                Eksportuoti Excel
-              </Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" onClick={() => setImportOpen(true)} className="h-11 rounded-xl px-4">
+                <Upload data-icon="inline-start" />
+                Importuoti
+              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" className="text-muted-foreground">
+                    <HelpCircle />
+                    <span className="sr-only">Importavimo instrukcija</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 rounded-xl text-sm" align="end" sideOffset={8}>
+                  <div className="flex flex-col gap-3">
+                    <p className="font-medium">Kaip importuoti</p>
+                    <ol className="list-inside list-decimal text-muted-foreground">
+                      <li>Atsisiųskite eksportą arba paruoškite tą pačią stulpelių struktūrą.</li>
+                      <li>Viena eilutė turi atitikti vieną nuomininką.</li>
+                      <li>Logotipas: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_logo.jpg'}</code></li>
+                      <li>Galerija: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_gallery1.jpg'}</code></li>
+                    </ol>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <Button asChild variant="outline" className="h-11 rounded-xl px-4">
+                <Link href={exportHref}>
+                  <Download data-icon="inline-start" />
+                  Eksportuoti Excel
+                </Link>
+              </Button>
+            </div>
           </div>
         </CardHeader>
 
         <CardContent className="p-0">
-          <div className="overflow-x-auto border-y">
+          <div className="overflow-x-auto border-y border-border/70">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[72px]">Logo</TableHead>
+                  <TableHead className="w-[76px] px-4">Logo</TableHead>
                   {SORTABLE_COLUMNS.map((column) => (
-                    <TableHead key={column.key}>
+                    <TableHead key={column.key} className="px-4">
                       <SortButton column={column.key} label={column.label} />
                     </TableHead>
                   ))}
-                  <TableHead>Įmonės kodas</TableHead>
-                  <TableHead>Aprašymas</TableHead>
-                  <TableHead className="w-[160px] text-right">Veiksmai</TableHead>
+                  <TableHead className="px-4">Įmonės kodas</TableHead>
+                  <TableHead className="min-w-[280px] px-4">Aprašymas</TableHead>
+                  <TableHead className="w-[172px] px-4 text-right">Veiksmai</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
+                    <TableCell colSpan={10} className="py-12 text-center text-sm text-muted-foreground">
                       Pagal pasirinktus filtrus nuomininkų nerasta.
                     </TableCell>
                   </TableRow>
@@ -255,8 +266,8 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => router.push(`/admin/tenants/${tenant.id}`)}
                     >
-                      <TableCell>
-                        <Avatar className="size-8">
+                      <TableCell className="px-4 py-3">
+                        <Avatar className="size-10 rounded-full border border-border/60">
                           <AvatarImage
                             src={resizeSupabaseImage(tenant.logo_url, { width: 64, height: 64 })}
                             alt={tenant.store_name}
@@ -267,45 +278,45 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                           </AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell className="font-medium">{tenant.store_name}</TableCell>
-                      <TableCell>{tenant.operator ?? '—'}</TableCell>
-                      <TableCell>
+                      <TableCell className="px-4 py-3 font-medium">{tenant.store_name}</TableCell>
+                      <TableCell className="px-4 py-3">{tenant.operator ?? '—'}</TableCell>
+                      <TableCell className="px-4 py-3">
                         {tenant.category ? (
                           <Badge variant="primary-light" size="sm">
                             {tenant.category}
                           </Badge>
                         ) : '—'}
                       </TableCell>
-                      <TableCell>{tenant.space_m2 != null ? `${tenant.space_m2} m²` : '—'}</TableCell>
-                      <TableCell>{formatCurrency(tenant.rent_eur)}</TableCell>
-                      <TableCell>{formatDate(tenant.created_at)}</TableCell>
-                      <TableCell>{tenant.company_code ?? '—'}</TableCell>
-                      <TableCell className="max-w-[240px] truncate" title={tenant.description ?? undefined}>
+                      <TableCell className="px-4 py-3">{tenant.space_m2 != null ? `${tenant.space_m2} m²` : '—'}</TableCell>
+                      <TableCell className="px-4 py-3">{formatCurrency(tenant.rent_eur)}</TableCell>
+                      <TableCell className="px-4 py-3">{formatDate(tenant.created_at)}</TableCell>
+                      <TableCell className="px-4 py-3">{tenant.company_code ?? '—'}</TableCell>
+                      <TableCell className="max-w-[280px] px-4 py-3 truncate" title={tenant.description ?? undefined}>
                         {tenant.description ?? '—'}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2" onClick={(event) => event.stopPropagation()}>
                           <Button
                             variant="outline"
-                            size="sm"
+                            className="h-9 rounded-xl px-4"
                             onClick={() => {
                               setSelectedTenant(tenant)
                               setSheetOpen(true)
                             }}
                           >
-                            <Pencil className="mr-1.5 size-3.5" />
+                            <Pencil data-icon="inline-start" />
                             Redaguoti
                           </Button>
                           <Button
                             variant="ghost"
-                            size="sm"
+                            size="icon-sm"
                             className="text-destructive hover:text-destructive"
                             onClick={() => {
                               setTenantToDelete({ id: tenant.id, store_name: tenant.store_name })
                               setDeleteDialogOpen(true)
                             }}
                           >
-                            <Trash2 className="size-4" />
+                            <Trash2 />
                           </Button>
                         </div>
                       </TableCell>
@@ -317,7 +328,7 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <CardFooter className="flex flex-col gap-4 px-5 py-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <span>
               Rodoma {from}-{to} iš {totalCount}
@@ -326,15 +337,17 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
               value={String(state.pageSize)}
               onValueChange={(value) => pushParams({ pageSize: value, page: '1' })}
             >
-              <SelectTrigger className="h-8 w-[110px]">
+              <SelectTrigger size="sm" className="w-[112px] rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {[10, 25, 50, 100].map((size) => (
-                  <SelectItem key={size} value={String(size)}>
-                    {size} / psl.
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  {[10, 25, 50, 100].map((size) => (
+                    <SelectItem key={size} value={String(size)}>
+                      {size} / psl.
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>
@@ -342,22 +355,22 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
-              size="sm"
+              size="icon-sm"
               onClick={() => pushParams({ page: String(state.page - 1) })}
               disabled={state.page <= 1}
             >
-              <ChevronsLeft className="size-4" />
+              <ChevronsLeft />
             </Button>
             <span className="min-w-[90px] text-center text-sm text-muted-foreground">
               Puslapis {state.page} / {pageCount}
             </span>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon-sm"
               onClick={() => pushParams({ page: String(state.page + 1) })}
               disabled={state.page >= pageCount}
             >
-              <ChevronsRight className="size-4" />
+              <ChevronsRight />
             </Button>
           </div>
         </CardFooter>

@@ -26,6 +26,7 @@ export async function createPromo(
     .insert({
       title: data.title,
       slug: data.slug,
+      content: data.content,
       image: data.image,
       starts_at: data.starts_at,
       ends_at: data.ends_at,
@@ -54,6 +55,7 @@ export async function updatePromo(
     .update({
       title: data.title,
       slug: data.slug,
+      content: data.content,
       image: data.image,
       starts_at: data.starts_at,
       ends_at: data.ends_at,

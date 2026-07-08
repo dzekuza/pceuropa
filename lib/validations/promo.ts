@@ -7,6 +7,7 @@ export const promoFormSchema = z
   .object({
     title: z.string().min(3, 'Pavadinimas per trumpas'),
     slug: z.string().min(3, 'Nuoroda per trumpa').regex(/^[a-z0-9-]+$/, 'Tik mažosios raidės, skaičiai ir brūkšneliai'),
+    content: z.string().default(''),
     image: z.string().nullable().default(null),
     starts_at: z.string().min(1, 'Nurodykite pradžios datą'),
     ends_at: z.string().min(1, 'Nurodykite pabaigos datą'),

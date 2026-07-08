@@ -263,6 +263,7 @@ export const ADMIN_PROMOS_STRINGS = {
   imageLabel: 'Nuotrauka',
   uploadImage: 'Įkelti nuotrauką',
   removeImage: 'Pašalinti',
+  editorPlaceholder: 'Pradėkite rašyti akcijos aprašymą...',
   deleteConfirmTitle: 'Ištrinti akciją?',
   deleteConfirmDesc: 'Šis veiksmas negrįžtamas. Akcija bus ištrinta visam laikui.',
   deleteConfirm: 'Ištrinti',
