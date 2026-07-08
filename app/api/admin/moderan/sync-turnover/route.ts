@@ -18,7 +18,7 @@ export type SyncPayload = {
 }
 
 export type SyncResult = SyncPayload & {
-  status: 'ready' | 'sent' | 'error'
+  status: 'ready' | 'sent' | 'skipped' | 'error'
   error?: string
 }
 
@@ -27,6 +27,58 @@ export type SyncResponse = {
   month: string
   results: SyncResult[]
   lastSentAt?: string | null
+}
+
+const SEND_CONCURRENCY = 3
+const MAX_RETRIES = 2
+const RETRY_BASE_DELAY_MS = 500
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = []
+  for (let i = 0; i < items.length; i += size) chunks.push(items.slice(i, i + size))
+  return chunks
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function sendToModeran(
+  url: string,
+  apiToken: string,
+  payload: SyncPayload
+): Promise<SyncResult> {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: apiToken,
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (res.ok) return { ...payload, status: 'sent' }
+
+      const text = await res.text().catch(() => res.statusText)
+
+      // Fail fast on validation/auth errors — retrying won't change the outcome.
+      if (res.status < 500 || attempt === MAX_RETRIES) {
+        return { ...payload, status: 'error', error: `HTTP ${res.status}: ${text}` }
+      }
+    } catch (err) {
+      if (attempt === MAX_RETRIES) {
+        const message = err instanceof Error ? err.message : 'Network error'
+        return { ...payload, status: 'error', error: message }
+      }
+    }
+
+    await sleep(RETRY_BASE_DELAY_MS * 2 ** attempt)
+  }
+
+  // Unreachable, but keeps TypeScript satisfied.
+  return { ...payload, status: 'error', error: 'Unknown send failure' }
 }
 
 export async function POST(req: NextRequest) {
@@ -103,39 +155,60 @@ export async function POST(req: NextRequest) {
 
   const url = `https://www.moderan.net/api/domains/${domainId}/propertysets/${propertySetId}/retailturnovers`
 
-  const results: SyncResult[] = await Promise.all(
-    payloads.map(async (payload) => {
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: apiToken,
-          },
-          body: JSON.stringify(payload),
-        })
+  // Moderan rejects a second POST for a Store+Month that was already sent (400,
+  // "already existing row"), and firing all rows at once as concurrent duplicates
+  // appears to make Moderan's server crash (500) instead. So: consult our own log
+  // to skip shops already confirmed 'sent' for this month, and send the rest with
+  // limited concurrency + retry instead of one unbounded Promise.all burst.
+  const { data: previousLog } = await supabase
+    .from('moderan_sync_log')
+    .select('results')
+    .eq('month', monthDate)
+    .maybeSingle()
 
-        if (!res.ok) {
-          const text = await res.text().catch(() => res.statusText)
-          return { ...payload, status: 'error' as const, error: `HTTP ${res.status}: ${text}` }
-        }
-
-        return { ...payload, status: 'sent' as const }
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Network error'
-        return { ...payload, status: 'error' as const, error: message }
-      }
-    })
+  const previouslySent = new Set(
+    ((previousLog?.results as SyncResult[] | null) ?? [])
+      .filter((r) => r.status === 'sent')
+      .map((r) => r.shopName)
   )
+
+  type PendingItem = { index: number; payload: SyncPayload }
+  const results: SyncResult[] = new Array(payloads.length)
+  const pending: PendingItem[] = []
+
+  payloads.forEach((payload, index) => {
+    if (payload.shopName === 'Unknown') {
+      results[index] = {
+        ...payload,
+        status: 'error',
+        error: 'Trūksta parduotuvės pavadinimo (nerastas susietas nuomininkas).',
+      }
+    } else if (previouslySent.has(payload.shopName)) {
+      results[index] = { ...payload, status: 'skipped' }
+    } else {
+      pending.push({ index, payload })
+    }
+  })
+
+  for (const batch of chunk(pending, SEND_CONCURRENCY)) {
+    const sent = await Promise.all(batch.map((item) => sendToModeran(url, apiToken, item.payload)))
+    sent.forEach((result, i) => {
+      results[batch[i].index] = result
+    })
+  }
 
   const anySuccess = results.some((r) => r.status === 'sent')
   if (anySuccess) {
+    // Persist skipped rows as 'sent' in the log so future runs keep treating them
+    // as already delivered — 'skipped' is a display-only status for this response.
+    const logResults = results.map((r) => (r.status === 'skipped' ? { ...r, status: 'sent' as const } : r))
+
     await supabase.from('moderan_sync_log').upsert(
       {
         month: monthDate,
         sent_at: new Date().toISOString(),
         sent_by: user.id,
-        results: JSON.parse(JSON.stringify(results)),
+        results: JSON.parse(JSON.stringify(logResults)),
       },
       { onConflict: 'month' }
     )

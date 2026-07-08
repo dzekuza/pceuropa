@@ -56,6 +56,7 @@ function toPayload(result: SyncResult): SyncPayload {
 function StatusBadge({ status }: { status: SyncResult['status'] }) {
   if (status === 'sent') return <Badge variant="default">Išsiųsta</Badge>
   if (status === 'error') return <Badge variant="destructive">Klaida</Badge>
+  if (status === 'skipped') return <Badge variant="secondary">{S.statusSkipped}</Badge>
   return <Badge variant="secondary">{S.statusReady}</Badge>
 }
 
