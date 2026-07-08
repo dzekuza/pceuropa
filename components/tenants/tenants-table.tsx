@@ -1,23 +1,24 @@
 'use client'
+
 import dynamic from 'next/dynamic'
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  type SortingState,
-  type PaginationState,
-  type ColumnFiltersState,
-  type RowSelectionState,
-} from '@tanstack/react-table'
-import { getColumns } from '@/components/tenants/tenant-columns'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { Download, HelpCircle, Pencil, Search, Trash2, Upload, ArrowUpDown, ArrowUp, ArrowDown, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import type { TenantListRow, TenantListState } from '@/lib/admin-data'
+import { TENANT_CATEGORIES } from '@/lib/constants'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
-import type { Tenant } from '@/types/database'
-import { TENANT_CATEGORIES } from '@/lib/constants'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -25,205 +26,350 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { DataGrid } from '@/components/reui/data-grid/data-grid'
-import { DataGridTable } from '@/components/reui/data-grid/data-grid-table'
-import { DataGridPagination } from '@/components/reui/data-grid/data-grid-pagination'
-import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Badge } from '@/components/reui/badge'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Download, Upload, HelpCircle } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
 const TenantImportDialog = dynamic(() =>
   import('@/components/tenants/tenant-import-dialog').then((m) => m.TenantImportDialog)
 )
-import { toTenantFileKey } from '@/lib/utils'
 
 interface TenantsTableProps {
-  data: Tenant[]
+  data: TenantListRow[]
+  totalCount: number
+  pageCount: number
+  state: TenantListState
 }
 
-export function TenantsTable({ data }: TenantsTableProps) {
+type SortColumn = TenantListState['sort']
+
+const SORTABLE_COLUMNS: Array<{ key: SortColumn; label: string }> = [
+  { key: 'store_name', label: 'Parduotuvė' },
+  { key: 'operator', label: 'Operatorius' },
+  { key: 'category', label: 'Kategorija' },
+  { key: 'space_m2', label: 'Plotas' },
+  { key: 'rent_eur', label: 'Nuoma' },
+  { key: 'created_at', label: 'Sukurta' },
+]
+
+function formatCurrency(value: number | null): string {
+  if (value == null) return '—'
+  return new Intl.NumberFormat('lt-LT', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function formatDate(value: string | null): string {
+  return value ? new Date(value).toLocaleDateString('lt-LT') : '—'
+}
+
+export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTableProps) {
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
+  const [searchDraft, setSearchDraft] = useState(state.search)
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null)
+  const [selectedTenant, setSelectedTenant] = useState<TenantListRow | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null)
-
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [tenantToDelete, setTenantToDelete] = useState<Pick<TenantListRow, 'id' | 'store_name'> | null>(null)
   const [importOpen, setImportOpen] = useState(false)
 
-  const categoryFilter = (columnFilters.find((f) => f.id === 'category')?.value as string) ?? ''
+  const from = totalCount === 0 ? 0 : (state.page - 1) * state.pageSize + 1
+  const to = Math.min(state.page * state.pageSize, totalCount)
 
-  useEffect(() => {
-    setPagination((p) => ({ ...p, pageIndex: 0 }))
-  }, [columnFilters])
+  const exportHref = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('page')
+    return `/api/admin/tenants/export?${params.toString()}`
+  }, [searchParams])
 
-  const handleEdit = useCallback((tenant: Tenant) => {
-    setSelectedTenant(tenant)
-    setSheetOpen(true)
-  }, [])
-
-  const handleDelete = useCallback((tenant: Tenant) => {
-    setTenantToDelete(tenant)
-    setDeleteDialogOpen(true)
-  }, [])
-
-  function handleSheetClose(open: boolean) {
-    setSheetOpen(open)
-    if (!open) setSelectedTenant(null)
+  function pushParams(updates: Record<string, string | null>) {
+    const params = new URLSearchParams(searchParams.toString())
+    for (const [key, value] of Object.entries(updates)) {
+      if (value == null || value === '') {
+        params.delete(key)
+      } else {
+        params.set(key, value)
+      }
+    }
+    router.push(`${pathname}?${params.toString()}`)
   }
 
-  const columns = useMemo(() => getColumns(handleEdit, handleDelete), [handleEdit, handleDelete])
+  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    pushParams({ search: searchDraft || null, page: '1' })
+  }
 
-  const [columnOrder, setColumnOrder] = useState<string[]>(
-    columns.map((col) => (col as { id?: string; accessorKey?: string }).id || (col as { id?: string; accessorKey?: string }).accessorKey || '')
-  )
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: { sorting, pagination, columnOrder, columnFilters, rowSelection },
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
-    onColumnOrderChange: setColumnOrder,
-    onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setRowSelection,
-    enableRowSelection: true,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: false,
-    autoResetPageIndex: false,
-  })
-
-  const handleExportXlsx = useCallback(async () => {
-    const XLSX = await import('xlsx')
-    const selectedRows = table.getSelectedRowModel().rows
-    const rows = selectedRows.length > 0 ? selectedRows : table.getCoreRowModel().rows
-    const headers = [
-      'ID', 'Parduotuvė', 'file_key', 'Operatorius', 'Kategorija',
-      'Plotas (m²)', 'Nuomos kaina (EUR)', 'Įmonės kodas',
-      'Aprašymas', 'Logo URL', 'Sukurta',
-    ]
-    const data = rows.map((row) => {
-      const t = row.original
-      return [
-        t.id,
-        t.store_name,
-        toTenantFileKey(t.store_name),
-        t.operator ?? '',
-        t.category ?? '',
-        t.space_m2 ?? '',
-        t.rent_eur ?? '',
-        t.company_code ?? '',
-        t.description ?? '',
-        t.logo_url ?? '',
-        t.created_at ?? '',
-      ]
+  function toggleSort(column: SortColumn) {
+    const direction =
+      state.sort === column ? (state.direction === 'asc' ? 'desc' : 'asc') : 'asc'
+    pushParams({
+      sort: column,
+      direction,
+      page: '1',
     })
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Nuomininkai')
-    XLSX.writeFile(wb, `nuomininkai-${new Date().toISOString().slice(0, 10)}.xlsx`)
-  }, [table])
+  }
+
+  function SortButton({ column, label }: { column: SortColumn; label: string }) {
+    const isActive = state.sort === column
+    return (
+      <button
+        type="button"
+        onClick={() => toggleSort(column)}
+        className="inline-flex items-center gap-1 text-left transition-colors hover:text-foreground"
+      >
+        <span>{label}</span>
+        {!isActive ? (
+          <ArrowUpDown className="size-3.5 opacity-50" />
+        ) : state.direction === 'asc' ? (
+          <ArrowUp className="size-3.5" />
+        ) : (
+          <ArrowDown className="size-3.5" />
+        )}
+      </button>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <DataGrid
-        table={table}
-        recordCount={table.getFilteredRowModel().rows.length}
-        onRowClick={(row) => router.push(`/admin/tenants/${row.id}`)}
-        tableLayout={{
-          columnsPinnable: true,
-          columnsMovable: true,
-          columnsVisibility: true,
-        }}
-      >
-        <Card className="w-full">
-          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 px-4 py-3">
-            <div className="flex items-center gap-4">
-              <CardTitle className="text-lg">Nuomininkai</CardTitle>
-              <Select
-                value={categoryFilter || 'all'}
-                onValueChange={(val) => {
-                  setColumnFilters(val === 'all' ? [] : [{ id: 'category', value: val }])
-                }}
-              >
-                <SelectTrigger className="w-full sm:w-[200px] h-9">
-                  <SelectValue placeholder="Visos kategorijos" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Visos kategorijos</SelectItem>
-                  {TENANT_CATEGORIES.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              {table.getSelectedRowModel().rows.length > 0 && (
-                <span className="text-sm text-muted-foreground">
-                  {table.getSelectedRowModel().rows.length} pažymėta
-                </span>
+      <Card className="w-full">
+        <CardHeader className="flex flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <CardTitle className="text-lg">Nuomininkai</CardTitle>
+            <form onSubmit={handleSearchSubmit} className="flex w-full flex-col gap-2 sm:flex-row">
+              <div className="relative min-w-0 sm:w-[280px]">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={searchDraft}
+                  onChange={(event) => setSearchDraft(event.target.value)}
+                  placeholder="Ieškoti pagal pavadinimą, operatorių, kodą"
+                  className="pl-9"
+                />
+              </div>
+              <Button type="submit" variant="outline" size="sm">
+                Ieškoti
+              </Button>
+              {state.search && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSearchDraft('')
+                    pushParams({ search: null, page: '1' })
+                  }}
+                >
+                  Valyti
+                </Button>
               )}
-              <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="gap-1.5">
-                <Upload data-icon="inline-start" />
-                Importuoti
-              </Button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
-                    <HelpCircle className="size-4" />
-                    <span className="sr-only">Importavimo instrukcija</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 text-sm" align="end" sideOffset={4}>
-                  <p className="font-medium mb-2">Kaip importuoti</p>
-                  <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground leading-snug">
-                    <li>Eksportuokite CSV — gausite teisingą struktūrą.</li>
-                    <li>Redaguokite: viena eilutė — vienas nuomininkas.</li>
-                    <li>
-                      <span className="text-foreground font-medium">Logotipas:</span>{' '}
-                      <code className="bg-muted px-1 rounded text-xs break-all">{'{file_key}_logo.jpg'}</code>
-                    </li>
-                    <li>
-                      <span className="text-foreground font-medium">Galerija:</span>{' '}
-                      <code className="bg-muted px-1 rounded text-xs break-all">{'{file_key}_gallery1.jpg'}</code> ir t.t.
-                    </li>
-                    <li>Įkelkite CSV ir nuotraukas į dialogo zonas.</li>
-                  </ol>
-                </PopoverContent>
-              </Popover>
-              <Button variant="outline" size="sm" onClick={handleExportXlsx} className="gap-1.5">
-                <Download data-icon="inline-start" />
-                Eksportuoti Excel
-              </Button>
-            </div>
-          </CardHeader>
-
-          <div className="w-full overflow-x-auto border-y">
-            <DataGridTable />
+            </form>
           </div>
 
-          <CardFooter className="flex items-center justify-between px-4 py-3 bg-transparent border-none">
-            <DataGridPagination />
-          </CardFooter>
-        </Card>
-      </DataGrid>
+          <div className="flex flex-wrap items-center gap-2">
+            <Select
+              value={state.category || 'all'}
+              onValueChange={(value) => pushParams({ category: value === 'all' ? null : value, page: '1' })}
+            >
+              <SelectTrigger className="h-9 w-full sm:w-[200px]">
+                <SelectValue placeholder="Visos kategorijos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Visos kategorijos</SelectItem>
+                {TENANT_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button variant="outline" size="sm" onClick={() => setImportOpen(true)} className="gap-1.5">
+              <Upload className="size-4" />
+              Importuoti
+            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground">
+                  <HelpCircle className="size-4" />
+                  <span className="sr-only">Importavimo instrukcija</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 text-sm" align="end" sideOffset={4}>
+                <p className="mb-2 font-medium">Kaip importuoti</p>
+                <ol className="list-decimal list-inside space-y-1.5 leading-snug text-muted-foreground">
+                  <li>Atsisiųskite eksportą arba paruoškite tą pačią stulpelių struktūrą.</li>
+                  <li>Viena eilutė turi atitikti vieną nuomininką.</li>
+                  <li>Logotipas: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_logo.jpg'}</code></li>
+                  <li>Galerija: <code className="rounded bg-muted px-1 text-xs">{'{file_key}_gallery1.jpg'}</code></li>
+                </ol>
+              </PopoverContent>
+            </Popover>
+            <Button asChild variant="outline" size="sm" className="gap-1.5">
+              <Link href={exportHref}>
+                <Download className="size-4" />
+                Eksportuoti Excel
+              </Link>
+            </Button>
+          </div>
+        </CardHeader>
+
+        <CardContent className="p-0">
+          <div className="overflow-x-auto border-y">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[72px]">Logo</TableHead>
+                  {SORTABLE_COLUMNS.map((column) => (
+                    <TableHead key={column.key}>
+                      <SortButton column={column.key} label={column.label} />
+                    </TableHead>
+                  ))}
+                  <TableHead>Įmonės kodas</TableHead>
+                  <TableHead>Aprašymas</TableHead>
+                  <TableHead className="w-[160px] text-right">Veiksmai</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
+                      Pagal pasirinktus filtrus nuomininkų nerasta.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  data.map((tenant) => (
+                    <TableRow
+                      key={tenant.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => router.push(`/admin/tenants/${tenant.id}`)}
+                    >
+                      <TableCell>
+                        <Avatar className="size-8">
+                          <AvatarImage
+                            src={resizeSupabaseImage(tenant.logo_url, { width: 64, height: 64 })}
+                            alt={tenant.store_name}
+                            loading="lazy"
+                          />
+                          <AvatarFallback className="text-xs">
+                            {tenant.store_name.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell className="font-medium">{tenant.store_name}</TableCell>
+                      <TableCell>{tenant.operator ?? '—'}</TableCell>
+                      <TableCell>
+                        {tenant.category ? (
+                          <Badge variant="primary-light" size="sm">
+                            {tenant.category}
+                          </Badge>
+                        ) : '—'}
+                      </TableCell>
+                      <TableCell>{tenant.space_m2 != null ? `${tenant.space_m2} m²` : '—'}</TableCell>
+                      <TableCell>{formatCurrency(tenant.rent_eur)}</TableCell>
+                      <TableCell>{formatDate(tenant.created_at)}</TableCell>
+                      <TableCell>{tenant.company_code ?? '—'}</TableCell>
+                      <TableCell className="max-w-[240px] truncate" title={tenant.description ?? undefined}>
+                        {tenant.description ?? '—'}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2" onClick={(event) => event.stopPropagation()}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTenant(tenant)
+                              setSheetOpen(true)
+                            }}
+                          >
+                            <Pencil className="mr-1.5 size-3.5" />
+                            Redaguoti
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => {
+                              setTenantToDelete({ id: tenant.id, store_name: tenant.store_name })
+                              setDeleteDialogOpen(true)
+                            }}
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+            <span>
+              Rodoma {from}-{to} iš {totalCount}
+            </span>
+            <Select
+              value={String(state.pageSize)}
+              onValueChange={(value) => pushParams({ pageSize: value, page: '1' })}
+            >
+              <SelectTrigger className="h-8 w-[110px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[10, 25, 50, 100].map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size} / psl.
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => pushParams({ page: String(state.page - 1) })}
+              disabled={state.page <= 1}
+            >
+              <ChevronsLeft className="size-4" />
+            </Button>
+            <span className="min-w-[90px] text-center text-sm text-muted-foreground">
+              Puslapis {state.page} / {pageCount}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => pushParams({ page: String(state.page + 1) })}
+              disabled={state.page >= pageCount}
+            >
+              <ChevronsRight className="size-4" />
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
 
       <TenantImportDialog open={importOpen} onOpenChange={setImportOpen} />
       <TenantFormSheet
         open={sheetOpen}
-        onOpenChange={handleSheetClose}
+        onOpenChange={(open) => {
+          setSheetOpen(open)
+          if (!open) setSelectedTenant(null)
+        }}
         tenant={selectedTenant}
       />
       <DeleteTenantDialog

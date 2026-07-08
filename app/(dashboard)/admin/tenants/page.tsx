@@ -5,14 +5,19 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { TenantsTable } from '@/components/tenants/tenants-table'
 import { AddTenantButton } from '@/components/tenants/add-tenant-button'
+import { getAdminTenantList, type TenantListSearchParams } from '@/lib/admin-data'
 
-export default async function AdminTenantsPage() {
+interface AdminTenantsPageProps {
+  searchParams: Promise<TenantListSearchParams>
+}
+
+export default async function AdminTenantsPage({ searchParams }: AdminTenantsPageProps) {
   const supabase = await createClient()
+  const resolvedSearchParams = await searchParams
 
-  // Auth + data run concurrently; RLS protects the query; redirect fires after if auth fails.
-  const [{ data: { user } }, { data: tenants }] = await Promise.all([
+  const [{ data: { user } }, tenantList] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from('tenants').select('*').order('store_name'),
+    getAdminTenantList(supabase, resolvedSearchParams),
   ])
 
   if (!user || user.app_metadata?.role !== 'admin') {
@@ -31,7 +36,12 @@ export default async function AdminTenantsPage() {
         <AddTenantButton />
       </div>
 
-      <TenantsTable data={tenants ?? []} />
+      <TenantsTable
+        data={tenantList.tenants}
+        totalCount={tenantList.totalCount}
+        pageCount={tenantList.pageCount}
+        state={tenantList.state}
+      />
     </div>
   )
 }

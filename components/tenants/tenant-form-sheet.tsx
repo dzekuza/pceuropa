@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import type { Tenant } from '@/types/database'
+import type { TenantListRow } from '@/lib/admin-data'
 import {
   Sheet,
   SheetContent,
@@ -41,7 +42,7 @@ import { ImageIcon, Loader2, X, Upload } from 'lucide-react'
 interface TenantFormSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  tenant: Tenant | null
+  tenant: (Tenant | TenantListRow) | null
 }
 
 async function uploadFile(file: File, folder: 'logos' | 'gallery'): Promise<string> {

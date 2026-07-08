@@ -12,13 +12,8 @@ import { TenantTrendChart } from '@/components/analytics/tenant-trend-chart'
 import { SubmissionTracker } from '@/components/analytics/submission-tracker'
 import { AnalyticsYearFilter } from '@/components/analytics/analytics-date-range'
 import { AnalyticsSectionCards } from '@/components/analytics/section-cards'
-import {
-  aggregateMonthlyRevenue,
-  aggregateCategoryRevenue,
-  getSubmissionStatus,
-  aggregateTenantTrends,
-} from '@/lib/utils/analytics'
 import { MONTHS_LT } from '@/lib/constants'
+import { getAdminAnalyticsData } from '@/lib/admin-data'
 
 interface AnalyticsPageProps {
   searchParams: Promise<{ year?: string; month?: string }>
@@ -44,66 +39,10 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const year = parseInt(params.year ?? String(currentYear))
   const month = params.month ? parseInt(params.month) : null
 
-  // Date range: single month or full year (capped at current month)
   const mm = (m: number) => String(m).padStart(2, '0')
-  const fromDate = month ? `${year}-${mm(month)}-01` : `${year}-01-01`
-  const toDate = month
-    ? `${year}-${mm(month)}-01`
-    : year === currentYear
-      ? `${year}-${mm(currentMonth)}-01`
-      : `${year}-12-01`
-
-  // Previous period: for a selected month → previous calendar month; for full year → same year range one year back
-  const prevYear = month
-    ? (month === 1 ? year - 1 : year)
-    : year - 1
-  const prevMonth = month
-    ? (month === 1 ? 12 : month - 1)
-    : null
-  const prevFromDate = prevMonth ? `${prevYear}-${mm(prevMonth)}-01` : `${prevYear}-01-01`
-  const prevToDate = prevMonth
-    ? `${prevYear}-${mm(prevMonth)}-01`
-    : year === currentYear
-      ? `${prevYear}-${mm(currentMonth)}-01`
-      : `${prevYear}-12-01`
-
-  // Current month for submission tracker
   const currentMonthStr = `${currentYear}-${mm(currentMonth)}-01`
 
-  // Parallel fetch: tenants + current period reports + previous period reports
-  const [tenantsResult, reportsResult, prevReportsResult] = await Promise.all([
-    supabase.from('tenants').select('*').order('store_name'),
-    supabase
-      .from('revenue_reports')
-      .select('*')
-      .gte('month', fromDate)
-      .lte('month', toDate),
-    supabase
-      .from('revenue_reports')
-      .select('amount_eur')
-      .gte('month', prevFromDate)
-      .lte('month', prevToDate),
-  ])
-
-  const tenants = tenantsResult.data ?? []
-  const reports = reportsResult.data ?? []
-  const prevReports = prevReportsResult.data ?? []
-
-  // Aggregate data for charts
-  const monthlyRevenue = aggregateMonthlyRevenue(reports, fromDate, toDate)
-  const categoryRevenue = aggregateCategoryRevenue(reports, tenants)
-  const submissionStatus = getSubmissionStatus(tenants, reports, currentMonthStr)
-  const tenantTrends = aggregateTenantTrends(reports, tenants, fromDate, toDate)
-
-  // Summary stats
-  const totalRevenue = reports.reduce((sum, r) => sum + r.amount_eur, 0)
-  const prevRevenue = prevReports.length > 0
-    ? prevReports.reduce((sum, r) => sum + r.amount_eur, 0)
-    : null
-  const tenantCount = tenants.length
-  const avgRevenue = submissionStatus.submittedCount > 0
-    ? totalRevenue / submissionStatus.submittedCount
-    : 0
+  const analyticsData = await getAdminAnalyticsData(supabase, year, month)
 
   const rangeLabel = month ? `${MONTHS_LT[month - 1]} ${year}` : String(year)
 
@@ -122,30 +61,30 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
       </div>
 
       <AnalyticsSectionCards
-        totalRevenue={totalRevenue}
+        totalRevenue={analyticsData.totalRevenue}
         totalRevenueLabel={rangeLabel}
-        prevRevenue={prevRevenue}
-        tenantCount={tenantCount}
-        submittedCount={submissionStatus.submittedCount}
-        avgRevenue={avgRevenue}
+        prevRevenue={analyticsData.prevRevenue}
+        tenantCount={analyticsData.tenantCount}
+        submittedCount={analyticsData.submittedCount}
+        avgRevenue={analyticsData.avgRevenue}
       />
 
-      <RevenueLineChart data={monthlyRevenue} />
+      <RevenueLineChart data={analyticsData.monthlyRevenue} />
 
       <SubmissionTracker
-        submitted={submissionStatus.submitted}
-        pending={submissionStatus.pending}
-        submittedCount={submissionStatus.submittedCount}
-        totalCount={submissionStatus.totalCount}
+        submitted={analyticsData.submitted}
+        pending={analyticsData.pending}
+        submittedCount={analyticsData.submittedCount}
+        totalCount={analyticsData.totalCount}
         targetMonth={currentMonthStr}
       />
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <TenantTrendChart data={tenantTrends} />
+          <TenantTrendChart data={analyticsData.tenantTrends} />
         </div>
         <div className="lg:col-span-2">
-          <CategoryBarChart data={categoryRevenue} />
+          <CategoryBarChart data={analyticsData.categoryRevenue} />
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { TenantTrendSeries } from '@/lib/utils/analytics'
+import type { TenantTrendSeries } from '@/lib/admin-data'
 
 interface TenantTrendChartProps {
   data: TenantTrendSeries[]
@@ -210,4 +210,3 @@ export function TenantTrendChart({ data }: TenantTrendChartProps) {
     </Card>
   )
 }
-

@@ -15,7 +15,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
-import type { CategoryRevenuePoint } from '@/lib/utils/analytics'
+import type { CategoryRevenuePoint } from '@/lib/admin-data'
 
 interface CategoryBarChartProps {
   data: CategoryRevenuePoint[]
@@ -151,4 +151,3 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
     </Card>
   )
 }
-

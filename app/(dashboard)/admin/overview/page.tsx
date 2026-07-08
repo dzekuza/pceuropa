@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AdminOverviewGrid } from '@/components/admin/admin-overview-grid'
 import { YearSelector } from '@/components/tenants/year-selector'
+import { getAdminOverviewData } from '@/lib/admin-data'
 
 interface OverviewPageProps {
   searchParams: Promise<{ year?: string }>
@@ -19,22 +20,9 @@ export default async function AdminOverviewPage({ searchParams }: OverviewPagePr
   const year = yearParam ? parseInt(yearParam, 10) : currentYear
   const safeYear = isNaN(year) ? currentYear : year
 
-  const [
-    { data: { user } },
-    { data: tenants },
-    { data: reports },
-  ] = await Promise.all([
+  const [{ data: { user } }, overviewData] = await Promise.all([
     supabase.auth.getUser(),
-    supabase
-      .from('tenants')
-      .select('id, store_name, category')
-      .order('category')
-      .order('store_name'),
-    supabase
-      .from('revenue_reports')
-      .select('tenant_id, month, amount_eur, tx_count')
-      .gte('month', `${safeYear}-01-01`)
-      .lte('month', `${safeYear}-12-31`),
+    getAdminOverviewData(supabase, safeYear),
   ])
 
   if (!user || user.app_metadata?.role !== 'admin') {
@@ -54,8 +42,8 @@ export default async function AdminOverviewPage({ searchParams }: OverviewPagePr
       </div>
 
       <AdminOverviewGrid
-        tenants={tenants ?? []}
-        reports={reports ?? []}
+        tenants={overviewData.tenants}
+        reports={overviewData.reports}
         year={safeYear}
       />
     </div>

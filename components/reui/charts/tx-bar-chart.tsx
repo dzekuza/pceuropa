@@ -21,12 +21,21 @@ import {
 } from '@/components/ui/chart'
 import type { RevenueReport } from '@/types/database'
 import { MONTHS_LT } from '@/lib/constants'
+import type { TxChartPoint } from '@/lib/admin-data'
 
-interface TxBarChartProps {
-    reports: RevenueReport[]
-    title?: string
-    description?: string
-}
+type TxBarChartProps =
+    | {
+        reports: RevenueReport[]
+        data?: never
+        title?: string
+        description?: string
+      }
+    | {
+        reports?: never
+        data: TxChartPoint[]
+        title?: string
+        description?: string
+      }
 
 const chartConfig = {
     tx_count: {
@@ -62,12 +71,13 @@ function buildData(reports: RevenueReport[]): TxPoint[] {
 
 export function TxBarChart({
     reports,
+    data,
     title = "Čekių skaičius",
     description = "Mėnesiniai čekiai"
 }: TxBarChartProps) {
-    const data = buildData(reports)
-    const hasData = data.length > 0 && data.some(d => d.tx_count > 0)
-    const totalTx = reports.reduce((sum, r) => sum + (r.tx_count ?? 0), 0)
+    const resolvedData = data ?? buildData(reports)
+    const hasData = resolvedData.length > 0 && resolvedData.some(d => d.tx_count > 0)
+    const totalTx = resolvedData.reduce((sum, r) => sum + r.tx_count, 0)
 
     return (
         <Card className="w-full">
@@ -95,7 +105,7 @@ export function TxBarChart({
                     <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">
                         <BarChart
                             accessibilityLayer
-                            data={data}
+                            data={resolvedData}
                             margin={{ left: 12, right: 12, top: 20, bottom: 0 }}
                         >
                             <defs>

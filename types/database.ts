@@ -364,6 +364,17 @@ export type Database = {
           total_tx: number
         }[]
       }
+      get_admin_yearly_overview: {
+        Args: { target_year: number }
+        Returns: {
+          category: string | null
+          month_date: string
+          store_name: string
+          tenant_id: string
+          total_revenue: number
+          total_tx: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

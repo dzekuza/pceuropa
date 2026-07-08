@@ -10,6 +10,7 @@ import { TenantRevenueTable } from '@/components/tenants/tenant-revenue-table'
 import { TenantRevenueExportButton } from '@/components/tenants/tenant-revenue-export-button'
 import { YearSelector } from '@/components/tenants/year-selector'
 import { Card, CardHeader, CardTitle, CardDescription, CardToolbar } from '@/components/ui/card'
+import { getAdminTenantDetail } from '@/lib/admin-data'
 
 // Revenue data is filtered by the ?year= search param; force-dynamic keeps the
 // segment out of the client Router Cache so switching years refetches without a reload.
@@ -34,22 +35,16 @@ export default async function TenantDetailPage({
   const safeYear = isNaN(year) ? currentYear : year
 
   // Auth + both data fetches run concurrently.
-  const [{ data: { user } }, { data: tenant }, { data: reports }] = await Promise.all([
+  const [{ data: { user } }, detailData] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from('tenants').select('*').eq('id', id).single(),
-    supabase
-      .from('revenue_reports')
-      .select('id, month, amount_eur, tx_count, submitted_at, submitted_by, tenant_id, user_id, weeks')
-      .eq('tenant_id', id)
-      .gte('month', `${safeYear}-01-01`)
-      .lte('month', `${safeYear}-12-31`),
+    getAdminTenantDetail(supabase, id, safeYear),
   ])
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')
   }
 
-  if (!tenant) {
+  if (!detailData.tenant) {
     redirect('/admin/tenants')
   }
 
@@ -65,7 +60,7 @@ export default async function TenantDetailPage({
       </Link>
 
       {/* Tenant details card with Edit button */}
-      <TenantInfoCard tenant={tenant} />
+      <TenantInfoCard tenant={detailData.tenant} />
 
 
       {/* Revenue table Card */}
@@ -80,16 +75,16 @@ export default async function TenantDetailPage({
           <CardToolbar className="flex-wrap">
             <YearSelector currentYear={safeYear} />
             <TenantRevenueExportButton
-              tenant={tenant}
-              reports={reports ?? []}
+              tenant={detailData.tenant}
+              reports={detailData.reports}
               year={safeYear}
             />
           </CardToolbar>
         </CardHeader>
         <TenantRevenueTable
           key={safeYear}
-          tenant={tenant}
-          reports={reports ?? []}
+          tenant={detailData.tenant}
+          reports={detailData.reports}
           year={safeYear}
         />
       </Card>

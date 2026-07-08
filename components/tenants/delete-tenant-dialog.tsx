@@ -17,7 +17,7 @@ import {
 interface DeleteTenantDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  tenant: Tenant | null
+  tenant: Pick<Tenant, 'id' | 'store_name'> | null
 }
 
 export function DeleteTenantDialog({

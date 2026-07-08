@@ -5,8 +5,8 @@ import { Badge } from '@/components/reui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { Tenant } from '@/types/database'
 import { MONTHS_LT } from '@/lib/constants'
+import type { TenantSubmissionRow } from '@/lib/admin-data'
 import {
   useReactTable,
   getCoreRowModel,
@@ -34,8 +34,8 @@ function SortHeader<T>({ column, title }: { column: Column<T>; title: string }) 
 }
 
 interface SubmissionTrackerProps {
-  submitted: Tenant[]
-  pending: Tenant[]
+  submitted: TenantSubmissionRow[]
+  pending: TenantSubmissionRow[]
   submittedCount: number
   totalCount: number
   targetMonth: string
@@ -49,7 +49,7 @@ function formatTargetMonth(targetMonth: string): string {
 }
 
 type FilterType = 'visi' | 'pateike' | 'laukiama'
-type TenantRow = Tenant & { _submitted: boolean }
+type TenantRow = TenantSubmissionRow & { _submitted: boolean }
 
 export function SubmissionTracker({
   submitted,

@@ -18,7 +18,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
-import type { MonthlyRevenuePoint } from '@/lib/utils/analytics'
+import type { MonthlyRevenuePoint } from '@/lib/admin-data'
 
 interface RevenueLineChartProps {
   data: MonthlyRevenuePoint[]
@@ -147,4 +147,3 @@ export function RevenueLineChart({ data }: RevenueLineChartProps) {
     </Card>
   )
 }
-
