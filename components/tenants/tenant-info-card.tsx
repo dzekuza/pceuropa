@@ -2,7 +2,6 @@
 // components/tenants/tenant-info-card.tsx
 // Tenant details card — all fields in a grid + password field that opens a reset dialog
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { BuildingIcon, PencilIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, CheckCircle2Icon, LogInIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -167,7 +166,6 @@ function PasswordDialog({
 }
 
 export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
-    const router = useRouter()
     const [editOpen, setEditOpen] = useState(false)
     const [passwordOpen, setPasswordOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
@@ -178,7 +176,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
         setEnterError(null)
         setNavigating(true)
         if (tenant.user_id) {
-            router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
+            window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
             return
         }
         startTransition(async () => {
@@ -187,7 +185,7 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                 setEnterError(result.error)
                 setNavigating(false)
             } else {
-                router.push(`/api/admin/impersonate?tenantId=${tenant.id}`)
+                window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
             }
         })
     }
