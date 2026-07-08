@@ -55,7 +55,7 @@ export function LogoCard({ tenant, featured = false }: LogoCardProps) {
 
   return (
     <Link
-      href="/parduotuves"
+      href={`/parduotuves/${tenant.id}`}
       prefetch={false}
       onMouseEnter={() => play('in')}
       onMouseLeave={() => play('out')}

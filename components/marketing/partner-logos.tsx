@@ -47,8 +47,8 @@ export async function PartnerLogos() {
           {tenants.slice(0, 12).map((t) => (
             <Link
               key={t.id}
-              href="/parduotuves"
-      prefetch={false}
+              href={`/parduotuves/${t.id}`}
+              prefetch={false}
               className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
             >
               <img
