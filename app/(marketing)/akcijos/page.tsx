@@ -11,7 +11,7 @@ import type { PromoItem } from '@/components/marketing/promo-card'
 
 const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
 ]
 
 const DEFAULT_GRID_COPY = {

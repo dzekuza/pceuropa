@@ -13,7 +13,7 @@ export const metadata = {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-parduotuves-wide.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-parduotuves-wide.jpg',
 ]
 
 export default async function ParduotuvesPage() {

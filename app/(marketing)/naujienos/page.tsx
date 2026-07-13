@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 
 const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
 ]
 
 export const metadata: Metadata = {
