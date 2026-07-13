@@ -5,6 +5,7 @@ import sanitizeHtml from 'sanitize-html'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { createClient } from '@/lib/supabase/server'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${data.title} — PC Europa`, description }
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params
@@ -39,7 +40,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   const { data: article } = await supabase
     .from('articles')
-    .select('*')
+    .select('title, content, cover_image, category, published_at')
     .eq('slug', slug)
     .eq('published', true)
     .single()
@@ -70,7 +71,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         {article.cover_image && (
           <div className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
             <Image
-              src={article.cover_image}
+              src={resizeSupabaseImage(article.cover_image, { width: 1600, height: 920 })}
               alt={article.title}
               fill
               className="object-cover"

@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const SUPABASE_HOST = "ukmxbzuechxpinrythis.supabase.co";
+const SUPABASE_HOST = "ybyyxcuvxuzrledbitky.supabase.co";
 // Legacy Supabase project — marketing asset images (categories, activities, hero,
 // banners, footer icons, promo cards) were uploaded here and are still in use.
 const SUPABASE_LEGACY_HOST = "hfnsbhovdjqnfzjpugwa.supabase.co";
@@ -54,13 +54,23 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ukmxbzuechxpinrythis.supabase.co',
+        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
+        pathname: '/storage/v1/render/image/public/**',
       },
       {
         protocol: 'https',
         hostname: 'hfnsbhovdjqnfzjpugwa.supabase.co',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hfnsbhovdjqnfzjpugwa.supabase.co',
+        pathname: '/storage/v1/render/image/public/**',
       },
     ],
   },

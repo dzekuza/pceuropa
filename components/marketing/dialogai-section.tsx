@@ -3,15 +3,15 @@ import { DisplayHeading } from './ui/typography'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const DIALOGAI_IMAGES = [
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/1.png',
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/2.png',
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/3.png',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/1.png',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/2.png',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/3.png',
 ]
 
 const RESTORANAI_IMAGES = [
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-1.jpg',
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-2.jpg',
-  'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-3.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-1.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-2.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-3.jpg',
 ]
 
 export interface DialogaiSectionProps {

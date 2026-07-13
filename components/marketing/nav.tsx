@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, ChevronDown } from 'lucide-react'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const logoUrl = '/pc-europa-logo.svg'
-const timerIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
-const infoIconUrl = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.png'
+const timerIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.svg'
+const infoIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.svg'
 
 const NAV_LINKS = [
   { label: 'Akcijos / Naujienos', href: '/akcijos' },
@@ -59,7 +60,7 @@ export function Nav() {
               prefetch={false}
               className="flex items-center gap-2 border border-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
-              <img src={timerIconUrl} alt="" className="size-5 lg:size-6 shrink-0 brightness-0 invert" />
+              <img src={resizeSupabaseImage(timerIconUrl, { width: 48, height: 48, fit: 'contain' })} alt="" className="size-5 lg:size-6 shrink-0 brightness-0 invert" />
               <span className="text-white text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
                 Darbo laikas
               </span>
@@ -71,7 +72,7 @@ export function Nav() {
                 onClick={() => setIsInfoOpen((o) => !o)}
                 className="flex items-center gap-2 bg-white rounded-full pl-4 pr-5 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
-                <img src={infoIconUrl} alt="" className="size-5 lg:size-6 shrink-0" />
+                <img src={resizeSupabaseImage(infoIconUrl, { width: 48, height: 48, fit: 'contain' })} alt="" className="size-5 lg:size-6 shrink-0" />
                 <span className="text-[#181818] text-[13px] lg:text-[14px] font-medium leading-[24px] whitespace-nowrap">
                   Informacija lankytojams
                 </span>
@@ -80,7 +81,7 @@ export function Nav() {
               {isInfoOpen && (
                 <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-lg overflow-hidden z-30">
                   <div className="flex items-center gap-2 px-4 py-3 border-b border-[#E5E5E5]">
-                    <img src={infoIconUrl} alt="" className="size-5 shrink-0" />
+                    <img src={resizeSupabaseImage(infoIconUrl, { width: 48, height: 48, fit: 'contain' })} alt="" className="size-5 shrink-0" />
                     <span className="text-[#181818] text-[13px] font-medium">Informacija lankytojams</span>
                   </div>
                   {INFO_LINKS.map((link, i) => (
@@ -164,7 +165,7 @@ export function Nav() {
                 prefetch={false}
                 className="flex-1 flex items-center justify-center gap-2 border border-white rounded-full px-3 py-2 transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
               >
-                <img src={timerIconUrl} alt="" className="size-5 brightness-0 invert" />
+                <img src={resizeSupabaseImage(timerIconUrl, { width: 48, height: 48, fit: 'contain' })} alt="" className="size-5 brightness-0 invert" />
                 <span className="text-white text-[14px] font-medium">Darbo laikas</span>
               </Link>
             </div>

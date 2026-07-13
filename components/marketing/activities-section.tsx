@@ -1,12 +1,13 @@
 import type React from 'react'
 import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-const coffeeImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
-const sportsAd1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
-const sportsAd2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-2.jpg'
-const sportsAd3 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
-const petImg = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
+const coffeeImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
+const sportsAd1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
+const sportsAd2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-2.jpg'
+const sportsAd3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
+const petImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
 
 export interface ActivitiesSectionProps {
   leisureTag?: React.ReactNode
@@ -51,7 +52,7 @@ export function ActivitiesSection({
           </Link>
         </div>
         <img
-          src={leisureImage || coffeeImg}
+          src={resizeSupabaseImage(leisureImage || coffeeImg, { width: 425, height: 379 })}
           alt="Laisvalaikis PC Europa"
           className="w-full md:w-[280px] lg:w-[425px] md:h-[280px] lg:h-[379px] rounded-[12px] object-cover shrink-0"
         />
@@ -74,9 +75,9 @@ export function ActivitiesSection({
             </Link>
           </div>
           <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[200px] lg:h-[240px] xl:h-[299px]">
-            <img src={sportsAd1} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
-            <img src={sportsAd2} alt="" className="flex-1 h-full rounded-[9px] object-cover" />
-            <img src={sportsAd3} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
+            <img src={resizeSupabaseImage(sportsAd1, { width: 200, height: 300 })} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
+            <img src={resizeSupabaseImage(sportsAd2, { width: 500, height: 650 })} alt="" className="flex-1 h-full rounded-[9px] object-contain" />
+            <img src={resizeSupabaseImage(sportsAd3, { width: 200, height: 300 })} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
           </div>
         </div>
 
@@ -98,7 +99,7 @@ export function ActivitiesSection({
             Sužinokite daugiau
           </Link>
           <img
-            src={petImage || petImg}
+            src={resizeSupabaseImage(petImage || petImg, { width: 360, height: 360 })}
             alt=""
             className="hidden md:block absolute right-0 bottom-0 w-[40%] xl:w-[360px] xl:h-[360px] object-cover"
           />

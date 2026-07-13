@@ -10,7 +10,7 @@ import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import type { PromoItem } from '@/components/marketing/promo-card'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
 ]
 
@@ -35,7 +35,7 @@ export default async function AkcijosPage() {
   const supabase = await createClient()
   const { data: promos } = await supabase
     .from('promos')
-    .select('*')
+    .select('slug, image, title, starts_at, ends_at, category')
     .eq('published', true)
     .order('created_at', { ascending: false })
 

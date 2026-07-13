@@ -6,48 +6,17 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-// Weekly revenue breakdown — 5 weeks per month
-export interface WeekData {
-  tx_count: number
-  amount_eur: number
-}
-
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       articles: {
         Row: {
-          category: 'Naujiena' | 'Akcija' | 'Renginys'
+          category: string
           content: string
           cover_image: string | null
           created_at: string | null
@@ -60,7 +29,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          category?: 'Naujiena' | 'Akcija' | 'Renginys'
+          category?: string
           content?: string
           cover_image?: string | null
           created_at?: string | null
@@ -73,7 +42,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          category?: 'Naujiena' | 'Akcija' | 'Renginys'
+          category?: string
           content?: string
           cover_image?: string | null
           created_at?: string | null
@@ -82,48 +51,6 @@ export type Database = {
           published?: boolean
           published_at?: string | null
           slug?: string
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      promos: {
-        Row: {
-          category: 'stores' | 'services' | 'food'
-          content: string
-          created_at: string | null
-          ends_at: string
-          id: string
-          image: string | null
-          published: boolean
-          slug: string
-          starts_at: string
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          category?: 'stores' | 'services' | 'food'
-          content?: string
-          created_at?: string | null
-          ends_at: string
-          id?: string
-          image?: string | null
-          published?: boolean
-          slug: string
-          starts_at: string
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          category?: 'stores' | 'services' | 'food'
-          content?: string
-          created_at?: string | null
-          ends_at?: string
-          id?: string
-          image?: string | null
-          published?: boolean
-          slug?: string
-          starts_at?: string
           title?: string
           updated_at?: string | null
         }
@@ -207,6 +134,48 @@ export type Database = {
         }
         Relationships: []
       }
+      promos: {
+        Row: {
+          category: string
+          content: string
+          created_at: string | null
+          ends_at: string
+          id: string
+          image: string | null
+          published: boolean
+          slug: string
+          starts_at: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          ends_at: string
+          id?: string
+          image?: string | null
+          published?: boolean
+          slug: string
+          starts_at: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          ends_at?: string
+          id?: string
+          image?: string | null
+          published?: boolean
+          slug?: string
+          starts_at?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       puck_pages: {
         Row: {
           data: Json
@@ -238,7 +207,7 @@ export type Database = {
           tenant_id: string | null
           tx_count: number | null
           user_id: string | null
-          weeks: WeekData[] | null
+          weeks: Json | null
         }
         Insert: {
           amount_eur: number
@@ -249,7 +218,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: WeekData[] | null
+          weeks?: Json | null
         }
         Update: {
           amount_eur?: number
@@ -260,7 +229,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: WeekData[] | null
+          weeks?: Json | null
         }
         Relationships: [
           {
@@ -334,17 +303,17 @@ export type Database = {
           category: string | null
           description: string | null
           gallery_images: string[] | null
-          id: string
+          id: string | null
           logo_url: string | null
-          store_name: string
+          store_name: string | null
         }
         Insert: {
           category?: string | null
           description?: string | null
           gallery_images?: string[] | null
-          id?: string
+          id?: string | null
           logo_url?: string | null
-          store_name?: string
+          store_name?: string | null
         }
         Update: {
           category?: string | null
@@ -370,7 +339,7 @@ export type Database = {
       get_admin_yearly_overview: {
         Args: { target_year: number }
         Returns: {
-          category: string | null
+          category: string
           month_date: string
           store_name: string
           tenant_id: string
@@ -506,40 +475,7 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
 } as const
-
-// Convenience type aliases for common usage patterns
-export type Tenant = Database['public']['Tables']['tenants']['Row']
-export type TenantInsert = Database['public']['Tables']['tenants']['Insert']
-export type TenantUpdate = Database['public']['Tables']['tenants']['Update']
-
-export type RevenueReport = Database['public']['Tables']['revenue_reports']['Row']
-export type RevenueReportInsert = Database['public']['Tables']['revenue_reports']['Insert']
-export type RevenueReportUpdate = Database['public']['Tables']['revenue_reports']['Update']
-
-export type FaqItem = Database['public']['Tables']['faq_items']['Row']
-export type FaqItemInsert = Database['public']['Tables']['faq_items']['Insert']
-export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
-
-export type Article = Database['public']['Tables']['articles']['Row']
-export type Promo = Database['public']['Tables']['promos']['Row']
-export type ArticleInsert = Omit<Article, 'id' | 'created_at' | 'updated_at'>
-export type ArticleUpdate = Partial<ArticleInsert>
-
-export interface PageSection {
-  id: string
-  page_slug: string
-  section_key: string
-  content_key: string
-  value: string | null
-  updated_at: string | null
-}
-
-// Nested map: { [section_key]: { [content_key]: value } }
-export type PageContentMap = Record<string, Record<string, string>>

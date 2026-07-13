@@ -8,7 +8,7 @@ import { getPuckBannerSlides } from '@/lib/page-content'
 import { createClient } from '@/lib/supabase/server'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
   'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
 ]
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: NAUJIENOS_STRINGS.pageDescription,
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export default async function NaujienosPage() {
   const [bannerSlides, supabase] = await Promise.all([

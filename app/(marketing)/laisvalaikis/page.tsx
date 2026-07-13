@@ -13,7 +13,7 @@ export const metadata = {
   description: LAISVALAIKIS_STRINGS.pageDescription,
 }
 
-const BASE = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {

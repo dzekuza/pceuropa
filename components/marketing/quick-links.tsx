@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-const timerIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.png'
-const phoneIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.png'
-const mapIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/map-icon.png'
+const parkingIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/parking-icon.svg'
+const phoneIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.svg'
+const mapIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/map-icon.svg'
 
 const LINKS = [
-  { icon: timerIcon, label: 'Parkavimas', href: '/parkavimas', iconBg: 'bg-[#e6ffd1]' },
+  { icon: parkingIcon, label: 'Parkavimas', href: '/parkavimas', iconBg: 'bg-[#e6ffd1]' },
   { icon: mapIcon, label: 'Prekybos centro planas', href: '/planas', iconBg: 'bg-[#fdf567]' },
   { icon: phoneIcon, label: 'Kontaktai', href: '/kontaktai', iconBg: 'bg-[#fef3f9]' },
 ]
@@ -37,7 +38,7 @@ export function QuickLinks({ links }: QuickLinksProps = {}) {
           <div className="flex items-center gap-3 lg:gap-4">
             <div className={`${item.iconBg} rounded-[8px] size-12 md:size-14 lg:size-[66px] relative overflow-hidden shrink-0`}>
               <img
-                src={item.icon}
+                src={resizeSupabaseImage(item.icon, { width: 64, height: 64, fit: 'contain' })}
                 alt=""
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-8 md:size-9 lg:size-12"
               />

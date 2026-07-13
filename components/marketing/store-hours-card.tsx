@@ -1,5 +1,6 @@
 import { CardArrowButton } from './ui/card-arrow-button'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 export type HoursEntry = {
   days: string
@@ -57,7 +58,7 @@ export function StoreHoursCard({
         {logoUrl && (
           <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg flex items-center justify-center">
             <img
-              src={logoUrl}
+              src={resizeSupabaseImage(logoUrl, { width: 56, height: 56, fit: 'contain' })}
               alt={logoAlt}
               className="size-full object-contain"
             />
@@ -69,7 +70,7 @@ export function StoreHoursCard({
       <div className="relative w-full h-[204px] rounded-3xl overflow-hidden shrink-0">
         {coverUrl ? (
           <img
-            src={coverUrl}
+            src={resizeSupabaseImage(coverUrl, { width: 500, height: 204 })}
             alt=""
             className="absolute inset-0 size-full object-cover"
           />

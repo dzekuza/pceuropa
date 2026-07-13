@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { DisplayHeading } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
 import { NEWS_SECTION_STRINGS } from '@/lib/strings'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 export type NewsSectionItem = {
   image: string
@@ -121,7 +122,7 @@ function NewsCard({ item }: { item: NewsItem }) {
       {/* Image */}
       <div className={`relative w-full h-[236px] ${item.imageRounded} overflow-hidden`}>
         <img
-          src={item.image}
+          src={resizeSupabaseImage(item.image, { width: 500, height: 472 })}
           alt={item.title}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
         />

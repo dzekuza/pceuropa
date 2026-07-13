@@ -1,8 +1,9 @@
 import Link from 'next/link'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const logoUrl = '/pc-europa-logo.svg'
-const facebookIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.png'
-const instagramIcon = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.png'
+const facebookIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.svg'
+const instagramIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.svg'
 
 const NAV_LINKS = [
   { label: 'Nuomininkams', href: '/nuomininkai' },
@@ -55,10 +56,10 @@ export function Footer() {
                 </p>
                 <div className="flex items-center gap-4 mt-1">
                   <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                    <img src={facebookIcon} alt="Facebook" className="size-5 lg:size-6" />
+                    <img src={resizeSupabaseImage(facebookIcon, { width: 48, height: 48, fit: 'contain' })} alt="Facebook" className="size-5 lg:size-6" />
                   </a>
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                    <img src={instagramIcon} alt="Instagram" className="size-5 lg:size-6" />
+                    <img src={resizeSupabaseImage(instagramIcon, { width: 48, height: 48, fit: 'contain' })} alt="Instagram" className="size-5 lg:size-6" />
                   </a>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-const bannerBg = 'https://ukmxbzuechxpinrythis.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg'
+const bannerBg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg'
 
 function FacebookIcon() {
   return (
@@ -39,7 +40,7 @@ export function VisitorInfoBanner() {
     <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center justify-between pl-6 lg:pl-10 pr-4 py-4 min-h-[292px]">
       {/* Background */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={bannerBg} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
+      <img src={resizeSupabaseImage(bannerBg, { width: 1200, height: 600 })} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
       <div className="absolute inset-0 bg-black/25 rounded-[32px] lg:rounded-[40px]" aria-hidden />
 
       {/* Left — heading + social icons */}

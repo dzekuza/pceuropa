@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { formatPromoDateRange } from '@/lib/utils/format-promo-date'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -21,7 +22,7 @@ async function getPromo(slug: string) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('promos')
-    .select('*')
+    .select('title, content, image, starts_at, ends_at')
     .eq('slug', slug)
     .eq('published', true)
     .single()
@@ -72,7 +73,7 @@ export default async function PromoDetailPage({ params }: Props) {
         <div className="relative w-full max-h-[480px] rounded-[32px] lg:rounded-[40px] overflow-hidden bg-muted">
           {item.image && (
             <img
-              src={item.image}
+              src={resizeSupabaseImage(item.image, { width: 1200, height: 480 })}
               alt={item.title}
               className="w-full h-[480px] object-cover"
             />

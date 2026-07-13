@@ -1,11 +1,12 @@
 import type React from 'react'
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-const imgCat1 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
-const imgCat2 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
-const imgCat3 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
-const imgCat4 = 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
+const imgCat1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
+const imgCat2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
+const imgCat3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
+const imgCat4 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
 
 const CATEGORIES = [
   { title: 'Akcijos ir naujienos', href: '/akcijos', image: imgCat1 },
@@ -49,7 +50,7 @@ export function CategoriesSection({ heading, categories }: CategoriesSectionProp
               className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group lg:flex-1 lg:min-w-0 lg:transition-[flex-grow] lg:duration-500 lg:ease-out-custom lg:hover:flex-[2.2]"
             >
               <img
-                src={cat.image}
+                src={resizeSupabaseImage(cat.image, { width: 500, height: 560 })}
                 alt={cat.title}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ease-out-custom"
               />

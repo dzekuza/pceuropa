@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
 import { DisplayHeading } from './ui/typography'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const MAP_IMAGE: string | null = null
 
@@ -66,7 +67,7 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
                     <div className="size-14 rounded-[12px] overflow-hidden bg-white border border-[#ebebeb] shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={store.logoUrl}
+                        src={resizeSupabaseImage(store.logoUrl, { width: 56, height: 56, fit: 'contain' })}
                         alt={`${store.name} logotipas`}
                         className="size-full object-contain p-1"
                       />
