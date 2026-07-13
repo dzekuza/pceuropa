@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeftIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { TenantInfoCard } from '@/components/tenants/tenant-info-card'
 import { TenantRevenueTable } from '@/components/tenants/tenant-revenue-table'
 import { TenantRevenueExportButton } from '@/components/tenants/tenant-revenue-export-button'
@@ -48,6 +49,14 @@ export default async function TenantDetailPage({
     redirect('/admin/tenants')
   }
 
+  let loginEmail: string | null = null
+  if (detailData.tenant.user_id) {
+    const { data: authUser } = await createAdminClient().auth.admin.getUserById(
+      detailData.tenant.user_id
+    )
+    loginEmail = authUser.user?.email ?? null
+  }
+
   return (
     <div className="flex flex-col gap-3">
       {/* Back link */}
@@ -60,7 +69,7 @@ export default async function TenantDetailPage({
       </Link>
 
       {/* Tenant details card with Edit button */}
-      <TenantInfoCard tenant={detailData.tenant} />
+      <TenantInfoCard tenant={detailData.tenant} loginEmail={loginEmail} />
 
 
       {/* Revenue table Card */}

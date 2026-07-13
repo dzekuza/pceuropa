@@ -2,7 +2,8 @@
 // components/tenants/tenant-info-card.tsx
 // Tenant details card — all fields in a grid + password field that opens a reset dialog
 import { useState, useTransition } from 'react'
-import { BuildingIcon, PencilIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, CheckCircle2Icon, LogInIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { BuildingIcon, PencilIcon, EyeIcon, EyeOffIcon, KeyRoundIcon, CheckCircle2Icon, LogInIcon, UserPlusIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -21,9 +22,19 @@ import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import type { Tenant } from '@/types/database'
 
 const MIN_PASSWORD_LENGTH = 10
+const GENERATED_PASSWORD_LENGTH = 16
+const PASSWORD_CHARSET =
+    'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*'
+
+function generateStrongPassword() {
+    const bytes = new Uint32Array(GENERATED_PASSWORD_LENGTH)
+    crypto.getRandomValues(bytes)
+    return Array.from(bytes, (n) => PASSWORD_CHARSET[n % PASSWORD_CHARSET.length]).join('')
+}
 
 interface TenantInfoCardProps {
     tenant: Tenant
+    loginEmail: string | null
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -37,7 +48,38 @@ function Field({ label, value }: { label: string; value: string }) {
     )
 }
 
-function PasswordField({ onClick }: { onClick: () => void }) {
+function PasswordField({
+    hasAccount,
+    isCreating,
+    onChangePassword,
+    onCreateAccount,
+}: {
+    hasAccount: boolean
+    isCreating: boolean
+    onChangePassword: () => void
+    onCreateAccount: () => void
+}) {
+    if (!hasAccount) {
+        return (
+            <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    Slaptažodis
+                </span>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-fit"
+                    onClick={onCreateAccount}
+                    disabled={isCreating}
+                >
+                    <UserPlusIcon className="h-3.5 w-3.5 mr-1.5" />
+                    {isCreating ? 'Kuriama...' : 'Nustatyti'}
+                </Button>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -45,7 +87,7 @@ function PasswordField({ onClick }: { onClick: () => void }) {
             </span>
             <button
                 type="button"
-                onClick={onClick}
+                onClick={onChangePassword}
                 className="flex items-center gap-1.5 text-sm font-semibold font-mono hover:text-primary transition-colors text-left"
                 title="Keisti slaptažodį"
             >
@@ -71,6 +113,15 @@ function PasswordDialog({
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
     const [isPending, startTransition] = useTransition()
+
+    function handleGenerate() {
+        const generated = generateStrongPassword()
+        setPassword(generated)
+        setConfirm(generated)
+        setShowNew(true)
+        setError(null)
+        setSuccess(false)
+    }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -113,7 +164,16 @@ function PasswordDialog({
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-1">
                     <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="new-password">Naujas slaptažodis</Label>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="new-password">Naujas slaptažodis</Label>
+                            <button
+                                type="button"
+                                onClick={handleGenerate}
+                                className="text-xs font-medium text-primary hover:underline"
+                            >
+                                Generuoti stiprų slaptažodį
+                            </button>
+                        </div>
                         <div className="relative">
                             <Input
                                 id="new-password"
@@ -133,6 +193,9 @@ function PasswordDialog({
                                 {showNew ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                             </button>
                         </div>
+                        <p className="text-xs text-muted-foreground">
+                            Slaptažodis turi būti bent {MIN_PASSWORD_LENGTH} simbolių
+                        </p>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -165,27 +228,30 @@ function PasswordDialog({
     )
 }
 
-export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
+export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
+    const router = useRouter()
     const [editOpen, setEditOpen] = useState(false)
     const [passwordOpen, setPasswordOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
     const [navigating, setNavigating] = useState(false)
     const [enterError, setEnterError] = useState<string | null>(null)
+    const [createError, setCreateError] = useState<string | null>(null)
 
     function handleEnter() {
         setEnterError(null)
         setNavigating(true)
-        if (tenant.user_id) {
-            window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
-            return
-        }
+        window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
+    }
+
+    function handleCreateAccount() {
+        setCreateError(null)
         startTransition(async () => {
             const result = await createTenantAccount(tenant.id)
             if ('error' in result) {
-                setEnterError(result.error)
-                setNavigating(false)
+                setCreateError(result.error)
             } else {
-                window.location.href = `/api/admin/impersonate?tenantId=${tenant.id}`
+                router.refresh()
+                setPasswordOpen(true)
             }
         })
     }
@@ -205,26 +271,48 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                         </div>
                         <div className="min-w-0">
                             <CardTitle className="text-lg">{tenant.store_name}</CardTitle>
-                            {tenant.category && (
-                                <Badge variant="secondary" className="mt-1 text-xs">
-                                    {tenant.category}
-                                </Badge>
-                            )}
+                            <div className="mt-1 flex flex-wrap items-center gap-2">
+                                {tenant.category && (
+                                    <Badge variant="secondary" className="text-xs">
+                                        {tenant.category}
+                                    </Badge>
+                                )}
+                                {loginEmail && (
+                                    <span className="text-xs text-muted-foreground font-mono">
+                                        {loginEmail}
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                         {enterError && (
                             <span className="text-xs text-destructive">{enterError}</span>
                         )}
-                        <Button
-                            variant="default"
-                            size="sm"
-                            onClick={handleEnter}
-                            disabled={isPending || navigating}
-                        >
-                            <LogInIcon className="h-4 w-4 mr-1.5" />
-                            {isPending ? 'Kuriama...' : navigating ? 'Įeinama...' : 'Įeiti'}
-                        </Button>
+                        {createError && (
+                            <span className="text-xs text-destructive">{createError}</span>
+                        )}
+                        {tenant.user_id ? (
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={handleEnter}
+                                disabled={navigating}
+                            >
+                                <LogInIcon className="h-4 w-4 mr-1.5" />
+                                {navigating ? 'Įeinama...' : 'Įeiti'}
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={handleCreateAccount}
+                                disabled={isPending}
+                            >
+                                <UserPlusIcon className="h-4 w-4 mr-1.5" />
+                                {isPending ? 'Kuriama...' : 'Sukurti paskyrą'}
+                            </Button>
+                        )}
                         <Button
                             variant="outline"
                             size="sm"
@@ -254,7 +342,12 @@ export function TenantInfoCard({ tenant }: TenantInfoCardProps) {
                                     : '—'
                             }
                         />
-                        <PasswordField onClick={() => setPasswordOpen(true)} />
+                        <PasswordField
+                            hasAccount={Boolean(tenant.user_id)}
+                            isCreating={isPending}
+                            onChangePassword={() => setPasswordOpen(true)}
+                            onCreateAccount={handleCreateAccount}
+                        />
                     </div>
                 </CardContent>
             </Card>
