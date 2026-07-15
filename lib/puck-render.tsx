@@ -11,12 +11,9 @@ import type { PuckBlocks } from './puck-config'
 
 type BlockEntry = Data['content'][number]
 
-// hfnsbhovdjqnfzjpugwa.supabase.co is a legacy asset host still referenced by default/fallback
-// content that predates the current Supabase project — kept trusted until those assets are migrated.
 const ALLOWED_IMAGE_HOSTNAMES = new Set(
   [
     process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null,
-    'hfnsbhovdjqnfzjpugwa.supabase.co',
     'localhost',
   ].filter((hostname): hostname is string => hostname !== null),
 )

@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const SUPABASE_HOST = "ybyyxcuvxuzrledbitky.supabase.co";
-// Legacy Supabase project — marketing asset images (categories, activities, hero,
-// banners, footer icons, promo cards) were uploaded here and are still in use.
-const SUPABASE_LEGACY_HOST = "hfnsbhovdjqnfzjpugwa.supabase.co";
 const isDev = process.env.NODE_ENV !== "production";
 
 // React/Turbopack use eval() in dev mode for debugging (stack reconstruction, HMR)
@@ -20,8 +17,8 @@ const fontSrc = isDev
   ? "font-src 'self' data: https://rsms.me"
   : "font-src 'self' data:";
 const imgSrc = isDev
-  ? `img-src 'self' data: https: https://${SUPABASE_HOST} https://${SUPABASE_LEGACY_HOST}`
-  : `img-src 'self' data: https://${SUPABASE_HOST} https://${SUPABASE_LEGACY_HOST}`;
+  ? `img-src 'self' data: https: https://${SUPABASE_HOST}`
+  : `img-src 'self' data: https://${SUPABASE_HOST}`;
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -60,16 +57,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
-        pathname: '/storage/v1/render/image/public/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'hfnsbhovdjqnfzjpugwa.supabase.co',
-        pathname: '/storage/v1/object/public/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'hfnsbhovdjqnfzjpugwa.supabase.co',
         pathname: '/storage/v1/render/image/public/**',
       },
     ],

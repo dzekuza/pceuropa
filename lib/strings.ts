@@ -48,25 +48,26 @@ export const NEWS_SECTION_STRINGS = {
   ctaLabel: 'Daugiau',
   items: [
     {
-      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
+      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
       title: 'Papildoma nuolaida Rieker!',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/rieker',
     },
     {
-      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
+      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/pavasaris',
     },
     {
-      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
+      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/samsung',
     },
     {
-      image: 'https://hfnsbhovdjqnfzjpugwa.supabase.co/storage/v1/object/public/marketing-assets/news-4.jpg',
+      // NOTE: reuses news-1.jpg — original news-4.jpg was unrecoverable after the Supabase project migration.
+      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/vision-express',
