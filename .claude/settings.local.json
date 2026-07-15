@@ -1,0 +1,13 @@
+{
+  "skillOverrides": {
+    "studio": "off",
+    "explain": "off",
+    "debug-fix": "off",
+    "test-writer": "off",
+    "ship": "off",
+    "tdd": "off",
+    "context-budget": "off",
+    "pr-review": "off",
+    "refactor": "off"
+  }
+}
