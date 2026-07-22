@@ -33,6 +33,9 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       scriptSrc,
+      // browser-image-compression spawns a web worker from a blob: URL; without an
+      // explicit worker-src it falls back to script-src and gets blocked.
+      "worker-src 'self' blob:",
       styleSrc,
       imgSrc,
       fontSrc,

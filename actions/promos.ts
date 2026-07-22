@@ -36,7 +36,10 @@ export async function createPromo(
     .select()
     .single()
 
-  if (error || !created) return { error: 'Nepavyko sukurti akcijos' }
+  if (error || !created) {
+    console.error('createPromo failed:', error?.message, error?.code)
+    return { error: 'Nepavyko sukurti akcijos' }
+  }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
@@ -67,7 +70,10 @@ export async function updatePromo(
     .select()
     .single()
 
-  if (error || !updated) return { error: 'Nepavyko atnaujinti akcijos' }
+  if (error || !updated) {
+    console.error('updatePromo failed:', error?.message, error?.code)
+    return { error: 'Nepavyko atnaujinti akcijos' }
+  }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
