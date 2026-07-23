@@ -50,6 +50,9 @@ export type PuckBlocks = {
     leisureDescription: string
     leisureImage: string
     sportsHeading: string
+    sportsImage1: string
+    sportsImage2: string
+    sportsImage3: string
     petsHeading: string
     petsDescription: string
     petImage: string
@@ -233,6 +236,21 @@ export const puckConfig: Config<PuckBlocks> = {
           render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
         },
         sportsHeading: { type: 'text', label: 'Sporto kortelės antraštė', contentEditable: true },
+        sportsImage1: {
+          type: 'custom',
+          label: 'Sporto nuotrauka 1 (kairė)',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
+        sportsImage2: {
+          type: 'custom',
+          label: 'Sporto nuotrauka 2 (vidurinė)',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
+        sportsImage3: {
+          type: 'custom',
+          label: 'Sporto nuotrauka 3 (dešinė)',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
         petsHeading: { type: 'text', label: 'Augintinių kortelės antraštė', contentEditable: true },
         petsDescription: { type: 'textarea', label: 'Augintinių aprašymas', contentEditable: true },
         petImage: {
@@ -247,6 +265,9 @@ export const puckConfig: Config<PuckBlocks> = {
         leisureDescription: '',
         leisureImage: '',
         sportsHeading: 'Rūpestis savimi prasideda čia',
+        sportsImage1: '',
+        sportsImage2: '',
+        sportsImage3: '',
         petsHeading: 'PC EUROPA\ndraugiška augintiniams',
         petsDescription: 'Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.',
         petImage: '',

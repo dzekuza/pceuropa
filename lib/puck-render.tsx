@@ -100,6 +100,9 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
           leisureDescription={safeString(props.leisureDescription)}
           leisureImage={isSafeImageUrl(props.leisureImage) ? props.leisureImage : undefined}
           sportsHeading={safeString(props.sportsHeading)}
+          sportsImage1={isSafeImageUrl(props.sportsImage1) ? props.sportsImage1 : undefined}
+          sportsImage2={isSafeImageUrl(props.sportsImage2) ? props.sportsImage2 : undefined}
+          sportsImage3={isSafeImageUrl(props.sportsImage3) ? props.sportsImage3 : undefined}
           petsHeading={safeString(props.petsHeading)}
           petsDescription={safeString(props.petsDescription)}
           petImage={isSafeImageUrl(props.petImage) ? props.petImage : undefined}

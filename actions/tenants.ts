@@ -320,6 +320,82 @@ export async function importTenants(
 }
 
 /**
+ * bulkUpdateTenantCategory — Sets category on many tenants at once.
+ */
+export async function bulkUpdateTenantCategory(
+  tenantIds: string[],
+  category: string
+): Promise<{ updated: number } | { error: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { error: 'Neturite teisės atlikti šį veiksmą' }
+  }
+
+  if (!tenantIds.length) return { updated: 0 }
+
+  const { error } = await supabase
+    .from('tenants')
+    .update({ category })
+    .in('id', tenantIds)
+
+  if (error) {
+    return { error: 'Nepavyko atnaujinti kategorijos' }
+  }
+
+  revalidatePath('/admin/tenants')
+  return { updated: tenantIds.length }
+}
+
+/**
+ * bulkDeleteTenants — Removes tenant records and their auth users.
+ */
+export async function bulkDeleteTenants(
+  tenantIds: string[]
+): Promise<{ deleted: number; errors: string[] }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { deleted: 0, errors: ['Neturite teisės atlikti šį veiksmą'] }
+  }
+
+  if (!tenantIds.length) return { deleted: 0, errors: [] }
+
+  const { data: tenants, error: fetchError } = await supabase
+    .from('tenants')
+    .select('id, user_id')
+    .in('id', tenantIds)
+
+  if (fetchError || !tenants) {
+    return { deleted: 0, errors: ['Nuomininkai nerasti'] }
+  }
+
+  const { error: deleteError } = await supabase
+    .from('tenants')
+    .delete()
+    .in('id', tenantIds)
+
+  if (deleteError) {
+    return { deleted: 0, errors: ['Nepavyko ištrinti nuomininkų'] }
+  }
+
+  const userIds = tenants.map((t) => t.user_id).filter((id): id is string => !!id)
+  if (userIds.length) {
+    const adminClient = createAdminClient()
+    await Promise.all(userIds.map((id) => adminClient.auth.admin.deleteUser(id)))
+  }
+
+  revalidatePath('/admin/tenants')
+  return { deleted: tenants.length, errors: [] }
+}
+
+/**
  * resetPassword — Updates the auth user's password for a given tenant.
  * Requires the tenant's user_id (fetched from the tenants table first).
  */

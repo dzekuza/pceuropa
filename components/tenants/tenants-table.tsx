@@ -5,14 +5,27 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Download, HelpCircle, Pencil, Search, Trash2, Upload, ArrowUpDown, ArrowUp, ArrowDown, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { useTransition } from 'react'
 import type { TenantListRow, TenantListState } from '@/lib/admin-data'
 import { TENANT_CATEGORIES } from '@/lib/constants'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { bulkDeleteTenants, bulkUpdateTenantCategory } from '@/actions/tenants'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import {
   Card,
-  CardContent,
+  CardTable,
   CardFooter,
   CardHeader,
   CardHeading,
@@ -87,6 +100,50 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [tenantToDelete, setTenantToDelete] = useState<Pick<TenantListRow, 'id' | 'store_name'> | null>(null)
   const [importOpen, setImportOpen] = useState(false)
+
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkCategory, setBulkCategory] = useState('')
+  const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false)
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
+  const [isBulkPending, startBulkTransition] = useTransition()
+
+  const allSelected = data.length > 0 && data.every((tenant) => selectedIds.has(tenant.id))
+  const someSelected = selectedIds.size > 0
+
+  function toggleSelectAll() {
+    setSelectedIds(allSelected ? new Set() : new Set(data.map((tenant) => tenant.id)))
+  }
+
+  function toggleSelectRow(tenantId: string) {
+    setSelectedIds((current) => {
+      const next = new Set(current)
+      if (next.has(tenantId)) {
+        next.delete(tenantId)
+      } else {
+        next.add(tenantId)
+      }
+      return next
+    })
+  }
+
+  function handleBulkCategoryApply() {
+    if (!bulkCategory || selectedIds.size === 0) return
+    startBulkTransition(async () => {
+      await bulkUpdateTenantCategory(Array.from(selectedIds), bulkCategory)
+      setBulkCategoryOpen(false)
+      setBulkCategory('')
+      setSelectedIds(new Set())
+    })
+  }
+
+  function handleBulkDeleteConfirm() {
+    if (selectedIds.size === 0) return
+    startBulkTransition(async () => {
+      await bulkDeleteTenants(Array.from(selectedIds))
+      setBulkDeleteOpen(false)
+      setSelectedIds(new Set())
+    })
+  }
 
   const from = totalCount === 0 ? 0 : (state.page - 1) * state.pageSize + 1
   const to = Math.min(state.page * state.pageSize, totalCount)
@@ -203,6 +260,28 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
             </Select>
 
             <div className="flex flex-wrap items-center gap-2">
+              {someSelected && (
+                <div className="flex items-center gap-2 rounded-xl border border-border/80 bg-muted/40 px-3 py-1.5">
+                  <span className="text-sm text-muted-foreground">Pažymėta: {selectedIds.size}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 rounded-lg"
+                    onClick={() => setBulkCategoryOpen(true)}
+                  >
+                    Keisti kategoriją
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 rounded-lg text-destructive hover:text-destructive"
+                    onClick={() => setBulkDeleteOpen(true)}
+                  >
+                    <Trash2 data-icon="inline-start" />
+                    Ištrinti
+                  </Button>
+                </div>
+              )}
               <Button variant="outline" onClick={() => setImportOpen(true)} className="h-11 rounded-xl px-4">
                 <Upload data-icon="inline-start" />
                 Importuoti
@@ -236,11 +315,18 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
           </div>
         </CardHeader>
 
-        <CardContent className="p-0">
-          <div className="overflow-x-auto border-y border-border/70">
-            <Table>
+        <CardTable className="min-w-0">
+          <div className="min-w-0 border-y border-border/70">
+            <Table className="min-w-[1240px]">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[44px] px-4">
+                    <Checkbox
+                      checked={allSelected}
+                      onCheckedChange={toggleSelectAll}
+                      aria-label="Pažymėti visus"
+                    />
+                  </TableHead>
                   <TableHead className="w-[76px] px-4">Logo</TableHead>
                   {SORTABLE_COLUMNS.map((column) => (
                     <TableHead key={column.key} className="px-4">
@@ -255,7 +341,7 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
               <TableBody>
                 {data.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="py-12 text-center text-sm text-muted-foreground">
+                    <TableCell colSpan={11} className="py-12 text-center text-sm text-muted-foreground">
                       Pagal pasirinktus filtrus nuomininkų nerasta.
                     </TableCell>
                   </TableRow>
@@ -263,9 +349,17 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                   data.map((tenant) => (
                     <TableRow
                       key={tenant.id}
+                      data-state={selectedIds.has(tenant.id) ? 'selected' : undefined}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => router.push(`/admin/tenants/${tenant.id}`)}
                     >
+                      <TableCell className="px-4 py-3" onClick={(event) => event.stopPropagation()}>
+                        <Checkbox
+                          checked={selectedIds.has(tenant.id)}
+                          onCheckedChange={() => toggleSelectRow(tenant.id)}
+                          aria-label={`Pažymėti ${tenant.store_name}`}
+                        />
+                      </TableCell>
                       <TableCell className="px-4 py-3">
                         <Avatar className="size-10 rounded-full border border-border/60">
                           <AvatarImage
@@ -326,7 +420,7 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
               </TableBody>
             </Table>
           </div>
-        </CardContent>
+        </CardTable>
 
         <CardFooter className="flex flex-col gap-4 px-5 py-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -390,6 +484,61 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
         onOpenChange={setDeleteDialogOpen}
         tenant={tenantToDelete}
       />
+
+      <AlertDialog open={bulkCategoryOpen} onOpenChange={setBulkCategoryOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Keisti kategoriją</AlertDialogTitle>
+            <AlertDialogDescription>
+              Nustatykite kategoriją {selectedIds.size} pažymėtiems nuomininkams.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Select value={bulkCategory} onValueChange={setBulkCategory}>
+            <SelectTrigger className="h-11 w-full rounded-xl border-border/80">
+              <SelectValue placeholder="Pasirinkite kategoriją" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {TENANT_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isBulkPending}>Atšaukti</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkCategoryApply}
+              disabled={isBulkPending || !bulkCategory}
+            >
+              {isBulkPending ? 'Taikoma...' : 'Taikyti'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={bulkDeleteOpen} onOpenChange={setBulkDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ištrinti nuomininkus</AlertDialogTitle>
+            <AlertDialogDescription>
+              Ar tikrai norite ištrinti {selectedIds.size} pažymėtus nuomininkus? Šis veiksmas negrįžtamas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isBulkPending}>Atšaukti</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDeleteConfirm}
+              disabled={isBulkPending}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {isBulkPending ? 'Trinama...' : 'Ištrinti'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
