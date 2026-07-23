@@ -6,7 +6,7 @@ const facebookIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object
 const instagramIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.svg'
 
 const NAV_LINKS = [
-  { label: 'Nuomininkams', href: '/nuomininkai' },
+  { label: 'Nuomininkams', href: 'https://nuomininkai.pceuropa.lt/' },
   { label: 'Patalpų nuoma ir reklama', href: '/nuoma-reklama' },
 ]
 

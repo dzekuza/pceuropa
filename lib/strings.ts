@@ -373,6 +373,8 @@ export const KONTAKTAI_STRINGS = {
   hoursWeekdays: 'I–V: 10:00–21:00',
   hoursSaturday: 'VI: 10:00–20:00',
   hoursSunday: 'VII: 10:00–20:00',
+  adminHoursTitle: 'Administracijos darbo laikas',
+  adminHours: '10:00–17:00',
 } as const
 
 export const KAIP_ATVYKTI_STRINGS = {
@@ -489,4 +491,12 @@ export const PRIVATUMO_POLITIKA_STRINGS = {
   cookiesBody: 'Informacija apie slapukų naudojimą pateikta mūsų ',
   cookiesLinkText: 'slapukų politikoje',
   cookiesLinkHref: '/slapuku-politika',
+} as const
+
+export const COOKIE_CONSENT_STRINGS = {
+  message: 'Naudojame slapukus, kad svetainė veiktų tinkamai ir galėtume analizuoti lankomumą. Daugiau informacijos rasite mūsų ',
+  linkText: 'slapukų politikoje',
+  linkHref: '/slapuku-politika',
+  accept: 'Sutinku',
+  reject: 'Atmesti',
 } as const

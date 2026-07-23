@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
+import { VisitorInfoBanner } from '@/components/marketing/visitor-info-banner'
 import { KONTAKTAI_STRINGS } from '@/lib/strings'
 
 export const metadata: Metadata = {
@@ -14,6 +15,11 @@ export default function KontaktaiPage() {
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
+
+      {/* Info banner — matches darbo-laikas "Nav / Banner" section */}
+      <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
+        <VisitorInfoBanner />
+      </div>
 
       <div className="w-full max-w-[1332px] mx-auto px-4 py-10 md:py-14 flex flex-col gap-12">
         <h1 className="font-bold text-[36px] md:text-[48px] leading-tight text-black">
@@ -56,6 +62,7 @@ export default function KontaktaiPage() {
               <li className="text-[#575757] leading-relaxed">{s.hoursWeekdays}</li>
               <li className="text-[#575757] leading-relaxed">{s.hoursSaturday}</li>
               <li className="text-[#575757] leading-relaxed">{s.hoursSunday}</li>
+              <li className="text-[#575757] leading-relaxed">{s.adminHoursTitle}: {s.adminHours}</li>
             </ul>
           </section>
         </div>

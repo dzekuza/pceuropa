@@ -46,7 +46,7 @@ export default async function ParduotuvesPage() {
 
       {/* Floor plan */}
       <div className="w-full bg-[#f7f7f5]">
-        <PlanasSection stores={stores} />
+        <PlanasSection stores={stores.filter((s) => s.category !== 'Maistas ir restoranai')} />
       </div>
 
       <Footer />

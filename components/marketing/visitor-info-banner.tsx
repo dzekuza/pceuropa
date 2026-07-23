@@ -70,15 +70,27 @@ export function VisitorInfoBanner() {
           <div className="flex flex-col gap-2">
             <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactAdminLabel}</p>
             <div className="text-black text-base leading-6">
-              <p>{DARBO_LAIKAS_STRINGS.contactAdminPhone}</p>
-              <p>{DARBO_LAIKAS_STRINGS.contactAdminEmail}</p>
+              <p>
+                <a href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`} className="hover:underline">
+                  {DARBO_LAIKAS_STRINGS.contactAdminPhone}
+                </a>
+              </p>
+              <p>
+                <a href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`} className="hover:underline">
+                  {DARBO_LAIKAS_STRINGS.contactAdminEmail}
+                </a>
+              </p>
             </div>
           </div>
         </div>
         <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
           <div className="flex flex-col gap-2">
             <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactMarketingLabel}</p>
-            <p className="text-black text-base leading-6">{DARBO_LAIKAS_STRINGS.contactMarketingEmail}</p>
+            <p className="text-black text-base leading-6">
+              <a href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`} className="hover:underline">
+                {DARBO_LAIKAS_STRINGS.contactMarketingEmail}
+              </a>
+            </p>
           </div>
         </div>
       </div>

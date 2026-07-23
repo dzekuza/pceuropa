@@ -73,6 +73,13 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
     if (file) upload(file)
   }, [upload])
 
+  const handleRemove = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    onChange('')
+    setError(null)
+    if (inputRef.current) inputRef.current.value = ''
+  }, [onChange])
+
   const dropZoneClass = [
     'relative overflow-hidden rounded-lg border-2 border-dashed cursor-pointer flex items-center justify-center transition-colors duration-150',
     value ? 'h-[120px] border-transparent' : 'h-[80px]',
@@ -96,7 +103,7 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
             <img src={resizeSupabaseImage(value, { width: 480, height: 240 })} alt="" className="w-full h-full object-cover block" />
             <div
               className={[
-                'absolute inset-0 bg-black/45 flex items-center justify-center transition-opacity duration-150',
+                'absolute inset-0 bg-black/45 flex items-center justify-center gap-3 transition-opacity duration-150',
                 hovering ? 'opacity-100' : 'opacity-0',
               ].join(' ')}
               onMouseEnter={() => setHovering(true)}
@@ -105,6 +112,15 @@ export function ImageUploadField({ value, onChange, label }: ImageUploadFieldPro
               <span className="text-white text-xs font-medium">
                 {uploading ? 'Įkeliama…' : 'Keisti nuotrauką'}
               </span>
+              {!uploading && (
+                <button
+                  type="button"
+                  onClick={handleRemove}
+                  className="text-white text-xs font-medium underline underline-offset-2 hover:text-red-300"
+                >
+                  Pašalinti
+                </button>
+              )}
             </div>
           </>
         ) : (
