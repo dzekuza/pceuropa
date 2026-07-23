@@ -66,7 +66,7 @@ function PlaceCard({ place }: { place: Place }) {
         {place.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={resizeSupabaseImage(place.coverUrl, { width: 800, height: 408 })}
+            src={resizeSupabaseImage(place.coverUrl, { width: 800, height: 408, quality: 90 })}
             alt=""
             loading="lazy"
             className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"

@@ -81,6 +81,7 @@ export default async function PromoDetailPage({ params }: Props) {
                 src={resizeSupabaseImage(item.image, {
                   width: 800,
                   height: 800,
+                  quality: 90,
                 })}
                 alt={item.title}
                 className="w-full h-full object-cover"

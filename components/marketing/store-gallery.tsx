@@ -31,7 +31,7 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={active}
-          src={resizeSupabaseImage(images[active], { width: 1200, height: 960 })}
+          src={resizeSupabaseImage(images[active], { width: 1200, height: 960, quality: 90 })}
           alt={`${name} — nuotrauka ${active + 1}`}
           className="absolute inset-0 size-full object-cover"
         />

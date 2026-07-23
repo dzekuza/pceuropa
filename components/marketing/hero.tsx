@@ -66,7 +66,7 @@ export function Hero({ slides = HERO_DEFAULT_SLIDES, title, subtitle }: HeroProp
         {slides.map((slide, i) => (
           <img
             key={slide.src}
-            src={resizeSupabaseImage(slide.src, { width: 1600, height: 920 })}
+            src={resizeSupabaseImage(slide.src, { width: 1600, height: 920, quality: 90 })}
             alt={slide.alt}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0'}`}
           />

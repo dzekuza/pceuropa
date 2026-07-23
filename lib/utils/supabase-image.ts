@@ -20,7 +20,7 @@ interface ResizeOptions {
 // unconditionally at every image call site.
 export function resizeSupabaseImage(
   url: string | null | undefined,
-  { width, height, quality = 75, fit = 'cover' }: ResizeOptions
+  { width, height, quality = 85, fit = 'cover' }: ResizeOptions
 ): string {
   if (!url || !url.includes(OBJECT_PREFIX)) return url ?? ''
 

@@ -47,7 +47,7 @@ export function PageBannerCarousel({ slides }: PageBannerCarouselProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={src}
-              src={resizeSupabaseImage(src, { width: 1600, height: 920 })}
+              src={resizeSupabaseImage(src, { width: 1600, height: 920, quality: 90 })}
               alt=""
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
               style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}

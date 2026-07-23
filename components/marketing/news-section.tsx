@@ -122,7 +122,7 @@ function NewsCard({ item }: { item: NewsItem }) {
       {/* Image */}
       <div className={`relative w-full h-[236px] ${item.imageRounded} overflow-hidden`}>
         <img
-          src={resizeSupabaseImage(item.image, { width: 500, height: 472 })}
+          src={resizeSupabaseImage(item.image, { width: 500, height: 472, quality: 90 })}
           alt={item.title}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
         />

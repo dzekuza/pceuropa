@@ -92,7 +92,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         {store.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={resizeSupabaseImage(store.coverUrl, { width: 800, height: 408 })}
+            src={resizeSupabaseImage(store.coverUrl, { width: 800, height: 408, quality: 90 })}
             alt=""
             loading="lazy"
             className="absolute inset-0 size-full object-cover rounded-[24px] transition-transform duration-300 group-hover:scale-105"

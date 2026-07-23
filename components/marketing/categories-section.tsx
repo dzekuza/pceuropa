@@ -50,7 +50,7 @@ export function CategoriesSection({ heading, categories }: CategoriesSectionProp
               className="relative flex flex-col justify-end h-[160px] md:h-[220px] lg:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden group lg:flex-1 lg:min-w-0 lg:transition-[flex-grow] lg:duration-500 lg:ease-out-custom lg:hover:flex-[2.2]"
             >
               <img
-                src={resizeSupabaseImage(cat.image, { width: 500, height: 560 })}
+                src={resizeSupabaseImage(cat.image, { width: 500, height: 560, quality: 90 })}
                 alt={cat.title}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ease-out-custom"
               />

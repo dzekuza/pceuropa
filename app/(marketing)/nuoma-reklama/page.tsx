@@ -49,7 +49,7 @@ export default function NuomaReklamaPage() {
           {/* Background image + overlay */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={resizeSupabaseImage(BANNER_IMAGE, { width: 1200, height: 600 })}
+            src={resizeSupabaseImage(BANNER_IMAGE, { width: 1200, height: 600, quality: 90 })}
             alt=""
             className="absolute inset-0 size-full object-cover pointer-events-none"
           />
