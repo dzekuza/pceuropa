@@ -2,6 +2,9 @@
 
 import { Puck } from '@measured/puck'
 import '@measured/puck/puck.css'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
 import { puckConfig } from '@/lib/puck-config'
 import type { Data } from '@measured/puck'
 import { useRouter } from 'next/navigation'
@@ -40,15 +43,23 @@ export function PuckEditor({ data, pageSlug, previewUrl }: PuckEditorProps) {
         })
 
         if (!res.ok) {
-          alert('Nepavyko išsaugoti. Bandykite dar kartą.')
+          toast.error('Nepavyko išsaugoti. Bandykite dar kartą.')
           return
         }
 
+        toast.success('Puslapis paskelbtas')
         if (previewUrl) router.push(previewUrl)
       }}
       overrides={{
         headerActions: ({ children }) => (
           <>
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-1.5 text-[13px] px-2.5 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 h-8"
+            >
+              <ArrowLeft className="size-3.5" />
+              Skydelis
+            </Link>
             <select
               value={pageSlug}
               onChange={(e) => router.push(`/admin/puck/${e.target.value}`)}

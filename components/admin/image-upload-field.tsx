@@ -15,12 +15,12 @@ const MIME_TO_EXT: Record<string, string> = {
 const MAX_SIZE = 10 * 1024 * 1024 // 10 MB
 
 interface ImageUploadFieldProps {
-  value: string
+  value: string | undefined
   onChange: (url: string) => void
   label?: string
 }
 
-export function ImageUploadField({ value, onChange, label }: ImageUploadFieldProps) {
+export function ImageUploadField({ value = '', onChange, label }: ImageUploadFieldProps) {
   const [dragging, setDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [hovering, setHovering] = useState(false)

@@ -81,9 +81,9 @@ export function ActivitiesSection({
             </Link>
           </div>
           <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[200px] lg:h-[240px] xl:h-[299px]">
-            <img src={resizeSupabaseImage(sportsImage1 || sportsAd1, { width: 200, height: 300, quality: 90 })} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
-            <img src={resizeSupabaseImage(sportsImage2 || sportsAd2, { width: 500, height: 650, quality: 90 })} alt="" className="flex-1 h-full rounded-[9px] object-contain" />
-            <img src={resizeSupabaseImage(sportsImage3 || sportsAd3, { width: 200, height: 300, quality: 90 })} alt="" className="w-1/4 h-1/2 rounded-[6px] object-cover shrink-0" />
+            <img src={resizeSupabaseImage(sportsImage1 || sportsAd1, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
+            <img src={resizeSupabaseImage(sportsImage2 || sportsAd2, { width: 300, height: 400, quality: 90 })} alt="" className="h-full aspect-[3/4] rounded-[9px] object-contain shrink-0" />
+            <img src={resizeSupabaseImage(sportsImage3 || sportsAd3, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
           </div>
         </div>
 
