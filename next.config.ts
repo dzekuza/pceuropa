@@ -7,9 +7,11 @@ const isDev = process.env.NODE_ENV !== "production";
 // but never in production — so 'unsafe-eval' is only needed outside production.
 // react-grab (dev-only overlay in app/layout.tsx) loads from unpkg.com and
 // pulls its own stylesheet/font/images, so those are also dev-only relaxations.
+// GA4 (gtag.js) loads its script from googletagmanager.com and sends hits to
+// google-analytics.com; googletagmanager.com also serves the noscript pixel.
 const scriptSrc = isDev
-  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com"
-  : "script-src 'self' 'unsafe-inline'";
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://www.googletagmanager.com"
+  : "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com";
 const styleSrc = isDev
   ? "style-src 'self' 'unsafe-inline' https://rsms.me"
   : "style-src 'self' 'unsafe-inline'";
@@ -18,7 +20,7 @@ const fontSrc = isDev
   : "font-src 'self' data:";
 const imgSrc = isDev
   ? `img-src 'self' data: https: https://${SUPABASE_HOST}`
-  : `img-src 'self' data: https://${SUPABASE_HOST}`;
+  : `img-src 'self' data: https://${SUPABASE_HOST} https://www.googletagmanager.com https://www.google-analytics.com`;
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -39,7 +41,8 @@ const securityHeaders = [
       styleSrc,
       imgSrc,
       fontSrc,
-      `connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST}`,
+      // *.google-analytics.com covers GA4's regional collection subdomains (region1, region2, ...)
+      `connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://*.google-analytics.com https://www.googletagmanager.com`,
       "frame-src 'self' https://www.google.com https://maps.google.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
