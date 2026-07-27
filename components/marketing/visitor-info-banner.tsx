@@ -36,7 +36,15 @@ const SOCIAL_LINKS = [
   { href: 'https://tiktok.com/@pceuropa', Icon: TikTokIcon, label: 'TikTok' },
 ]
 
-export function VisitorInfoBanner() {
+interface VisitorInfoBannerProps {
+  heading?: string
+  variant?: 'contact' | 'hours'
+}
+
+export function VisitorInfoBanner({
+  heading = DARBO_LAIKAS_STRINGS.bannerHeading,
+  variant = 'contact',
+}: VisitorInfoBannerProps) {
   return (
     <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center justify-between pl-6 lg:pl-10 pr-4 py-4 min-h-[292px]">
       {/* Background */}
@@ -47,7 +55,7 @@ export function VisitorInfoBanner() {
       {/* Left — heading + social icons */}
       <div className="relative flex flex-col gap-12 items-start w-[280px] md:w-[335px] shrink-0">
         <h2 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-white font-[family-name:var(--font-jakarta)]">
-          {DARBO_LAIKAS_STRINGS.bannerHeading}
+          {heading}
         </h2>
         <div className="flex gap-4 items-center">
           {SOCIAL_LINKS.map(({ href, Icon, label }) => (
@@ -67,51 +75,82 @@ export function VisitorInfoBanner() {
         </div>
       </div>
 
-      {/* Right — contact cards */}
-      <div className="relative hidden sm:flex flex-col gap-5 p-4 rounded-[40px] w-[311px] shrink-0">
-        <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
-          <div className="flex flex-col gap-2">
-            <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactAdminLabel}</p>
-            <div className="text-black text-base leading-6">
-              <p>
+      {/* Right — contact cards or opening-hours cards, per variant */}
+      {variant === 'hours' ? (
+        <div className="relative hidden sm:flex flex-col gap-5 items-end p-4 rounded-[40px] shrink-0">
+          <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-4 rounded-3xl">
+            <div className="flex flex-col gap-2">
+              <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.bannerHoursMallLabel}</p>
+              <div className="text-base leading-6">
+                <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine1}</p>
+                <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine2}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-5 items-start">
+            <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-4 rounded-3xl">
+              <div className="flex flex-col gap-2">
+                <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLabel}</p>
+                <p className="text-black text-base leading-6 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLine1}</p>
+              </div>
+            </div>
+            <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-7 rounded-3xl">
+              <div className="flex flex-col gap-2">
+                <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLabel}</p>
+                <div className="text-base leading-6">
+                  <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine1}</p>
+                  <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine2}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative hidden sm:flex flex-col gap-5 p-4 rounded-[40px] w-[311px] shrink-0">
+          <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
+            <div className="flex flex-col gap-2">
+              <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactAdminLabel}</p>
+              <div className="text-black text-base leading-6">
+                <p>
+                  <TrackedLink
+                    href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`}
+                    eventName="contact_click"
+                    eventParams={{ method: 'phone', location: 'visitor_banner_admin' }}
+                    className="hover:underline"
+                  >
+                    {DARBO_LAIKAS_STRINGS.contactAdminPhone}
+                  </TrackedLink>
+                </p>
+                <p>
+                  <TrackedLink
+                    href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`}
+                    eventName="contact_click"
+                    eventParams={{ method: 'email', location: 'visitor_banner_admin' }}
+                    className="hover:underline"
+                  >
+                    {DARBO_LAIKAS_STRINGS.contactAdminEmail}
+                  </TrackedLink>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
+            <div className="flex flex-col gap-2">
+              <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactMarketingLabel}</p>
+              <p className="text-black text-base leading-6">
                 <TrackedLink
-                  href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`}
+                  href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`}
                   eventName="contact_click"
-                  eventParams={{ method: 'phone', location: 'visitor_banner_admin' }}
+                  eventParams={{ method: 'email', location: 'visitor_banner_marketing' }}
                   className="hover:underline"
                 >
-                  {DARBO_LAIKAS_STRINGS.contactAdminPhone}
-                </TrackedLink>
-              </p>
-              <p>
-                <TrackedLink
-                  href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`}
-                  eventName="contact_click"
-                  eventParams={{ method: 'email', location: 'visitor_banner_admin' }}
-                  className="hover:underline"
-                >
-                  {DARBO_LAIKAS_STRINGS.contactAdminEmail}
+                  {DARBO_LAIKAS_STRINGS.contactMarketingEmail}
                 </TrackedLink>
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
-          <div className="flex flex-col gap-2">
-            <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactMarketingLabel}</p>
-            <p className="text-black text-base leading-6">
-              <TrackedLink
-                href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`}
-                eventName="contact_click"
-                eventParams={{ method: 'email', location: 'visitor_banner_marketing' }}
-                className="hover:underline"
-              >
-                {DARBO_LAIKAS_STRINGS.contactMarketingEmail}
-              </TrackedLink>
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

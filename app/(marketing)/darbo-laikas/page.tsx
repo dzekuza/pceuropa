@@ -90,9 +90,9 @@ export default async function DarboLaikasPage() {
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
 
-      {/* Info banner — matches Figma "Nav / Banner" section */}
+      {/* Info banner — matches Figma "Nav / Banner" section (node 946:72) */}
       <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
-        <VisitorInfoBanner />
+        <VisitorInfoBanner heading={DARBO_LAIKAS_STRINGS.heroHeading} variant="hours" />
       </div>
 
       {/* Main content */}

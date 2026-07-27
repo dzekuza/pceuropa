@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { VisitorInfoBanner } from '@/components/marketing/visitor-info-banner'
-import { TrackedLink } from '@/components/marketing/tracked-link'
 import { KONTAKTAI_STRINGS } from '@/lib/strings'
 
 export const metadata: Metadata = {
@@ -32,32 +31,6 @@ export default function KontaktaiPage() {
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.addressTitle}</h2>
             <p className="text-[#575757] leading-relaxed">{s.address}</p>
-          </section>
-
-          {/* Phone */}
-          <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
-            <h2 className="font-bold text-[22px] text-black">{s.phoneTitle}</h2>
-            <TrackedLink
-              href={s.phoneHref}
-              eventName="contact_click"
-              eventParams={{ method: 'phone', location: 'kontaktai_page' }}
-              className="text-[#575757] leading-relaxed hover:text-black transition-colors"
-            >
-              {s.phone}
-            </TrackedLink>
-          </section>
-
-          {/* Email */}
-          <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
-            <h2 className="font-bold text-[22px] text-black">{s.emailTitle}</h2>
-            <TrackedLink
-              href={s.emailHref}
-              eventName="contact_click"
-              eventParams={{ method: 'email', location: 'kontaktai_page' }}
-              className="text-[#575757] leading-relaxed hover:text-black transition-colors break-all"
-            >
-              {s.email}
-            </TrackedLink>
           </section>
 
           {/* Working hours */}
