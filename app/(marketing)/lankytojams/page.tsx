@@ -2,13 +2,16 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { LankytojamsContent } from '@/components/marketing/lankytojams-content'
-import { getPuckBlockProps } from '@/lib/page-content'
+import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
+import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import { LANKYTOJAMS_STRINGS } from '@/lib/strings'
 
 export const metadata: Metadata = {
   title: LANKYTOJAMS_STRINGS.pageTitle,
   description: LANKYTOJAMS_STRINGS.pageDescription,
 }
+
+const DEFAULT_BANNER_SLIDES: string[] = []
 
 const DEFAULT_LANKYTOJAMS_BLOCK = {
   heading: LANKYTOJAMS_STRINGS.heading,
@@ -24,11 +27,14 @@ const DEFAULT_LANKYTOJAMS_BLOCK = {
 }
 
 export default async function LankytojamsPage() {
+  const bannerSlides = await getPuckBannerSlides('lankytojams', DEFAULT_BANNER_SLIDES)
   const block = await getPuckBlockProps('lankytojams', 'LankytojamsBlock', DEFAULT_LANKYTOJAMS_BLOCK)
 
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
+
+      <PageBannerCarousel slides={bannerSlides} />
 
       <LankytojamsContent
         heading={block.heading}

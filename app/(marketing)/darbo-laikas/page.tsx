@@ -5,9 +5,13 @@ import { OpeningHoursSection } from '@/components/marketing/opening-hours-sectio
 import { HowToGetHereSection } from '@/components/marketing/how-to-get-here-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { createClient } from '@/lib/supabase/server'
-import { getPuckBlockProps } from '@/lib/page-content'
+import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
+
+const DEFAULT_BANNER_SLIDES = [
+  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg',
+]
 
 const DEFAULT_OPENING_HOURS_TEXT = {
   heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
@@ -66,6 +70,7 @@ export default async function DarboLaikasPage() {
     .order('store_name', { ascending: true })
 
   const open = isCurrentlyOpen()
+  const bannerSlides = await getPuckBannerSlides('darbo-laikas', DEFAULT_BANNER_SLIDES)
   const openingHoursText = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', DEFAULT_OPENING_HOURS_TEXT)
   const howToGetHere = await getPuckBlockProps('darbo-laikas', 'HowToGetHereBlock', DEFAULT_HOW_TO_GET_HERE)
 
@@ -92,7 +97,11 @@ export default async function DarboLaikasPage() {
 
       {/* Info banner — matches Figma "Nav / Banner" section (node 946:72) */}
       <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
-        <VisitorInfoBanner heading={DARBO_LAIKAS_STRINGS.heroHeading} variant="hours" />
+        <VisitorInfoBanner
+          heading={DARBO_LAIKAS_STRINGS.heroHeading}
+          variant="hours"
+          backgroundImage={bannerSlides[0]}
+        />
       </div>
 
       {/* Main content */}
