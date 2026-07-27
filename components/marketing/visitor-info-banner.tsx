@@ -1,5 +1,6 @@
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { TrackedLink } from '@/components/marketing/tracked-link'
 
 const bannerBg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg'
 
@@ -50,16 +51,18 @@ export function VisitorInfoBanner() {
         </h2>
         <div className="flex gap-4 items-center">
           {SOCIAL_LINKS.map(({ href, Icon, label }) => (
-            <a
+            <TrackedLink
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
+              eventName="social_click"
+              eventParams={{ platform: label.toLowerCase(), location: 'visitor_banner' }}
               className="bg-[#f5f5f5] size-12 rounded-full flex items-center justify-center text-black hover:opacity-80 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               aria-label={label}
             >
               <Icon />
-            </a>
+            </TrackedLink>
           ))}
         </div>
       </div>
@@ -71,14 +74,24 @@ export function VisitorInfoBanner() {
             <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactAdminLabel}</p>
             <div className="text-black text-base leading-6">
               <p>
-                <a href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`} className="hover:underline">
+                <TrackedLink
+                  href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`}
+                  eventName="contact_click"
+                  eventParams={{ method: 'phone', location: 'visitor_banner_admin' }}
+                  className="hover:underline"
+                >
                   {DARBO_LAIKAS_STRINGS.contactAdminPhone}
-                </a>
+                </TrackedLink>
               </p>
               <p>
-                <a href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`} className="hover:underline">
+                <TrackedLink
+                  href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`}
+                  eventName="contact_click"
+                  eventParams={{ method: 'email', location: 'visitor_banner_admin' }}
+                  className="hover:underline"
+                >
                   {DARBO_LAIKAS_STRINGS.contactAdminEmail}
-                </a>
+                </TrackedLink>
               </p>
             </div>
           </div>
@@ -87,9 +100,14 @@ export function VisitorInfoBanner() {
           <div className="flex flex-col gap-2">
             <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactMarketingLabel}</p>
             <p className="text-black text-base leading-6">
-              <a href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`} className="hover:underline">
+              <TrackedLink
+                href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`}
+                eventName="contact_click"
+                eventParams={{ method: 'email', location: 'visitor_banner_marketing' }}
+                className="hover:underline"
+              >
                 {DARBO_LAIKAS_STRINGS.contactMarketingEmail}
-              </a>
+              </TrackedLink>
             </p>
           </div>
         </div>

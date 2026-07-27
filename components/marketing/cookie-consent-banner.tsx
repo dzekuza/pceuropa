@@ -3,18 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { COOKIE_CONSENT_STRINGS } from '@/lib/strings'
-
-const STORAGE_KEY = 'pceuropa-cookie-consent'
+import { type ConsentValue, getStoredConsent, setStoredConsent } from '@/lib/consent'
 
 export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (!localStorage.getItem(STORAGE_KEY)) setVisible(true)
+    if (!getStoredConsent()) setVisible(true)
   }, [])
 
-  const respond = (value: 'accepted' | 'rejected') => {
-    localStorage.setItem(STORAGE_KEY, value)
+  const respond = (value: ConsentValue) => {
+    setStoredConsent(value)
     setVisible(false)
   }
 

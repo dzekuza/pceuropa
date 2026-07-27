@@ -3,6 +3,9 @@
 // Cookie set once a visitor unlocks the under-construction gate on public pages.
 export const SITE_LOCK_COOKIE = 'pce_site_unlocked'
 
+// GA4 measurement ID — tracking only starts once CookieConsentBanner records acceptance.
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? 'G-RCN6HG618K'
+
 export const TENANT_CATEGORIES = [
   'Mada ir apranga',
   'Maistas ir restoranai',

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
+import { trackEvent } from '@/lib/analytics'
 
 export function NuomaReklamaForm() {
   const [name, setName] = useState('')
@@ -16,6 +17,7 @@ export function NuomaReklamaForm() {
       `Vardas: ${name}\nEl. paštas: ${email}\n\nŽinutė:\n${message}`,
     )
     window.location.href = `mailto:${S.contactEmail}?subject=${subject}&body=${body}`
+    trackEvent('generate_lead', { form_name: 'nuoma_reklama' })
     setSubmitted(true)
   }
 
