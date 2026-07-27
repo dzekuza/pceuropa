@@ -15,9 +15,6 @@ const DEFAULT_BANNER_SLIDES = [
 
 const DEFAULT_OPENING_HOURS_TEXT = {
   heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
-  heroSubtext1: DARBO_LAIKAS_STRINGS.heroSubtext1,
-  heroSubtext2: DARBO_LAIKAS_STRINGS.heroSubtext2,
-  heroSubtext3: DARBO_LAIKAS_STRINGS.heroSubtext3,
   searchPlaceholder: DARBO_LAIKAS_STRINGS.searchPlaceholder,
   loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
 }

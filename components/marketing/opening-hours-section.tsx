@@ -12,9 +12,6 @@ type Store = Omit<StoreHoursCardProps, never>
 type OpeningHoursSectionProps = {
   stores: Store[]
   heroHeading?: string
-  heroSubtext1?: string
-  heroSubtext2?: string
-  heroSubtext3?: string
   searchPlaceholder?: string
   loadMoreButton?: string
 }
@@ -22,9 +19,6 @@ type OpeningHoursSectionProps = {
 export function OpeningHoursSection({
   stores,
   heroHeading = DARBO_LAIKAS_STRINGS.heroHeading,
-  heroSubtext1 = DARBO_LAIKAS_STRINGS.heroSubtext1,
-  heroSubtext2 = DARBO_LAIKAS_STRINGS.heroSubtext2,
-  heroSubtext3 = DARBO_LAIKAS_STRINGS.heroSubtext3,
   searchPlaceholder = DARBO_LAIKAS_STRINGS.searchPlaceholder,
   loadMoreButton = DARBO_LAIKAS_STRINGS.loadMoreButton,
 }: OpeningHoursSectionProps) {
@@ -48,11 +42,6 @@ export function OpeningHoursSection({
           <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black font-[family-name:var(--font-jakarta)] mb-2">
             {heroHeading}
           </h1>
-          <div className="text-[#575757] text-[14px] md:text-base leading-6 space-y-0.5">
-            <p>{heroSubtext1}</p>
-            <p>{heroSubtext2}</p>
-            <p>{heroSubtext3}</p>
-          </div>
         </div>
 
         {/* Search pill */}

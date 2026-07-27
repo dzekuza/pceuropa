@@ -70,9 +70,6 @@ export type PuckBlocks = {
   // Preview-only blocks for pages with DB/hardcoded content
   OpeningHoursBlock: {
     heroHeading: string
-    heroSubtext1: string
-    heroSubtext2: string
-    heroSubtext3: string
     searchPlaceholder: string
     loadMoreButton: string
   }
@@ -317,17 +314,11 @@ export const puckConfig: Config<PuckBlocks> = {
       label: 'Darbo laikas',
       fields: {
         heroHeading: { type: 'text', label: 'Antraštė', contentEditable: true },
-        heroSubtext1: { type: 'text', label: 'Eilutė 1 (prekybos centras)', contentEditable: true },
-        heroSubtext2: { type: 'text', label: 'Eilutė 2 (parduotuvės)', contentEditable: true },
-        heroSubtext3: { type: 'text', label: 'Eilutė 3 (sporto klubai)', contentEditable: true },
         searchPlaceholder: { type: 'text', label: 'Paieškos placeholder', contentEditable: true },
         loadMoreButton: { type: 'text', label: '"Rodyti daugiau" mygtukas', contentEditable: true },
       },
       defaultProps: {
         heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
-        heroSubtext1: DARBO_LAIKAS_STRINGS.heroSubtext1,
-        heroSubtext2: DARBO_LAIKAS_STRINGS.heroSubtext2,
-        heroSubtext3: DARBO_LAIKAS_STRINGS.heroSubtext3,
         searchPlaceholder: DARBO_LAIKAS_STRINGS.searchPlaceholder,
         loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
       },
