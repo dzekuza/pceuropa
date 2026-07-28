@@ -22,7 +22,7 @@ export default async function LaisvalaikisPage() {
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
-    .in('category', ['Sportas ir laisvalaikis', 'Laisvalaikis', 'LAISVALAIKIS IR PRAMOGOS', 'SPORTAS IR SVEIKATINGUMAS', 'Sportas'])
+    .eq('category', 'LAISVALAIKIS IR PRAMOGOS')
     .order('store_name', { ascending: true })
 
   const stores = (tenants ?? []).map((t) => ({

@@ -23,8 +23,8 @@ export const tenantSchema = z.object({
     }),
   rent_eur: z
     .string()
-    .min(1, 'Nuomos kaina yra privaloma')
-    .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
+    .optional()
+    .refine((v) => !v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0), {
       message: 'Nuomos kaina turi būti teigiamas skaičius',
     }),
   description: z.string().optional(),

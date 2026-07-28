@@ -30,6 +30,7 @@ const CATEGORY_ALIASES: Record<string, TenantCategory> = {
   'Restoranai': 'Maistas ir restoranai',
   'Maistas': 'Maistas ir restoranai',
   'MAISTO IR GĖRIMŲ PARDUOTUVĖS': 'Maistas ir restoranai',
+  'DIALOGAI': 'Maistas ir restoranai',
   'LAISVALAIKIS IR PRAMOGOS': 'Sportas ir laisvalaikis',
   'SPORTAS IR SVEIKATINGUMAS': 'Sportas ir laisvalaikis',
   'Sportas': 'Sportas ir laisvalaikis',

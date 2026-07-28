@@ -56,7 +56,7 @@ export async function createTenant(
     company_code: formData.company_code ?? null,
     category: formData.category,
     space_m2: parseFloat(formData.space_m2),
-    rent_eur: parseFloat(formData.rent_eur),
+    rent_eur: formData.rent_eur ? parseFloat(formData.rent_eur) : null,
     description: formData.description ?? null,
     logo_url: formData.logo_url ?? null,
     gallery_images: formData.gallery_images ?? [],

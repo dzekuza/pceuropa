@@ -23,7 +23,7 @@ export default async function SportasPage() {
   const { data: tenants } = await supabase
     .from('tenants_public')
     .select('id, store_name, category, logo_url, gallery_images')
-    .in('category', ['Sportas ir laisvalaikis', 'Sportas', 'SPORTAS IR SVEIKATINGUMAS', 'LAISVALAIKIS IR PRAMOGOS', 'Laisvalaikis'])
+    .eq('category', 'SPORTAS IR SVEIKATINGUMAS')
     .order('store_name', { ascending: true })
 
   const stores = (tenants ?? []).map((t) => ({
