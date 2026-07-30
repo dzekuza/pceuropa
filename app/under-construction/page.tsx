@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { ComingSoonInfiniteMenu } from '@/components/marketing/coming-soon-infinite-menu'
 import type { InfiniteMenuItem } from '@/components/marketing/infinite-menu'
 
-type Tenant = { id: string; store_name: string; logo_url: string; gallery_images: string[] | null }
+type Tenant = { id: string; slug: string; store_name: string; logo_url: string; gallery_images: string[] | null }
 
 function sanitizeFrom(from: string | undefined): string {
   if (!from || !from.startsWith('/') || from.startsWith('//')) return '/'
@@ -19,7 +19,7 @@ export default async function UnderConstructionPage({
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('tenants')
-    .select('id, store_name, logo_url, gallery_images')
+    .select('id, slug, store_name, logo_url, gallery_images')
     .not('logo_url', 'is', null)
     .order('store_name')
 
@@ -30,7 +30,7 @@ export default async function UnderConstructionPage({
   const items: InfiniteMenuItem[] = tenants.map((t) => ({
     image: t.gallery_images?.[0],
     logo: t.logo_url,
-    link: `/parduotuves/${t.id}`,
+    link: `/parduotuves/${t.slug}`,
     title: t.store_name,
     description: ''
   }))

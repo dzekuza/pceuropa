@@ -6,7 +6,7 @@ import gsap from 'gsap'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-type Tenant = { id: string; store_name: string; logo_url: string }
+type Tenant = { id: string; slug: string; store_name: string; logo_url: string }
 
 // Pre-drawn "socket" shape the arrow button sits in — a flat #F5F5F5 fill, not a mask cutout,
 // so it reads correctly regardless of what's behind the card.
@@ -55,7 +55,7 @@ export function LogoCard({ tenant, featured = false }: LogoCardProps) {
 
   return (
     <Link
-      href={`/parduotuves/${tenant.id}`}
+      href={`/parduotuves/${tenant.slug}`}
       prefetch={false}
       onMouseEnter={() => play('in')}
       onMouseLeave={() => play('out')}

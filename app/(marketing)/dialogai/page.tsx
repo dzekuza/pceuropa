@@ -24,12 +24,13 @@ export default async function DialogaiPage() {
   const bannerSlides = await getPuckBannerSlides('dialogai', DEFAULT_BANNER_SLIDES)
   const { data: tenants } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images')
+    .select('id, slug, store_name, category, logo_url, gallery_images')
     .in('category', ['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])
     .order('store_name', { ascending: true })
 
   const places = (tenants ?? []).map((t) => ({
     id: t.id,
+    slug: t.slug,
     name: t.store_name,
     category: t.category ?? 'Kita',
     logoUrl: t.logo_url ?? null,

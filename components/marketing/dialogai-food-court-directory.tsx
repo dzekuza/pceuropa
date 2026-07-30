@@ -8,6 +8,7 @@ import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Place = {
   id: string
+  slug: string
   name: string
   category: string
   logoUrl: string | null
@@ -28,7 +29,7 @@ function getInitials(name: string): string {
 function PlaceCard({ place }: { place: Place }) {
   return (
     <Link
-      href={`/parduotuves/${place.id}`}
+      href={`/parduotuves/${place.slug}`}
       className="group bg-white rounded-[32px] lg:rounded-[40px] p-4 flex flex-col gap-4 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-200"
       aria-label={place.name}
     >

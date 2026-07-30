@@ -21,12 +21,13 @@ export default async function LaisvalaikisPage() {
   const bannerSlides = await getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES)
   const { data: tenants } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images')
+    .select('id, slug, store_name, category, logo_url, gallery_images')
     .eq('category', 'LAISVALAIKIS IR PRAMOGOS')
     .order('store_name', { ascending: true })
 
   const stores = (tenants ?? []).map((t) => ({
     id: t.id,
+    slug: t.slug,
     name: t.store_name,
     category: normalizeCategory(t.category),
     logoUrl: t.logo_url ?? null,

@@ -8,6 +8,7 @@ import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Store = {
   id: string
+  slug: string
   name: string
   category: string
   logoUrl: string | null
@@ -55,7 +56,7 @@ function getInitials(name: string): string {
 
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
   return (
-    <Link href={`/parduotuves/${store.id}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
+    <Link href={`/parduotuves/${store.slug}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       {/* Top row: status + name on left, logo on right */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col flex-1 min-w-0">

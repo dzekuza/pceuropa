@@ -3,13 +3,13 @@ import { LogoCard } from './logo-card'
 import Link from 'next/link'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-type Tenant = { id: string; store_name: string; logo_url: string }
+type Tenant = { id: string; slug: string; store_name: string; logo_url: string }
 
 export async function PartnerLogos() {
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('tenants')
-    .select('id, store_name, logo_url')
+    .select('id, slug, store_name, logo_url')
     .not('logo_url', 'is', null)
     .neq('logo_url', '')
     .order('store_name')
@@ -48,7 +48,7 @@ export async function PartnerLogos() {
           {tenants.slice(0, 12).map((t) => (
             <Link
               key={t.id}
-              href={`/parduotuves/${t.id}`}
+              href={`/parduotuves/${t.slug}`}
               prefetch={false}
               className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
             >

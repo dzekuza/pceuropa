@@ -5,6 +5,7 @@ import type { Json } from '@/types/database'
 const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',
   'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams',
+  'naujienos', 'nuoma-reklama',
 ])
 
 const EMPTY_DATA = { content: [], root: { props: {} }, zones: {} }

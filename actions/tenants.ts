@@ -4,7 +4,30 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { slugify } from '@/lib/slugify'
 import type { TenantFormValues } from '@/lib/validations/tenant'
+
+/**
+ * generateUniqueTenantSlug — slugifies store_name and appends a numeric
+ * suffix if it collides with an existing tenant slug (column is unique).
+ */
+async function generateUniqueTenantSlug(
+  adminClient: ReturnType<typeof createAdminClient>,
+  storeName: string,
+  reserved?: Set<string>
+): Promise<string> {
+  const base = slugify(storeName) || 'parduotuve'
+  const { data } = await adminClient.from('tenants').select('slug').like('slug', `${base}%`)
+  const existing = new Set((data ?? []).map((r) => r.slug))
+  reserved?.forEach((s) => existing.add(s))
+
+  let slug = base
+  let n = 2
+  while (existing.has(slug)) slug = `${base}-${n++}`
+
+  reserved?.add(slug)
+  return slug
+}
 
 /**
  * createTenant — Creates auth user + tenant record atomically.
@@ -46,11 +69,13 @@ export async function createTenant(
   }
 
   const newUserId = authData.user.id
+  const slug = await generateUniqueTenantSlug(adminClient, formData.store_name)
 
   // Step 2: insert tenant record via admin client (bypasses RLS — regular client's
   // JWT may not yet reflect admin role for WITH CHECK on INSERT)
   const { error: tenantError } = await adminClient.from('tenants').insert({
     user_id: newUserId,
+    slug,
     store_name: formData.store_name,
     operator: formData.operator ?? null,
     company_code: formData.company_code ?? null,
@@ -297,20 +322,25 @@ export async function importTenants(
   }
 
   // Insert new tenants (no id present)
+  const reservedSlugs = new Set<string>()
   for (let i = 0; i < toInsert.length; i += CHUNK) {
     const chunk = toInsert.slice(i, i + CHUNK)
-    const records = chunk.map((r) => ({
-      user_id: null,
-      store_name: r.store_name,
-      operator: r.operator ?? null,
-      company_code: r.company_code ?? null,
-      category: r.category ?? null,
-      space_m2: r.space_m2 ?? null,
-      rent_eur: r.rent_eur ?? null,
-      description: r.description ?? null,
-      logo_url: r.logo_url ?? null,
-      gallery_images: r.gallery_images ?? [],
-    }))
+    const records = []
+    for (const r of chunk) {
+      records.push({
+        user_id: null,
+        slug: await generateUniqueTenantSlug(adminClient, r.store_name, reservedSlugs),
+        store_name: r.store_name,
+        operator: r.operator ?? null,
+        company_code: r.company_code ?? null,
+        category: r.category ?? null,
+        space_m2: r.space_m2 ?? null,
+        rent_eur: r.rent_eur ?? null,
+        description: r.description ?? null,
+        logo_url: r.logo_url ?? null,
+        gallery_images: r.gallery_images ?? [],
+      })
+    }
 
     const { error } = await adminClient.from('tenants').insert(records)
     if (error) {

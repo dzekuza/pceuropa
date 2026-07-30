@@ -8,15 +8,15 @@ import { StoreGallery } from '@/components/marketing/store-gallery'
 import { createClient } from '@/lib/supabase/server'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params
+  const { slug } = await params
   const supabase = await createClient()
   const { data } = await supabase
     .from('tenants_public')
     .select('store_name, category')
-    .eq('id', id)
+    .eq('slug', slug)
     .maybeSingle()
 
   if (!data) return {}
@@ -75,13 +75,13 @@ function isOpen(weekdayHours: string, saturdayHours: string, sundayHours: string
 }
 
 export default async function StoreDetailPage({ params }: Props) {
-  const { id } = await params
+  const { slug } = await params
   const supabase = await createClient()
 
   const { data: tenant } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images, description, weekday_hours, saturday_hours, sunday_hours')
-    .eq('id', id)
+    .select('id, slug, store_name, category, logo_url, gallery_images, description, weekday_hours, saturday_hours, sunday_hours')
+    .eq('slug', slug)
     .single()
 
   if (!tenant) notFound()
