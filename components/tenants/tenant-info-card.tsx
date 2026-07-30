@@ -343,7 +343,8 @@ export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
                             }
                         />
                         <Field label="Darbo laikas (I–V)" value={tenant.weekday_hours ?? '—'} />
-                        <Field label="Darbo laikas (VI–VII)" value={tenant.weekend_hours ?? '—'} />
+                        <Field label="Šeštadienis" value={tenant.saturday_hours ?? '—'} />
+                        <Field label="Sekmadienis" value={tenant.sunday_hours ?? '—'} />
                         <PasswordField
                             hasAccount={Boolean(tenant.user_id)}
                             isCreating={isPending}

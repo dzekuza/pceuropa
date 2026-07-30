@@ -15,7 +15,8 @@ export type StoreHoursCardProps = {
   coverUrl: string | null
   isOpen: boolean
   weekdayHours: HoursEntry
-  weekendHours: HoursEntry
+  saturdayHours: HoursEntry
+  sundayHours: HoursEntry
   href: string
 }
 
@@ -35,7 +36,8 @@ export function StoreHoursCard({
   coverUrl,
   isOpen,
   weekdayHours,
-  weekendHours,
+  saturdayHours,
+  sundayHours,
   href,
 }: StoreHoursCardProps) {
   const statusLabel = isOpen
@@ -86,8 +88,12 @@ export function StoreHoursCard({
             <span>{weekdayHours.hours}</span>
           </div>
           <div className="flex gap-6">
-            <span className="w-16">{weekendHours.days}</span>
-            <span>{weekendHours.hours}</span>
+            <span className="w-16">{saturdayHours.days}</span>
+            <span>{saturdayHours.hours}</span>
+          </div>
+          <div className="flex gap-6">
+            <span className="w-16">{sundayHours.days}</span>
+            <span>{sundayHours.hours}</span>
           </div>
         </div>
 

@@ -218,7 +218,8 @@ const EMPTY_TENANT_FORM_VALUES: TenantFormValues = {
   logo_url: '',
   gallery_images: [],
   weekday_hours: '',
-  weekend_hours: '',
+  saturday_hours: '',
+  sunday_hours: '',
 }
 
 export function TenantFormSheet({
@@ -248,7 +249,8 @@ export function TenantFormSheet({
         logo_url: tenant.logo_url ?? '',
         gallery_images: tenant.gallery_images ?? [],
         weekday_hours: tenant.weekday_hours ?? '',
-        weekend_hours: tenant.weekend_hours ?? '',
+        saturday_hours: tenant.saturday_hours ?? '',
+        sunday_hours: tenant.sunday_hours ?? '',
       })
     } else if (!isEdit) {
       form.reset(EMPTY_TENANT_FORM_VALUES)
@@ -423,7 +425,7 @@ export function TenantFormSheet({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="weekday_hours"
@@ -439,10 +441,23 @@ export function TenantFormSheet({
               />
               <FormField
                 control={form.control}
-                name="weekend_hours"
+                name="saturday_hours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Darbo laikas (VI–VII)</FormLabel>
+                    <FormLabel>Šeštadienis</FormLabel>
+                    <FormControl>
+                      <Input placeholder="10:00–20:00" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sunday_hours"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sekmadienis</FormLabel>
                     <FormControl>
                       <Input placeholder="10:00–20:00" {...field} />
                     </FormControl>

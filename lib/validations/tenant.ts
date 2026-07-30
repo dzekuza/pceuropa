@@ -31,7 +31,8 @@ export const tenantSchema = z.object({
   logo_url: z.string().optional(),
   gallery_images: z.array(z.string()).optional(),
   weekday_hours: z.string().optional(),
-  weekend_hours: z.string().optional(),
+  saturday_hours: z.string().optional(),
+  sunday_hours: z.string().optional(),
 })
 
 export type TenantFormValues = z.infer<typeof tenantSchema>

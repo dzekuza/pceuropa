@@ -37,7 +37,8 @@ export const metadata = {
 const PLACEHOLDER_COVER: string | null = null
 
 const WEEKDAY_LABEL = 'I–V'
-const WEEKEND_LABEL = 'VI–VII'
+const SATURDAY_LABEL = 'VI'
+const SUNDAY_LABEL = 'VII'
 
 function isCurrentlyOpen(): boolean {
   const now = new Date()
@@ -60,7 +61,7 @@ export default async function DarboLaikasPage() {
   const supabase = await createClient()
   const { data: tenants } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images, weekday_hours, weekend_hours')
+    .select('id, store_name, category, logo_url, gallery_images, weekday_hours, saturday_hours, sunday_hours')
     .order('store_name', { ascending: true })
 
   const open = isCurrentlyOpen()
@@ -76,7 +77,8 @@ export default async function DarboLaikasPage() {
     coverUrl: t.gallery_images?.[0] ?? PLACEHOLDER_COVER,
     isOpen: open,
     weekdayHours: { days: WEEKDAY_LABEL, hours: t.weekday_hours ?? '10:00–21:00' },
-    weekendHours: { days: WEEKEND_LABEL, hours: t.weekend_hours ?? '10:00–20:00' },
+    saturdayHours: { days: SATURDAY_LABEL, hours: t.saturday_hours ?? '10:00–20:00' },
+    sundayHours: { days: SUNDAY_LABEL, hours: t.sunday_hours ?? '10:00–20:00' },
     href: `/parduotuves`,
   }))
 

@@ -270,7 +270,8 @@ export type Database = {
           store_name: string
           user_id: string | null
           weekday_hours: string
-          weekend_hours: string
+          saturday_hours: string
+          sunday_hours: string
         }
         Insert: {
           category?: string | null
@@ -287,7 +288,8 @@ export type Database = {
           store_name: string
           user_id?: string | null
           weekday_hours?: string
-          weekend_hours?: string
+          saturday_hours?: string
+          sunday_hours?: string
         }
         Update: {
           category?: string | null
@@ -304,7 +306,8 @@ export type Database = {
           store_name?: string
           user_id?: string | null
           weekday_hours?: string
-          weekend_hours?: string
+          saturday_hours?: string
+          sunday_hours?: string
         }
         Relationships: []
       }
@@ -319,7 +322,8 @@ export type Database = {
           logo_url: string | null
           store_name: string
           weekday_hours: string | null
-          weekend_hours: string | null
+          saturday_hours: string | null
+          sunday_hours: string | null
         }
         Insert: {
           category?: string | null
@@ -329,7 +333,8 @@ export type Database = {
           logo_url?: string | null
           store_name?: string
           weekday_hours?: string | null
-          weekend_hours?: string | null
+          saturday_hours?: string | null
+          sunday_hours?: string | null
         }
         Update: {
           category?: string | null
@@ -339,7 +344,8 @@ export type Database = {
           logo_url?: string | null
           store_name?: string
           weekday_hours?: string | null
-          weekend_hours?: string | null
+          saturday_hours?: string | null
+          sunday_hours?: string | null
         }
         Relationships: []
       }

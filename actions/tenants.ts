@@ -61,7 +61,8 @@ export async function createTenant(
     logo_url: formData.logo_url ?? null,
     gallery_images: formData.gallery_images ?? [],
     weekday_hours: formData.weekday_hours || undefined,
-    weekend_hours: formData.weekend_hours || undefined,
+    saturday_hours: formData.saturday_hours || undefined,
+    sunday_hours: formData.sunday_hours || undefined,
   })
 
   if (tenantError) {
@@ -103,7 +104,8 @@ export async function updateTenant(
       logo_url: formData.logo_url ?? null,
       gallery_images: formData.gallery_images ?? [],
       weekday_hours: formData.weekday_hours || undefined,
-      weekend_hours: formData.weekend_hours || undefined,
+      saturday_hours: formData.saturday_hours || undefined,
+      sunday_hours: formData.sunday_hours || undefined,
     })
     .eq('id', tenantId)
 
