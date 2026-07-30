@@ -11,7 +11,7 @@ const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/
 
 const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',
-  'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams',
+  'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams', 'naujienos',
 ])
 
 const DEFAULT_DATA: Record<string, Data> = {
@@ -93,6 +93,13 @@ const DEFAULT_DATA: Record<string, Data> = {
     root: { props: {} },
     zones: {},
   },
+  naujienos: {
+    content: [
+      { type: 'PageBanner', props: { id: 'banner-1', slide1: `${BASE}/banner-akcijos-1.jpg`, slide2: `${BASE}/banner-akcijos-2.jpg`, slide3: '', slide4: '' } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
 }
 
 const FALLBACK_DATA: Data = { content: [], root: { props: {} }, zones: {} }
@@ -107,6 +114,7 @@ const PREVIEW_URLS: Record<string, string> = {
   laisvalaikis: '/laisvalaikis',
   'darbo-laikas': '/darbo-laikas',
   lankytojams: '/lankytojams',
+  naujienos: '/naujienos',
 }
 
 interface Props {

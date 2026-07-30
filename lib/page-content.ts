@@ -19,8 +19,7 @@ export async function getPuckBannerSlides(
   if (!bannerBlock) return defaults
 
   const p = bannerBlock.props ?? {}
-  const slides = [p.slide1, p.slide2, p.slide3, p.slide4].filter(Boolean) as string[]
-  return slides.length ? slides : defaults
+  return [p.slide1, p.slide2, p.slide3, p.slide4].filter(Boolean) as string[]
 }
 
 /** Returns a Puck block's saved props for a page/type, shallow-merged over defaults (empty/missing values keep the default). */

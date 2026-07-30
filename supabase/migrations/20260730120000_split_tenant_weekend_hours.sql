@@ -8,12 +8,14 @@ UPDATE public.tenants
   SET saturday_hours = weekend_hours,
       sunday_hours = weekend_hours;
 
-ALTER TABLE public.tenants
-  DROP COLUMN weekend_hours;
+DROP VIEW public.tenants_public;
 
-CREATE OR REPLACE VIEW public.tenants_public WITH (security_barrier = true) AS
+CREATE VIEW public.tenants_public WITH (security_barrier = true) AS
   SELECT id, store_name, category, logo_url, gallery_images, description,
          weekday_hours, saturday_hours, sunday_hours
   FROM public.tenants;
+
+ALTER TABLE public.tenants
+  DROP COLUMN weekend_hours;
 
 GRANT SELECT (saturday_hours, sunday_hours) ON public.tenants TO anon;

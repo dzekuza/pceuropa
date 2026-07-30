@@ -179,6 +179,23 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'naujienos',
+    title: 'Naujienos',
+    navLabel: 'Naujienos',
+    description: 'Naujienų puslapio viršelio nuotraukos',
+    previewUrl: '/naujienos',
+    sections: [
+      {
+        key: 'banner',
+        title: 'Viršelio nuotraukos',
+        fields: [
+          { key: 'slide_1', label: 'Nuotrauka 1', type: 'image', placeholder: 'https://...' },
+          { key: 'slide_2', label: 'Nuotrauka 2', type: 'image', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',
