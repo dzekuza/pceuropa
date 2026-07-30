@@ -26,13 +26,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const HOURS = [
-  { days: 'I–V', hours: '10:00–21:00' },
-  { days: 'VI', hours: '10:00–20:00' },
-  { days: 'VII', hours: '10:00–20:00' },
-]
+const DEFAULT_WEEKDAY_HOURS = '10:00–21:00'
+const DEFAULT_WEEKEND_HOURS = '10:00–20:00'
 
-function isOpen(): boolean {
+function buildHoursRows(weekdayHours: string, weekendHours: string) {
+  return [
+    { days: 'I–V', hours: weekdayHours },
+    { days: 'VI', hours: weekendHours },
+    { days: 'VII', hours: weekendHours },
+  ]
+}
+
+// "10:00–21:00" -> [10, 21] (fractional hours)
+function parseHoursRange(range: string): [number, number] | null {
+  const match = range.match(/(\d{1,2}):(\d{2})\D+(\d{1,2}):(\d{2})/)
+  if (!match) return null
+  const [, h1, m1, h2, m2] = match
+  return [Number(h1) + Number(m1) / 60, Number(h2) + Number(m2) / 60]
+}
+
+function isOpen(weekdayHours: string, weekendHours: string): boolean {
   const now = new Date()
   const tz = 'Europe/Vilnius'
 
@@ -53,8 +66,10 @@ function isOpen(): boolean {
   }
   const day = DAY_INDEX[vilniusDayName] ?? now.getDay()
 
-  if (day >= 1 && day <= 5) return h >= 10 && h < 21
-  return h >= 10 && h < 20
+  const range = parseHoursRange(day >= 1 && day <= 5 ? weekdayHours : weekendHours)
+  if (!range) return false
+  const [open, close] = range
+  return h >= open && h < close
 }
 
 export default async function StoreDetailPage({ params }: Props) {
@@ -63,13 +78,15 @@ export default async function StoreDetailPage({ params }: Props) {
 
   const { data: tenant } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images, description')
+    .select('id, store_name, category, logo_url, gallery_images, description, weekday_hours, weekend_hours')
     .eq('id', id)
     .single()
 
   if (!tenant) notFound()
 
-  const open = isOpen()
+  const weekdayHours = tenant.weekday_hours ?? DEFAULT_WEEKDAY_HOURS
+  const weekendHours = tenant.weekend_hours ?? DEFAULT_WEEKEND_HOURS
+  const open = isOpen(weekdayHours, weekendHours)
   const images = (tenant.gallery_images ?? []) as string[]
 
   return (
@@ -140,7 +157,7 @@ export default async function StoreDetailPage({ params }: Props) {
             <h2 className="font-bold text-[18px] leading-6 text-black">Darbo laikas</h2>
 
             <div className="flex flex-col gap-3">
-              {HOURS.map(({ days, hours }) => (
+              {buildHoursRows(weekdayHours, weekendHours).map(({ days, hours }) => (
                 <div key={days} className="flex items-center justify-between gap-4">
                   <span className="text-[#575757] text-[14px] w-[44px] shrink-0">{days}</span>
                   <div className="flex-1 border-b border-dashed border-[#e8e8e4]" />
