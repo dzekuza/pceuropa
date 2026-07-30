@@ -293,12 +293,21 @@ export async function importTenants(
   const toUpdate = rows.filter((r) => r.id?.trim())
   const toInsert = rows.filter((r) => !r.id?.trim())
 
+  // Slugs are immutable once assigned — look up the existing ones so the
+  // upsert below doesn't need to (re)generate them for already-published tenants.
+  const { data: existingSlugRows } = await adminClient
+    .from('tenants')
+    .select('id, slug')
+    .in('id', toUpdate.map((r) => r.id as string))
+  const slugById = new Map((existingSlugRows ?? []).map((t) => [t.id, t.slug]))
+
   // Update existing tenants (matched by id)
   const CHUNK = 50
   for (let i = 0; i < toUpdate.length; i += CHUNK) {
     const chunk = toUpdate.slice(i, i + CHUNK)
     const records = chunk.map((r) => ({
       id: r.id as string,
+      slug: slugById.get(r.id as string) as string,
       store_name: r.store_name,
       operator: r.operator ?? null,
       company_code: r.company_code ?? null,

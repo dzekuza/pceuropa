@@ -267,6 +267,7 @@ export type Database = {
           operator: string | null
           rent_eur: number | null
           space_m2: number | null
+          slug: string
           store_name: string
           user_id: string | null
           weekday_hours: string
@@ -285,6 +286,7 @@ export type Database = {
           operator?: string | null
           rent_eur?: number | null
           space_m2?: number | null
+          slug: string
           store_name: string
           user_id?: string | null
           weekday_hours?: string
@@ -303,6 +305,7 @@ export type Database = {
           operator?: string | null
           rent_eur?: number | null
           space_m2?: number | null
+          slug?: string
           store_name?: string
           user_id?: string | null
           weekday_hours?: string
@@ -320,6 +323,7 @@ export type Database = {
           gallery_images: string[] | null
           id: string
           logo_url: string | null
+          slug: string
           store_name: string
           weekday_hours: string | null
           saturday_hours: string | null
@@ -331,6 +335,7 @@ export type Database = {
           gallery_images?: string[] | null
           id?: string
           logo_url?: string | null
+          slug?: string
           store_name?: string
           weekday_hours?: string | null
           saturday_hours?: string | null
@@ -342,6 +347,7 @@ export type Database = {
           gallery_images?: string[] | null
           id?: string
           logo_url?: string | null
+          slug?: string
           store_name?: string
           weekday_hours?: string | null
           saturday_hours?: string | null

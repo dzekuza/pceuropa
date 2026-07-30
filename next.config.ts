@@ -12,12 +12,10 @@ const isDev = process.env.NODE_ENV !== "production";
 const scriptSrc = isDev
   ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://www.googletagmanager.com"
   : "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com";
-const styleSrc = isDev
-  ? "style-src 'self' 'unsafe-inline' https://rsms.me"
-  : "style-src 'self' 'unsafe-inline'";
-const fontSrc = isDev
-  ? "font-src 'self' data: https://rsms.me"
-  : "font-src 'self' data:";
+// @measured/puck's bundled CSS (admin Puck editor pages) @imports Inter from
+// rsms.me in both dev and production, so these aren't dev-only relaxations.
+const styleSrc = "style-src 'self' 'unsafe-inline' https://rsms.me";
+const fontSrc = "font-src 'self' data: https://rsms.me";
 const imgSrc = isDev
   ? `img-src 'self' data: https: https://${SUPABASE_HOST}`
   : `img-src 'self' data: https://${SUPABASE_HOST} https://www.googletagmanager.com https://www.google-analytics.com`;

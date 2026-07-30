@@ -23,7 +23,9 @@ export async function compressImageFile(file: File): Promise<File> {
       maxWidthOrHeight: 1920,
       initialQuality: 0.9,
       fileType: 'image/webp',
-      useWebWorker: true,
+      // Web worker mode fetches its own runtime from cdn.jsdelivr.net, which
+      // production CSP blocks — run on the main thread instead.
+      useWebWorker: false,
     })
   } catch (err) {
     console.error('Image compression failed, uploading original:', err)
