@@ -103,6 +103,7 @@ export type PuckBlocks = {
     loadMoreLabel: string
   }
   DialogaiFoodCourtBlock: Record<string, never>
+  NuomaReklamaBanner: { cover: string }
 }
 
 export const puckConfig: Config<PuckBlocks> = {
@@ -435,6 +436,25 @@ export const puckConfig: Config<PuckBlocks> = {
       label: 'Dialogai Food Court (automatinis)',
       fields: {},
       render: () => <SectionPreview label="Dialogai restoranų sąrašas (iš DB)" bg="#fef9c3" height={480} />,
+    },
+
+    NuomaReklamaBanner: {
+      label: 'Nuoma / Reklama viršelis',
+      fields: {
+        cover: {
+          type: 'custom',
+          label: 'Viršelio nuotrauka',
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+        },
+      },
+      defaultProps: { cover: '' },
+      render: ({ cover }) =>
+        cover ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={cover} alt="" className="w-full h-[200px] object-cover rounded-lg" />
+        ) : (
+          <SectionPreview label="Nuoma / Reklama viršelis" bg="#f0f9ff" height={200} />
+        ),
     },
 
     SocialSection: {

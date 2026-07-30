@@ -4,6 +4,7 @@ import { Footer } from '@/components/marketing/footer'
 import { NuomaReklamaForm } from '@/components/marketing/nuoma-reklama-form'
 import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { getPuckBlockProps } from '@/lib/page-content'
 
 const BANNER_IMAGE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nuoma-reklama/banner.jpg'
 
@@ -38,64 +39,68 @@ function TikTokIcon() {
   )
 }
 
-export default function NuomaReklamaPage() {
+export default async function NuomaReklamaPage() {
+  const { cover } = await getPuckBlockProps('nuoma-reklama', 'NuomaReklamaBanner', { cover: BANNER_IMAGE })
+
   return (
     <main className="bg-[#f5f5f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
       <Nav />
 
       {/* Banner */}
-      <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
-        <div className="relative rounded-[24px] lg:rounded-[40px] overflow-hidden h-[240px] md:h-[280px] lg:h-[292px] flex items-center justify-between pl-6 lg:pl-10 pr-4 py-6">
-          {/* Background image + overlay */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={resizeSupabaseImage(BANNER_IMAGE, { width: 1200, height: 600, quality: 90 })}
-            alt=""
-            className="absolute inset-0 size-full object-cover pointer-events-none"
-          />
-          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+      {cover && (
+        <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
+          <div className="relative rounded-[24px] lg:rounded-[40px] overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0 pl-6 lg:pl-10 pr-4 py-6 md:h-[280px] lg:h-[292px]">
+            {/* Background image + overlay */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resizeSupabaseImage(cover, { width: 1200, height: 600, quality: 90 })}
+              alt=""
+              className="absolute inset-0 size-full object-cover pointer-events-none"
+            />
+            <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
-          {/* Left: heading + socials */}
-          <div className="relative flex flex-col gap-8 lg:gap-12 shrink-0 max-w-[340px]">
-            <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.15] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-white">
-              {S.heroHeading}
-            </h1>
-            <div className="flex items-center gap-3 lg:gap-[17px]">
-              {[
-                { icon: <FacebookIcon />, label: 'Facebook', href: 'https://facebook.com' },
-                { icon: <InstagramIcon />, label: 'Instagram', href: 'https://instagram.com' },
-                { icon: <TikTokIcon />, label: 'TikTok', href: 'https://tiktok.com' },
-              ].map(({ icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="bg-[#f5f5f5] rounded-full size-10 lg:size-12 flex items-center justify-center text-black shrink-0 transition-opacity duration-150 hover:opacity-70 active:scale-[0.95]"
-                >
-                  {icon}
-                </a>
-              ))}
+            {/* Left: heading + socials */}
+            <div className="relative flex flex-col gap-8 lg:gap-12 shrink-0 max-w-[340px]">
+              <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.15] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-white">
+                {S.heroHeading}
+              </h1>
+              <div className="flex items-center gap-3 lg:gap-[17px]">
+                {[
+                  { icon: <FacebookIcon />, label: 'Facebook', href: 'https://facebook.com' },
+                  { icon: <InstagramIcon />, label: 'Instagram', href: 'https://instagram.com' },
+                  { icon: <TikTokIcon />, label: 'TikTok', href: 'https://tiktok.com' },
+                ].map(({ icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="bg-[#f5f5f5] rounded-full size-10 lg:size-12 flex items-center justify-center text-black shrink-0 transition-opacity duration-150 hover:opacity-70 active:scale-[0.95]"
+                  >
+                    {icon}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Right: contact card */}
-          <div className="relative hidden md:flex flex-col p-4 shrink-0">
-            <div className="bg-[#f5f5f5] flex items-center gap-6 lg:gap-[45px] p-4 rounded-[20px] lg:rounded-[24px] min-w-[240px] lg:w-[280px] h-[88px] lg:h-[104px]">
-              <div className="flex flex-col gap-2">
-                <p className="text-[#575757] text-[11px] lg:text-[12px] leading-[16px]">
-                  {S.contactCardLabel}
-                </p>
-                <div className="flex flex-col text-black text-[14px] lg:text-[16px] leading-[24px]">
-                  <span>{S.contactPhone}</span>
-                  <span className="text-[12px] lg:text-[14px] leading-[20px]">{S.contactEmail}</span>
+            {/* Right: contact card */}
+            <div className="relative flex flex-col p-4 shrink-0">
+              <div className="bg-[#f5f5f5] flex items-center gap-6 lg:gap-[45px] p-4 rounded-[20px] lg:rounded-[24px] w-full md:min-w-[240px] lg:w-[280px] md:h-[88px] lg:h-[104px]">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[#575757] text-[11px] lg:text-[12px] leading-[16px]">
+                    {S.contactCardLabel}
+                  </p>
+                  <div className="flex flex-col text-black text-[14px] lg:text-[16px] leading-[24px]">
+                    <span>{S.contactPhone}</span>
+                    <span className="text-[12px] lg:text-[14px] leading-[20px]">{S.contactEmail}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Contact form section */}
       <div className="w-full max-w-[1332px] mx-auto px-4 py-8 lg:py-12">

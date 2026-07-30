@@ -196,6 +196,22 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'nuoma-reklama',
+    title: 'Nuoma / Reklama',
+    navLabel: 'Nuoma / Reklama',
+    description: 'Nuoma / Reklama puslapio viršelio nuotrauka',
+    previewUrl: '/nuoma-reklama',
+    sections: [
+      {
+        key: 'banner',
+        title: 'Viršelio nuotrauka',
+        fields: [
+          { key: 'cover', label: 'Nuotrauka', type: 'image', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',

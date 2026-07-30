@@ -33,6 +33,8 @@ export function PageBannerCarousel({ slides }: PageBannerCarouselProps) {
   const handleNav = (dir: number) => { go(current + dir); startTimer() }
   const handleDot = (i: number) => { go(i); startTimer() }
 
+  if (count === 0) return null
+
   return (
     <div className="w-full max-w-[1332px] mx-auto px-4 pt-4 lg:pt-6">
       <div
@@ -40,20 +42,16 @@ export function PageBannerCarousel({ slides }: PageBannerCarouselProps) {
         onMouseEnter={() => { if (timerRef.current) clearInterval(timerRef.current) }}
         onMouseLeave={startTimer}
       >
-        {count === 0 ? (
-          <div className="absolute inset-0 bg-[#e8e8e5]" />
-        ) : (
-          valid.map((src, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={src}
-              src={resizeSupabaseImage(src, { width: 1600, height: 920, quality: 90 })}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-              style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
-            />
-          ))
-        )}
+        {valid.map((src, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={src}
+            src={resizeSupabaseImage(src, { width: 1600, height: 920, quality: 90 })}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+            style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+          />
+        ))}
 
         {count > 1 && (
           <>

@@ -19,6 +19,8 @@ const PAGES = [
   { slug: 'laisvalaikis', label: 'Laisvalaikis' },
   { slug: 'darbo-laikas', label: 'Darbo laikas' },
   { slug: 'lankytojams', label: 'Lankytojams' },
+  { slug: 'naujienos', label: 'Naujienos' },
+  { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
 ]
 
 interface PuckEditorProps {
@@ -51,6 +53,7 @@ export function PuckEditor({ data, pageSlug, previewUrl }: PuckEditorProps) {
         if (previewUrl) router.push(previewUrl)
       }}
       overrides={{
+        components: () => <></>,
         headerActions: ({ children }) => (
           <>
             <Link

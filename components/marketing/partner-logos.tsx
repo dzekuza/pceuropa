@@ -11,6 +11,7 @@ export async function PartnerLogos() {
     .from('tenants')
     .select('id, store_name, logo_url')
     .not('logo_url', 'is', null)
+    .neq('logo_url', '')
     .order('store_name')
 
   const tenants = (data ?? []) as Tenant[]
