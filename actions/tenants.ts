@@ -60,6 +60,8 @@ export async function createTenant(
     description: formData.description ?? null,
     logo_url: formData.logo_url ?? null,
     gallery_images: formData.gallery_images ?? [],
+    weekday_hours: formData.weekday_hours || undefined,
+    weekend_hours: formData.weekend_hours || undefined,
   })
 
   if (tenantError) {
@@ -100,6 +102,8 @@ export async function updateTenant(
       description: formData.description ?? null,
       logo_url: formData.logo_url ?? null,
       gallery_images: formData.gallery_images ?? [],
+      weekday_hours: formData.weekday_hours || undefined,
+      weekend_hours: formData.weekend_hours || undefined,
     })
     .eq('id', tenantId)
 

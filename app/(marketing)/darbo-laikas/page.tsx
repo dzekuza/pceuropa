@@ -36,11 +36,8 @@ export const metadata = {
 // TODO: replace with permanent Supabase Storage URL (Figma MCP assets expire after 7 days)
 const PLACEHOLDER_COVER: string | null = null
 
-// NOTE: opening_hours is not yet a DB column — hardcoded per Figma design placeholders.
-const DEFAULT_HOURS = {
-  weekdayHours: { days: 'I–V', hours: '10:00–21:00' },
-  weekendHours: { days: 'VI–VII', hours: '10:00–20:00' },
-}
+const WEEKDAY_LABEL = 'I–V'
+const WEEKEND_LABEL = 'VI–VII'
 
 function isCurrentlyOpen(): boolean {
   const now = new Date()
@@ -63,7 +60,7 @@ export default async function DarboLaikasPage() {
   const supabase = await createClient()
   const { data: tenants } = await supabase
     .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images')
+    .select('id, store_name, category, logo_url, gallery_images, weekday_hours, weekend_hours')
     .order('store_name', { ascending: true })
 
   const open = isCurrentlyOpen()
@@ -78,7 +75,8 @@ export default async function DarboLaikasPage() {
     logoAlt: t.store_name,
     coverUrl: t.gallery_images?.[0] ?? PLACEHOLDER_COVER,
     isOpen: open,
-    ...DEFAULT_HOURS,
+    weekdayHours: { days: WEEKDAY_LABEL, hours: t.weekday_hours ?? '10:00–21:00' },
+    weekendHours: { days: WEEKEND_LABEL, hours: t.weekend_hours ?? '10:00–20:00' },
     href: `/parduotuves`,
   }))
 

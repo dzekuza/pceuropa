@@ -17,6 +17,8 @@ const TENANT_LIST_COLUMNS = [
   'gallery_images',
   'created_at',
   'user_id',
+  'weekday_hours',
+  'weekend_hours',
 ].join(', ')
 
 const TENANT_EXPORT_COLUMNS = [
@@ -46,6 +48,8 @@ const TENANT_DETAIL_COLUMNS = [
   'gallery_images',
   'created_at',
   'user_id',
+  'weekday_hours',
+  'weekend_hours',
 ].join(', ')
 
 const TENANT_SORT_COLUMNS = new Set([
@@ -90,6 +94,8 @@ export interface TenantListRow
     | 'gallery_images'
     | 'created_at'
     | 'user_id'
+    | 'weekday_hours'
+    | 'weekend_hours'
   > {}
 
 export interface TenantSubmissionRow
