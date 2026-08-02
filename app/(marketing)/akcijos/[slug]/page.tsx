@@ -14,11 +14,21 @@ import { resizeImage } from "@/lib/storage/resize-image";
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const rows = await db
-    .select({ slug: promos.slug })
-    .from(promos)
-    .where(eq(promos.published, true));
-  return rows.map((p) => ({ slug: p.slug }));
+  // Docker builds (CI) have no DATABASE_URL reachable at build time — the
+  // app image is built before it's ever wired to a running Postgres. An
+  // empty list here just means no pages are pre-rendered at build; Next
+  // still serves them on-demand (dynamicParams defaults to true) once a
+  // real request comes in against the running container's DB.
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const rows = await db
+      .select({ slug: promos.slug })
+      .from(promos)
+      .where(eq(promos.published, true));
+    return rows.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 async function getPromo(slug: string) {

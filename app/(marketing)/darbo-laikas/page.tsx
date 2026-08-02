@@ -57,6 +57,11 @@ function isCurrentlyOpen(): boolean {
   return h >= 10 && h < 21
 }
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function DarboLaikasPage() {
   const tenants = await getPublicTenants()
   const open = isCurrentlyOpen()

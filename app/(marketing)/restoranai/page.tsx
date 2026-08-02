@@ -21,6 +21,11 @@ const DEFAULT_BANNER_SLIDES = [
 
 const RESTORANAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function RestoranaiPage() {
   const bannerSlides = await getPuckBannerSlides('restoranai', DEFAULT_BANNER_SLIDES)
   const tenants = (await getPublicTenants()).filter((t) => t.category && RESTORANAI_CATEGORIES.has(t.category))

@@ -30,6 +30,11 @@ export const metadata: Metadata = {
   description: AKCIJOS_STRINGS.pageDescription,
 }
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function AkcijosPage() {
   const bannerSlides = await getPuckBannerSlides('akcijos', DEFAULT_BANNER_SLIDES)
   const gridCopy = await getPuckBlockProps('akcijos', 'AkcijosGridBlock', DEFAULT_GRID_COPY)

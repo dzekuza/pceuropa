@@ -16,6 +16,11 @@ export const metadata = {
 const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function LaisvalaikisPage() {
   const bannerSlides = await getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES)
   const tenants = (await getPublicTenants()).filter((t) => t.category === 'LAISVALAIKIS IR PRAMOGOS')

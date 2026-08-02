@@ -26,6 +26,11 @@ const DEFAULT_LANKYTOJAMS_BLOCK = {
   faqItems: LANKYTOJAMS_STRINGS.faqItems.map((item) => ({ ...item })),
 }
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function LankytojamsPage() {
   const bannerSlides = await getPuckBannerSlides('lankytojams', DEFAULT_BANNER_SLIDES)
   const block = await getPuckBlockProps('lankytojams', 'LankytojamsBlock', DEFAULT_LANKYTOJAMS_BLOCK)

@@ -39,6 +39,11 @@ function TikTokIcon() {
   )
 }
 
+// force-dynamic — Docker builds have no DATABASE_URL reachable at build
+// time, so this page can't be pre-rendered; it must render per-request
+// against the running container's DB instead.
+export const dynamic = 'force-dynamic'
+
 export default async function NuomaReklamaPage() {
   const { cover } = await getPuckBlockProps('nuoma-reklama', 'NuomaReklamaBanner', { cover: BANNER_IMAGE })
 
