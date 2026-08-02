@@ -36,6 +36,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# sharp's prebuilt musl binary (@img/sharp-linuxmusl-x64) dlopen()s libvips at
+# runtime — a dependency invisible to Next's standalone-output file tracer,
+# since it's loaded by compiled native code, not a JS require(). Installing
+# vips via apk guarantees the shared library exists at the OS level,
+# independent of whatever the npm package's own copy did or didn't bring
+# along through the build/copy pipeline.
+RUN apk add --no-cache vips
+
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
