@@ -13,7 +13,7 @@ export const metadata = {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-parduotuves-wide.jpg',
+  '/api/storage/marketing-assets/banner-parduotuves-wide.jpg',
 ]
 
 // force-dynamic — Docker builds have no DATABASE_URL reachable at build

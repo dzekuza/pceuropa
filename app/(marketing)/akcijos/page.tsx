@@ -12,8 +12,8 @@ import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import type { PromoItem } from '@/components/marketing/promo-card'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  '/api/storage/marketing-assets/banner-akcijos-1.jpg',
+  '/api/storage/marketing-assets/banner-akcijos-2.jpg',
 ]
 
 const DEFAULT_GRID_COPY = {

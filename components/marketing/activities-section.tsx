@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
 import { resizeImage } from '@/lib/storage/resize-image'
 
-const coffeeImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
-const sportsAd1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
-const sportsAd2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-2.jpg'
-const sportsAd3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
-const petImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
+const coffeeImg = '/api/storage/marketing-assets/activities-coffee.jpg'
+const sportsAd1 = '/api/storage/marketing-assets/activities-sports-1.jpg'
+const sportsAd2 = '/api/storage/marketing-assets/activities-sports-2.jpg'
+const sportsAd3 = '/api/storage/marketing-assets/activities-sports-3.jpg'
+const petImg = '/api/storage/marketing-assets/activities-pet.png'
 
 export interface ActivitiesSectionProps {
   leisureTag?: React.ReactNode

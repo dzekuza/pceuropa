@@ -2,7 +2,7 @@ import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import { resizeImage } from '@/lib/storage/resize-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
-const DEFAULT_BANNER_BG = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg'
+const DEFAULT_BANNER_BG = '/api/storage/marketing-assets/darbo-laikas/banner.jpg'
 
 function FacebookIcon() {
   return (

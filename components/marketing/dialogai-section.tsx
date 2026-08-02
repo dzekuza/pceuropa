@@ -3,15 +3,15 @@ import { DisplayHeading } from './ui/typography'
 import { resizeImage } from '@/lib/storage/resize-image'
 
 const DIALOGAI_IMAGES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/1.png',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/2.png',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/3.png',
+  '/api/storage/marketing-assets/dialogai/1.png',
+  '/api/storage/marketing-assets/dialogai/2.png',
+  '/api/storage/marketing-assets/dialogai/3.png',
 ]
 
 const RESTORANAI_IMAGES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-3.jpg',
+  '/api/storage/marketing-assets/dialogai/restoranai-1.jpg',
+  '/api/storage/marketing-assets/dialogai/restoranai-2.jpg',
+  '/api/storage/marketing-assets/dialogai/restoranai-3.jpg',
 ]
 
 export interface DialogaiSectionProps {

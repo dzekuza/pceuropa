@@ -6,7 +6,7 @@ import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
 import { resizeImage } from '@/lib/storage/resize-image'
 import { getPuckBlockProps } from '@/lib/page-content'
 
-const BANNER_IMAGE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nuoma-reklama/banner.jpg'
+const BANNER_IMAGE = '/api/storage/marketing-assets/nuoma-reklama/banner.jpg'
 
 export const metadata: Metadata = {
   title: S.pageTitle,

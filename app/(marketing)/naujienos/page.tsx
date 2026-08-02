@@ -11,8 +11,8 @@ import { articles } from '@/drizzle/schema'
 import type { Article } from '@/types/database'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  '/api/storage/marketing-assets/banner-akcijos-1.jpg',
+  '/api/storage/marketing-assets/banner-akcijos-2.jpg',
 ]
 
 export const metadata: Metadata = {

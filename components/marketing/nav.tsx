@@ -6,8 +6,8 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { resizeImage } from '@/lib/storage/resize-image'
 
 const logoUrl = '/pc-europa-logo.svg'
-const timerIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.svg'
-const infoIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.svg'
+const timerIconUrl = '/api/storage/marketing-assets/timer-icon.svg'
+const infoIconUrl = '/api/storage/marketing-assets/nav-info-icon.svg'
 
 const NAV_LINKS = [
   { label: 'Akcijos / Naujienos', href: '/akcijos' },

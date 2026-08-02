@@ -211,10 +211,10 @@ export const puckConfig: Config<PuckBlocks> = {
       defaultProps: {
         heading: 'Čia rasite',
         categories: [
-          { title: 'Akcijos ir naujienos', href: '/akcijos', image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg' },
-          { title: 'Dialogai maisto erdvė', href: '/dialogai', image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg' },
-          { title: 'Restoranai ir kavinės', href: '/restoranai', image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg' },
-          { title: 'Parduotuvės ir paslaugos', href: '/parduotuves', image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg' },
+          { title: 'Akcijos ir naujienos', href: '/akcijos', image: '/api/storage/marketing-assets/categories-1.jpg' },
+          { title: 'Dialogai maisto erdvė', href: '/dialogai', image: '/api/storage/marketing-assets/categories-3.jpg' },
+          { title: 'Restoranai ir kavinės', href: '/restoranai', image: '/api/storage/marketing-assets/categories-2.jpg' },
+          { title: 'Parduotuvės ir paslaugos', href: '/parduotuves', image: '/api/storage/marketing-assets/categories-4.jpg' },
         ],
       },
       render: ({ heading, categories }) => (

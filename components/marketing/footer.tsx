@@ -3,8 +3,8 @@ import { resizeImage } from '@/lib/storage/resize-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
 const logoUrl = '/pc-europa-logo.svg'
-const facebookIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.svg'
-const instagramIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.svg'
+const facebookIcon = '/api/storage/marketing-assets/footer-facebook.svg'
+const instagramIcon = '/api/storage/marketing-assets/footer-instagram.svg'
 
 const NAV_LINKS = [
   { label: 'Nuomininkams', href: 'https://nuomininkai.pceuropa.lt/' },

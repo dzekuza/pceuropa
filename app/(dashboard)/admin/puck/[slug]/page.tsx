@@ -10,7 +10,7 @@ import type { Data } from '@measured/puck'
 // Default/fallback banner images were seeded on the legacy Supabase project and
 // never migrated to the current one — matches the DEFAULT_BANNER_SLIDES host used
 // by every public marketing page (e.g. app/(marketing)/dialogai/page.tsx).
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = '/api/storage/marketing-assets'
 
 const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',

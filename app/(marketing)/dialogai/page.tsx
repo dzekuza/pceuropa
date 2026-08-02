@@ -14,9 +14,9 @@ export const metadata = {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-3.jpg',
+  '/api/storage/marketing-assets/banner-dialogai-1.jpg',
+  '/api/storage/marketing-assets/banner-dialogai-2.jpg',
+  '/api/storage/marketing-assets/banner-dialogai-3.jpg',
 ]
 
 const DIALOGAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])

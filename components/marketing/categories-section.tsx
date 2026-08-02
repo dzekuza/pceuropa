@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeImage } from '@/lib/storage/resize-image'
 
-const imgCat1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
-const imgCat2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
-const imgCat3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
-const imgCat4 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
+const imgCat1 = '/api/storage/marketing-assets/categories-1.jpg'
+const imgCat2 = '/api/storage/marketing-assets/categories-2.jpg'
+const imgCat3 = '/api/storage/marketing-assets/categories-3.jpg'
+const imgCat4 = '/api/storage/marketing-assets/categories-4.jpg'
 
 const CATEGORIES = [
   { title: 'Akcijos ir naujienos', href: '/akcijos', image: imgCat1 },

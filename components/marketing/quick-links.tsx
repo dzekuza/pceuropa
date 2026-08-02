@@ -2,9 +2,9 @@ import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeImage } from '@/lib/storage/resize-image'
 
-const parkingIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/parking-icon.svg'
-const phoneIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.svg'
-const mapIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/map-icon.svg'
+const parkingIcon = '/api/storage/marketing-assets/parking-icon.svg'
+const phoneIcon = '/api/storage/marketing-assets/phone-icon.svg'
+const mapIcon = '/api/storage/marketing-assets/map-icon.svg'
 
 const LINKS = [
   { icon: parkingIcon, label: 'Parkavimas', href: '/parkavimas', iconBg: 'bg-[#e6ffd1]' },

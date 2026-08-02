@@ -13,7 +13,7 @@ export const metadata = {
   description: LAISVALAIKIS_STRINGS.pageDescription,
 }
 
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = '/api/storage/marketing-assets'
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 // force-dynamic — Docker builds have no DATABASE_URL reachable at build

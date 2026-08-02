@@ -5,7 +5,7 @@ import type React from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeImage } from '@/lib/storage/resize-image'
 
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = '/api/storage/marketing-assets'
 
 export const HERO_DEFAULT_SLIDES = [
   { src: `${BASE}/hero-bg.jpg`,          alt: 'PC Europa' },

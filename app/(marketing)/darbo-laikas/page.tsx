@@ -10,7 +10,7 @@ import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg',
+  '/api/storage/marketing-assets/darbo-laikas/banner.jpg',
 ]
 
 const DEFAULT_OPENING_HOURS_TEXT = {
