@@ -37,14 +37,23 @@ export const proxy = auth((request) => {
   const isLocalDev = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1')
   const isTenantSubdomain = hostname.startsWith('nuomininkai.')
 
+  // Behind Caddy, `request.url`/`request.nextUrl` can resolve to a single
+  // canonical origin instead of the actual incoming Host header once the
+  // NextAuth `auth()` wrapper has touched the request — reproduced when
+  // serving two hostnames (marketing apex + nuomininkai. subdomain) from one
+  // container. Build redirect targets from the verified Host header instead
+  // of trusting request.url's origin.
+  const protocol = request.headers.get('x-forwarded-proto') ?? 'https'
+  const origin = isLocalDev ? request.nextUrl.origin : `${protocol}://${hostname}`
+
   if (!isLocalDev && !isTenantSubdomain && (pathname === '/login' || isDashboardRoute)) {
-    return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.redirect(new URL('/', origin))
   }
 
   if (!isLocalDev && isTenantSubdomain && pathname === '/') {
     const role = user?.role
     const destination = user ? (role === 'admin' ? '/admin' : '/seller') : '/login'
-    return NextResponse.redirect(new URL(destination, request.url))
+    return NextResponse.redirect(new URL(destination, origin))
   }
 
   // Public marketing pages are gated behind an under-construction screen until
@@ -58,28 +67,28 @@ export const proxy = auth((request) => {
     pathname.startsWith('/api/')
 
   if (!isGateExempt && request.cookies.get(SITE_LOCK_COOKIE)?.value !== '1') {
-    const url = new URL('/under-construction', request.url)
+    const url = new URL('/under-construction', origin)
     url.searchParams.set('from', pathname)
     return NextResponse.redirect(url)
   }
 
   // Redirect unauthenticated users away from protected dashboard routes
   if (!user && isDashboardRoute) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL('/login', origin))
   }
 
   // Redirect authenticated users away from login to their dashboard
   if (user && pathname === '/login') {
     const role = user.role
     const destination = role === 'admin' ? '/admin' : '/seller'
-    return NextResponse.redirect(new URL(destination, request.url))
+    return NextResponse.redirect(new URL(destination, origin))
   }
 
   // Role enforcement: sellers cannot access admin routes
   if (user && pathname.startsWith('/admin')) {
     const role = user.role
     if (role !== 'admin') {
-      return NextResponse.redirect(new URL('/seller', request.url))
+      return NextResponse.redirect(new URL('/seller', origin))
     }
   }
 
