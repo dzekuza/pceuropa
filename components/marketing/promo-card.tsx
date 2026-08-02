@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 export type PromoCategory = 'stores' | 'services' | 'food'
 
@@ -24,7 +24,7 @@ export function PromoCard({ item }: { item: PromoItem }) {
       <div className="relative w-full h-[236px] rounded-[32px] lg:rounded-[40px] overflow-hidden shrink-0 bg-muted">
         {item.image && (
           <img
-            src={resizeSupabaseImage(item.image, { width: 500, height: 472, quality: 90 })}
+            src={resizeImage(item.image, { width: 500, height: 472, quality: 90 })}
             alt={item.title}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
           />

@@ -32,8 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { compressImageFile } from '@/lib/image-compression'
 import { createPromo, updatePromo } from '@/actions/promos'
 import {
   promoFormSchema,
@@ -111,20 +110,19 @@ export function PromoForm({ promo }: PromoFormProps) {
   async function uploadImage(file: File) {
     setUploadingImage(true)
     const compressed = await compressImageFile(file)
-    const supabase = createClient()
-    const path = `akcijos/${Date.now()}.${imageExtension(compressed)}`
-    const { error } = await supabase.storage
-      .from('marketing-assets')
-      .upload(path, compressed, { contentType: compressed.type })
-    if (error) {
+    const formData = new FormData()
+    formData.set('file', compressed)
+    formData.set('bucket', 'marketing-assets')
+    formData.set('folder', 'akcijos')
+
+    const res = await fetch('/api/upload', { method: 'POST', body: formData })
+    if (!res.ok) {
       setUploadingImage(false)
       return
     }
-    const { data } = supabase.storage
-      .from('marketing-assets')
-      .getPublicUrl(path)
-    setValue('image', data.publicUrl)
-    setImagePreview(data.publicUrl)
+    const { url } = (await res.json()) as { url: string }
+    setValue('image', url)
+    setImagePreview(url)
     setUploadingImage(false)
   }
 

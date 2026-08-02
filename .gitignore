@@ -29,6 +29,12 @@ Thumbs.db
 supabase/.branches
 supabase/.temp
 
+# Database backups / migration dumps
+roles.sql
+schema.sql
+data.sql
+storage_backup/
+
 # Test / debug artifacts
 .playwright-mcp/
 logs/
@@ -38,3 +44,7 @@ eslint-output.txt
 CLAUDE.local.md
 .env*
 .worktrees/
+
+# Local-disk storage (app/api/upload, app/api/storage) — dev-only fallback
+# location; production uses a volume-mounted STORAGE_ROOT outside the repo.
+.data/

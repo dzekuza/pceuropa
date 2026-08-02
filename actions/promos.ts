@@ -2,93 +2,111 @@
 // actions/promos.ts — Server Actions for promos CRUD
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { eq } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { promos } from '@/drizzle/schema'
+import { getRole } from '@/lib/auth/get-role'
 import type { PromoFormValues } from '@/lib/validations/promo'
 import type { Promo } from '@/types/database'
 
-async function getAdminClient() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.app_metadata?.role !== 'admin') return null
-  // Use service role client so mutations bypass RLS (no admin INSERT/UPDATE/DELETE policies)
-  return createAdminClient()
+function toPromo(row: typeof promos.$inferSelect): Promo {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    content: row.content,
+    image: row.image,
+    starts_at: row.startsAt,
+    ends_at: row.endsAt,
+    category: row.category as Promo['category'],
+    published: row.published,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    updated_at: row.updatedAt ? row.updatedAt.toISOString() : null,
+  }
+}
+
+async function requireAdmin(): Promise<boolean> {
+  const role = await getRole()
+  return role === 'admin'
 }
 
 export async function createPromo(
   data: PromoFormValues
 ): Promise<{ data: Promo } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { data: created, error } = await supabase
-    .from('promos')
-    .insert({
-      title: data.title,
-      slug: data.slug,
-      content: data.content,
-      image: data.image,
-      starts_at: data.starts_at,
-      ends_at: data.ends_at,
-      category: data.category,
-      published: data.published,
-    })
-    .select()
-    .single()
-
-  if (error || !created) {
-    console.error('createPromo failed:', error?.message, error?.code)
+  let created: typeof promos.$inferSelect
+  try {
+    ;[created] = await db
+      .insert(promos)
+      .values({
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        image: data.image,
+        startsAt: data.starts_at,
+        endsAt: data.ends_at,
+        category: data.category,
+        published: data.published,
+      })
+      .returning()
+  } catch (err) {
+    console.error('createPromo failed:', err)
     return { error: 'Nepavyko sukurti akcijos' }
   }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
-  return { data: created as Promo }
+  return { data: toPromo(created) }
 }
 
 export async function updatePromo(
   id: string,
   data: PromoFormValues
 ): Promise<{ data: Promo } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { data: updated, error } = await supabase
-    .from('promos')
-    .update({
-      title: data.title,
-      slug: data.slug,
-      content: data.content,
-      image: data.image,
-      starts_at: data.starts_at,
-      ends_at: data.ends_at,
-      category: data.category,
-      published: data.published,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error || !updated) {
-    console.error('updatePromo failed:', error?.message, error?.code)
+  let updated: typeof promos.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(promos)
+      .set({
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        image: data.image,
+        startsAt: data.starts_at,
+        endsAt: data.ends_at,
+        category: data.category,
+        published: data.published,
+        updatedAt: new Date(),
+      })
+      .where(eq(promos.id, id))
+      .returning()
+  } catch (err) {
+    console.error('updatePromo failed:', err)
     return { error: 'Nepavyko atnaujinti akcijos' }
   }
+
+  if (!updated) return { error: 'Nepavyko atnaujinti akcijos' }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
   revalidatePath(`/akcijos/${data.slug}`)
-  return { data: updated as Promo }
+  return { data: toPromo(updated) }
 }
 
 export async function deletePromo(
   id: string
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { error } = await supabase.from('promos').delete().eq('id', id)
-  if (error) return { error: 'Nepavyko ištrinti akcijos' }
+  try {
+    await db.delete(promos).where(eq(promos.id, id))
+  } catch (err) {
+    console.error('deletePromo failed:', err)
+    return { error: 'Nepavyko ištrinti akcijos' }
+  }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
@@ -99,19 +117,23 @@ export async function togglePromoPublished(
   id: string,
   published: boolean
 ): Promise<{ data: Promo } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { data: updated, error } = await supabase
-    .from('promos')
-    .update({ published, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single()
+  let updated: typeof promos.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(promos)
+      .set({ published, updatedAt: new Date() })
+      .where(eq(promos.id, id))
+      .returning()
+  } catch (err) {
+    console.error('togglePromoPublished failed:', err)
+    return { error: 'Nepavyko pakeisti būsenos' }
+  }
 
-  if (error || !updated) return { error: 'Nepavyko pakeisti būsenos' }
+  if (!updated) return { error: 'Nepavyko pakeisti būsenos' }
 
   revalidatePath('/admin/articles')
   revalidatePath('/akcijos')
-  return { data: updated as Promo }
+  return { data: toPromo(updated) }
 }

@@ -4,8 +4,12 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound, redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { promos } from '@/drizzle/schema'
 import { PromoForm } from '@/components/promos/promo-form'
+import type { Promo } from '@/types/database'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -13,19 +17,26 @@ interface Props {
 
 export default async function EditPromoPage({ params }: Props) {
   const { id } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user || user.app_metadata?.role !== 'admin') redirect('/login')
+  const session = await auth()
+  if (!session?.user || session.user.role !== 'admin') redirect('/login')
 
-  const { data: promo } = await supabase
-    .from('promos')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const [row] = await db.select().from(promos).where(eq(promos.id, id)).limit(1)
 
-  if (!promo) notFound()
+  if (!row) notFound()
+
+  const promo: Promo = {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    image: row.image,
+    starts_at: row.startsAt,
+    ends_at: row.endsAt,
+    category: row.category as Promo['category'],
+    published: row.published,
+    content: row.content,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    updated_at: row.updatedAt ? row.updatedAt.toISOString() : null,
+  }
 
   return <PromoForm promo={promo} />
 }

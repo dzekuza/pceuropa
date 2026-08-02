@@ -1,22 +1,19 @@
 import { NextResponse } from 'next/server'
 import * as XLSX from 'xlsx'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { getAdminTenantExportRows, type TenantListSearchParams } from '@/lib/admin-data'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const { searchParams } = new URL(request.url)
-  const rows = await getAdminTenantExportRows(supabase, {
+  const rows = await getAdminTenantExportRows({
     search: searchParams.get('search') ?? undefined,
     category: searchParams.get('category') ?? undefined,
     sort: searchParams.get('sort') ?? undefined,

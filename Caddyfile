@@ -1,0 +1,19 @@
+europa.gvozdovic.com {
+	reverse_proxy app:3000
+
+	encode zstd gzip
+
+	header {
+		# App already sets its own security headers (next.config.ts); this is
+		# a backstop at the edge in case those are ever bypassed.
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 10mb
+			roll_keep 5
+		}
+	}
+}

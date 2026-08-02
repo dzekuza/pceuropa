@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
 const logoUrl = '/pc-europa-logo.svg'
@@ -63,7 +63,7 @@ export function Footer() {
                     eventName="social_click"
                     eventParams={{ platform: 'facebook', location: 'footer' }}
                   >
-                    <img src={resizeSupabaseImage(facebookIcon, { width: 48, height: 48, fit: 'contain' })} alt="Facebook" className="size-5 lg:size-6" />
+                    <img src={resizeImage(facebookIcon, { width: 48, height: 48, fit: 'contain' })} alt="Facebook" className="size-5 lg:size-6" />
                   </TrackedLink>
                   <TrackedLink
                     href="https://instagram.com"
@@ -72,7 +72,7 @@ export function Footer() {
                     eventName="social_click"
                     eventParams={{ platform: 'instagram', location: 'footer' }}
                   >
-                    <img src={resizeSupabaseImage(instagramIcon, { width: 48, height: 48, fit: 'contain' })} alt="Instagram" className="size-5 lg:size-6" />
+                    <img src={resizeImage(instagramIcon, { width: 48, height: 48, fit: 'contain' })} alt="Instagram" className="size-5 lg:size-6" />
                   </TrackedLink>
                 </div>
               </div>

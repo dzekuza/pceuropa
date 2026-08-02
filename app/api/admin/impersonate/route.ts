@@ -1,12 +1,32 @@
 // app/api/admin/impersonate/route.ts — Admin portal: sign-in as a tenant
+//
+// Supabase's magic-link + verifyOtp session-swap has no Auth.js equivalent.
+// lib/auth/admin-users.ts was written expecting this route to round-trip a
+// generateImpersonationToken()/verifyImpersonationToken() pair through a
+// second "verify" request; instead this mints the Auth.js session JWT
+// directly in this single response (see the note below encode() call for
+// why). This is new session-issuing infrastructure, not a mechanical query
+// swap — flagged in the Phase 5 report for extra review.
 export const dynamic = 'force-dynamic'
 
-import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { eq } from 'drizzle-orm'
+import { encode } from 'next-auth/jwt'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { tenants } from '@/drizzle/schema'
+import { createUser, getUserById } from '@/lib/auth/admin-users'
 import { isSameSiteNavigation } from '@/lib/auth/same-site-navigation'
+
+// Mirrors @auth/core's defaultCookies() naming (cookie name doubles as the
+// JWT encode/decode "salt") — duplicated here rather than added to lib/auth/
+// since this pass is scoped to app/(dashboard)/** and app/api/** only.
+const USE_SECURE_COOKIES = process.env.NODE_ENV === 'production'
+const SESSION_COOKIE_NAME = USE_SECURE_COOKIES
+  ? '__Secure-authjs.session-token'
+  : 'authjs.session-token'
 
 // Derive a stable seller username from the store name.
 // e.g. "Archie's burger" → "archiesburger", "ALI ŠOKOLADINĖ" → "alisokoline"
@@ -28,26 +48,9 @@ export async function GET(request: NextRequest) {
 
   const cookieStore = await cookies()
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
   // Verify caller is an admin
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.app_metadata?.role !== 'admin') {
+  const session = await auth()
+  if (!session?.user || session.user.role !== 'admin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -56,103 +59,80 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing tenantId' }, { status: 400 })
   }
 
-  const adminClient = createAdminClient()
-
   // Look up the tenant
-  const { data: tenant, error: tenantError } = await adminClient
-    .from('tenants')
-    .select('user_id, store_name')
-    .eq('id', tenantId)
-    .single()
+  const [tenant] = await db
+    .select({ userId: tenants.userId, storeName: tenants.storeName })
+    .from(tenants)
+    .where(eq(tenants.id, tenantId))
+    .limit(1)
 
-  if (tenantError || !tenant) {
+  if (!tenant) {
     return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
   }
 
-  let tenantUserId = tenant.user_id
+  let tenantUserId = tenant.userId
 
-  // Provision an auth user on first access if none exists yet
+  // Provision a user on first access if none exists yet
   if (!tenantUserId) {
-    const slug = toSellerSlug(tenant.store_name)
+    const slug = toSellerSlug(tenant.storeName)
     const email = `${slug}@pceuropa.lt`
 
-    const { data: created, error: createError } =
-      await adminClient.auth.admin.createUser({
-        email,
-        password: crypto.randomUUID(), // random — login is always via admin impersonation
-        email_confirm: true,
-        app_metadata: { role: 'seller' },
-      })
+    const created = await createUser({ email, role: 'seller' })
+    tenantUserId = created.id
 
-    if (createError || !created.user) {
-      return NextResponse.json(
-        { error: `Failed to provision tenant user: ${createError?.message}` },
-        { status: 500 }
-      )
-    }
-
-    tenantUserId = created.user.id
-
-    // Link the new auth user back to the tenant row
-    await adminClient
-      .from('tenants')
-      .update({ user_id: tenantUserId })
-      .eq('id', tenantId)
+    // Link the new user back to the tenant row
+    await db.update(tenants).set({ userId: tenantUserId }).where(eq(tenants.id, tenantId))
   }
 
-  // Get the tenant user's email for magic link generation
-  const { data: { user: tenantUser }, error: userError } =
-    await adminClient.auth.admin.getUserById(tenantUserId)
+  // Get the tenant user's email for the impersonation session
+  const tenantUser = await getUserById(tenantUserId)
 
-  if (userError || !tenantUser?.email) {
+  if (!tenantUser) {
     return NextResponse.json({ error: 'Tenant user not found' }, { status: 404 })
   }
 
-  // Save admin refresh token before the session is overwritten.
-  // getSession() is used here intentionally: identity was already verified via getUser() above,
-  // so we're extracting the refresh token for storage, not relying on it for auth.
-  const { data: { session: adminSession } } = await supabase.auth.getSession()
-  if (adminSession?.refresh_token) {
-    cookieStore.set('admin_refresh_token', adminSession.refresh_token, {
+  // Back up the admin's own session cookie so admin/restore/route.ts can put
+  // it back verbatim — the JWT strategy is stateless, so there's no server-side
+  // refresh token to stash the way the Supabase flow did.
+  const adminSessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value
+  if (adminSessionCookie) {
+    cookieStore.set('admin_session_backup', adminSessionCookie, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: USE_SECURE_COOKIES,
       sameSite: 'lax',
       maxAge: 60 * 60, // 1 hour
       path: '/',
     })
   }
 
-  // Generate a one-time magic link token for the tenant user
-  const { data: linkData, error: linkError } =
-    await adminClient.auth.admin.generateLink({
-      type: 'magiclink',
-      email: tenantUser.email,
-    })
-
-  if (linkError || !linkData?.properties?.hashed_token) {
-    return NextResponse.json(
-      { error: 'Failed to generate impersonation token' },
-      { status: 500 }
-    )
+  // Mint a normal Auth.js session JWT for the tenant user directly (rather than
+  // round-tripping generateImpersonationToken/verifyImpersonationToken through a
+  // second request) — this stays a single server response and never exposes a
+  // bearer token in a URL. See lib/auth/admin-users.ts for the token helpers if
+  // a redirect-based handoff is needed later.
+  const secret = process.env.AUTH_SECRET
+  if (!secret) {
+    return NextResponse.json({ error: 'AUTH_SECRET is not set' }, { status: 500 })
   }
-
-  // Exchange the token — overwrites the current session with the tenant's session
-  const { error: otpError } = await supabase.auth.verifyOtp({
-    token_hash: linkData.properties.hashed_token,
-    type: 'email',
+  const impersonationSessionToken = await encode({
+    token: { sub: tenantUser.id, email: tenantUser.email, role: 'seller' },
+    secret,
+    salt: SESSION_COOKIE_NAME,
+    maxAge: 60 * 60, // 1 hour
   })
 
-  if (otpError) {
-    return NextResponse.json(
-      { error: 'Failed to start impersonation session' },
-      { status: 500 }
-    )
-  }
+  cookieStore.set(SESSION_COOKIE_NAME, impersonationSessionToken, {
+    httpOnly: true,
+    secure: USE_SECURE_COOKIES,
+    sameSite: 'lax',
+    maxAge: 60 * 60,
+    path: '/',
+  })
 
   // Mark impersonation active for the "return to admin" banner in the seller dashboard
-  cookieStore.set('impersonating', tenant.store_name, {
+  cookieStore.set('impersonating', tenant.storeName, {
     httpOnly: false,
-    secure: process.env.NODE_ENV === 'production',
+    secure: USE_SECURE_COOKIES,
     sameSite: 'lax',
     maxAge: 60 * 60,
     path: '/',

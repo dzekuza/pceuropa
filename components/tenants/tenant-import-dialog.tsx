@@ -12,10 +12,9 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { importTenants, type TenantImportRow } from '@/actions/tenants'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { compressImageFile } from '@/lib/image-compression'
 import { cn, toTenantFileKey } from '@/lib/utils'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const HEADER_MAP: Record<string, keyof TenantImportRow> = {
   // exact export column names (English) — reliable for round-trip
@@ -139,14 +138,15 @@ function parseSheet(sheet: XLSX.WorkSheet): ParsedRow[] {
 
 async function uploadToStorage(file: File, folder: 'logos' | 'gallery'): Promise<string> {
   const compressed = await compressImageFile(file)
-  const supabase = createClient()
-  const path = `${folder}/${crypto.randomUUID()}.${imageExtension(compressed)}`
-  const { error } = await supabase.storage
-    .from('tenant-assets')
-    .upload(path, compressed, { upsert: true, contentType: compressed.type, cacheControl: '31536000' })
-  if (error) throw new Error(`Nepavyko įkelti ${file.name}: ${error.message}`)
-  const { data } = supabase.storage.from('tenant-assets').getPublicUrl(path)
-  return data.publicUrl
+  const formData = new FormData()
+  formData.set('file', compressed)
+  formData.set('bucket', 'tenant-assets')
+  formData.set('folder', folder)
+
+  const res = await fetch('/api/upload', { method: 'POST', body: formData })
+  if (!res.ok) throw new Error(`Nepavyko įkelti ${file.name}: ${await res.text()}`)
+  const { url } = (await res.json()) as { url: string }
+  return url
 }
 
 interface TenantImportDialogProps {
@@ -450,7 +450,7 @@ export function TenantImportDialog({ open, onOpenChange }: TenantImportDialogPro
                         </td>
                         <td className="px-3 py-2">
                           {logoPreview
-                            ? <img src={resizeSupabaseImage(logoPreview, { width: 48, height: 48 })} alt="" className="size-6 rounded object-cover" title={row.logoFile ?? row.data.logo_url ?? undefined} />
+                            ? <img src={resizeImage(logoPreview, { width: 48, height: 48 })} alt="" className="size-6 rounded object-cover" title={row.logoFile ?? row.data.logo_url ?? undefined} />
                             : '—'}
                         </td>
                         <td className="px-3 py-2 text-muted-foreground">

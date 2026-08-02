@@ -4,15 +4,12 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { PromoForm } from '@/components/promos/promo-form'
 
 export default async function NewPromoPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user || user.app_metadata?.role !== 'admin') redirect('/login')
+  const session = await auth()
+  if (!session?.user || session.user.role !== 'admin') redirect('/login')
 
   return <PromoForm />
 }

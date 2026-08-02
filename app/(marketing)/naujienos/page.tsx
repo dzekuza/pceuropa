@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
+import { desc, eq } from 'drizzle-orm'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { ArticlesGrid } from '@/components/articles/articles-grid'
 import { NAUJIENOS_STRINGS } from '@/lib/strings'
 import { getPuckBannerSlides } from '@/lib/page-content'
-import { createClient } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
+import { articles } from '@/drizzle/schema'
+import type { Article } from '@/types/database'
 
 const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
@@ -20,16 +23,28 @@ export const metadata: Metadata = {
 export const revalidate = 300
 
 export default async function NaujienosPage() {
-  const [bannerSlides, supabase] = await Promise.all([
+  const [bannerSlides, articleRows] = await Promise.all([
     getPuckBannerSlides('naujienos', DEFAULT_BANNER_SLIDES),
-    createClient(),
+    db
+      .select()
+      .from(articles)
+      .where(eq(articles.published, true))
+      .orderBy(desc(articles.publishedAt)),
   ])
 
-  const { data: articles } = await supabase
-    .from('articles')
-    .select('*')
-    .eq('published', true)
-    .order('published_at', { ascending: false })
+  const items: Article[] = articleRows.map((a) => ({
+    id: a.id,
+    title: a.title,
+    slug: a.slug,
+    content: a.content,
+    cover_image: a.coverImage,
+    category: a.category as Article['category'],
+    featured: a.featured,
+    published: a.published,
+    published_at: a.publishedAt ? a.publishedAt.toISOString() : null,
+    created_at: a.createdAt ? a.createdAt.toISOString() : null,
+    updated_at: a.updatedAt ? a.updatedAt.toISOString() : null,
+  }))
 
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
@@ -37,7 +52,7 @@ export default async function NaujienosPage() {
       <h1 className="sr-only">{NAUJIENOS_STRINGS.pageTitle}</h1>
       <PageBannerCarousel slides={bannerSlides} />
       <section className="w-full max-w-[1332px] mx-auto px-4 py-8 md:py-10 lg:py-14">
-        <ArticlesGrid articles={articles ?? []} />
+        <ArticlesGrid articles={items} />
       </section>
       <Footer />
     </main>

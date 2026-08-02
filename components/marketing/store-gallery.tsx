@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 interface StoreGalleryProps {
   images: string[]
@@ -31,7 +31,7 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={active}
-          src={resizeSupabaseImage(images[active], { width: 1200, height: 960, quality: 90 })}
+          src={resizeImage(images[active], { width: 1200, height: 960, quality: 90 })}
           alt={`${name} — nuotrauka ${active + 1}`}
           className="absolute inset-0 size-full object-cover"
         />
@@ -86,7 +86,7 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
               }`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resizeSupabaseImage(src, { width: 200, height: 144 })} alt="" loading="lazy" className="size-full object-cover" />
+              <img src={resizeImage(src, { width: 200, height: 144 })} alt="" loading="lazy" className="size-full object-cover" />
             </button>
           ))}
         </div>

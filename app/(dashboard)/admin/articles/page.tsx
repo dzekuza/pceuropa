@@ -5,13 +5,17 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { desc } from 'drizzle-orm'
 import { Plus } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { articles as articlesTable, promos as promosTable } from '@/drizzle/schema'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ArticlesTable } from '@/components/articles/articles-table'
 import { PromosTable } from '@/components/promos/promos-table'
 import { ARTICLES_STRINGS, ADMIN_PROMOS_STRINGS } from '@/lib/strings'
+import type { Article, Promo } from '@/types/database'
 
 interface Props {
   searchParams: Promise<{ tab?: string }>
@@ -21,20 +25,45 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
   const { tab } = await searchParams
   const activeTab = tab === 'akcijos' ? 'akcijos' : 'articles'
 
-  const supabase = await createClient()
+  const session = await auth()
+  const user = session?.user
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     redirect('/login')
   }
 
-  const [{ data: articles }, { data: promos }] = await Promise.all([
-    supabase.from('articles').select('*').order('created_at', { ascending: false }),
-    supabase.from('promos').select('*').order('created_at', { ascending: false }),
+  const [articleRows, promoRows] = await Promise.all([
+    db.select().from(articlesTable).orderBy(desc(articlesTable.createdAt)),
+    db.select().from(promosTable).orderBy(desc(promosTable.createdAt)),
   ])
+
+  const articles: Article[] = articleRows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    content: row.content,
+    cover_image: row.coverImage,
+    category: row.category as Article['category'],
+    featured: row.featured,
+    published: row.published,
+    published_at: row.publishedAt ? row.publishedAt.toISOString() : null,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    updated_at: row.updatedAt ? row.updatedAt.toISOString() : null,
+  }))
+
+  const promos: Promo[] = promoRows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    image: row.image,
+    starts_at: row.startsAt,
+    ends_at: row.endsAt,
+    category: row.category as Promo['category'],
+    published: row.published,
+    content: row.content,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    updated_at: row.updatedAt ? row.updatedAt.toISOString() : null,
+  }))
 
   return (
     <div className="flex flex-col gap-3">

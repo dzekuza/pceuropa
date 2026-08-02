@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { puckPages } from '@/drizzle/schema'
 import { PuckEditor } from '@/components/admin/puck-editor'
 import type { Data } from '@measured/puck'
 
@@ -134,23 +137,19 @@ export default async function AdminPuckEditorPage({ params }: Props) {
 
   if (!ALLOWED_SLUGS.has(slug)) notFound()
 
-  const supabase = await createClient()
+  const session = await auth()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
+  const [row] = await db
+    .select({ data: puckPages.data })
+    .from(puckPages)
+    .where(eq(puckPages.pageSlug, slug))
+    .limit(1)
 
-  const savedData = data?.data as Data | null
+  const savedData = (row?.data as Data | undefined) ?? null
   const initialData = savedData ?? DEFAULT_DATA[slug] ?? FALLBACK_DATA
 
   return (

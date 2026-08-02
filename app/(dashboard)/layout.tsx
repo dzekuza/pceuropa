@@ -4,7 +4,7 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { AppSidebar } from '@/components/dashboard/app-sidebar'
 import { Header } from '@/components/dashboard/header'
 import { ImpersonationBanner } from '@/components/dashboard/impersonation-banner'
@@ -22,17 +22,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  // Defense-in-depth: use getUser() (NOT getSession()) to validate JWT with Supabase Auth server
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Defense-in-depth: auth() re-verifies the session JWT fresh on every call,
+  // independent of proxy.ts middleware (CVE-2025-29927)
+  const session = await auth()
+  const user = session?.user
 
   if (!user) {
     redirect('/login')
   }
 
-  const role = user.app_metadata?.role as 'admin' | 'seller'
+  const role = user.role as 'admin' | 'seller'
   const navItems = role === 'admin' ? ADMIN_NAV_ITEMS : SELLER_NAV_ITEMS
 
   const cookieStore = await cookies()
@@ -44,7 +43,7 @@ export default async function DashboardLayout({
       <AppSidebar navItems={navItems} className="hidden md:flex" />
       <SidebarInset>
         {impersonatingStore && <ImpersonationBanner storeName={impersonatingStore} />}
-        <Header userEmail={user.email} role={role} impersonating={!!impersonatingStore} />
+        <Header userEmail={user.email ?? undefined} role={role} impersonating={!!impersonatingStore} />
         <div className="flex flex-1 flex-col gap-4 p-4 pb-20 md:pb-4">
           {children}
         </div>

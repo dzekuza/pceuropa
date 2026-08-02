@@ -8,7 +8,7 @@ import { Download, HelpCircle, Pencil, Search, Trash2, Upload, ArrowUpDown, Arro
 import { useTransition } from 'react'
 import type { TenantListRow, TenantListState } from '@/lib/admin-data'
 import { TENANT_CATEGORIES } from '@/lib/constants'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import { bulkDeleteTenants, bulkUpdateTenantCategory } from '@/actions/tenants'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
@@ -363,7 +363,7 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                       <TableCell className="px-4 py-3">
                         <Avatar className="size-10 rounded-full border border-border/60">
                           <AvatarImage
-                            src={resizeSupabaseImage(tenant.logo_url, { width: 64, height: 64 })}
+                            src={resizeImage(tenant.logo_url, { width: 64, height: 64 })}
                             alt={tenant.store_name}
                             loading="lazy"
                           />

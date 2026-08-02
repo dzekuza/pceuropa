@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { PAGES_CONFIG } from '@/lib/page-config'
 import {
   Card,
@@ -19,12 +19,9 @@ import { Button } from '@/components/ui/button'
 import { FileText, Layers, PanelsTopLeft } from 'lucide-react'
 
 export default async function AdminPagesPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 

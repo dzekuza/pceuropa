@@ -8,7 +8,7 @@ import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-colu
 import { DeleteArticleDialog } from './delete-article-dialog'
 import type { Article } from '@/types/database'
 import { ARTICLES_STRINGS } from '@/lib/strings'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const CATEGORY_VARIANT: Record<string, 'default' | 'secondary' | 'outline'> = {
   Naujiena: 'default',
@@ -31,7 +31,7 @@ export function getArticleColumns(
       cell: ({ row }) => {
         const src = row.getValue<string | null>('cover_image')
         return src ? (
-          <img src={resizeSupabaseImage(src, { width: 80, height: 80 })} alt="" loading="lazy" className="h-10 w-10 rounded object-cover" />
+          <img src={resizeImage(src, { width: 80, height: 80 })} alt="" loading="lazy" className="h-10 w-10 rounded object-cover" />
         ) : (
           <div className="h-10 w-10 rounded bg-muted" />
         )

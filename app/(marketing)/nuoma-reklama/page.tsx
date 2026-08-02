@@ -3,7 +3,7 @@ import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { NuomaReklamaForm } from '@/components/marketing/nuoma-reklama-form'
 import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import { getPuckBlockProps } from '@/lib/page-content'
 
 const BANNER_IMAGE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nuoma-reklama/banner.jpg'
@@ -53,7 +53,7 @@ export default async function NuomaReklamaPage() {
             {/* Background image + overlay */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={resizeSupabaseImage(cover, { width: 1200, height: 600, quality: 90 })}
+              src={resizeImage(cover, { width: 1200, height: 600, quality: 90 })}
               alt=""
               className="absolute inset-0 size-full object-cover pointer-events-none"
             />

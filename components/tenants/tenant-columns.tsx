@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import type { Tenant } from '@/types/database'
 import { DataGridColumnHeader } from '@/components/reui/data-grid/data-grid-column-header'
 import { Badge } from '@/components/reui/badge'
@@ -59,7 +59,7 @@ export function getColumns(
         const name = row.getValue<string>('store_name') ?? ''
         return (
           <Avatar className="size-8">
-            <AvatarImage src={resizeSupabaseImage(url, { width: 64, height: 64 })} alt={name} loading="lazy" />
+            <AvatarImage src={resizeImage(url, { width: 64, height: 64 })} alt={name} loading="lazy" />
             <AvatarFallback className="text-xs">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         )

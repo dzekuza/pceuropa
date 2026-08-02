@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 interface PageBannerCarouselProps {
   slides: (string | null)[]
@@ -46,7 +46,7 @@ export function PageBannerCarousel({ slides }: PageBannerCarouselProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={src}
-            src={resizeSupabaseImage(src, { width: 1600, height: 920, quality: 90 })}
+            src={resizeImage(src, { width: 1600, height: 920, quality: 90 })}
             alt=""
             className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
             style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}

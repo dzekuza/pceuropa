@@ -2,7 +2,7 @@
 // Server Component — Defense-in-depth auth check (middleware alone is not sufficient)
 // CVE-2025-29927: middleware can be bypassed via x-middleware-subrequest header
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { TenantsTable } from '@/components/tenants/tenants-table'
 import { AddTenantButton } from '@/components/tenants/add-tenant-button'
 import { getAdminTenantList, type TenantListSearchParams } from '@/lib/admin-data'
@@ -12,15 +12,14 @@ interface AdminTenantsPageProps {
 }
 
 export default async function AdminTenantsPage({ searchParams }: AdminTenantsPageProps) {
-  const supabase = await createClient()
   const resolvedSearchParams = await searchParams
 
-  const [{ data: { user } }, tenantList] = await Promise.all([
-    supabase.auth.getUser(),
-    getAdminTenantList(supabase, resolvedSearchParams),
+  const [session, tenantList] = await Promise.all([
+    auth(),
+    getAdminTenantList(resolvedSearchParams),
   ])
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 

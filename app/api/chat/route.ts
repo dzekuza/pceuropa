@@ -2,8 +2,10 @@
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { eq, desc } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { tenants as tenantsTable, revenueReports } from '@/drizzle/schema'
 import { google } from '@ai-sdk/google'
 import { streamText, convertToModelMessages } from 'ai'
 import type { Database } from '@/types/database'
@@ -121,14 +123,58 @@ ${JSON.stringify(summary, null, 2)}
 `
 }
 
+const TENANT_COLUMNS = {
+  id: tenantsTable.id,
+  store_name: tenantsTable.storeName,
+  operator: tenantsTable.operator,
+  company_code: tenantsTable.companyCode,
+  category: tenantsTable.category,
+  space_m2: tenantsTable.spaceM2,
+  rent_eur: tenantsTable.rentEur,
+  description: tenantsTable.description,
+} as const
+
+const REVENUE_COLUMNS = {
+  tenant_id: revenueReports.tenantId,
+  month: revenueReports.month,
+  amount_eur: revenueReports.amountEur,
+  tx_count: revenueReports.txCount,
+} as const
+
+function toTenantRow(row: {
+  id: string
+  store_name: string
+  operator: string | null
+  company_code: string | null
+  category: string | null
+  space_m2: string | null
+  rent_eur: string | null
+  description: string | null
+}): TenantRow {
+  return {
+    ...row,
+    space_m2: row.space_m2 === null ? null : Number(row.space_m2),
+    rent_eur: row.rent_eur === null ? null : Number(row.rent_eur),
+  }
+}
+
+function toRevenueRow(row: {
+  tenant_id: string | null
+  month: string
+  amount_eur: string
+  tx_count: number | null
+}): RevenueRow {
+  return { ...row, amount_eur: Number(row.amount_eur) }
+}
+
 export async function POST(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const session = await auth()
+  const user = session?.user
   if (!user) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const role = user.app_metadata?.role
+  const role = user.role
   if (role !== 'admin' && role !== 'seller') {
     return new Response('Forbidden', { status: 403 })
   }
@@ -137,37 +183,40 @@ export async function POST(req: Request) {
 
   let systemPrompt: string
   if (role === 'admin') {
-    // Admin: full-center context via the service-role client.
-    const admin = createAdminClient()
-    const [{ data: tenants }, { data: revenue }] = await Promise.all([
-      admin
-        .from('tenants')
-        .select('id, store_name, operator, company_code, category, space_m2, rent_eur, description')
-        .order('store_name'),
-      admin
-        .from('revenue_reports')
-        .select('tenant_id, month, amount_eur, tx_count')
-        .order('month', { ascending: false })
+    // Admin: full-center context.
+    const [tenantRows, revenueRows] = await Promise.all([
+      db.select(TENANT_COLUMNS).from(tenantsTable).orderBy(tenantsTable.storeName),
+      db
+        .select(REVENUE_COLUMNS)
+        .from(revenueReports)
+        .orderBy(desc(revenueReports.month))
         .limit(120),
     ])
-    systemPrompt = buildSystemPrompt(tenants ?? [], revenue ?? [])
+    systemPrompt = buildSystemPrompt(tenantRows.map(toTenantRow), revenueRows.map(toRevenueRow))
   } else {
-    // Seller: scope strictly to their own tenant using the RLS-bound user client.
-    const { data: tenant } = await supabase
-      .from('tenants')
-      .select('id, store_name, operator, company_code, category, space_m2, rent_eur, description')
-      .eq('user_id', user.id)
-      .single()
-    if (!tenant) {
+    // Seller: scope strictly to their own tenant.
+    // NOTE: user.id is typed optional per next-auth's DefaultUser — see final
+    // report re: lib/auth/auth.config.ts's session() callback not currently
+    // setting session.user.id = token.sub.
+    if (!user.id) {
       return new Response('Forbidden', { status: 403 })
     }
-    const { data: revenue } = await supabase
-      .from('revenue_reports')
-      .select('tenant_id, month, amount_eur, tx_count')
-      .eq('tenant_id', tenant.id)
-      .order('month', { ascending: false })
+    const [tenantRow] = await db
+      .select(TENANT_COLUMNS)
+      .from(tenantsTable)
+      .where(eq(tenantsTable.userId, user.id))
+      .limit(1)
+    if (!tenantRow) {
+      return new Response('Forbidden', { status: 403 })
+    }
+    const tenant = toTenantRow(tenantRow)
+    const revenueRows = await db
+      .select(REVENUE_COLUMNS)
+      .from(revenueReports)
+      .where(eq(revenueReports.tenantId, tenant.id))
+      .orderBy(desc(revenueReports.month))
       .limit(120)
-    systemPrompt = buildSellerSystemPrompt(tenant, revenue ?? [])
+    systemPrompt = buildSellerSystemPrompt(tenant, revenueRows.map(toRevenueRow))
   }
 
   const result = streamText({

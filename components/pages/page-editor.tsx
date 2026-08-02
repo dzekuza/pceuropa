@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ImageIcon, Save, CheckCircle2, AlertCircle } from 'lucide-react'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 interface PageEditorProps {
   pageConfig: PageConfig
@@ -158,7 +158,7 @@ function FieldInput({ field, value, onChange }: FieldInputProps) {
             <div className="relative h-36 w-full overflow-hidden rounded-md border bg-muted">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={resizeSupabaseImage(value, { width: 800, height: 288 })}
+                src={resizeImage(value, { width: 800, height: 288 })}
                 alt="Peržiūra"
                 className="h-full w-full object-cover"
                 onError={(e) => {

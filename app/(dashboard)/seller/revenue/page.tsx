@@ -1,40 +1,55 @@
 // app/(dashboard)/seller/revenue/page.tsx — Seller revenue submission page
 // Server Component — Defense-in-depth auth check (CVE-2025-29927: middleware alone insufficient)
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { eq, desc } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { tenants, revenueReports } from '@/drizzle/schema'
 import { RevenuePageClient } from '@/components/revenue/revenue-page-client'
 import { AlertCircle } from 'lucide-react'
 import { REVENUE_REMINDER_TITLE, revenueReminderBody } from '@/lib/strings'
+import type { RevenueReport } from '@/types/database'
 
 export default async function SellerRevenuePage() {
-  const supabase = await createClient()
-
   // Defense-in-depth: verify seller role independently of middleware
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
+  const user = session?.user
 
-  if (!user || user.app_metadata?.role !== 'seller') {
+  // NOTE: see the report re: lib/auth/auth.config.ts's session() callback not
+  // currently setting session.user.id = token.sub.
+  if (!user || !user.id || user.role !== 'seller') {
     redirect('/login')
   }
 
   // Fetch seller's tenant record
-  const { data: tenant } = await supabase
-    .from('tenants')
-    .select('id')
-    .eq('user_id', user.id)
-    .single()
+  const [tenant] = await db
+    .select({ id: tenants.id })
+    .from(tenants)
+    .where(eq(tenants.userId, user.id))
+    .limit(1)
 
   if (!tenant) {
     redirect('/seller')
   }
 
   // Fetch all revenue reports for this tenant, most recent first
-  const { data: reports } = await supabase
-    .from('revenue_reports')
-    .select('*')
-    .eq('tenant_id', tenant.id)
-    .order('month', { ascending: false })
+  const rows = await db
+    .select()
+    .from(revenueReports)
+    .where(eq(revenueReports.tenantId, tenant.id))
+    .orderBy(desc(revenueReports.month))
+
+  const reports: RevenueReport[] = rows.map((row) => ({
+    id: row.id,
+    tenant_id: row.tenantId,
+    user_id: row.userId,
+    month: row.month,
+    amount_eur: Number(row.amountEur),
+    tx_count: row.txCount,
+    submitted_at: row.submittedAt ? row.submittedAt.toISOString() : null,
+    submitted_by: row.submittedBy,
+    weeks: row.weeks as RevenueReport['weeks'],
+  }))
 
   // Calculate days remaining in current month
   const now = new Date()

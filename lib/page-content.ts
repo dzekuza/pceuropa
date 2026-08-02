@@ -1,20 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { puckPages, pageSections } from '@/drizzle/schema'
 
 /** Returns banner slides from the Puck PageBanner block for a page, with fallback to defaults. */
 export async function getPuckBannerSlides(
   slug: string,
   defaults: string[],
 ): Promise<string[]> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
+  const [row] = await db
+    .select({ data: puckPages.data })
+    .from(puckPages)
+    .where(eq(puckPages.pageSlug, slug))
+    .limit(1)
 
-  if (!data?.data) return defaults
+  if (!row?.data) return defaults
 
-  const puckData = data.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> }
+  const puckData = row.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> }
   const bannerBlock = puckData.content?.find((b) => b.type === 'PageBanner')
   if (!bannerBlock) return defaults
 
@@ -28,14 +29,13 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
   blockType: string,
   defaults: T,
 ): Promise<T> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
+  const [row] = await db
+    .select({ data: puckPages.data })
+    .from(puckPages)
+    .where(eq(puckPages.pageSlug, slug))
+    .limit(1)
 
-  const puckData = data?.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> } | null
+  const puckData = row?.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> } | undefined
   const block = puckData?.content?.find((b) => b.type === blockType)
   if (!block?.props) return defaults
 
@@ -51,16 +51,19 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
 export type CmsSections = Record<string, Record<string, string>>
 
 export async function getPageContent(slug: string): Promise<CmsSections> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('page_sections')
-    .select('section_key, content_key, value')
-    .eq('page_slug', slug)
+  const rows = await db
+    .select({
+      sectionKey: pageSections.sectionKey,
+      contentKey: pageSections.contentKey,
+      value: pageSections.value,
+    })
+    .from(pageSections)
+    .where(eq(pageSections.pageSlug, slug))
 
   const sections: CmsSections = {}
-  for (const row of data ?? []) {
-    if (!sections[row.section_key]) sections[row.section_key] = {}
-    sections[row.section_key][row.content_key] = row.value ?? ''
+  for (const row of rows) {
+    if (!sections[row.sectionKey]) sections[row.sectionKey] = {}
+    sections[row.sectionKey][row.contentKey] = row.value ?? ''
   }
   return sections
 }

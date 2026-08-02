@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const parkingIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/parking-icon.svg'
 const phoneIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.svg'
@@ -38,7 +38,7 @@ export function QuickLinks({ links }: QuickLinksProps = {}) {
           <div className="flex items-center gap-3 lg:gap-4">
             <div className={`${item.iconBg} rounded-[8px] size-12 md:size-14 lg:size-[66px] relative overflow-hidden shrink-0`}>
               <img
-                src={resizeSupabaseImage(item.icon, { width: 64, height: 64, fit: 'contain' })}
+                src={resizeImage(item.icon, { width: 64, height: 64, fit: 'contain' })}
                 alt=""
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-8 md:size-9 lg:size-12"
               />

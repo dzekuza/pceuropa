@@ -2,10 +2,12 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import sanitizeHtml from 'sanitize-html'
+import { and, eq } from 'drizzle-orm'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
-import { createClient } from '@/lib/supabase/server'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { db } from '@/lib/db'
+import { articles } from '@/drizzle/schema'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -13,13 +15,11 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('articles')
-    .select('title, content')
-    .eq('slug', slug)
-    .eq('published', true)
-    .single()
+  const [data] = await db
+    .select({ title: articles.title, content: articles.content })
+    .from(articles)
+    .where(and(eq(articles.slug, slug), eq(articles.published, true)))
+    .limit(1)
 
   if (!data) return {}
 
@@ -36,14 +36,18 @@ export const revalidate = 300
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createClient()
 
-  const { data: article } = await supabase
-    .from('articles')
-    .select('title, content, cover_image, category, published_at')
-    .eq('slug', slug)
-    .eq('published', true)
-    .single()
+  const [article] = await db
+    .select({
+      title: articles.title,
+      content: articles.content,
+      cover_image: articles.coverImage,
+      category: articles.category,
+      published_at: articles.publishedAt,
+    })
+    .from(articles)
+    .where(and(eq(articles.slug, slug), eq(articles.published, true)))
+    .limit(1)
 
   if (!article) notFound()
 
@@ -71,7 +75,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         {article.cover_image && (
           <div className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
             <Image
-              src={resizeSupabaseImage(article.cover_image, { width: 1600, height: 920, quality: 90 })}
+              src={resizeImage(article.cover_image, { width: 1600, height: 920, quality: 90 })}
               alt={article.title}
               fill
               className="object-cover"

@@ -1,41 +1,29 @@
 // proxy.ts — Next.js 16 middleware (replaces middleware.ts)
-// JWT validation, role-based redirect, session refresh
+// Session check, role-based redirect, gate cookie
 //
 // SECURITY NOTES:
-// - Uses getUser() (NOT getSession()) — validates JWT with Supabase Auth server
-// - Returns supabaseResponse (NOT NextResponse.next()) — so refreshed cookies propagate
-// - This is NOT the sole auth guard — every admin Server Component independently calls getUser()
-//   (CVE-2025-29927: middleware can be bypassed with x-middleware-subrequest header)
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
-import { SITE_LOCK_COOKIE } from '@/lib/constants'
+// - `auth()` decrypts/verifies the session JWT via Edge-safe crypto (jose) —
+//   no DB round trip, mirrors what supabase.auth.getUser() gave us for cheap
+//   JWT validation, but note this does NOT hit the database to confirm the
+//   user still exists/wasn't revoked (that's what the old getUser() call did
+//   against Supabase's Auth server). See lib/auth/config.ts.
+// - This is NOT the sole auth guard — every admin Server Component
+//   independently re-validates the session (CVE-2025-29927: middleware can
+//   be bypassed with the x-middleware-subrequest header).
+import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
+import { SITE_LOCK_COOKIE } from "@/lib/constants";
+import { authConfig } from "@/lib/auth/auth.config";
+
+// Separate, edge-safe NextAuth instance built from just the shared config —
+// no Credentials provider, no Drizzle/bcrypt imports, so this is safe to run
+// on the Edge runtime. The full instance (with the provider) lives in
+// lib/auth/config.ts and is used by the /api/auth route handlers instead.
+const { auth } = NextAuth(authConfig);
 
 // Next.js 16 proxy.ts requires the exported function to be named "proxy" (not "middleware")
-export async function proxy(request: NextRequest) {
-  const supabaseResponse = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            supabaseResponse.cookies.set(name, value, options)
-          })
-        },
-      },
-    }
-  )
-
-  // MUST use getUser() — validates JWT with Supabase server. Never use getSession().
-  // This call also refreshes expired tokens and sets updated cookies on supabaseResponse.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export const proxy = auth((request) => {
+  const user = request.auth?.user
 
   const { pathname } = request.nextUrl
   const isDashboardRoute =
@@ -54,7 +42,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!isLocalDev && isTenantSubdomain && pathname === '/') {
-    const role = user?.app_metadata?.role
+    const role = user?.role
     const destination = user ? (role === 'admin' ? '/admin' : '/seller') : '/login'
     return NextResponse.redirect(new URL(destination, request.url))
   }
@@ -82,23 +70,21 @@ export async function proxy(request: NextRequest) {
 
   // Redirect authenticated users away from login to their dashboard
   if (user && pathname === '/login') {
-    const role = user.app_metadata?.role
+    const role = user.role
     const destination = role === 'admin' ? '/admin' : '/seller'
     return NextResponse.redirect(new URL(destination, request.url))
   }
 
   // Role enforcement: sellers cannot access admin routes
   if (user && pathname.startsWith('/admin')) {
-    const role = user.app_metadata?.role
+    const role = user.role
     if (role !== 'admin') {
       return NextResponse.redirect(new URL('/seller', request.url))
     }
   }
 
-  // CRITICAL: Return supabaseResponse — NOT NextResponse.next() —
-  // so refreshed session cookies are forwarded to the browser.
-  return supabaseResponse
-}
+  return NextResponse.next()
+})
 
 export const config = {
   matcher: [

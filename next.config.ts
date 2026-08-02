@@ -16,9 +16,13 @@ const scriptSrc = isDev
 // rsms.me in both dev and production, so these aren't dev-only relaxations.
 const styleSrc = "style-src 'self' 'unsafe-inline' https://rsms.me";
 const fontSrc = "font-src 'self' data: https://rsms.me";
+// Supabase Storage host removed — Storage-served images now come from our
+// own same-origin /api/storage route (see lib/storage/MIGRATION_NOTES.md).
+// Deploy this alongside Phase 6's DB cutover: existing DB rows still hold
+// Supabase Storage URLs until that cutover rewrites them.
 const imgSrc = isDev
-  ? `img-src 'self' data: https: https://${SUPABASE_HOST}`
-  : `img-src 'self' data: https://${SUPABASE_HOST} https://www.googletagmanager.com https://www.google-analytics.com`;
+  ? "img-src 'self' data: https:"
+  : "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -51,19 +55,13 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  output: "standalone",
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
-        pathname: '/storage/v1/object/public/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
-        pathname: '/storage/v1/render/image/public/**',
-      },
-    ],
+    // Supabase Storage remote patterns removed — images now served from our
+    // own same-origin /api/storage route, which needs no remotePatterns
+    // entry (only required for foreign origins). See
+    // lib/storage/MIGRATION_NOTES.md.
+    remotePatterns: [],
   },
   async headers() {
     return [

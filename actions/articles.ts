@@ -2,46 +2,62 @@
 // actions/articles.ts — Server Actions for articles CRUD
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { eq } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { articles } from '@/drizzle/schema'
+import { getRole } from '@/lib/auth/get-role'
 import type { ArticleFormValues } from '@/lib/validations/article'
 import type { Article } from '@/types/database'
 
-async function getAdminClient() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.app_metadata?.role !== 'admin') return null
-  // Use service role client so mutations bypass RLS (no admin INSERT/UPDATE/DELETE policies)
-  return createAdminClient()
+function toArticle(row: typeof articles.$inferSelect): Article {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    content: row.content,
+    cover_image: row.coverImage,
+    category: row.category as Article['category'],
+    featured: row.featured,
+    published: row.published,
+    published_at: row.publishedAt ? row.publishedAt.toISOString() : null,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    updated_at: row.updatedAt ? row.updatedAt.toISOString() : null,
+  }
+}
+
+async function requireAdmin(): Promise<boolean> {
+  const role = await getRole()
+  return role === 'admin'
 }
 
 export async function createArticle(
   data: ArticleFormValues
 ): Promise<{ data: Article } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const now = new Date().toISOString()
-  const { data: created, error } = await supabase
-    .from('articles')
-    .insert({
-      title: data.title,
-      slug: data.slug,
-      content: data.content,
-      cover_image: data.cover_image,
-      category: data.category,
-      featured: data.featured,
-      published: data.published,
-      published_at: data.published ? now : null,
-    })
-    .select()
-    .single()
-
-  if (error || !created) return { error: 'Nepavyko sukurti straipsnio' }
+  const now = new Date()
+  let created: typeof articles.$inferSelect
+  try {
+    ;[created] = await db
+      .insert(articles)
+      .values({
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        coverImage: data.cover_image,
+        category: data.category,
+        featured: data.featured,
+        published: data.published,
+        publishedAt: data.published ? now : null,
+      })
+      .returning()
+  } catch {
+    return { error: 'Nepavyko sukurti straipsnio' }
+  }
 
   revalidatePath('/admin/articles')
   revalidatePath('/naujienos')
-  return { data: created as Article }
+  return { data: toArticle(created) }
 }
 
 export async function updateArticle(
@@ -49,44 +65,49 @@ export async function updateArticle(
   data: ArticleFormValues,
   wasPublished: boolean
 ): Promise<{ data: Article } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const now = new Date().toISOString()
-  const { data: updated, error } = await supabase
-    .from('articles')
-    .update({
-      title: data.title,
-      slug: data.slug,
-      content: data.content,
-      cover_image: data.cover_image,
-      category: data.category,
-      featured: data.featured,
-      published: data.published,
-      // Set published_at only on first publish
-      ...(data.published && !wasPublished ? { published_at: now } : {}),
-      updated_at: now,
-    })
-    .eq('id', id)
-    .select()
-    .single()
+  const now = new Date()
+  let updated: typeof articles.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(articles)
+      .set({
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        coverImage: data.cover_image,
+        category: data.category,
+        featured: data.featured,
+        published: data.published,
+        // Set published_at only on first publish
+        ...(data.published && !wasPublished ? { publishedAt: now } : {}),
+        updatedAt: now,
+      })
+      .where(eq(articles.id, id))
+      .returning()
+  } catch {
+    return { error: 'Nepavyko atnaujinti straipsnio' }
+  }
 
-  if (error || !updated) return { error: 'Nepavyko atnaujinti straipsnio' }
+  if (!updated) return { error: 'Nepavyko atnaujinti straipsnio' }
 
   revalidatePath('/admin/articles')
   revalidatePath('/naujienos')
   revalidatePath(`/naujienos/${data.slug}`)
-  return { data: updated as Article }
+  return { data: toArticle(updated) }
 }
 
 export async function deleteArticle(
   id: string
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { error } = await supabase.from('articles').delete().eq('id', id)
-  if (error) return { error: 'Nepavyko ištrinti straipsnio' }
+  try {
+    await db.delete(articles).where(eq(articles.id, id))
+  } catch {
+    return { error: 'Nepavyko ištrinti straipsnio' }
+  }
 
   revalidatePath('/admin/articles')
   revalidatePath('/naujienos')
@@ -98,45 +119,51 @@ export async function toggleArticlePublished(
   published: boolean,
   wasPublished: boolean
 ): Promise<{ data: Article } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const now = new Date().toISOString()
-  const { data: updated, error } = await supabase
-    .from('articles')
-    .update({
-      published,
-      ...(published && !wasPublished ? { published_at: now } : {}),
-      updated_at: now,
-    })
-    .eq('id', id)
-    .select()
-    .single()
+  const now = new Date()
+  let updated: typeof articles.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(articles)
+      .set({
+        published,
+        ...(published && !wasPublished ? { publishedAt: now } : {}),
+        updatedAt: now,
+      })
+      .where(eq(articles.id, id))
+      .returning()
+  } catch {
+    return { error: 'Nepavyko pakeisti būsenos' }
+  }
 
-  if (error || !updated) return { error: 'Nepavyko pakeisti būsenos' }
+  if (!updated) return { error: 'Nepavyko pakeisti būsenos' }
 
   revalidatePath('/admin/articles')
   revalidatePath('/naujienos')
-  return { data: updated as Article }
+  return { data: toArticle(updated) }
 }
 
 export async function toggleArticleFeatured(
   id: string,
   featured: boolean
 ): Promise<{ data: Article } | { error: string }> {
-  const supabase = await getAdminClient()
-  if (!supabase) return { error: 'Neturite teisės atlikti šį veiksmą' }
+  if (!(await requireAdmin())) return { error: 'Neturite teisės atlikti šį veiksmą' }
 
-  const { data: updated, error } = await supabase
-    .from('articles')
-    .update({ featured, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single()
+  let updated: typeof articles.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(articles)
+      .set({ featured, updatedAt: new Date() })
+      .where(eq(articles.id, id))
+      .returning()
+  } catch {
+    return { error: 'Nepavyko pakeisti būsenos' }
+  }
 
-  if (error || !updated) return { error: 'Nepavyko pakeisti būsenos' }
+  if (!updated) return { error: 'Nepavyko pakeisti būsenos' }
 
   revalidatePath('/admin/articles')
   revalidatePath('/naujienos')
-  return { data: updated as Article }
+  return { data: toArticle(updated) }
 }

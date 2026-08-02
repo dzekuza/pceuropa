@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { DisplayHeading } from './ui/typography'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const DIALOGAI_IMAGES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/1.png',
@@ -45,7 +45,7 @@ export function DialogaiSection({
           {images.map((src, i) => (
             <div key={i} className="relative h-[220px] lg:h-[344px] w-[120px] lg:w-[200px] rounded-[20px] lg:rounded-[24px] overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resizeSupabaseImage(src, { width: 400, height: 688, quality: 90 })} alt="" className="size-full object-cover" />
+              <img src={resizeImage(src, { width: 400, height: 688, quality: 90 })} alt="" className="size-full object-cover" />
             </div>
           ))}
         </div>

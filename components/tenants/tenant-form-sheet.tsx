@@ -6,9 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { createTenant, updateTenant } from '@/actions/tenants'
 import { tenantSchema, type TenantFormValues } from '@/lib/validations/tenant'
 import { TENANT_CATEGORIES } from '@/lib/constants'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { compressImageFile } from '@/lib/image-compression'
+import { resizeImage } from '@/lib/storage/resize-image'
 import type { Tenant } from '@/types/database'
 import type { TenantListRow } from '@/lib/admin-data'
 import {
@@ -47,14 +46,15 @@ interface TenantFormSheetProps {
 
 async function uploadFile(file: File, folder: 'logos' | 'gallery'): Promise<string> {
   const compressed = await compressImageFile(file)
-  const supabase = createClient()
-  const path = `${folder}/${crypto.randomUUID()}.${imageExtension(compressed)}`
-  const { error } = await supabase.storage
-    .from('tenant-assets')
-    .upload(path, compressed, { upsert: true, contentType: compressed.type, cacheControl: '31536000' })
-  if (error) throw new Error(error.message)
-  const { data } = supabase.storage.from('tenant-assets').getPublicUrl(path)
-  return data.publicUrl
+  const formData = new FormData()
+  formData.set('file', compressed)
+  formData.set('bucket', 'tenant-assets')
+  formData.set('folder', folder)
+
+  const res = await fetch('/api/upload', { method: 'POST', body: formData })
+  if (!res.ok) throw new Error(await res.text())
+  const { url } = (await res.json()) as { url: string }
+  return url
 }
 
 function LogoUploader({
@@ -87,7 +87,7 @@ function LogoUploader({
       {value ? (
         <div className="relative size-16 rounded-lg overflow-hidden border bg-muted shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resizeSupabaseImage(value, { width: 128, height: 128 })} alt="Logo" className="size-full object-cover" />
+          <img src={resizeImage(value, { width: 128, height: 128 })} alt="Logo" className="size-full object-cover" />
           <button
             type="button"
             onClick={() => onChange('')}
@@ -166,7 +166,7 @@ function GalleryUploader({
         {value.map((url, i) => (
           <div key={url} className="relative size-20 rounded-lg overflow-hidden border bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={resizeSupabaseImage(url, { width: 160, height: 160 })} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
+            <img src={resizeImage(url, { width: 160, height: 160 })} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
             <button
               type="button"
               onClick={() => remove(i)}

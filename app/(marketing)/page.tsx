@@ -1,6 +1,8 @@
+import { eq } from 'drizzle-orm'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
-import { createClient } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
+import { puckPages } from '@/drizzle/schema'
 import { renderPuckBlock } from '@/lib/puck-render'
 import type { Data } from '@measured/puck'
 
@@ -15,13 +17,11 @@ const DEFAULT_BLOCKS: Data['content'] = [
 ]
 
 export default async function LandingPage() {
-  const supabase = await createClient()
-
-  const { data: puckRow } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', 'landing')
-    .single()
+  const [puckRow] = await db
+    .select({ data: puckPages.data })
+    .from(puckPages)
+    .where(eq(puckPages.pageSlug, 'landing'))
+    .limit(1)
 
   const puckData = puckRow?.data as Data | null
   const blocks =

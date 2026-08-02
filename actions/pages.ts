@@ -2,7 +2,9 @@
 // actions/pages.ts — Server Actions for page content management
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
+import { pageSections } from '@/drizzle/schema'
+import { getRole } from '@/lib/auth/get-role'
 
 type ContentUpdate = {
   section_key: string
@@ -14,28 +16,29 @@ export async function savePageContent(
   page_slug: string,
   updates: ContentUpdate[]
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
+  const role = await getRole()
+  if (role !== 'admin') {
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  const rows = updates.map((u) => ({
-    page_slug,
-    section_key: u.section_key,
-    content_key: u.content_key,
-    value: u.value,
-    updated_at: new Date().toISOString(),
-  }))
-
-  const { error } = await supabase
-    .from('page_sections')
-    .upsert(rows, { onConflict: 'page_slug,section_key,content_key' })
-
-  if (error) {
+  try {
+    for (const u of updates) {
+      await db
+        .insert(pageSections)
+        .values({
+          pageSlug: page_slug,
+          sectionKey: u.section_key,
+          contentKey: u.content_key,
+          value: u.value,
+          updatedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: [pageSections.pageSlug, pageSections.sectionKey, pageSections.contentKey],
+          set: { value: u.value, updatedAt: new Date() },
+        })
+    }
+  } catch (err) {
+    console.error('[savePageContent] upsert error:', err)
     return { error: 'Nepavyko išsaugoti puslapio turinio' }
   }
 

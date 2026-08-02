@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import type React from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
 
@@ -66,7 +66,7 @@ export function Hero({ slides = HERO_DEFAULT_SLIDES, title, subtitle }: HeroProp
         {slides.map((slide, i) => (
           <img
             key={slide.src}
-            src={resizeSupabaseImage(slide.src, { width: 1600, height: 920, quality: 90 })}
+            src={resizeImage(slide.src, { width: 1600, height: 920, quality: 90 })}
             alt={slide.alt}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0'}`}
           />

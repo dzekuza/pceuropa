@@ -1,18 +1,14 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { ModeranSync } from '@/components/admin/moderan-sync'
 import { MODERAN_SYNC_STRINGS as S } from '@/lib/strings'
 
 export default async function AdminIntegrationsPage() {
-  const supabase = await createClient()
+  const session = await auth()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 

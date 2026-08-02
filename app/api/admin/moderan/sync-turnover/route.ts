@@ -1,7 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { revenueReports, tenants, moderanSyncLog } from '@/drizzle/schema'
 
 // DB stores month as YYYY-MM-01; Moderan expects the last day of that month.
 function lastDayOfMonth(yyyyMM01: string): string {
@@ -82,13 +85,10 @@ async function sendToModeran(
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient()
+  const session = await auth()
+  const user = session?.user
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     return NextResponse.json({ error: { code: 'UNAUTHORIZED', message: 'Admin only' } }, { status: 401 })
   }
 
@@ -106,38 +106,44 @@ export async function POST(req: NextRequest) {
   const monthDate = `${month}-01`
 
   // Fetch reports with tenant name for the given month
-  const { data: reports, error: dbError } = await supabase
-    .from('revenue_reports')
-    .select('amount_eur, month, tenants(store_name)')
-    .eq('month', monthDate)
-
-  if (dbError) {
+  let reports: { amount_eur: string; month: string; store_name: string | null }[]
+  try {
+    reports = await db
+      .select({
+        amount_eur: revenueReports.amountEur,
+        month: revenueReports.month,
+        store_name: tenants.storeName,
+      })
+      .from(revenueReports)
+      .leftJoin(tenants, eq(revenueReports.tenantId, tenants.id))
+      .where(eq(revenueReports.month, monthDate))
+  } catch {
     return NextResponse.json(
       { error: { code: 'DB_ERROR', message: 'Failed to fetch revenue reports' } },
       { status: 500 }
     )
   }
 
-  const payloads: SyncPayload[] = (reports ?? []).map((r) => ({
-    shopName: (r.tenants as { store_name: string } | null)?.store_name ?? 'Unknown',
+  const payloads: SyncPayload[] = reports.map((r) => ({
+    shopName: r.store_name ?? 'Unknown',
     turnoverRentMonth: lastDayOfMonth(r.month),
-    turnoverRentAmount: r.amount_eur,
+    turnoverRentAmount: Number(r.amount_eur),
   }))
 
   if (dryRun) {
     const results: SyncResult[] = payloads.map((p) => ({ ...p, status: 'ready' }))
 
-    const { data: logEntry } = await supabase
-      .from('moderan_sync_log')
-      .select('sent_at')
-      .eq('month', monthDate)
-      .maybeSingle()
+    const [logEntry] = await db
+      .select({ sentAt: moderanSyncLog.sentAt })
+      .from(moderanSyncLog)
+      .where(eq(moderanSyncLog.month, monthDate))
+      .limit(1)
 
     return NextResponse.json({
       dryRun: true,
       month,
       results,
-      lastSentAt: logEntry?.sent_at ?? null,
+      lastSentAt: logEntry?.sentAt ? logEntry.sentAt.toISOString() : null,
     } satisfies SyncResponse)
   }
 
@@ -160,11 +166,11 @@ export async function POST(req: NextRequest) {
   // appears to make Moderan's server crash (500) instead. So: consult our own log
   // to skip shops already confirmed 'sent' for this month, and send the rest with
   // limited concurrency + retry instead of one unbounded Promise.all burst.
-  const { data: previousLog } = await supabase
-    .from('moderan_sync_log')
-    .select('results')
-    .eq('month', monthDate)
-    .maybeSingle()
+  const [previousLog] = await db
+    .select({ results: moderanSyncLog.results })
+    .from(moderanSyncLog)
+    .where(eq(moderanSyncLog.month, monthDate))
+    .limit(1)
 
   const previouslySent = new Set(
     ((previousLog?.results as SyncResult[] | null) ?? [])
@@ -203,15 +209,17 @@ export async function POST(req: NextRequest) {
     // as already delivered — 'skipped' is a display-only status for this response.
     const logResults = results.map((r) => (r.status === 'skipped' ? { ...r, status: 'sent' as const } : r))
 
-    await supabase.from('moderan_sync_log').upsert(
-      {
-        month: monthDate,
-        sent_at: new Date().toISOString(),
-        sent_by: user.id,
-        results: JSON.parse(JSON.stringify(logResults)),
-      },
-      { onConflict: 'month' }
-    )
+    const logValues = {
+      month: monthDate,
+      sentAt: new Date(),
+      sentBy: user.id,
+      results: JSON.parse(JSON.stringify(logResults)),
+    }
+
+    await db
+      .insert(moderanSyncLog)
+      .values(logValues)
+      .onConflictDoUpdate({ target: moderanSyncLog.month, set: logValues })
   }
 
   return NextResponse.json({ dryRun: false, month, results } satisfies SyncResponse)

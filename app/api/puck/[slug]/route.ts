@@ -1,5 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { puckPages } from '@/drizzle/schema'
 import type { Json } from '@/types/database'
 
 const ALLOWED_SLUGS = new Set([
@@ -19,14 +22,13 @@ export async function GET(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
+  const [row] = await db
+    .select({ data: puckPages.data })
+    .from(puckPages)
+    .where(eq(puckPages.pageSlug, slug))
+    .limit(1)
 
-  return NextResponse.json(data?.data ?? EMPTY_DATA)
+  return NextResponse.json(row?.data ?? EMPTY_DATA)
 }
 
 export async function POST(
@@ -39,12 +41,9 @@ export async function POST(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -55,12 +54,15 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { error } = await supabase.from('puck_pages').upsert(
-    { page_slug: slug, data: body, updated_at: new Date().toISOString() },
-    { onConflict: 'page_slug' }
-  )
-
-  if (error) {
+  try {
+    await db
+      .insert(puckPages)
+      .values({ pageSlug: slug, data: body, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: puckPages.pageSlug,
+        set: { data: body, updatedAt: new Date() },
+      })
+  } catch (error) {
     console.error('puck_pages upsert error:', error)
     return NextResponse.json({ error: 'Nepavyko išsaugoti' }, { status: 500 })
   }

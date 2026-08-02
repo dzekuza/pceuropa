@@ -4,8 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X, Paperclip, FileText, Loader2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { compressImageFile } from '@/lib/image-compression'
 import { createFaqItem, updateFaqItem } from '@/actions/faq'
 import { faqFormSchema, type FaqFormValues } from '@/lib/validations/faq'
 import type { FaqItem } from '@/types/database'
@@ -81,7 +80,6 @@ export function FaqFormDialog({
     if (!files || files.length === 0) return
     setUploading(true)
 
-    const supabase = createClient()
     const uploaded: string[] = []
 
     for (const file of Array.from(files)) {
@@ -92,18 +90,19 @@ export function FaqFormDialog({
       }
 
       const compressed = await compressImageFile(file)
-      const safeStem = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '_')
-      const path = `${crypto.randomUUID()}/${safeStem}.${imageExtension(compressed)}`
+      const formData = new FormData()
+      formData.set('file', compressed)
+      formData.set('bucket', BUCKET)
 
-      const { error } = await supabase.storage.from(BUCKET).upload(path, compressed, { contentType: compressed.type })
-      if (error) {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!res.ok) {
         form.setError('root', { message: `Nepavyko įkelti: ${file.name}` })
         setUploading(false)
         return
       }
 
-      const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
-      uploaded.push(data.publicUrl)
+      const { url } = (await res.json()) as { url: string }
+      uploaded.push(url)
     }
 
     const next = [...attachments, ...uploaded]

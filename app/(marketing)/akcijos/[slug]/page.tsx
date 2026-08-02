@@ -2,33 +2,37 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
+import { and, eq } from "drizzle-orm";
 import { Nav } from "@/components/marketing/nav";
 import { Footer } from "@/components/marketing/footer";
-import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { db } from "@/lib/db";
+import { promos } from "@/drizzle/schema";
 import { formatPromoDateRange } from "@/lib/utils/format-promo-date";
 import { ArrowIcon } from "@/components/marketing/ui/arrow-icon";
-import { resizeSupabaseImage } from "@/lib/utils/supabase-image";
+import { resizeImage } from "@/lib/storage/resize-image";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const supabase = createAdminClient();
-  const { data: promos } = await supabase
-    .from("promos")
-    .select("slug")
-    .eq("published", true);
-  return (promos ?? []).map((p) => ({ slug: p.slug }));
+  const rows = await db
+    .select({ slug: promos.slug })
+    .from(promos)
+    .where(eq(promos.published, true));
+  return rows.map((p) => ({ slug: p.slug }));
 }
 
 async function getPromo(slug: string) {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("promos")
-    .select("title, content, image, starts_at, ends_at")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
+  const [data] = await db
+    .select({
+      title: promos.title,
+      content: promos.content,
+      image: promos.image,
+      starts_at: promos.startsAt,
+      ends_at: promos.endsAt,
+    })
+    .from(promos)
+    .where(and(eq(promos.slug, slug), eq(promos.published, true)))
+    .limit(1);
   return data;
 }
 
@@ -78,7 +82,7 @@ export default async function PromoDetailPage({ params }: Props) {
           <div className="relative w-full aspect-[4/3] lg:aspect-square rounded-[32px] lg:rounded-[40px] overflow-hidden bg-muted">
             {item.image && (
               <img
-                src={resizeSupabaseImage(item.image, {
+                src={resizeImage(item.image, {
                   width: 800,
                   height: 800,
                   quality: 90,

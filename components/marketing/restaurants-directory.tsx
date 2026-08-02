@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 type Restaurant = {
   id: string
@@ -52,7 +52,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
           <div className="size-14 rounded-[16px] overflow-hidden bg-white border border-[#ebebeb] shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={resizeSupabaseImage(restaurant.logoUrl, { width: 112, height: 112, fit: 'contain' })}
+              src={resizeImage(restaurant.logoUrl, { width: 112, height: 112, fit: 'contain' })}
               alt={`${restaurant.name} logotipas`}
               loading="lazy"
               className="size-full object-contain p-1"
@@ -70,7 +70,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
         {restaurant.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={resizeSupabaseImage(restaurant.coverUrl, { width: 800, height: 408, quality: 90 })}
+            src={resizeImage(restaurant.coverUrl, { width: 800, height: 408, quality: 90 })}
             alt=""
             loading="lazy"
             className="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-105"

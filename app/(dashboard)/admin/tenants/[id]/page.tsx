@@ -4,8 +4,8 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeftIcon } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { auth } from '@/lib/auth/config'
+import { getUserById } from '@/lib/auth/admin-users'
 import { TenantInfoCard } from '@/components/tenants/tenant-info-card'
 import { TenantRevenueTable } from '@/components/tenants/tenant-revenue-table'
 import { TenantRevenueExportButton } from '@/components/tenants/tenant-revenue-export-button'
@@ -26,8 +26,6 @@ export default async function TenantDetailPage({
   params,
   searchParams,
 }: TenantDetailPageProps) {
-  const supabase = await createClient()
-
   // Resolve params and compute year before the parallel fetch
   const { id } = await params
   const { year: yearParam } = await searchParams
@@ -36,12 +34,12 @@ export default async function TenantDetailPage({
   const safeYear = isNaN(year) ? currentYear : year
 
   // Auth + both data fetches run concurrently.
-  const [{ data: { user } }, detailData] = await Promise.all([
-    supabase.auth.getUser(),
-    getAdminTenantDetail(supabase, id, safeYear),
+  const [session, detailData] = await Promise.all([
+    auth(),
+    getAdminTenantDetail(id, safeYear),
   ])
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 
@@ -51,10 +49,8 @@ export default async function TenantDetailPage({
 
   let loginEmail: string | null = null
   if (detailData.tenant.user_id) {
-    const { data: authUser } = await createAdminClient().auth.admin.getUserById(
-      detailData.tenant.user_id
-    )
-    loginEmail = authUser.user?.email ?? null
+    const linkedUser = await getUserById(detailData.tenant.user_id)
+    loginEmail = linkedUser?.email ?? null
   }
 
   return (

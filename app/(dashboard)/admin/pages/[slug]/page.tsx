@@ -4,7 +4,10 @@ export const dynamic = 'force-dynamic'
 
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { eq } from 'drizzle-orm'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { pageSections } from '@/drizzle/schema'
 import { getPageConfig } from '@/lib/page-config'
 import { PageEditor } from '@/components/pages/page-editor'
 import type { PageContentMap } from '@/types/database'
@@ -17,27 +20,24 @@ interface Props {
 
 export default async function AdminPageEditorPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 
   const pageConfig = getPageConfig(slug)
   if (!pageConfig) notFound()
 
-  const { data: rows } = await supabase
-    .from('page_sections')
-    .select('*')
-    .eq('page_slug', slug)
+  const rows = await db
+    .select()
+    .from(pageSections)
+    .where(eq(pageSections.pageSlug, slug))
 
   const content: PageContentMap = {}
-  for (const row of rows ?? []) {
-    if (!content[row.section_key]) content[row.section_key] = {}
-    content[row.section_key][row.content_key] = row.value ?? ''
+  for (const row of rows) {
+    if (!content[row.sectionKey]) content[row.sectionKey] = {}
+    content[row.sectionKey][row.contentKey] = row.value ?? ''
   }
 
   return (

@@ -1,20 +1,30 @@
-import { createAdminClient } from '@/lib/supabase/admin'
+import { and, isNotNull, ne, asc } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { tenants as tenantsTable } from '@/drizzle/schema'
 import { LogoCard } from './logo-card'
 import Link from 'next/link'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 type Tenant = { id: string; slug: string; store_name: string; logo_url: string }
 
 export async function PartnerLogos() {
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('tenants')
-    .select('id, slug, store_name, logo_url')
-    .not('logo_url', 'is', null)
-    .neq('logo_url', '')
-    .order('store_name')
+  const rows = await db
+    .select({
+      id: tenantsTable.id,
+      slug: tenantsTable.slug,
+      storeName: tenantsTable.storeName,
+      logoUrl: tenantsTable.logoUrl,
+    })
+    .from(tenantsTable)
+    .where(and(isNotNull(tenantsTable.logoUrl), ne(tenantsTable.logoUrl, '')))
+    .orderBy(asc(tenantsTable.storeName))
 
-  const tenants = (data ?? []) as Tenant[]
+  const tenants: Tenant[] = rows.map((t) => ({
+    id: t.id,
+    slug: t.slug,
+    store_name: t.storeName,
+    logo_url: t.logoUrl as string,
+  }))
 
   const featuredIdx = tenants.findIndex((t) =>
     t.store_name.toLowerCase().includes('lemon gym')
@@ -53,7 +63,7 @@ export async function PartnerLogos() {
               className="bg-white rounded-[16px] flex items-center justify-center h-[90px] w-[140px] shrink-0 overflow-hidden"
             >
               <img
-                src={resizeSupabaseImage(t.logo_url, { width: 120, height: 120, fit: 'contain' })}
+                src={resizeImage(t.logo_url, { width: 120, height: 120, fit: 'contain' })}
                 alt={t.store_name}
                 loading="lazy"
                 className="h-12 w-auto max-w-[75%] object-contain"

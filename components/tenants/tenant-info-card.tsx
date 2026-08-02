@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dialog'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { resetPassword, createTenantAccount } from '@/actions/tenants'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import type { Tenant } from '@/types/database'
 
 const MIN_PASSWORD_LENGTH = 10
@@ -264,7 +264,7 @@ export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted overflow-hidden">
                             {tenant.logo_url ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={resizeSupabaseImage(tenant.logo_url, { width: 80, height: 80, fit: 'contain' })} alt={`${tenant.store_name} logotipas`} className="size-full object-contain p-1" />
+                                <img src={resizeImage(tenant.logo_url, { width: 80, height: 80, fit: 'contain' })} alt={`${tenant.store_name} logotipas`} className="size-full object-contain p-1" />
                             ) : (
                                 <BuildingIcon className="h-5 w-5 text-muted-foreground" />
                             )}

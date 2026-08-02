@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 import { NAUJIENOS_STRINGS } from '@/lib/strings'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import type { Article } from '@/types/database'
 
 function stripHtml(html: string): string {
@@ -33,7 +33,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
         <div className="relative overflow-hidden bg-[#e8e8e5] md:w-1/2 h-48 md:h-auto">
           {article.cover_image ? (
             <img
-              src={resizeSupabaseImage(article.cover_image, { width: 800, height: 600, quality: 90 })}
+              src={resizeImage(article.cover_image, { width: 800, height: 600, quality: 90 })}
               alt={article.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
@@ -76,7 +76,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
       <div className="relative w-full h-[236px] rounded-[32px] lg:rounded-[40px] overflow-hidden shrink-0">
         {article.cover_image ? (
           <img
-            src={resizeSupabaseImage(article.cover_image, { width: 800, height: 472, quality: 90 })}
+            src={resizeImage(article.cover_image, { width: 800, height: 472, quality: 90 })}
             alt={article.title}
             loading="lazy"
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"

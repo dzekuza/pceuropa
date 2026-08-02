@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { RevenueLineChart } from '@/components/analytics/revenue-line-chart'
 import { CategoryBarChart } from '@/components/analytics/category-bar-chart'
 import { TenantTrendChart } from '@/components/analytics/tenant-trend-chart'
@@ -20,14 +20,10 @@ interface AnalyticsPageProps {
 }
 
 export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPageProps) {
-  const supabase = await createClient()
-
   // Defense-in-depth: validate JWT and verify admin role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 
@@ -42,7 +38,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const mm = (m: number) => String(m).padStart(2, '0')
   const currentMonthStr = `${currentYear}-${mm(currentMonth)}-01`
 
-  const analyticsData = await getAdminAnalyticsData(supabase, year, month)
+  const analyticsData = await getAdminAnalyticsData(year, month)
 
   const rangeLabel = month ? `${MONTHS_LT[month - 1]} ${year}` : String(year)
 

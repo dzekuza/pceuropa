@@ -2,9 +2,23 @@
 // actions/faq.ts — Server Actions for FAQ CRUD + reorder
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { desc, eq } from 'drizzle-orm'
+import { db } from '@/lib/db'
+import { faqItems } from '@/drizzle/schema'
+import { getRole } from '@/lib/auth/get-role'
 import type { FaqFormValues } from '@/lib/validations/faq'
 import type { FaqItem } from '@/types/database'
+
+function toFaqItem(row: typeof faqItems.$inferSelect): FaqItem {
+  return {
+    id: row.id,
+    question: row.question,
+    answer: row.answer,
+    sort_order: row.sortOrder,
+    created_at: row.createdAt ? row.createdAt.toISOString() : null,
+    attachments: row.attachments,
+  }
+}
 
 /**
  * createFaqItem — Creates a new FAQ entry with auto-assigned sort_order.
@@ -12,42 +26,38 @@ import type { FaqItem } from '@/types/database'
 export async function createFaqItem(
   formData: FaqFormValues
 ): Promise<{ data: FaqItem } | { error: string }> {
-  const supabase = await createClient()
-  const {
-    data: { user: callerUser },
-  } = await supabase.auth.getUser()
-
-  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+  const role = await getRole()
+  if (role !== 'admin') {
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
   // Auto-assign sort_order = max existing sort_order + 1
-  const { data: lastItem } = await supabase
-    .from('faq_items')
-    .select('sort_order')
-    .order('sort_order', { ascending: false })
+  const [lastItem] = await db
+    .select({ sortOrder: faqItems.sortOrder })
+    .from(faqItems)
+    .orderBy(desc(faqItems.sortOrder))
     .limit(1)
-    .single()
 
-  const nextSortOrder = (lastItem?.sort_order ?? 0) + 1
+  const nextSortOrder = (lastItem?.sortOrder ?? 0) + 1
 
-  const { data: created, error } = await supabase
-    .from('faq_items')
-    .insert({
-      question: formData.question,
-      answer: formData.answer,
-      attachments: formData.attachments ?? [],
-      sort_order: nextSortOrder,
-    })
-    .select()
-    .single()
-
-  if (error || !created) {
+  let created: typeof faqItems.$inferSelect
+  try {
+    ;[created] = await db
+      .insert(faqItems)
+      .values({
+        question: formData.question,
+        answer: formData.answer,
+        attachments: formData.attachments ?? [],
+        sortOrder: nextSortOrder,
+      })
+      .returning()
+  } catch (err) {
+    console.error('[createFaqItem] insert error:', err)
     return { error: 'Nepavyko sukurti klausimo' }
   }
 
   revalidatePath('/admin/faq')
-  return { data: created }
+  return { data: toFaqItem(created) }
 }
 
 /**
@@ -57,32 +67,33 @@ export async function updateFaqItem(
   id: string,
   formData: FaqFormValues
 ): Promise<{ data: FaqItem } | { error: string }> {
-  const supabase = await createClient()
-  const {
-    data: { user: callerUser },
-  } = await supabase.auth.getUser()
-
-  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+  const role = await getRole()
+  if (role !== 'admin') {
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  const { data: updated, error } = await supabase
-    .from('faq_items')
-    .update({
-      question: formData.question,
-      answer: formData.answer,
-      attachments: formData.attachments ?? [],
-    })
-    .eq('id', id)
-    .select()
-    .single()
+  let updated: typeof faqItems.$inferSelect
+  try {
+    ;[updated] = await db
+      .update(faqItems)
+      .set({
+        question: formData.question,
+        answer: formData.answer,
+        attachments: formData.attachments ?? [],
+      })
+      .where(eq(faqItems.id, id))
+      .returning()
+  } catch (err) {
+    console.error('[updateFaqItem] update error:', err)
+    return { error: 'Nepavyko atnaujinti klausimo' }
+  }
 
-  if (error || !updated) {
+  if (!updated) {
     return { error: 'Nepavyko atnaujinti klausimo' }
   }
 
   revalidatePath('/admin/faq')
-  return { data: updated }
+  return { data: toFaqItem(updated) }
 }
 
 /**
@@ -91,18 +102,15 @@ export async function updateFaqItem(
 export async function deleteFaqItem(
   id: string
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const {
-    data: { user: callerUser },
-  } = await supabase.auth.getUser()
-
-  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+  const role = await getRole()
+  if (role !== 'admin') {
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
-  const { error } = await supabase.from('faq_items').delete().eq('id', id)
-
-  if (error) {
+  try {
+    await db.delete(faqItems).where(eq(faqItems.id, id))
+  } catch (err) {
+    console.error('[deleteFaqItem] delete error:', err)
     return { error: 'Nepavyko ištrinti klausimo' }
   }
 
@@ -117,23 +125,20 @@ export async function deleteFaqItem(
 export async function reorderFaqItems(
   orderedIds: string[]
 ): Promise<{ success: true } | { error: string }> {
-  const supabase = await createClient()
-  const {
-    data: { user: callerUser },
-  } = await supabase.auth.getUser()
-
-  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+  const role = await getRole()
+  if (role !== 'admin') {
     return { error: 'Neturite teisės atlikti šį veiksmą' }
   }
 
   // Update each item's sort_order to match its index in orderedIds
   for (let i = 0; i < orderedIds.length; i++) {
-    const { error } = await supabase
-      .from('faq_items')
-      .update({ sort_order: i + 1 })
-      .eq('id', orderedIds[i])
-
-    if (error) {
+    try {
+      await db
+        .update(faqItems)
+        .set({ sortOrder: i + 1 })
+        .where(eq(faqItems.id, orderedIds[i]))
+    } catch (err) {
+      console.error('[reorderFaqItems] update error:', err)
       return { error: 'Nepavyko pertvarkyti klausimų' }
     }
   }

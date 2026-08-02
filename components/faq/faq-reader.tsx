@@ -1,7 +1,7 @@
 'use client'
 // components/faq/faq-reader.tsx — Read-only FAQ accordion for sellers
 import { FileText, Link2 } from 'lucide-react'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import type { FaqItem } from '@/types/database'
 import {
   Accordion,
@@ -43,7 +43,7 @@ function LinkEmbed({ url }: { url: string }) {
   const name = fileName(url)
   const icon = isImage(url) ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={resizeSupabaseImage(url, { width: 64, height: 64 })} alt={name} className="h-8 w-8 rounded object-cover shrink-0" />
+    <img src={resizeImage(url, { width: 64, height: 64 })} alt={name} className="h-8 w-8 rounded object-cover shrink-0" />
   ) : (
     <FileText className="size-4 shrink-0 text-muted-foreground" />
   )
@@ -102,7 +102,7 @@ export function FaqReader({ items }: FaqReaderProps) {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={resizeSupabaseImage(url, { width: 320, height: 320, fit: 'contain' })}
+                          src={resizeImage(url, { width: 320, height: 320, fit: 'contain' })}
                           alt={fileName(url)}
                           className="h-40 w-auto max-w-xs object-cover"
                         />

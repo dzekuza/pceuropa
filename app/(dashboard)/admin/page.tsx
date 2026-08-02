@@ -4,7 +4,7 @@
 // Phase 3 gap closure: summary cards now wired with real Supabase data
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
 import { MONTHS_LT } from '@/lib/constants'
 import { StatisticsCard } from '@/components/ui/statistics-card-1'
 import { RevenueAreaChart } from '@/components/reui/charts/revenue-area-chart'
@@ -29,13 +29,12 @@ function formatEur(value: number): string {
 }
 
 export default async function AdminHomePage() {
-  const supabase = await createClient()
-  const [{ data: { user } }, dashboardData] = await Promise.all([
-    supabase.auth.getUser(),
-    getAdminHomeData(supabase),
+  const [session, dashboardData] = await Promise.all([
+    auth(),
+    getAdminHomeData(),
   ])
 
-  if (!user || user.app_metadata?.role !== 'admin') {
+  if (!session?.user || session.user.role !== 'admin') {
     redirect('/login')
   }
 

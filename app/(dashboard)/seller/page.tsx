@@ -4,8 +4,11 @@
 
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { eq, and, gte, lte } from 'drizzle-orm'
 import { PlusIcon } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/lib/auth/config'
+import { db } from '@/lib/db'
+import { tenants, revenueReports } from '@/drizzle/schema'
 import { YearSelector } from '@/components/tenants/year-selector'
 import { SellerYearGrid } from '@/components/seller/seller-year-grid'
 import { SellerYearExportButton } from '@/components/seller/seller-year-export-button'
@@ -17,6 +20,23 @@ import {
   CardDescription,
   CardToolbar,
 } from '@/components/ui/card'
+import type { RevenueReport } from '@/types/database'
+
+// Drizzle rows are camelCase with string numerics; components expect the
+// snake_case shape the old Supabase Row type produced.
+function toRevenueReport(row: typeof revenueReports.$inferSelect): RevenueReport {
+  return {
+    id: row.id,
+    tenant_id: row.tenantId,
+    user_id: row.userId,
+    month: row.month,
+    amount_eur: Number(row.amountEur),
+    tx_count: row.txCount,
+    submitted_at: row.submittedAt ? row.submittedAt.toISOString() : null,
+    submitted_by: row.submittedBy,
+    weeks: row.weeks as RevenueReport['weeks'],
+  }
+}
 
 // Submission grid is filtered by the ?year= search param; force-dynamic keeps the
 // segment out of the client Router Cache so switching years refetches without a reload.
@@ -27,22 +47,24 @@ interface SellerHomePageProps {
 }
 
 export default async function SellerHomePage({ searchParams }: SellerHomePageProps) {
-  const supabase = await createClient()
   // Defense-in-depth: validate JWT and verify seller role even though middleware already checked
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const session = await auth()
+  const user = session?.user
 
-  if (!user || user.app_metadata?.role !== 'seller') {
+  // NOTE: user.id is typed optional per next-auth's DefaultUser — see final
+  // report re: lib/auth/auth.config.ts's session() callback not currently
+  // setting session.user.id = token.sub, which this check surfaces at runtime
+  // as a redirect instead of silently querying with `undefined`.
+  if (!user || !user.id || user.role !== 'seller') {
     redirect('/login')
   }
 
   // Fetch the seller's tenant record
-  const { data: tenant } = await supabase
-    .from('tenants')
-    .select('id, store_name')
-    .eq('user_id', user.id)
-    .single()
+  const [tenant] = await db
+    .select({ id: tenants.id, store_name: tenants.storeName })
+    .from(tenants)
+    .where(eq(tenants.userId, user.id))
+    .limit(1)
 
   if (!tenant) {
     redirect('/seller/revenue')
@@ -54,20 +76,31 @@ export default async function SellerHomePage({ searchParams }: SellerHomePagePro
   const year = isNaN(parsedYear) ? currentYear : parsedYear
 
   // Fetch the selected year + the prior year (for same-month YoY deltas) in parallel
-  const [{ data: reports }, { data: prevReports }] = await Promise.all([
-    supabase
-      .from('revenue_reports')
-      .select('*')
-      .eq('tenant_id', tenant.id)
-      .gte('month', `${year}-01-01`)
-      .lte('month', `${year}-12-31`),
-    supabase
-      .from('revenue_reports')
-      .select('*')
-      .eq('tenant_id', tenant.id)
-      .gte('month', `${year - 1}-01-01`)
-      .lte('month', `${year - 1}-12-31`),
+  const [yearRows, prevYearRows] = await Promise.all([
+    db
+      .select()
+      .from(revenueReports)
+      .where(
+        and(
+          eq(revenueReports.tenantId, tenant.id),
+          gte(revenueReports.month, `${year}-01-01`),
+          lte(revenueReports.month, `${year}-12-31`)
+        )
+      ),
+    db
+      .select()
+      .from(revenueReports)
+      .where(
+        and(
+          eq(revenueReports.tenantId, tenant.id),
+          gte(revenueReports.month, `${year - 1}-01-01`),
+          lte(revenueReports.month, `${year - 1}-12-31`)
+        )
+      ),
   ])
+
+  const reports = yearRows.map(toRevenueReport)
+  const prevReports = prevYearRows.map(toRevenueReport)
 
   return (
     <div className="flex flex-col gap-3">

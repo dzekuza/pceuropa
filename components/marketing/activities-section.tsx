@@ -1,7 +1,7 @@
 import type React from 'react'
 import Link from 'next/link'
 import { DisplayHeading, BodyText } from './ui/typography'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const coffeeImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
 const sportsAd1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
@@ -58,7 +58,7 @@ export function ActivitiesSection({
           </Link>
         </div>
         <img
-          src={resizeSupabaseImage(leisureImage || coffeeImg, { width: 425, height: 379, quality: 90 })}
+          src={resizeImage(leisureImage || coffeeImg, { width: 425, height: 379, quality: 90 })}
           alt="Laisvalaikis PC Europa"
           className="w-full md:w-[280px] lg:w-[425px] md:h-[280px] lg:h-[379px] rounded-[12px] object-cover shrink-0"
         />
@@ -81,9 +81,9 @@ export function ActivitiesSection({
             </Link>
           </div>
           <div className="flex items-center justify-center gap-2 xl:gap-3 px-5 xl:px-6 mt-4 xl:mt-0 h-[180px] md:h-[200px] lg:h-[240px] xl:h-[299px]">
-            <img src={resizeSupabaseImage(sportsImage1 || sportsAd1, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
-            <img src={resizeSupabaseImage(sportsImage2 || sportsAd2, { width: 300, height: 400, quality: 90 })} alt="" className="h-full aspect-[3/4] rounded-[9px] object-contain shrink-0" />
-            <img src={resizeSupabaseImage(sportsImage3 || sportsAd3, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
+            <img src={resizeImage(sportsImage1 || sportsAd1, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
+            <img src={resizeImage(sportsImage2 || sportsAd2, { width: 300, height: 400, quality: 90 })} alt="" className="h-full aspect-[3/4] rounded-[9px] object-contain shrink-0" />
+            <img src={resizeImage(sportsImage3 || sportsAd3, { width: 300, height: 400, quality: 90 })} alt="" className="w-1/4 h-[calc(100%-90px)] my-[45px] aspect-[3/4] rounded-[6px] object-contain shrink-0" />
           </div>
         </div>
 
@@ -105,7 +105,7 @@ export function ActivitiesSection({
             Sužinokite daugiau
           </Link>
           <img
-            src={resizeSupabaseImage(petImage || petImg, { width: 360, height: 360, quality: 90 })}
+            src={resizeImage(petImage || petImg, { width: 360, height: 360, quality: 90 })}
             alt=""
             className="hidden md:block absolute right-0 bottom-0 w-[40%] xl:w-[360px] xl:h-[360px] object-cover"
           />

@@ -1,11 +1,22 @@
 // app/api/admin/restore/route.ts — Restore admin session after impersonation
+//
+// Counterpart to app/api/admin/impersonate/route.ts's session mint: the JWT
+// strategy is stateless, so "restoring" the admin session just means putting
+// the backed-up session cookie back rather than refreshing a Supabase token.
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
-import { createClient } from '@/lib/supabase/server'
+import { decode } from 'next-auth/jwt'
 import { isSameSiteNavigation } from '@/lib/auth/same-site-navigation'
+
+// Duplicated from app/api/admin/impersonate/route.ts — see the note there on
+// why this isn't lifted into lib/auth/ (out of scope for this pass).
+const USE_SECURE_COOKIES = process.env.NODE_ENV === 'production'
+const SESSION_COOKIE_NAME = USE_SECURE_COOKIES
+  ? '__Secure-authjs.session-token'
+  : 'authjs.session-token'
 
 export async function GET(request: NextRequest) {
     if (!isSameSiteNavigation(request)) {
@@ -13,27 +24,35 @@ export async function GET(request: NextRequest) {
     }
 
     const cookieStore = await cookies()
-    const adminRefreshToken = cookieStore.get('admin_refresh_token')?.value
+    const adminSessionCookie = cookieStore.get('admin_session_backup')?.value
 
     cookieStore.delete('impersonating')
-    cookieStore.delete('admin_refresh_token')
+    cookieStore.delete('admin_session_backup')
 
-    if (!adminRefreshToken) {
+    if (!adminSessionCookie) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    const supabase = await createClient()
-    const { data, error } = await supabase.auth.refreshSession({ refresh_token: adminRefreshToken })
-
-    if (error || !data.user) {
+    const secret = process.env.AUTH_SECRET
+    if (!secret) {
         return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Verify the restored session actually belongs to an admin
-    if (data.user.app_metadata?.role !== 'admin') {
-        await supabase.auth.signOut()
+    // Verify the backed-up cookie is still a valid, unexpired admin session
+    // before restoring it — never trust it blindly.
+    const token = await decode({ token: adminSessionCookie, secret, salt: SESSION_COOKIE_NAME }).catch(() => null)
+
+    if (!token || token.role !== 'admin') {
+        cookieStore.delete(SESSION_COOKIE_NAME)
         return NextResponse.redirect(new URL('/login', request.url))
     }
+
+    cookieStore.set(SESSION_COOKIE_NAME, adminSessionCookie, {
+        httpOnly: true,
+        secure: USE_SECURE_COOKIES,
+        sameSite: 'lax',
+        path: '/',
+    })
 
     return NextResponse.redirect(new URL('/admin', request.url))
 }

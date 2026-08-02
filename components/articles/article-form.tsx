@@ -34,8 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
+import { compressImageFile } from '@/lib/image-compression'
 import { createArticle, updateArticle } from '@/actions/articles'
 import {
   articleFormSchema,
@@ -104,20 +103,19 @@ export function ArticleForm({ article }: ArticleFormProps) {
   async function uploadCoverImage(file: File) {
     setUploadingCover(true)
     const compressed = await compressImageFile(file)
-    const supabase = createClient()
-    const path = `articles/${Date.now()}.${imageExtension(compressed)}`
-    const { error } = await supabase.storage
-      .from('marketing-assets')
-      .upload(path, compressed, { contentType: compressed.type })
-    if (error) {
+    const formData = new FormData()
+    formData.set('file', compressed)
+    formData.set('bucket', 'marketing-assets')
+    formData.set('folder', 'articles')
+
+    const res = await fetch('/api/upload', { method: 'POST', body: formData })
+    if (!res.ok) {
       setUploadingCover(false)
       return
     }
-    const { data } = supabase.storage
-      .from('marketing-assets')
-      .getPublicUrl(path)
-    setValue('cover_image', data.publicUrl)
-    setCoverPreview(data.publicUrl)
+    const { url } = (await res.json()) as { url: string }
+    setValue('cover_image', url)
+    setCoverPreview(url)
     setUploadingCover(false)
   }
 

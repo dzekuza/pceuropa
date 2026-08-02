@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 type Tenant = { id: string; slug: string; store_name: string; logo_url: string }
 
@@ -63,7 +63,7 @@ export function LogoCard({ tenant, featured = false }: LogoCardProps) {
     >
       <img
         ref={logoRef}
-        src={resizeSupabaseImage(tenant.logo_url, { width: 200, height: 200, fit: 'contain' })}
+        src={resizeImage(tenant.logo_url, { width: 200, height: 200, fit: 'contain' })}
         alt={tenant.store_name}
         loading="lazy"
         className={`relative z-10 w-auto object-contain ${featured ? 'h-24 max-w-[70%]' : 'h-16 max-w-[80%]'}`}

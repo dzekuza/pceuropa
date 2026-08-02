@@ -1,5 +1,5 @@
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
 const DEFAULT_BANNER_BG = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg'
@@ -103,7 +103,7 @@ export function VisitorInfoBanner({
     <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-0 pl-6 lg:pl-10 pr-4 py-4 min-h-[292px]">
       {/* Background */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={resizeSupabaseImage(backgroundImage, { width: 1200, height: 600, quality: 90 })} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
+      <img src={resizeImage(backgroundImage, { width: 1200, height: 600, quality: 90 })} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
       <div className="absolute inset-0 bg-black/25 rounded-[32px] lg:rounded-[40px]" aria-hidden />
 
       {/* Left — heading + social icons */}

@@ -1,9 +1,8 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { compressImageFile, imageExtension } from '@/lib/image-compression'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { compressImageFile } from '@/lib/image-compression'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -42,22 +41,21 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
     setError(null)
 
     const compressed = await compressImageFile(file)
-    const supabase = createClient()
-    const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2)}.${imageExtension(compressed)}`
+    const formData = new FormData()
+    formData.set('file', compressed)
+    formData.set('bucket', 'marketing-assets')
+    formData.set('folder', 'uploads')
 
-    const { error: uploadError } = await supabase.storage
-      .from('marketing-assets')
-      .upload(path, compressed, { cacheControl: '31536000', upsert: false, contentType: compressed.type })
-
-    if (uploadError) {
+    const res = await fetch('/api/upload', { method: 'POST', body: formData })
+    if (!res.ok) {
       setError('Įkėlimo klaida. Bandykite dar kartą.')
-      console.error('Storage upload error:', uploadError)
+      console.error('Storage upload error:', await res.text())
       setUploading(false)
       return
     }
 
-    const { data } = supabase.storage.from('marketing-assets').getPublicUrl(path)
-    onChange(data.publicUrl)
+    const { url } = (await res.json()) as { url: string }
+    onChange(url)
     setUploading(false)
   }, [onChange])
 
@@ -100,7 +98,7 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
         {value ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={resizeSupabaseImage(value, { width: 480, height: 240 })} alt="" className="w-full h-full object-cover block" />
+            <img src={resizeImage(value, { width: 480, height: 240 })} alt="" className="w-full h-full object-cover block" />
             <div
               className={[
                 'absolute inset-0 bg-black/45 flex items-center justify-center gap-3 transition-opacity duration-150',

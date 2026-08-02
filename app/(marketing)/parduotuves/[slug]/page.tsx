@@ -6,7 +6,7 @@ import { Footer } from '@/components/marketing/footer'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 import { StoreGallery } from '@/components/marketing/store-gallery'
 import { getPublicTenantBySlug } from '@/lib/tenants-public'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeImage } from '@/lib/storage/resize-image'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -109,7 +109,7 @@ export default async function StoreDetailPage({ params }: Props) {
                 <div className="h-[72px] w-[72px] rounded-[20px] overflow-hidden border border-[#ebebeb] shrink-0 bg-white">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={resizeSupabaseImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
+                    src={resizeImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
                     alt={`${tenant.store_name} logotipas`}
                     className="size-full object-contain p-1"
                   />
