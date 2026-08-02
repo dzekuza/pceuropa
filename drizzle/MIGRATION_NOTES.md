@@ -86,6 +86,13 @@ authorization work) — noted inline in the migration file.
    FKs, or keep these columns as opaque external-identity uuids with
    integrity enforced at the application layer only.
 
+   **Resolved**: Phase 4 introduced `users` (populated by Auth.js), and
+   `drizzle/migrations/0002_black_umar.sql` adds the real FKs back. Safe
+   against existing data because Supabase already enforced the equivalent FK
+   to `auth.users`, and `migrate-data.ts` re-inserts the full `auth-users.json`
+   export into `users` with matching ids before inserting the referencing
+   tables.
+
 2. **No local users/profiles table exists.** Confirmed by reading every
    migration in `supabase/migrations/` — the only user-related structure
    is the `auth.users` FK usage above. Supabase Auth fully owns identity;

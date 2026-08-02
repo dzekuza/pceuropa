@@ -14,4 +14,4 @@ paths:
 - Never drop columns or tables without confirming data is no longer needed.
 - Add indexes in their own migration, not bundled with schema changes.
 - DB client: `lib/db/index.ts` (Drizzle + `node-postgres`) — a module-level singleton, not per-request like the old Supabase client factories. Query via `db.select()...from(table)` against `drizzle/schema.ts`'s exported tables.
-- FK constraints from `users` → `tenants.userId`/`revenueReports.userId`/`moderanSyncLog.sentBy` are currently **deferred**, not enforced — see `drizzle/MIGRATION_NOTES.md` before assuming referential integrity there.
+- FK constraints from `users` → `tenants.userId`/`revenueReports.userId`/`moderanSyncLog.sentBy` are enforced (added in `drizzle/migrations/0002_black_umar.sql`).

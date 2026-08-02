@@ -7,16 +7,13 @@
 // and indexes mirror the CURRENT LIVE state of the Supabase database as of
 // migration 20260730130000_add_tenant_slug.sql (the last applied migration).
 //
-// NOTE ON auth.users: several tables have a FK to Supabase's auth.users
-// (tenants.user_id, revenue_reports.user_id, moderan_sync_log.sent_by).
-// There is NO public-schema users/profiles table anywhere in
-// supabase/migrations/ — Supabase Auth manages auth.users in its own schema,
-// entirely separate from anything ported here. Since this migration moves to
-// Auth.js, Phase 4 will need to introduce a real `users` table (or decide
-// these columns reference an external identity provider some other way).
-// These three columns are modeled below as plain `uuid` columns with NO
-// foreign key reference, since the referenced table (auth.users) does not
-// exist in the target database. See drizzle/MIGRATION_NOTES.md.
+// NOTE ON auth.users: tenants.user_id, revenue_reports.user_id, and
+// moderan_sync_log.sent_by originally had a FK to Supabase's auth.users.
+// Phase 4 added a local `users` table (below) and migrate-data.ts re-inserts
+// every row with its original auth.users uuid preserved, so these three
+// columns now reference `users.id` for real, closing the gap noted in
+// drizzle/MIGRATION_NOTES.md. See users' own comment for why this is safe
+// against existing data.
 
 import {
   pgTable,
@@ -45,8 +42,7 @@ export const tenants = pgTable(
   "tenants",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // FK to auth.users in Supabase; no local users table exists (see note above).
-    userId: uuid("user_id"),
+    userId: uuid("user_id").references(() => users.id),
     storeName: text("store_name").notNull(),
     operator: text("operator"),
     companyCode: text("company_code"),
@@ -80,8 +76,7 @@ export const revenueReports = pgTable(
   "revenue_reports",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // FK to auth.users in Supabase; no local users table exists (see note above).
-    userId: uuid("user_id"),
+    userId: uuid("user_id").references(() => users.id),
     tenantId: uuid("tenant_id").references(() => tenants.id, {
       onDelete: "cascade",
     }),
@@ -201,8 +196,7 @@ export const moderanSyncLog = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     month: date("month").notNull().unique(),
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
-    // FK to auth.users in Supabase; no local users table exists (see note above).
-    sentBy: uuid("sent_by"),
+    sentBy: uuid("sent_by").references(() => users.id),
     results: jsonb("results").notNull(),
   },
   (table) => [index("moderan_sync_log_sent_by_idx").on(table.sentBy)],
@@ -244,12 +238,13 @@ export const promos = pgTable(
 // in Supabase's auth.users, so tenants.user_id / revenue_reports.user_id /
 // moderan_sync_log.sent_by keep resolving to the same identity unchanged.
 //
-// Scope note: per the Phase 4 task, this is an ADDITIVE table only — the 8
-// existing table defs above are untouched. FK constraints from
-// tenants.user_id / revenue_reports.user_id / moderan_sync_log.sent_by to
-// this table are NOT added here even though the migration decision doc
-// mentions adding them once a target table exists; wiring those FKs touches
-// the existing table defs and is left for a follow-up phase.
+// FK constraints from tenants.user_id / revenue_reports.user_id /
+// moderan_sync_log.sent_by to this table are now wired up above. Safe
+// against existing production data because, in Supabase, those three columns
+// already had a real FK to auth.users — so every non-null value in them was
+// guaranteed to correspond to a row in the auth-users.json export, and
+// migrate-data.ts inserts that entire export into `users` with matching ids
+// before inserting tenants/revenue_reports/moderan_sync_log.
 //
 // No password hashes exist in the Supabase export (~/backups/pceuropa/
 // pre-migration-2026-08-02/auth-users.json) — passwordHash is nullable so
