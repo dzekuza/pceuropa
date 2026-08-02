@@ -4,7 +4,7 @@ import { DialogaiSection } from '@/components/marketing/dialogai-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { DialogaiFoodCourtDirectory } from '@/components/marketing/dialogai-food-court-directory'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 
 export const metadata = {
@@ -19,16 +19,13 @@ const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-3.jpg',
 ]
 
-export default async function DialogaiPage() {
-  const supabase = await createClient()
-  const bannerSlides = await getPuckBannerSlides('dialogai', DEFAULT_BANNER_SLIDES)
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, slug, store_name, category, logo_url, gallery_images')
-    .in('category', ['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])
-    .order('store_name', { ascending: true })
+const DIALOGAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])
 
-  const places = (tenants ?? []).map((t) => ({
+export default async function DialogaiPage() {
+  const bannerSlides = await getPuckBannerSlides('dialogai', DEFAULT_BANNER_SLIDES)
+  const tenants = (await getPublicTenants()).filter((t) => t.category && DIALOGAI_CATEGORIES.has(t.category))
+
+  const places = tenants.map((t) => ({
     id: t.id,
     slug: t.slug,
     name: t.store_name,

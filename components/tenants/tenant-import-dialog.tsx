@@ -143,7 +143,7 @@ async function uploadToStorage(file: File, folder: 'logos' | 'gallery'): Promise
   const path = `${folder}/${crypto.randomUUID()}.${imageExtension(compressed)}`
   const { error } = await supabase.storage
     .from('tenant-assets')
-    .upload(path, compressed, { upsert: true, contentType: compressed.type })
+    .upload(path, compressed, { upsert: true, contentType: compressed.type, cacheControl: '31536000' })
   if (error) throw new Error(`Nepavyko įkelti ${file.name}: ${error.message}`)
   const { data } = supabase.storage.from('tenant-assets').getPublicUrl(path)
   return data.publicUrl

@@ -3,7 +3,7 @@ import { Footer } from '@/components/marketing/footer'
 import { StoresDirectory } from '@/components/marketing/stores-directory'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
 
@@ -17,14 +17,10 @@ const DEFAULT_BANNER_SLIDES = [
 ]
 
 export default async function ParduotuvesPage() {
-  const supabase = await createClient()
   const bannerSlides = await getPuckBannerSlides('parduotuves', DEFAULT_BANNER_SLIDES)
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, slug, store_name, category, logo_url, gallery_images')
-    .order('store_name', { ascending: true })
+  const tenants = await getPublicTenants()
 
-  const stores = (tenants ?? []).map((t) => ({
+  const stores = tenants.map((t) => ({
     id: t.id,
     slug: t.slug,
     name: t.store_name,

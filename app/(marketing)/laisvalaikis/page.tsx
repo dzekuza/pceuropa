@@ -3,7 +3,7 @@ import { Footer } from '@/components/marketing/footer'
 import { StoresDirectory } from '@/components/marketing/stores-directory'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 import { LAISVALAIKIS_STRINGS } from '@/lib/strings'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
@@ -17,15 +17,10 @@ const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {
-  const supabase = await createClient()
   const bannerSlides = await getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES)
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, slug, store_name, category, logo_url, gallery_images')
-    .eq('category', 'LAISVALAIKIS IR PRAMOGOS')
-    .order('store_name', { ascending: true })
+  const tenants = (await getPublicTenants()).filter((t) => t.category === 'LAISVALAIKIS IR PRAMOGOS')
 
-  const stores = (tenants ?? []).map((t) => ({
+  const stores = tenants.map((t) => ({
     id: t.id,
     slug: t.slug,
     name: t.store_name,

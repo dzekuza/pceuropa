@@ -4,7 +4,7 @@ import { RestaurantsDirectory } from '@/components/marketing/restaurants-directo
 import { DialogaiSection, RESTORANAI_SECTION_PROPS } from '@/components/marketing/dialogai-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
 
@@ -19,16 +19,13 @@ const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-3.jpg',
 ]
 
-export default async function RestoranaiPage() {
-  const supabase = await createClient()
-  const bannerSlides = await getPuckBannerSlides('restoranai', DEFAULT_BANNER_SLIDES)
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, slug, store_name, category, logo_url, gallery_images')
-    .in('category', ['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])
-    .order('store_name', { ascending: true })
+const RESTORANAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])
 
-  const restaurants = (tenants ?? []).map((t) => ({
+export default async function RestoranaiPage() {
+  const bannerSlides = await getPuckBannerSlides('restoranai', DEFAULT_BANNER_SLIDES)
+  const tenants = (await getPublicTenants()).filter((t) => t.category && RESTORANAI_CATEGORIES.has(t.category))
+
+  const restaurants = tenants.map((t) => ({
     id: t.id,
     slug: t.slug,
     name: t.store_name,

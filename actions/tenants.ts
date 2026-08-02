@@ -1,10 +1,11 @@
 'use server'
 // actions/tenants.ts — Server Actions for tenant CRUD operations
 // Defense-in-depth: each action verifies admin role independently (CVE-2025-29927)
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugify } from '@/lib/slugify'
+import { TENANTS_PUBLIC_CACHE_TAG } from '@/lib/tenants-public'
 import type { TenantFormValues } from '@/lib/validations/tenant'
 
 /**
@@ -97,6 +98,7 @@ export async function createTenant(
   }
 
   revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
   return { success: true }
 }
 
@@ -139,6 +141,7 @@ export async function updateTenant(
   }
 
   revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
   return { success: true }
 }
 
@@ -185,6 +188,7 @@ export async function deleteTenant(
   }
 
   revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
   return { success: true }
 }
 
@@ -392,6 +396,7 @@ export async function bulkUpdateTenantCategory(
   }
 
   revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
   return { updated: tenantIds.length }
 }
 
@@ -437,6 +442,7 @@ export async function bulkDeleteTenants(
   }
 
   revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
   return { deleted: tenants.length, errors: [] }
 }
 

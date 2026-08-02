@@ -4,7 +4,7 @@ import { VisitorInfoBanner } from '@/components/marketing/visitor-info-banner'
 import { OpeningHoursSection } from '@/components/marketing/opening-hours-section'
 import { HowToGetHereSection } from '@/components/marketing/how-to-get-here-section'
 import { PlanasSection } from '@/components/marketing/planas-section'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
@@ -58,18 +58,13 @@ function isCurrentlyOpen(): boolean {
 }
 
 export default async function DarboLaikasPage() {
-  const supabase = await createClient()
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, store_name, category, logo_url, gallery_images, weekday_hours, saturday_hours, sunday_hours')
-    .order('store_name', { ascending: true })
-
+  const tenants = await getPublicTenants()
   const open = isCurrentlyOpen()
   const bannerSlides = await getPuckBannerSlides('darbo-laikas', DEFAULT_BANNER_SLIDES)
   const openingHoursText = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', DEFAULT_OPENING_HOURS_TEXT)
   const howToGetHere = await getPuckBlockProps('darbo-laikas', 'HowToGetHereBlock', DEFAULT_HOW_TO_GET_HERE)
 
-  const stores: StoreHoursCardProps[] = (tenants ?? []).map((t) => ({
+  const stores: StoreHoursCardProps[] = tenants.map((t) => ({
     id: t.id,
     name: t.store_name,
     logoUrl: t.logo_url ?? null,
@@ -82,7 +77,7 @@ export default async function DarboLaikasPage() {
     href: `/parduotuves`,
   }))
 
-  const planasStores = (tenants ?? []).map((t) => ({
+  const planasStores = tenants.map((t) => ({
     id: t.id,
     name: t.store_name,
     logoUrl: t.logo_url ?? null,

@@ -5,19 +5,14 @@ import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 import { StoreGallery } from '@/components/marketing/store-gallery'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenantBySlug } from '@/lib/tenants-public'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('tenants_public')
-    .select('store_name, category')
-    .eq('slug', slug)
-    .maybeSingle()
+  const data = await getPublicTenantBySlug(slug)
 
   if (!data) return {}
   return {
@@ -76,13 +71,7 @@ function isOpen(weekdayHours: string, saturdayHours: string, sundayHours: string
 
 export default async function StoreDetailPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createClient()
-
-  const { data: tenant } = await supabase
-    .from('tenants_public')
-    .select('id, slug, store_name, category, logo_url, gallery_images, description, weekday_hours, saturday_hours, sunday_hours')
-    .eq('slug', slug)
-    .single()
+  const tenant = await getPublicTenantBySlug(slug)
 
   if (!tenant) notFound()
 

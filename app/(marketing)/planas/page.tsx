@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { PlanasSection } from '@/components/marketing/planas-section'
-import { createClient } from '@/lib/supabase/server'
+import { getPublicTenants } from '@/lib/tenants-public'
 
 export const metadata: Metadata = {
   title: 'Prekybos centro planas — PC Europa',
@@ -10,13 +10,9 @@ export const metadata: Metadata = {
 }
 
 export default async function PlanasPage() {
-  const supabase = await createClient()
-  const { data: tenants } = await supabase
-    .from('tenants_public')
-    .select('id, store_name, logo_url')
-    .order('store_name', { ascending: true })
+  const tenants = await getPublicTenants()
 
-  const stores = (tenants ?? []).map((t) => ({
+  const stores = tenants.map((t) => ({
     id: t.id,
     name: t.store_name,
     logoUrl: t.logo_url ?? null,
