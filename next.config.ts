@@ -1,6 +1,5 @@
 import type { NextConfig } from "next";
 
-const SUPABASE_HOST = "ybyyxcuvxuzrledbitky.supabase.co";
 const isDev = process.env.NODE_ENV !== "production";
 
 // React/Turbopack use eval() in dev mode for debugging (stack reconstruction, HMR)
@@ -44,7 +43,7 @@ const securityHeaders = [
       imgSrc,
       fontSrc,
       // *.google-analytics.com covers GA4's regional collection subdomains (region1, region2, ...)
-      `connect-src 'self' https://${SUPABASE_HOST} wss://${SUPABASE_HOST} https://*.google-analytics.com https://www.googletagmanager.com`,
+      "connect-src 'self' https://*.google-analytics.com https://www.googletagmanager.com",
       "frame-src 'self' https://www.google.com https://maps.google.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",

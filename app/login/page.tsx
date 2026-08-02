@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { signIn } from 'next-auth/react'
 import { AUTH_STRINGS, SELLER_USERNAME_DOMAIN } from '@/lib/strings'
 import { AnimatedLoginForm } from '@/components/ui/animated-characters-login-page'
 
@@ -22,20 +22,23 @@ export default function LoginPage() {
       ? identifier
       : `${identifier}${SELLER_USERNAME_DOMAIN}`
 
-    const supabase = createClient()
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
+    const result = await signIn('credentials', {
       email,
       password,
+      redirect: false,
     })
 
-    if (authError || !data.user) {
+    if (!result || result.error) {
       setError(AUTH_STRINGS.loginError)
       setIsLoading(false)
       return
     }
 
-    const role = data.user.app_metadata?.role
-    router.push(role === 'admin' ? '/admin' : '/seller')
+    // The signed-in role isn't available client-side from `signIn`'s result —
+    // re-fetch the session to read it back off the JWT we just minted.
+    const { getSession } = await import('next-auth/react')
+    const session = await getSession()
+    router.push(session?.user?.role === 'admin' ? '/admin' : '/seller')
   }
 
   return (
