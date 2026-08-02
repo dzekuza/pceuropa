@@ -11,6 +11,12 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  // Explicit, not just the AUTH_TRUST_HOST env var — this app is served from
+  // two hostnames (marketing apex + nuomininkai. dashboard subdomain) behind
+  // Caddy, and relying on env-var auto-detection alone left `request.url`
+  // inside proxy.ts silently falling back to a single canonical origin
+  // instead of the actual incoming Host header, breaking subdomain redirects.
+  trustHost: true,
   pages: {
     signIn: "/login",
   },
