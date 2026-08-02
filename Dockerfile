@@ -44,6 +44,15 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Overwrite the standalone output's own (partial) node_modules with the
+# builder's full, real pnpm install. Next's file tracer copies sharp's
+# nested @img/sharp-libvips-linuxmusl-x64 companion package's index.js but
+# not its actual .so binary — a known gap with binary assets loaded via
+# dlopen() rather than a traceable require()/readFile() call, several
+# levels deep in pnpm's virtual store. Copying the complete node_modules
+# instead of relying on the trace sidesteps that gap entirely.
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
 # STORAGE_ROOT mounts here via a volume in docker-compose.yml — created and
 # owned by the app user so it's writable at runtime regardless of host
 # volume ownership on first mount.
