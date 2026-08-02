@@ -21,6 +21,13 @@
 // ─────────────────────────────────────────────────────────────────────────
 // SOURCE DATA
 //
+// Any field holding a Supabase Storage public-object URL (tenants.logoUrl/
+// galleryImages, faqItems.attachments, articles.coverImage, promos.image) is
+// rewritten from https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/
+// public/<bucket>/<key> to /api/storage/<bucket>/<key> at insert time — see
+// rewriteStorageUrl/rewriteStorageUrls below — so rows are correct from day
+// one and don't depend on Supabase Storage staying reachable.
+//
 // Reads from ~/backups/pceuropa/pre-migration-2026-08-02/ (verified against
 // that backup's MANIFEST.md and, independently, by directly counting each
 // data/*.json array's length — both agree):
@@ -54,16 +61,17 @@
 //   email: text not null, unique
 //   role: text not null, check in ('admin', 'seller')
 //   passwordHash: text, NULLABLE — no must_reset_password / must_change_password
-//       boolean column exists on this table. The task brief asked for a
-//       "must_reset_password flag if the users table has one" — it does NOT
-//       have one (confirmed by reading schema.ts's users table definition,
-//       not guessed), so this script does NOT set one. It leaves
-//       passwordHash NULL for every migrated user, which is the schema's own
-//       documented mechanism for "this user must go through a forced
-//       password-reset flow post-migration" (see schema.ts's comment above
-//       the users table). Whoever builds the login/reset flow should treat
-//       passwordHash === null as "reset required" — that's a lib/auth/**
-//       concern, out of scope here.
+//       boolean column exists on this table. Sellers' real login passwords
+//       are recoverable: tenants.login_password (data/tenants.json) has been
+//       storing each seller's plaintext password on their tenant row all
+//       along, so this script bcrypt-hashes it (BCRYPT_ROUNDS = 10, matching
+//       lib/auth/admin-users.ts) into the matching users row via
+//       tenants.user_id — those sellers can log in immediately, no forced
+//       reset. Admins have no tenant row and no plaintext password anywhere
+//       in the export, so they keep passwordHash NULL, which remains the
+//       schema's documented mechanism for "this user must go through a
+//       forced password-reset flow post-migration" (see schema.ts's comment
+//       above the users table).
 //   createdAt: timestamp, defaultNow() — overridden with the original
 //       auth.users created_at so signup dates aren't lost.
 //
@@ -78,10 +86,27 @@
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "./schema";
+
+// Old Supabase Storage public-object URLs, rewritten to this app's
+// same-origin storage route so rows are correct from day one instead of
+// depending on Supabase Storage staying reachable.
+const SUPABASE_STORAGE_URL_PREFIX =
+  "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/";
+
+function rewriteStorageUrl<T extends string | null | undefined>(url: T): T {
+  if (!url || !url.startsWith(SUPABASE_STORAGE_URL_PREFIX)) return url;
+  const bucketAndKey = url.slice(SUPABASE_STORAGE_URL_PREFIX.length);
+  return `/api/storage/${bucketAndKey}` as T;
+}
+
+function rewriteStorageUrls(urls: string[] | null | undefined): string[] {
+  return (urls ?? []).map((u) => rewriteStorageUrl(u) ?? u);
+}
 
 const BACKUP_ROOT = join(
   homedir(),
@@ -236,17 +261,38 @@ async function main() {
 
   try {
     // ── users (from auth-users.json — separate top-level export, not data/) ──
+    // tenants.json is read early (read-only, insert happens below in its own
+    // step) so each seller's plaintext login_password — stored on their
+    // tenant row for admin lookup/reset — can be bcrypt-hashed straight into
+    // users.passwordHash. Admins have no tenant row and no plaintext
+    // password anywhere in the export, so they keep passwordHash null.
+    const tenantsForPasswords = await readJson<SourceTenant[]>(
+      "data/tenants.json",
+    );
+    const loginPasswordByUserId = new Map(
+      tenantsForPasswords
+        .filter((t) => t.user_id && t.login_password)
+        .map((t) => [t.user_id as string, t.login_password as string]),
+    );
+
     const authUsers = await readJson<SourceAuthUser[]>("auth-users.json");
     console.log(`Read ${authUsers.length} rows from auth-users.json`);
     if (authUsers.length) {
       await db.insert(schema.users).values(
-        authUsers.map((u) => ({
-          id: u.id,
-          email: u.email,
-          role: u.role,
-          passwordHash: null, // no hash exported; forces password-reset flow
-          createdAt: toDate(u.created_at),
-        })),
+        await Promise.all(
+          authUsers.map(async (u) => {
+            const plaintext = loginPasswordByUserId.get(u.id);
+            return {
+              id: u.id,
+              email: u.email,
+              role: u.role,
+              passwordHash: plaintext
+                ? await bcrypt.hash(plaintext, 10)
+                : null, // no tenant login_password on file; forces password-reset flow
+              createdAt: toDate(u.created_at),
+            };
+          }),
+        ),
       );
     }
     results.push(
@@ -257,8 +303,9 @@ async function main() {
       ),
     );
 
-    // ── tenants ──
-    const tenantsData = await readJson<SourceTenant[]>("data/tenants.json");
+    // ── tenants (reuses tenantsForPasswords read above — same source file,
+    // read once, still verbatim against data/tenants.json for reconciliation) ──
+    const tenantsData = tenantsForPasswords;
     console.log(`Read ${tenantsData.length} rows from data/tenants.json`);
     if (tenantsData.length) {
       await db.insert(schema.tenants).values(
@@ -273,8 +320,8 @@ async function main() {
           rentEur: t.rent_eur != null ? String(t.rent_eur) : null,
           createdAt: toDate(t.created_at),
           loginPassword: t.login_password,
-          logoUrl: t.logo_url,
-          galleryImages: t.gallery_images ?? [],
+          logoUrl: rewriteStorageUrl(t.logo_url),
+          galleryImages: rewriteStorageUrls(t.gallery_images),
           description: t.description,
           weekdayHours: t.weekday_hours ?? undefined,
           saturdayHours: t.saturday_hours ?? undefined,
@@ -332,7 +379,7 @@ async function main() {
           answer: f.answer,
           sortOrder: f.sort_order,
           createdAt: toDate(f.created_at),
-          attachments: f.attachments ?? [],
+          attachments: rewriteStorageUrls(f.attachments),
         })),
       );
     }
@@ -408,7 +455,7 @@ async function main() {
           title: a.title,
           slug: a.slug,
           content: a.content,
-          coverImage: a.cover_image,
+          coverImage: rewriteStorageUrl(a.cover_image),
           category: a.category,
           featured: a.featured,
           published: a.published,
@@ -461,7 +508,7 @@ async function main() {
           id: p.id,
           title: p.title,
           slug: p.slug,
-          image: p.image,
+          image: rewriteStorageUrl(p.image),
           startsAt: p.starts_at,
           endsAt: p.ends_at,
           category: p.category,
