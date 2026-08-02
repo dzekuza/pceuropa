@@ -55,6 +55,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactCompiler: true,
   output: "standalone",
+  // `sharp` ships a platform-specific native binary (linuxmusl-x64 for this
+  // Alpine-based Docker image). Next's standalone-output file tracing
+  // doesn't reliably follow pnpm's symlinked node_modules structure to pick
+  // that binary up, so app/api/storage's on-the-fly resize silently 500'd
+  // in production despite building and typechecking fine. Marking sharp as
+  // an external package makes Next require() it from a real node_modules
+  // at runtime (which the Dockerfile copies in full) instead of trying to
+  // bundle/trace it.
+  serverExternalPackages: ["sharp"],
   images: {
     // Supabase Storage remote patterns removed — images now served from our
     // own same-origin /api/storage route, which needs no remotePatterns
