@@ -2,7 +2,11 @@ name: Build and deploy
 
 on:
   push:
-    branches: [master]
+    # TODO: switch to [master] once this migration branch is promoted —
+    # deploying straight from master would target the old Supabase/Vercel
+    # codebase's absence of Dockerfile/compose, so it must stay scoped to
+    # this branch until the two are merged.
+    branches: [migration/self-hosted-vps]
 
 concurrency:
   group: deploy-production
