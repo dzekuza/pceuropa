@@ -3,3 +3,14 @@ allowBuilds:
   msw: true
   sharp: true
   unrs-resolver: true
+
+overrides:
+  # Next.js pulls in an exact-pinned sharp@0.34.5 for its own <Image>
+  # optimizer, separate from our own ^0.35.3 dependency for
+  # app/api/storage's resize route. The two versions' native musl binaries
+  # need different companion @img/sharp-libvips-linuxmusl-x64 versions
+  # (8.17.3 vs 8.18.3), and Next's standalone-output tracer only copied
+  # one of them into the Docker image — whichever's ambiguous depending on
+  # resolution order, breaking the OTHER version's dlopen() at runtime.
+  # Forcing a single resolved version eliminates the mismatch entirely.
+  sharp: ^0.35.3
