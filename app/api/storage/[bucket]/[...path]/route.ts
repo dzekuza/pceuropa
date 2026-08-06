@@ -21,6 +21,7 @@ const EXT_CONTENT_TYPE: Record<string, string> = {
   gif: 'image/gif',
   avif: 'image/avif',
   pdf: 'application/pdf',
+  svg: 'image/svg+xml',
 }
 
 interface RouteParams {
@@ -54,9 +55,10 @@ export async function GET(request: Request, { params }: RouteParams) {
   const width = searchParams.get('width')
   const height = searchParams.get('height')
 
-  // Resize is image-only — PDFs and requests with no width/height pass
+  // Resize is raster-image-only — PDFs, SVGs (which scale natively via
+  // width/height attributes), and requests with no width/height pass
   // through as the original file.
-  if (contentType.startsWith('image/') && width && height) {
+  if (contentType.startsWith('image/') && ext !== 'svg' && width && height) {
     const quality = Number(searchParams.get('quality') ?? 85)
     const fit = searchParams.get('fit') === 'contain' ? 'contain' : 'cover'
 
