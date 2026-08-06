@@ -34,3 +34,15 @@ export type NavItem = {
   href: string
   icon: string
 }
+
+export const UNDER_CONSTRUCTION_STRINGS = {
+  title: 'Svetainė ruošiama',
+  description: 'PC Europa svetainė šiuo metu atnaujinama. Netrukus grįšime su nauju turiniu.',
+  adminLoginButton: 'Prisijungti kaip administratorius',
+  passwordPlaceholder: 'Slaptažodis',
+  submitButton: 'Prisijungti',
+  submitLoading: 'Tikrinama...',
+  errorRequired: 'Įveskite slaptažodį.',
+  errorWrongPassword: 'Neteisingas slaptažodis.',
+  dragHint: 'Vilkite, kad pamatytumėte visas parduotuves',
+} as const

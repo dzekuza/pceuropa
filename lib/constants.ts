@@ -1,5 +1,8 @@
 // lib/constants.ts — Lithuanian constants shared across components
 
+// Cookie set once a visitor unlocks the under-construction gate on public pages.
+export const SITE_LOCK_COOKIE = 'pce_site_unlocked'
+
 export const TENANT_CATEGORIES = [
   'Mada ir apranga',
   'Maistas ir restoranai',
