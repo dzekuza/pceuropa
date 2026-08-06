@@ -37,3 +37,20 @@ export async function compressImageFile(file: File): Promise<File> {
 export function imageExtension(file: File): string {
   return MIME_EXTENSIONS[file.type] ?? file.name.split('.').pop() ?? 'bin'
 }
+
+/** Reads an image file's pixel dimensions without uploading or compressing it. */
+export function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to read image dimensions'))
+    }
+    img.src = url
+  })
+}

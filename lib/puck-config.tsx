@@ -114,22 +114,22 @@ export const puckConfig: Config<PuckBlocks> = {
         slide1: {
           type: 'custom',
           label: 'Nuotrauka 1',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1600} minHeight={920} />,
         },
         slide2: {
           type: 'custom',
           label: 'Nuotrauka 2',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1600} minHeight={920} />,
         },
         slide3: {
           type: 'custom',
           label: 'Nuotrauka 3',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1600} minHeight={920} />,
         },
         slide4: {
           type: 'custom',
           label: 'Nuotrauka 4',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1600} minHeight={920} />,
         },
       },
       defaultProps: { slide1: '', slide2: '', slide3: '', slide4: '' },
@@ -150,7 +150,7 @@ export const puckConfig: Config<PuckBlocks> = {
             src: {
               type: 'custom',
               label: 'Nuotrauka',
-              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1600} minHeight={920} />,
             },
             alt: { type: 'text', label: 'Aprašymas (alt)' },
           },
@@ -201,7 +201,7 @@ export const puckConfig: Config<PuckBlocks> = {
             image: {
               type: 'custom',
               label: 'Nuotrauka',
-              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={500} minHeight={560} />,
             },
           },
           defaultItemProps: { title: '', href: '/', image: '' },
@@ -231,30 +231,30 @@ export const puckConfig: Config<PuckBlocks> = {
         leisureImage: {
           type: 'custom',
           label: 'Laisvalaikio nuotrauka',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={425} minHeight={379} />,
         },
         sportsHeading: { type: 'text', label: 'Sporto kortelės antraštė', contentEditable: true },
         sportsImage1: {
           type: 'custom',
           label: 'Sporto nuotrauka 1 (kairė)',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={300} minHeight={400} />,
         },
         sportsImage2: {
           type: 'custom',
           label: 'Sporto nuotrauka 2 (vidurinė)',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={300} minHeight={400} />,
         },
         sportsImage3: {
           type: 'custom',
           label: 'Sporto nuotrauka 3 (dešinė)',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={300} minHeight={400} />,
         },
         petsHeading: { type: 'text', label: 'Augintinių kortelės antraštė', contentEditable: true },
         petsDescription: { type: 'textarea', label: 'Augintinių aprašymas', contentEditable: true },
         petImage: {
           type: 'custom',
           label: 'Augintinių nuotrauka',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={360} minHeight={360} />,
         },
       },
       defaultProps: {
@@ -291,7 +291,7 @@ export const puckConfig: Config<PuckBlocks> = {
             image: {
               type: 'custom',
               label: 'Nuotrauka',
-              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+              render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={500} minHeight={472} />,
             },
             title: { type: 'text', label: 'Pavadinimas' },
             date: { type: 'text', label: 'Data' },
@@ -444,7 +444,7 @@ export const puckConfig: Config<PuckBlocks> = {
         cover: {
           type: 'custom',
           label: 'Viršelio nuotrauka',
-          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} />,
+          render: ({ value, onChange }) => <ImageUploadField value={value as string} onChange={onChange} minWidth={1200} minHeight={600} />,
         },
       },
       defaultProps: { cover: '' },

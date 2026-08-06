@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { compressImageFile } from '@/lib/image-compression'
+import { compressImageFile, getImageDimensions } from '@/lib/image-compression'
 import { resizeImage } from '@/lib/storage/resize-image'
 
 const MIME_TO_EXT: Record<string, string> = {
@@ -17,13 +17,20 @@ interface ImageUploadFieldProps {
   value: string | undefined
   onChange: (url: string) => void
   label?: string
+  // Recommended minimum source resolution for where this image is displayed
+  // — e.g. a 1600×920 hero slot needs a source at least that big, or the
+  // resize route upscales it and it comes out blurry. Warns, doesn't block:
+  // the upload still goes through since a smaller image may be intentional.
+  minWidth?: number
+  minHeight?: number
 }
 
-export function ImageUploadField({ value = '', onChange, label }: ImageUploadFieldProps) {
+export function ImageUploadField({ value = '', onChange, label, minWidth, minHeight }: ImageUploadFieldProps) {
   const [dragging, setDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [hovering, setHovering] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const upload = useCallback(async (file: File) => {
@@ -39,6 +46,20 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
 
     setUploading(true)
     setError(null)
+    setWarning(null)
+
+    if (minWidth && minHeight) {
+      try {
+        const { width, height } = await getImageDimensions(file)
+        if (width < minWidth || height < minHeight) {
+          setWarning(
+            `Nuotrauka ${width}×${height}px — rekomenduojama bent ${minWidth}×${minHeight}px, kitaip bus neryški.`
+          )
+        }
+      } catch {
+        // Dimension check is a best-effort warning — don't block upload if it fails.
+      }
+    }
 
     const compressed = await compressImageFile(file)
     const formData = new FormData()
@@ -57,7 +78,7 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
     const { url } = (await res.json()) as { url: string }
     onChange(url)
     setUploading(false)
-  }, [onChange])
+  }, [onChange, minWidth, minHeight])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -75,6 +96,7 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
     e.stopPropagation()
     onChange('')
     setError(null)
+    setWarning(null)
     if (inputRef.current) inputRef.current.value = ''
   }, [onChange])
 
@@ -137,6 +159,7 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
       />
 
       {error && <span className="text-[11px] text-red-500">{error}</span>}
+      {warning && <span className="text-[11px] text-amber-600">{warning}</span>}
 
       <input
         ref={inputRef}

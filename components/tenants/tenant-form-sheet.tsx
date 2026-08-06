@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { createTenant, updateTenant } from '@/actions/tenants'
 import { tenantSchema, type TenantFormValues } from '@/lib/validations/tenant'
 import { TENANT_CATEGORIES } from '@/lib/constants'
-import { compressImageFile } from '@/lib/image-compression'
+import { compressImageFile, getImageDimensions } from '@/lib/image-compression'
 import { resizeImage } from '@/lib/storage/resize-image'
 import type { Tenant } from '@/types/database'
 import type { TenantListRow } from '@/lib/admin-data'
@@ -44,6 +44,21 @@ interface TenantFormSheetProps {
   tenant: (Tenant | TenantListRow) | null
 }
 
+// Warns (doesn't block) when a source photo is smaller than where it's
+// actually displayed — a 200px logo needs 200px+, a 1200×960 gallery
+// lightbox needs a source at least that big, or it comes out upscaled/blurry.
+async function checkMinDimensions(file: File, minWidth: number, minHeight: number): Promise<string | null> {
+  try {
+    const { width, height } = await getImageDimensions(file)
+    if (width < minWidth || height < minHeight) {
+      return `Nuotrauka ${width}×${height}px — rekomenduojama bent ${minWidth}×${minHeight}px, kitaip bus neryški.`
+    }
+  } catch {
+    // best-effort check — never block the upload on a failed read
+  }
+  return null
+}
+
 async function uploadFile(file: File, folder: 'logos' | 'gallery'): Promise<string> {
   const compressed = await compressImageFile(file)
   const formData = new FormData()
@@ -67,10 +82,12 @@ function LogoUploader({
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadWarning, setUploadWarning] = useState<string | null>(null)
 
   async function handleFile(file: File) {
     setUploading(true)
     setUploadError(null)
+    setUploadWarning(await checkMinDimensions(file, 200, 200))
     try {
       const url = await uploadFile(file, 'logos')
       onChange(url)
@@ -114,6 +131,7 @@ function LogoUploader({
         </Button>
         <p className="text-xs text-muted-foreground">PNG, JPG iki 2 MB</p>
         {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+        {uploadWarning && <p className="text-xs text-amber-600">{uploadWarning}</p>}
       </div>
       <input
         ref={inputRef}
@@ -140,12 +158,27 @@ function GalleryUploader({
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadWarning, setUploadWarning] = useState<string | null>(null)
 
+  // Gallery lightbox (components/marketing/store-gallery.tsx) displays the
+  // active photo at 1200×960 — that's the resolution a source needs to clear.
   async function handleFiles(files: FileList) {
     setUploading(true)
     setUploadError(null)
+    setUploadWarning(null)
     try {
-      const uploads = Array.from(files).map((file) => uploadFile(file, 'gallery'))
+      const fileList = Array.from(files)
+      const warnings = (
+        await Promise.all(fileList.map((file) => checkMinDimensions(file, 1200, 960)))
+      ).filter((w): w is string => w !== null)
+      if (warnings.length) {
+        setUploadWarning(
+          warnings.length === 1
+            ? warnings[0]
+            : `${warnings.length} nuotraukos mažesnės nei rekomenduojama 1200×960px — bus neryškios.`
+        )
+      }
+      const uploads = fileList.map((file) => uploadFile(file, 'gallery'))
       const urls = await Promise.all(uploads)
       onChange([...value, ...urls])
     } catch (err) {
@@ -190,6 +223,7 @@ function GalleryUploader({
       </div>
       <p className="text-xs text-muted-foreground">Galite pasirinkti kelias nuotraukas vienu metu</p>
       {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+      {uploadWarning && <p className="text-xs text-amber-600">{uploadWarning}</p>}
       <input
         ref={inputRef}
         type="file"
