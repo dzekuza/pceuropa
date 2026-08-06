@@ -15,6 +15,7 @@ const BASE = '/api/storage/marketing-assets'
 const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',
   'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams', 'naujienos', 'nuoma-reklama',
+  'kontaktai',
 ])
 
 const DEFAULT_DATA: Record<string, Data> = {
@@ -110,6 +111,13 @@ const DEFAULT_DATA: Record<string, Data> = {
     root: { props: {} },
     zones: {},
   },
+  kontaktai: {
+    content: [
+      { type: 'PageBanner', props: { id: 'banner-1', slide1: '', slide2: '', slide3: '', slide4: '' } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
 }
 
 const FALLBACK_DATA: Data = { content: [], root: { props: {} }, zones: {} }
@@ -126,6 +134,7 @@ const PREVIEW_URLS: Record<string, string> = {
   lankytojams: '/lankytojams',
   naujienos: '/naujienos',
   'nuoma-reklama': '/nuoma-reklama',
+  kontaktai: '/kontaktai',
 }
 
 interface Props {

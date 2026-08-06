@@ -21,6 +21,7 @@ const PAGES = [
   { slug: 'lankytojams', label: 'Lankytojams' },
   { slug: 'naujienos', label: 'Naujienos' },
   { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
+  { slug: 'kontaktai', label: 'Kontaktai' },
 ]
 
 interface PuckEditorProps {
