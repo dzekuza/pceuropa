@@ -4,6 +4,8 @@ import { useCallback, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -83,12 +85,12 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
   const dropZoneClass = [
     'relative overflow-hidden rounded-lg border-2 border-dashed cursor-pointer flex items-center justify-center transition-colors duration-150',
     value ? 'h-[120px] border-transparent' : 'h-[80px]',
-    dragging ? 'border-indigo-500 bg-indigo-50' : value ? '' : 'border-gray-300 bg-gray-50 hover:bg-gray-100',
+    dragging ? 'border-primary bg-primary/10' : value ? '' : 'border-input bg-muted hover:bg-accent',
   ].join(' ')
 
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <span className="text-xs font-medium text-gray-700">{label}</span>}
+      {label && <Label className="text-xs font-medium text-muted-foreground">{label}</Label>}
 
       <div
         className={dropZoneClass}
@@ -124,21 +126,21 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
             </div>
           </>
         ) : (
-          <span className={['text-xs text-center px-3', uploading ? 'text-indigo-500' : 'text-gray-400'].join(' ')}>
+          <span className={['text-xs text-center px-3', uploading ? 'text-primary' : 'text-muted-foreground'].join(' ')}>
             {uploading ? 'Įkeliama…' : 'Vilkite arba spustelėkite'}
           </span>
         )}
       </div>
 
-      <input
+      <Input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="https://..."
-        className="text-[11px] px-2 py-1 rounded border border-gray-200 text-gray-500 bg-white w-full"
+        className="h-auto text-[11px] px-2 py-1"
       />
 
-      {error && <span className="text-[11px] text-red-500">{error}</span>}
+      {error && <span className="text-[11px] text-destructive">{error}</span>}
 
       <input
         ref={inputRef}

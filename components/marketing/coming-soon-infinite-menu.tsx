@@ -55,6 +55,22 @@ export function ComingSoonInfiniteMenu({ redirectTo }: { redirectTo: string }) {
           )}
         </div>
       </div>
+
+      <p className="absolute inset-x-0 bottom-6 z-20 px-6 text-center text-xs text-white/70 sm:text-sm">
+        {S.contactGeneralLabel}:{' '}
+        <a href={`mailto:${S.contactEmail}`} className="underline underline-offset-2 hover:text-white">
+          {S.contactEmail}
+        </a>
+        {', '}
+        <a href={`tel:${S.contactPhone.replace(/\s/g, '')}`} className="underline underline-offset-2 hover:text-white">
+          {S.contactPhone}
+        </a>
+        {' · '}
+        {S.contactSecurityLabel}:{' '}
+        <a href={`tel:${S.contactSecurityPhone.replace(/\s/g, '')}`} className="underline underline-offset-2 hover:text-white">
+          {S.contactSecurityPhone}
+        </a>
+      </p>
     </div>
   )
 }

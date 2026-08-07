@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Search } from 'lucide-react'
 import { StoreHoursCard, type StoreHoursCardProps } from '@/components/marketing/store-hours-card'
+import { HoursCardsGrid, type HoursCardData } from '@/components/marketing/hours-cards-grid'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 
 const PAGE_SIZE = 8
@@ -14,6 +15,7 @@ type OpeningHoursSectionProps = {
   heroHeading?: string
   searchPlaceholder?: string
   loadMoreButton?: string
+  hoursCards?: HoursCardData[]
 }
 
 export function OpeningHoursSection({
@@ -21,6 +23,7 @@ export function OpeningHoursSection({
   heroHeading = DARBO_LAIKAS_STRINGS.heroHeading,
   searchPlaceholder = DARBO_LAIKAS_STRINGS.searchPlaceholder,
   loadMoreButton = DARBO_LAIKAS_STRINGS.loadMoreButton,
+  hoursCards = [],
 }: OpeningHoursSectionProps) {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
@@ -39,7 +42,7 @@ export function OpeningHoursSection({
       {/* Heading + search row */}
       <div className="flex items-end justify-between gap-6 mb-6">
         <div className="flex-1 min-w-0">
-          <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black font-[family-name:var(--font-jakarta)] mb-2">
+          <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-black font-[family-name:var(--font-jakarta)]">
             {heroHeading}
           </h1>
         </div>
@@ -60,6 +63,9 @@ export function OpeningHoursSection({
           />
         </label>
       </div>
+
+      {/* Opening-hours cards — own full-width row, separate from search */}
+      {hoursCards.length > 0 && <HoursCardsGrid cards={hoursCards} className="mb-6" />}
 
       {/* Mobile search */}
       <label className="lg:hidden flex bg-white gap-2 items-center px-4 py-2.5 rounded-full mb-6 cursor-text">

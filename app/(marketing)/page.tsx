@@ -2,9 +2,9 @@ import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { createClient } from '@/lib/supabase/server'
 import { renderPuckBlock } from '@/lib/puck-render'
-import type { Data } from '@measured/puck'
+import type { ContentBlock, ContentData } from '@/lib/content-sections'
 
-const DEFAULT_BLOCKS: Data['content'] = [
+const DEFAULT_BLOCKS: ContentBlock[] = [
   { type: 'Hero', props: { id: 'default-hero', title: '', subtitle: '' } },
   { type: 'QuickLinks', props: { id: 'default-quicklinks' } },
   { type: 'CategoriesSection', props: { id: 'default-categories' } },
@@ -23,7 +23,7 @@ export default async function LandingPage() {
     .eq('page_slug', 'landing')
     .single()
 
-  const puckData = puckRow?.data as Data | null
+  const puckData = puckRow?.data as unknown as ContentData | null
   const blocks =
     puckData?.content && puckData.content.length > 0
       ? puckData.content

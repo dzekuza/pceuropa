@@ -119,14 +119,15 @@ export const DARBO_LAIKAS_STRINGS = {
   contactMarketingLabel: 'Marketingo skyrius',
   contactMarketingEmail: 'reklama@baltichorizon.com',
   bannerHeading: 'Mes pasiruošę jums padėti!',
-  bannerHoursMallLabel: 'Prekybos centras:',
-  bannerHoursMallLine1: 'I-VI 10:00 - 21:00',
-  bannerHoursMallLine2: 'VII 10:00 - 20:00',
-  bannerHoursSportLabel: 'Sporto klubai:',
-  bannerHoursSportLine1: 'I-VII 24/7',
-  bannerHoursFashionLabel: 'Mados ir aksesuarų parduotuvės:',
-  bannerHoursFashionLine1: 'I-VI 10:00 - 20:00',
-  bannerHoursFashionLine2: 'VII 10:00 - 19:00',
+  bannerHoursCards: [
+    { label: 'Prekybos centras:', line1: 'I-VI 10:00 - 21:00', line2: 'VII 10:00 - 20:00' },
+    { label: 'Sporto klubai:', line1: 'I-VII 24/7' },
+    { label: 'Mados ir aksesuarų parduotuvės:', line1: 'I-VI 10:00 - 20:00', line2: 'VII 10:00 - 19:00' },
+    { label: 'Iki:', line1: 'I-VI 10:00 - 21:00', line2: 'VII 10:00 - 20:00' },
+    { label: 'Benu:', line1: 'I-VI 10:00 - 21:00', line2: 'VII 10:00 - 20:00' },
+    { label: 'Dialogai:', line1: 'I-VI 10:00 - 21:00', line2: 'VII 10:00 - 20:00' },
+    { label: 'Restoranai:', line1: 'I-VI 10:00 - 21:00', line2: 'VII 10:00 - 20:00' },
+  ],
   mapAlt: 'PC Europa žemėlapis',
   transportCards: [
     {
@@ -325,6 +326,11 @@ export const UNDER_CONSTRUCTION_STRINGS = {
   errorRequired: 'Įveskite slaptažodį.',
   errorWrongPassword: 'Neteisingas slaptažodis.',
   dragHint: 'Vilkite, kad pamatytumėte visas parduotuves',
+  contactGeneralLabel: 'Bendra informacija',
+  contactEmail: 'europa@baltichorizon.com',
+  contactPhone: '+370 644 05764',
+  contactSecurityLabel: 'Apsauga',
+  contactSecurityPhone: '+370 690 69525',
 } as const
 
 export const LANKYTOJAMS_STRINGS = {

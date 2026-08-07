@@ -62,7 +62,7 @@ export default async function AdminPagesPage() {
                 </div>
                 <CardToolbar>
                   <Button asChild size="sm" variant="outline">
-                    <Link href={`/admin/puck/${page.slug}`}>
+                    <Link href={`/admin/content/${page.slug}`}>
                       <PanelsTopLeft className="mr-1.5 h-4 w-4" />
                       Redaguoti
                     </Link>

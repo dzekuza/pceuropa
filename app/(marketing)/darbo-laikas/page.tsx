@@ -19,6 +19,10 @@ const DEFAULT_OPENING_HOURS_TEXT = {
   loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
 }
 
+const DEFAULT_BANNER_HOURS = {
+  cards: DARBO_LAIKAS_STRINGS.bannerHoursCards.map((c) => ({ ...c })),
+}
+
 const DEFAULT_HOW_TO_GET_HERE = {
   heading: DARBO_LAIKAS_STRINGS.howToGetHereHeading,
   subtext: DARBO_LAIKAS_STRINGS.howToGetHereSubtext,
@@ -61,6 +65,7 @@ export default async function DarboLaikasPage() {
   const tenants = await getPublicTenants()
   const open = isCurrentlyOpen()
   const bannerSlides = await getPuckBannerSlides('darbo-laikas', DEFAULT_BANNER_SLIDES)
+  const bannerHours = await getPuckBlockProps('darbo-laikas', 'BannerHoursBlock', DEFAULT_BANNER_HOURS)
   const openingHoursText = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', DEFAULT_OPENING_HOURS_TEXT)
   const howToGetHere = await getPuckBlockProps('darbo-laikas', 'HowToGetHereBlock', DEFAULT_HOW_TO_GET_HERE)
 
@@ -98,7 +103,7 @@ export default async function DarboLaikasPage() {
 
       {/* Main content */}
       <div className="w-full max-w-[1332px] mx-auto px-4 py-10 md:py-14 flex flex-col gap-10 md:gap-14">
-        <OpeningHoursSection stores={stores} {...openingHoursText} />
+        <OpeningHoursSection stores={stores} {...openingHoursText} hoursCards={bannerHours.cards} />
         <HowToGetHereSection {...howToGetHere} />
       </div>
 

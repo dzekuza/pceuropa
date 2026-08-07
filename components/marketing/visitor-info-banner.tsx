@@ -99,6 +99,40 @@ export function VisitorInfoBanner({
   variant = 'contact',
   backgroundImage = DEFAULT_BANNER_BG,
 }: VisitorInfoBannerProps) {
+  if (variant === 'hours') {
+    return (
+      <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center px-6 lg:px-10 py-6 min-h-[292px]">
+        {/* Background */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={resizeSupabaseImage(backgroundImage, { width: 1200, height: 600, quality: 90 })} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
+        <div className="absolute inset-0 bg-black/25 rounded-[32px] lg:rounded-[40px]" aria-hidden />
+
+        {/* Heading + social icons */}
+        <div className="relative flex flex-col gap-8 items-start">
+          <h2 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] leading-[1.1] lg:leading-[60px] tracking-[-1.5px] lg:tracking-[-2.5px] text-white font-[family-name:var(--font-jakarta)]">
+            {heading}
+          </h2>
+          <div className="flex gap-4 items-center">
+            {SOCIAL_LINKS.map(({ href, Icon, label }) => (
+              <TrackedLink
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                eventName="social_click"
+                eventParams={{ platform: label.toLowerCase(), location: 'visitor_banner' }}
+                className="bg-[#f5f5f5] size-12 rounded-full flex items-center justify-center text-black hover:opacity-80 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-label={label}
+              >
+                <Icon />
+              </TrackedLink>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-0 pl-6 lg:pl-10 pr-4 py-4 min-h-[292px]">
       {/* Background */}
@@ -129,84 +163,20 @@ export function VisitorInfoBanner({
         </div>
       </div>
 
-      {/* Right — contact cards or opening-hours cards, per variant */}
-      {variant === 'hours' ? (
-        <>
-          {/* Mobile — cards overlaid on the cover image */}
-          <div className="relative sm:hidden flex flex-col gap-3 items-end">
-            <div className="bg-[#f5f5f5] flex items-center px-6 py-3 rounded-3xl">
-              <div className="flex flex-col gap-1">
-                <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.bannerHoursMallLabel}</p>
-                <div className="text-base leading-6">
-                  <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine1}</p>
-                  <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine2}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="bg-[#f5f5f5] flex items-center px-5 py-3 rounded-3xl">
-                <div className="flex flex-col gap-1">
-                  <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLabel}</p>
-                  <p className="text-black text-base leading-6 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLine1}</p>
-                </div>
-              </div>
-              <div className="bg-[#f5f5f5] flex items-center px-5 py-3 rounded-3xl">
-                <div className="flex flex-col gap-1">
-                  <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLabel}</p>
-                  <div className="text-base leading-6">
-                    <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine1}</p>
-                    <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine2}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Right — contact cards */}
+      <>
+        {/* Mobile — cards overlaid on the cover image */}
+        <div className="relative sm:hidden flex flex-col gap-3">
+          <AdminContactCard location="visitor_banner_admin_mobile" />
+          <MarketingContactCard location="visitor_banner_marketing_mobile" />
+        </div>
 
-          {/* Desktop — cards stacked to the right of the heading */}
-          <div className="relative hidden sm:flex flex-col gap-5 items-end p-4 rounded-[40px] shrink-0">
-            <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-4 rounded-3xl">
-              <div className="flex flex-col gap-2">
-                <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.bannerHoursMallLabel}</p>
-                <div className="text-base leading-6">
-                  <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine1}</p>
-                  <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursMallLine2}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-5 items-start">
-              <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-4 rounded-3xl">
-                <div className="flex flex-col gap-2">
-                  <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLabel}</p>
-                  <p className="text-black text-base leading-6 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursSportLine1}</p>
-                </div>
-              </div>
-              <div className="bg-[#f5f5f5] flex items-center h-[104px] px-10 py-7 rounded-3xl">
-                <div className="flex flex-col gap-2">
-                  <p className="text-[#575757] text-xs leading-4 whitespace-nowrap">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLabel}</p>
-                  <div className="text-base leading-6">
-                    <p className="text-black">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine1}</p>
-                    <p className="text-[#575757]">{DARBO_LAIKAS_STRINGS.bannerHoursFashionLine2}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* Mobile — cards overlaid on the cover image */}
-          <div className="relative sm:hidden flex flex-col gap-3">
-            <AdminContactCard location="visitor_banner_admin_mobile" />
-            <MarketingContactCard location="visitor_banner_marketing_mobile" />
-          </div>
-
-          {/* Desktop — cards stacked to the right of the heading */}
-          <div className="relative hidden sm:flex flex-col gap-5 p-4 rounded-[40px] w-[311px] shrink-0">
-            <AdminContactCard location="visitor_banner_admin" />
-            <MarketingContactCard location="visitor_banner_marketing" />
-          </div>
-        </>
-      )}
+        {/* Desktop — cards stacked to the right of the heading */}
+        <div className="relative hidden sm:flex flex-col gap-5 p-4 rounded-[40px] w-[311px] shrink-0">
+          <AdminContactCard location="visitor_banner_admin" />
+          <MarketingContactCard location="visitor_banner_marketing" />
+        </div>
+      </>
     </div>
   )
 }

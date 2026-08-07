@@ -16,7 +16,7 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="relative w-full h-[320px] md:h-[480px] rounded-[32px] lg:rounded-[40px] bg-[#e8e8e4] flex items-center justify-center overflow-hidden">
+      <div className="relative w-full h-[320px] md:h-[480px] lg:h-full rounded-[32px] lg:rounded-[40px] bg-[#e8e8e4] flex items-center justify-center overflow-hidden">
         <span className="font-bold text-[64px] text-black/10 tracking-[-3px] select-none">
           {name.slice(0, 2).toUpperCase()}
         </span>
@@ -25,9 +25,9 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 lg:h-full">
       {/* Main image */}
-      <div className="relative w-full h-[320px] md:h-[480px] rounded-[32px] lg:rounded-[40px] overflow-hidden bg-[#e8e8e4]">
+      <div className="relative w-full h-[320px] md:h-[480px] lg:h-full lg:flex-1 rounded-[32px] lg:rounded-[40px] overflow-hidden bg-[#e8e8e4]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={active}

@@ -95,75 +95,76 @@ export default async function StoreDetailPage({ params }: Props) {
           Visos parduotuvės
         </Link>
 
-        {/* Gallery */}
-        <StoreGallery images={images} name={tenant.store_name} />
+        {/* Gallery + info grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
 
-        {/* Info grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
+          {/* Left: gallery */}
+          <StoreGallery images={images} name={tenant.store_name} />
 
-          {/* Left: name + description */}
-          <div className="bg-white rounded-[40px] p-8 md:p-10 flex flex-col gap-6">
-            <div className="flex items-start gap-5">
-              {/* Logo */}
-              {tenant.logo_url ? (
-                <div className="h-[72px] w-[72px] rounded-[20px] overflow-hidden border border-[#ebebeb] shrink-0 bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={resizeSupabaseImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
-                    alt={`${tenant.store_name} logotipas`}
-                    className="size-full object-contain p-1"
-                  />
-                </div>
-              ) : (
-                <div className="h-[72px] w-[72px] rounded-[20px] bg-[#f2f2f2] shrink-0 flex items-center justify-center">
-                  <span className="font-bold text-[22px] text-black/20 tracking-tight select-none">
-                    {tenant.store_name.slice(0, 2).toUpperCase()}
-                  </span>
-                </div>
-              )}
-
-              <div className="flex flex-col gap-1 min-w-0 pt-1">
-                {/* Status */}
-                <div className="flex items-center gap-1.5">
-                  <div className={`size-2 rounded-full shrink-0 ${open ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
-                  <span className="text-[#575757] text-sm leading-none">
-                    {open ? 'Atidaryta' : 'Uždaryta'}
-                  </span>
-                </div>
-                <h1 className="font-bold text-[28px] md:text-[36px] leading-[1.15] text-black tracking-tight">
-                  {tenant.store_name}
-                </h1>
-                {tenant.category && (
-                  <span className="text-[#575757] text-sm">{tenant.category}</span>
+          {/* Right: name/description + hours, stacked */}
+          <div className="flex flex-col gap-4">
+            <div className="bg-white rounded-[40px] p-8 md:p-10 flex flex-col gap-6">
+              <div className="flex items-start gap-5">
+                {/* Logo */}
+                {tenant.logo_url ? (
+                  <div className="h-[72px] w-[72px] rounded-[20px] overflow-hidden border border-[#ebebeb] shrink-0 bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={resizeSupabaseImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
+                      alt={`${tenant.store_name} logotipas`}
+                      className="size-full object-contain p-1"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-[72px] w-[72px] rounded-[20px] bg-[#f2f2f2] shrink-0 flex items-center justify-center">
+                    <span className="font-bold text-[22px] text-black/20 tracking-tight select-none">
+                      {tenant.store_name.slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
                 )}
-              </div>
-            </div>
 
-            {tenant.description && (
-              <p className="text-[#575757] text-[15px] leading-relaxed">{tenant.description}</p>
-            )}
-          </div>
-
-          {/* Right: hours */}
-          <div className="bg-white rounded-[40px] p-8 flex flex-col gap-5">
-            <h2 className="font-bold text-[18px] leading-6 text-black">Darbo laikas</h2>
-
-            <div className="flex flex-col gap-3">
-              {buildHoursRows(weekdayHours, saturdayHours, sundayHours).map(({ days, hours }) => (
-                <div key={days} className="flex items-center justify-between gap-4">
-                  <span className="text-[#575757] text-[14px] w-[44px] shrink-0">{days}</span>
-                  <div className="flex-1 border-b border-dashed border-[#e8e8e4]" />
-                  <span className="text-black font-medium text-[14px] tabular-nums">{hours}</span>
+                <div className="flex flex-col gap-1 min-w-0 pt-1">
+                  {/* Status */}
+                  <div className="flex items-center gap-1.5">
+                    <div className={`size-2 rounded-full shrink-0 ${open ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
+                    <span className="text-[#575757] text-sm leading-none">
+                      {open ? 'Atidaryta' : 'Uždaryta'}
+                    </span>
+                  </div>
+                  <h1 className="font-bold text-[28px] md:text-[36px] leading-[1.15] text-black tracking-tight">
+                    {tenant.store_name}
+                  </h1>
+                  {tenant.category && (
+                    <span className="text-[#575757] text-sm">{tenant.category}</span>
+                  )}
                 </div>
-              ))}
+              </div>
+
+              {tenant.description && (
+                <p className="text-[#575757] text-[15px] leading-relaxed">{tenant.description}</p>
+              )}
             </div>
 
-            <div className="h-px bg-[#f2f2f2]" />
+            <div className="bg-white rounded-[40px] p-8 flex flex-col gap-5">
+              <h2 className="font-bold text-[18px] leading-6 text-black">Darbo laikas</h2>
 
-            {/* Location hint */}
-            <div className="flex flex-col gap-1">
-              <p className="text-[#575757] text-[13px]">Adresas</p>
-              <p className="font-medium text-[14px] text-black">Konstitucijos pr. 7A, Vilnius</p>
+              <div className="flex flex-col gap-3">
+                {buildHoursRows(weekdayHours, saturdayHours, sundayHours).map(({ days, hours }) => (
+                  <div key={days} className="flex items-center justify-between gap-4">
+                    <span className="text-[#575757] text-[14px] w-[44px] shrink-0">{days}</span>
+                    <div className="flex-1 border-b border-dashed border-[#e8e8e4]" />
+                    <span className="text-black font-medium text-[14px] tabular-nums">{hours}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="h-px bg-[#f2f2f2]" />
+
+              {/* Location hint */}
+              <div className="flex flex-col gap-1">
+                <p className="text-[#575757] text-[13px]">Adresas</p>
+                <p className="font-medium text-[14px] text-black">Konstitucijos pr. 7A, Vilnius</p>
+              </div>
             </div>
           </div>
         </div>
