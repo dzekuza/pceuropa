@@ -29,15 +29,17 @@ export const metadata: Metadata = {
 }
 
 export default async function AkcijosPage() {
-  const bannerSlides = await getPuckBannerSlides('akcijos', DEFAULT_BANNER_SLIDES)
-  const gridCopy = await getPuckBlockProps('akcijos', 'AkcijosGridBlock', DEFAULT_GRID_COPY)
-
   const supabase = await createClient()
-  const { data: promos } = await supabase
-    .from('promos')
-    .select('slug, image, title, starts_at, ends_at, category')
-    .eq('published', true)
-    .order('created_at', { ascending: false })
+
+  const [bannerSlides, gridCopy, { data: promos }] = await Promise.all([
+    getPuckBannerSlides('akcijos', DEFAULT_BANNER_SLIDES),
+    getPuckBlockProps('akcijos', 'AkcijosGridBlock', DEFAULT_GRID_COPY),
+    supabase
+      .from('promos')
+      .select('slug, image, title, starts_at, ends_at, category')
+      .eq('published', true)
+      .order('created_at', { ascending: false }),
+  ])
 
   const items: PromoItem[] = (promos ?? []).map((p) => ({
     id: p.slug,

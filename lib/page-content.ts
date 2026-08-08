@@ -1,21 +1,39 @@
-import { createClient } from '@/lib/supabase/server'
+import { unstable_cache } from 'next/cache'
+import { createClient as createAnonClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/database'
+
+type PuckContent = { content?: Array<{ type: string; props?: Record<string, unknown> }> }
+
+export const PUCK_PAGES_CACHE_TAG = 'puck-pages'
+
+/** Cached read of a Puck page's saved JSON. Public content — read via the plain anon
+ * client (not the cookie-bound one) so all pages/requests share one cache entry per slug
+ * instead of each hitting Postgres individually. Invalidated by revalidateTag on save. */
+const getPuckPageData = unstable_cache(
+  async (slug: string): Promise<PuckContent | null> => {
+    const supabase = createAnonClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    const { data } = await supabase
+      .from('puck_pages')
+      .select('data')
+      .eq('page_slug', slug)
+      .single()
+
+    return (data?.data as PuckContent | null) ?? null
+  },
+  ['puck-page-data'],
+  { revalidate: 300, tags: [PUCK_PAGES_CACHE_TAG] }
+)
 
 /** Returns banner slides from the Puck PageBanner block for a page, with fallback to defaults. */
 export async function getPuckBannerSlides(
   slug: string,
   defaults: string[],
 ): Promise<string[]> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
-
-  if (!data?.data) return defaults
-
-  const puckData = data.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> }
-  const bannerBlock = puckData.content?.find((b) => b.type === 'PageBanner')
+  const puckData = await getPuckPageData(slug)
+  const bannerBlock = puckData?.content?.find((b) => b.type === 'PageBanner')
   if (!bannerBlock) return defaults
 
   const p = bannerBlock.props ?? {}
@@ -28,14 +46,7 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
   blockType: string,
   defaults: T,
 ): Promise<T> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('puck_pages')
-    .select('data')
-    .eq('page_slug', slug)
-    .single()
-
-  const puckData = data?.data as { content?: Array<{ type: string; props?: Record<string, unknown> }> } | null
+  const puckData = await getPuckPageData(slug)
   const block = puckData?.content?.find((b) => b.type === blockType)
   if (!block?.props) return defaults
 
@@ -51,7 +62,10 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
 export type CmsSections = Record<string, Record<string, string>>
 
 export async function getPageContent(slug: string): Promise<CmsSections> {
-  const supabase = await createClient()
+  const supabase = createAnonClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const { data } = await supabase
     .from('page_sections')
     .select('section_key, content_key, value')

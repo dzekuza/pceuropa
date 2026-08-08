@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
+import { PUCK_PAGES_CACHE_TAG } from '@/lib/page-content'
 import type { Json } from '@/types/database'
 
 const ALLOWED_SLUGS = new Set([
@@ -64,6 +66,8 @@ export async function POST(
     console.error('puck_pages upsert error:', error)
     return NextResponse.json({ error: 'Nepavyko išsaugoti' }, { status: 500 })
   }
+
+  revalidateTag(PUCK_PAGES_CACHE_TAG, 'max')
 
   return NextResponse.json({ ok: true })
 }
