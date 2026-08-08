@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { CardArrowButton } from './ui/card-arrow-button'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
@@ -45,7 +46,10 @@ export function StoreHoursCard({
     : DARBO_LAIKAS_STRINGS.closedStatus
 
   return (
-    <article className="bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] w-full">
+    <Link
+      href={href}
+      className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] w-full cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
+    >
       {/* Top row: status + name + logo */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col flex-1 min-w-0 items-start">
@@ -97,8 +101,8 @@ export function StoreHoursCard({
           </div>
         </div>
 
-        <CardArrowButton href={href} ariaLabel={`Peržiūrėti ${name}`} />
+        <CardArrowButton />
       </div>
-    </article>
+    </Link>
   )
 }

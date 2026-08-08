@@ -79,7 +79,7 @@ export default async function DarboLaikasPage() {
     weekdayHours: { days: WEEKDAY_LABEL, hours: t.weekday_hours ?? '10:00–21:00' },
     saturdayHours: { days: SATURDAY_LABEL, hours: t.saturday_hours ?? '10:00–20:00' },
     sundayHours: { days: SUNDAY_LABEL, hours: t.sunday_hours ?? '10:00–20:00' },
-    href: `/parduotuves`,
+    href: `/parduotuves/${t.slug}`,
   }))
 
   const planasStores = tenants.map((t) => ({
