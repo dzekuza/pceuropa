@@ -101,8 +101,11 @@ export function ImageUploadField({ value = '', onChange, label }: ImageUploadFie
       >
         {value ? (
           <>
+            {/* Preview box is w-full — on the wide content-editor layout that can render
+                far past 480px, so request a larger transform than the old narrow Puck
+                sidebar needed or the browser upscales it and it looks blurry. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={resizeSupabaseImage(value, { width: 480, height: 240 })} alt="" className="w-full h-full object-cover block" />
+            <img src={resizeSupabaseImage(value, { width: 1600, height: 240, quality: 90 })} alt="" className="w-full h-full object-cover block" />
             <div
               className={[
                 'absolute inset-0 bg-black/45 flex items-center justify-center gap-3 transition-opacity duration-150',
