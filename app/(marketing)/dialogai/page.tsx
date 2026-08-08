@@ -19,7 +19,10 @@ const DEFAULT_BANNER_SLIDES = [
   'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-3.jpg',
 ]
 
-const DIALOGAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai'])
+// 'DIALOGAI' is the raw legacy value still stored on tenants imported before
+// 'Dialogai' existed as its own TENANT_CATEGORIES option (see lib/constants.ts) —
+// keep both until those rows are re-saved through the admin category dropdown.
+const DIALOGAI_CATEGORIES = new Set(['Dialogai', 'DIALOGAI'])
 
 export default async function DialogaiPage() {
   const bannerSlides = await getPuckBannerSlides('dialogai', DEFAULT_BANNER_SLIDES)

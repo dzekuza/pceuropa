@@ -9,6 +9,7 @@ export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? 'G
 export const TENANT_CATEGORIES = [
   'Mada ir apranga',
   'Maistas ir restoranai',
+  'Dialogai',
   'Elektronika',
   'Sportas ir laisvalaikis',
   'Grožis ir sveikata',
@@ -30,7 +31,10 @@ const CATEGORY_ALIASES: Record<string, TenantCategory> = {
   'Restoranai': 'Maistas ir restoranai',
   'Maistas': 'Maistas ir restoranai',
   'MAISTO IR GĖRIMŲ PARDUOTUVĖS': 'Maistas ir restoranai',
-  'DIALOGAI': 'Maistas ir restoranai',
+  // "Dialogai" is the mall's dedicated food-court zone — kept distinct from the
+  // general "Maistas ir restoranai" category so app/(marketing)/dialogai/page.tsx
+  // can show only food-court tenants instead of every restaurant in the mall.
+  'DIALOGAI': 'Dialogai',
   'LAISVALAIKIS IR PRAMOGOS': 'Sportas ir laisvalaikis',
   'SPORTAS IR SVEIKATINGUMAS': 'Sportas ir laisvalaikis',
   'Sportas': 'Sportas ir laisvalaikis',
