@@ -9,5 +9,11 @@
     "context-budget": "off",
     "pr-review": "off",
     "refactor": "off"
-  }
+  },
+  "enabledMcpjsonServers": [
+    "shadcn",
+    "supabase",
+    "figma-desktop",
+    "puppeteer"
+  ]
 }

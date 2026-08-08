@@ -38,3 +38,6 @@ eslint-output.txt
 CLAUDE.local.md
 .env*
 .worktrees/
+
+# ShipStudio metadata
+.shipstudio/
