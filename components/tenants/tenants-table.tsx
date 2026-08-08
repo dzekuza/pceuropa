@@ -363,7 +363,7 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                       <TableCell className="px-4 py-3">
                         <Avatar className="size-10 rounded-full border border-border/60">
                           <AvatarImage
-                            src={resizeSupabaseImage(tenant.logo_url, { width: 64, height: 64 })}
+                            src={resizeSupabaseImage(tenant.logo_url, { width: 128, height: 128, quality: 90 })}
                             alt={tenant.store_name}
                             loading="lazy"
                           />

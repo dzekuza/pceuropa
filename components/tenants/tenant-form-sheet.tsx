@@ -87,7 +87,7 @@ function LogoUploader({
       {value ? (
         <div className="relative size-16 rounded-lg overflow-hidden border bg-muted shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resizeSupabaseImage(value, { width: 128, height: 128 })} alt="Logo" className="size-full object-cover" />
+          <img src={resizeSupabaseImage(value, { width: 192, height: 192, quality: 90 })} alt="Logo" className="size-full object-cover" />
           <button
             type="button"
             onClick={() => onChange('')}
@@ -166,7 +166,7 @@ function GalleryUploader({
         {value.map((url, i) => (
           <div key={url} className="relative size-20 rounded-lg overflow-hidden border bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={resizeSupabaseImage(url, { width: 160, height: 160 })} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
+            <img src={resizeSupabaseImage(url, { width: 240, height: 240, quality: 90 })} alt={`Galerija ${i + 1}`} className="size-full object-cover" />
             <button
               type="button"
               onClick={() => remove(i)}

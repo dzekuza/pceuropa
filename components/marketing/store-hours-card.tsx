@@ -76,7 +76,7 @@ export function StoreHoursCard({
       <div className="relative w-full h-[204px] rounded-3xl overflow-hidden shrink-0">
         {coverUrl ? (
           <img
-            src={resizeSupabaseImage(coverUrl, { width: 500, height: 204 })}
+            src={resizeSupabaseImage(coverUrl, { width: 800, height: 328, quality: 90 })}
             alt=""
             className="absolute inset-0 size-full object-cover"
           />
