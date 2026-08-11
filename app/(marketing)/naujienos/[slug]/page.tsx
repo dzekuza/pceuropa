@@ -51,7 +51,10 @@ export default async function ArticleDetailPage({ params }: Props) {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt'],
+      img: ['src', 'alt', 'style', 'data-align'],
+    },
+    allowedStyles: {
+      img: { width: [/^\d+(\.\d+)?(px|%)$/] },
     },
   })
 
@@ -90,7 +93,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         </div>
         <h1 className="text-3xl font-bold mb-6 text-gray-900">{article.title}</h1>
         <div
-          className="prose prose-lg max-w-none"
+          className="prose prose-lg max-w-none article-content"
           dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       </article>

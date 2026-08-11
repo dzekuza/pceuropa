@@ -25,10 +25,6 @@ export function NewsSection({
   ctaLabel = NEWS_SECTION_STRINGS.ctaLabel,
   items = NEWS_SECTION_STRINGS.items as unknown as NewsSectionItem[],
 }: NewsSectionProps) {
-  const news = items.map((item, index) => ({
-    ...item,
-    imageRounded: index === 0 ? 'rounded-[40px]' : 'rounded-[20px]',
-  }))
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const scroll = (dir: 'left' | 'right') => {
@@ -64,14 +60,14 @@ export function NewsSection({
           ref={scrollRef}
           className="flex gap-4 lg:hidden overflow-x-auto scrollbar-hide snap-x snap-mandatory"
         >
-          {news.map((item) => (
+          {items.map((item) => (
             <NewsCard key={item.href} item={item} />
           ))}
         </div>
 
         {/* Desktop 4-column grid */}
         <div className="hidden lg:grid grid-cols-4 gap-6">
-          {news.map((item) => (
+          {items.map((item) => (
             <NewsCard key={item.href} item={item} />
           ))}
         </div>
@@ -110,9 +106,7 @@ export function NewsSection({
   )
 }
 
-type NewsItem = NewsSectionItem & { imageRounded: string }
-
-function NewsCard({ item }: { item: NewsItem }) {
+function NewsCard({ item }: { item: NewsSectionItem }) {
   return (
     <Link
       href={item.href}
@@ -120,9 +114,9 @@ function NewsCard({ item }: { item: NewsItem }) {
       className="flex flex-col gap-6 shrink-0 group snap-start w-[280px] lg:w-auto"
     >
       {/* Image */}
-      <div className={`relative w-full h-[236px] ${item.imageRounded} overflow-hidden`}>
+      <div className="relative w-full h-auto aspect-[1/1] rounded-[24px] overflow-hidden">
         <img
-          src={resizeSupabaseImage(item.image, { width: 500, height: 472, quality: 90 })}
+          src={resizeSupabaseImage(item.image, { width: 500, height: 500, quality: 90 })}
           alt={item.title}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
         />

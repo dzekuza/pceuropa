@@ -283,3 +283,24 @@
   pointer-events: none;
   height: 0;
 }
+
+/* Wrap alignment for images inserted via the article rich text editor —
+   mirrors the ResizableImage node view's float behavior on the public page. */
+.article-content img[data-align='left'] {
+  float: left;
+  margin: 0 1rem 0.5rem 0;
+}
+.article-content img[data-align='right'] {
+  float: right;
+  margin: 0 0 0.5rem 1rem;
+}
+.article-content img[data-align='center'] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.article-content::after {
+  content: '';
+  display: table;
+  clear: both;
+}
