@@ -38,12 +38,12 @@ export default async function ParduotuvesPage() {
 
       {/* Stores directory */}
       <div className="w-full flex flex-col items-center">
-        <StoresDirectory stores={stores} excludeCategories={['Maistas ir restoranai']} />
+        <StoresDirectory stores={stores} excludeCategories={['Maistas ir restoranai', 'Dialogai']} />
       </div>
 
       {/* Floor plan */}
       <div className="w-full bg-[#f7f7f5]">
-        <PlanasSection stores={stores.filter((s) => s.category !== 'Maistas ir restoranai')} />
+        <PlanasSection stores={stores.filter((s) => s.category !== 'Maistas ir restoranai' && s.category !== 'Dialogai')} />
       </div>
 
       <Footer />

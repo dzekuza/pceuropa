@@ -18,7 +18,7 @@ const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee
 
 export default async function LaisvalaikisPage() {
   const bannerSlides = await getPuckBannerSlides('laisvalaikis', DEFAULT_BANNER_SLIDES)
-  const tenants = (await getPublicTenants()).filter((t) => t.category === 'LAISVALAIKIS IR PRAMOGOS')
+  const tenants = (await getPublicTenants()).filter((t) => normalizeCategory(t.category) === 'Laisvalaikis ir pramogos')
 
   const stores = tenants.map((t) => ({
     id: t.id,

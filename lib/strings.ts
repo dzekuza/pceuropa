@@ -176,6 +176,7 @@ export const CHAT_WIDGET_STRINGS = {
   closeLabel: 'Uždaryti pokalbį',
   minimizeLabel: 'Sumažinti',
   expandLabel: 'Išskleisti',
+  dragHandleLabel: 'Vilkite, kad perkeltumėte pokalbio langą',
   sendLabel: 'Siųsti žinutę',
   assistantName: 'PCEuropa Asistentė',
   assistantStatus: 'Dabar prisijungusi',

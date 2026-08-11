@@ -91,6 +91,7 @@ export async function createTenant(
     weekday_hours: formData.weekday_hours || undefined,
     saturday_hours: formData.saturday_hours || undefined,
     sunday_hours: formData.sunday_hours || undefined,
+    is_visible: formData.is_visible ?? true,
   })
 
   if (tenantError) {
@@ -137,11 +138,43 @@ export async function updateTenant(
       weekday_hours: formData.weekday_hours || undefined,
       saturday_hours: formData.saturday_hours || undefined,
       sunday_hours: formData.sunday_hours || undefined,
+      is_visible: formData.is_visible,
     })
     .eq('id', tenantId)
 
   if (error) {
     return { error: 'Nepavyko atnaujinti nuomininko duomenų' }
+  }
+
+  revalidatePath('/admin/tenants')
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  return { success: true }
+}
+
+/**
+ * setTenantVisibility — Quick toggle for showing/hiding a tenant on public pages,
+ * used by the admin tenants table without opening the full edit form.
+ */
+export async function setTenantVisibility(
+  tenantId: string,
+  isVisible: boolean
+): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user: callerUser },
+  } = await supabase.auth.getUser()
+
+  if (!callerUser || callerUser.app_metadata?.role !== 'admin') {
+    return { error: 'Neturite teisės atlikti šį veiksmą' }
+  }
+
+  const { error } = await supabase
+    .from('tenants')
+    .update({ is_visible: isVisible })
+    .eq('id', tenantId)
+
+  if (error) {
+    return { error: 'Nepavyko pakeisti matomumo' }
   }
 
   revalidatePath('/admin/tenants')

@@ -58,6 +58,7 @@ export function FaqAdminPageClient({ items: initialItems }: FaqAdminPageClientPr
       />
 
       <FaqFormDialog
+        key={editItem?.id ?? 'new'}
         open={formOpen}
         onOpenChange={setFormOpen}
         editItem={editItem}

@@ -9,7 +9,7 @@ import { useTransition } from 'react'
 import type { TenantListRow, TenantListState } from '@/lib/admin-data'
 import { TENANT_CATEGORIES } from '@/lib/constants'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
-import { bulkDeleteTenants, bulkUpdateTenantCategory } from '@/actions/tenants'
+import { bulkDeleteTenants, bulkUpdateTenantCategory, setTenantVisibility } from '@/actions/tenants'
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { DeleteTenantDialog } from '@/components/tenants/delete-tenant-dialog'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -50,6 +50,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/reui/badge'
+import { Switch } from '@/components/ui/switch'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -106,6 +107,17 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
   const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false)
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
   const [isBulkPending, startBulkTransition] = useTransition()
+  const [visibilityPendingId, setVisibilityPendingId] = useState<string | null>(null)
+  const [isVisibilityPending, startVisibilityTransition] = useTransition()
+
+  function handleVisibilityToggle(tenantId: string, nextVisible: boolean) {
+    setVisibilityPendingId(tenantId)
+    startVisibilityTransition(async () => {
+      await setTenantVisibility(tenantId, nextVisible)
+      router.refresh()
+      setVisibilityPendingId(null)
+    })
+  }
 
   const allSelected = data.length > 0 && data.every((tenant) => selectedIds.has(tenant.id))
   const someSelected = selectedIds.size > 0
@@ -335,13 +347,14 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                   ))}
                   <TableHead className="px-4">Įmonės kodas</TableHead>
                   <TableHead className="min-w-[280px] px-4">Aprašymas</TableHead>
+                  <TableHead className="w-[92px] px-4">Matoma</TableHead>
                   <TableHead className="w-[172px] px-4 text-right">Veiksmai</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={11} className="py-12 text-center text-sm text-muted-foreground">
+                    <TableCell colSpan={12} className="py-12 text-center text-sm text-muted-foreground">
                       Pagal pasirinktus filtrus nuomininkų nerasta.
                     </TableCell>
                   </TableRow>
@@ -387,6 +400,14 @@ export function TenantsTable({ data, totalCount, pageCount, state }: TenantsTabl
                       <TableCell className="px-4 py-3">{tenant.company_code ?? '—'}</TableCell>
                       <TableCell className="max-w-[280px] px-4 py-3 truncate" title={tenant.description ?? undefined}>
                         {tenant.description ?? '—'}
+                      </TableCell>
+                      <TableCell className="px-4 py-3" onClick={(event) => event.stopPropagation()}>
+                        <Switch
+                          checked={tenant.is_visible}
+                          disabled={isVisibilityPending && visibilityPendingId === tenant.id}
+                          onCheckedChange={(checked) => handleVisibilityToggle(tenant.id, checked)}
+                          aria-label={`${tenant.is_visible ? 'Slėpti' : 'Rodyti'} ${tenant.store_name}`}
+                        />
                       </TableCell>
                       <TableCell className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2" onClick={(event) => event.stopPropagation()}>

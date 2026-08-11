@@ -19,7 +19,7 @@ const DEFAULT_BANNER_SLIDES = [
 
 export default async function SportasPage() {
   const bannerSlides = await getPuckBannerSlides('sportas', DEFAULT_BANNER_SLIDES)
-  const tenants = (await getPublicTenants()).filter((t) => t.category === 'SPORTAS IR SVEIKATINGUMAS')
+  const tenants = (await getPublicTenants()).filter((t) => normalizeCategory(t.category) === 'Sportas ir sveikatingumas')
 
   const stores = tenants.map((t) => ({
     id: t.id,

@@ -212,6 +212,33 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'kontaktai',
+    title: 'Kontaktai',
+    navLabel: 'Kontaktai',
+    description: 'Kontaktų puslapio antraštė, adresas ir darbo laikas',
+    previewUrl: '/kontaktai',
+    sections: [
+      {
+        key: 'hero',
+        title: 'Antraštė',
+        fields: [
+          { key: 'heading', label: 'Puslapio antraštė', type: 'text', placeholder: 'Kontaktai' },
+        ],
+      },
+      {
+        key: 'contact',
+        title: 'Adresas ir darbo laikas',
+        fields: [
+          { key: 'address', label: 'Adresas', type: 'textarea', placeholder: '' },
+          { key: 'hours_weekdays', label: 'Darbo laikas I–V', type: 'text', placeholder: '' },
+          { key: 'hours_saturday', label: 'Darbo laikas VI', type: 'text', placeholder: '' },
+          { key: 'hours_sunday', label: 'Darbo laikas VII', type: 'text', placeholder: '' },
+          { key: 'admin_hours', label: 'Administracijos darbo laikas', type: 'text', placeholder: '' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',

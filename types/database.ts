@@ -264,6 +264,7 @@ export type Database = {
           description: string | null
           gallery_images: string[] | null
           id: string
+          is_visible: boolean
           login_password: string | null
           logo_url: string | null
           operator: string | null
@@ -285,6 +286,7 @@ export type Database = {
           description?: string | null
           gallery_images?: string[] | null
           id?: string
+          is_visible?: boolean
           login_password?: string | null
           logo_url?: string | null
           operator?: string | null
@@ -306,6 +308,7 @@ export type Database = {
           description?: string | null
           gallery_images?: string[] | null
           id?: string
+          is_visible?: boolean
           login_password?: string | null
           logo_url?: string | null
           operator?: string | null

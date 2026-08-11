@@ -3,7 +3,7 @@
 // public.puck_pages so app/api/puck/[slug]/route.ts and lib/puck-render.tsx
 // (the public marketing-page renderer) need no changes.
 
-import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS } from '@/lib/strings'
+import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS } from '@/lib/strings'
 
 export type FieldKind = 'text' | 'textarea' | 'image' | 'array'
 
@@ -274,6 +274,23 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     ],
   },
 
+  KontaktaiBlock: {
+    type: 'KontaktaiBlock',
+    label: 'Kontaktų informacija',
+    editable: true,
+    fields: [
+      { key: 'heading', label: 'Antraštė', kind: 'text' },
+      { key: 'addressTitle', label: 'Adreso antraštė', kind: 'text' },
+      { key: 'address', label: 'Adresas', kind: 'textarea' },
+      { key: 'hoursTitle', label: 'Darbo laiko antraštė', kind: 'text' },
+      { key: 'hoursWeekdays', label: 'Darbo laikas I–V', kind: 'text' },
+      { key: 'hoursSaturday', label: 'Darbo laikas VI', kind: 'text' },
+      { key: 'hoursSunday', label: 'Darbo laikas VII', kind: 'text' },
+      { key: 'adminHoursTitle', label: 'Administracijos darbo laiko antraštė', kind: 'text' },
+      { key: 'adminHours', label: 'Administracijos darbo laikas', kind: 'text' },
+    ],
+  },
+
   AkcijosGridBlock: {
     type: 'AkcijosGridBlock',
     label: 'Akcijų tinklelis',
@@ -335,6 +352,7 @@ export const PAGES = [
   { slug: 'laisvalaikis', label: 'Laisvalaikis' },
   { slug: 'darbo-laikas', label: 'Darbo laikas' },
   { slug: 'lankytojams', label: 'Lankytojams' },
+  { slug: 'kontaktai', label: 'Kontaktai' },
   { slug: 'naujienos', label: 'Naujienos' },
   { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
 ] as const
@@ -349,6 +367,7 @@ export const PREVIEW_URLS: Record<string, string> = {
   laisvalaikis: '/laisvalaikis',
   'darbo-laikas': '/darbo-laikas',
   lankytojams: '/lankytojams',
+  kontaktai: '/kontaktai',
   naujienos: '/naujienos',
   'nuoma-reklama': '/nuoma-reklama',
 }
@@ -515,6 +534,25 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
         amenities: LANKYTOJAMS_STRINGS.amenities.map((value) => ({ value })),
         faqTitle: LANKYTOJAMS_STRINGS.faqTitle,
         faqItems: LANKYTOJAMS_STRINGS.faqItems.map((item) => ({ ...item })),
+      } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
+  kontaktai: {
+    content: [
+      { type: 'PageBanner', props: { id: 'banner-1', slide1: '', slide2: '', slide3: '', slide4: '' } },
+      { type: 'KontaktaiBlock', props: {
+        id: 'kontaktai-1',
+        heading: KONTAKTAI_STRINGS.heading,
+        addressTitle: KONTAKTAI_STRINGS.addressTitle,
+        address: KONTAKTAI_STRINGS.address,
+        hoursTitle: KONTAKTAI_STRINGS.hoursTitle,
+        hoursWeekdays: KONTAKTAI_STRINGS.hoursWeekdays,
+        hoursSaturday: KONTAKTAI_STRINGS.hoursSaturday,
+        hoursSunday: KONTAKTAI_STRINGS.hoursSunday,
+        adminHoursTitle: KONTAKTAI_STRINGS.adminHoursTitle,
+        adminHours: KONTAKTAI_STRINGS.adminHours,
       } },
     ],
     root: { props: {} },

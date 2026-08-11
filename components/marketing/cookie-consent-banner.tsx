@@ -9,6 +9,9 @@ export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    // One-time read of a client-only source (cookie) to correct the
+    // SSR-safe default — not a reaction to a subsequent external event.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!getStoredConsent()) setVisible(true)
   }, [])
 

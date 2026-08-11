@@ -11,7 +11,8 @@ export const TENANT_CATEGORIES = [
   'Maistas ir restoranai',
   'Dialogai',
   'Elektronika',
-  'Sportas ir laisvalaikis',
+  'Sportas ir sveikatingumas',
+  'Laisvalaikis ir pramogos',
   'Grožis ir sveikata',
   'Namų apyvoka',
   'Žaislai ir vaikų prekės',
@@ -35,9 +36,10 @@ const CATEGORY_ALIASES: Record<string, TenantCategory> = {
   // general "Maistas ir restoranai" category so app/(marketing)/dialogai/page.tsx
   // can show only food-court tenants instead of every restaurant in the mall.
   'DIALOGAI': 'Dialogai',
-  'LAISVALAIKIS IR PRAMOGOS': 'Sportas ir laisvalaikis',
-  'SPORTAS IR SVEIKATINGUMAS': 'Sportas ir laisvalaikis',
-  'Sportas': 'Sportas ir laisvalaikis',
+  'LAISVALAIKIS IR PRAMOGOS': 'Laisvalaikis ir pramogos',
+  'SPORTAS IR SVEIKATINGUMAS': 'Sportas ir sveikatingumas',
+  'Sportas': 'Sportas ir sveikatingumas',
+  'Sportas ir laisvalaikis': 'Sportas ir sveikatingumas',
   'GROŽIS IR SVEIKATA': 'Grožis ir sveikata',
   'VAISTINĖS OPTIKA': 'Grožis ir sveikata',
   'JUVELYRIKA IR AKSESUARAI': 'Juvelyrika ir aksesuarai',

@@ -1,6 +1,6 @@
 'use client'
 // components/faq/faq-form-dialog.tsx — Dialog for creating/editing FAQ items
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X, Paperclip, FileText, Loader2 } from 'lucide-react'
@@ -55,27 +55,15 @@ export function FaqFormDialog({
   const isEdit = editItem != null
   const [isPending, startTransition] = useTransition()
   const [uploading, setUploading] = useState(false)
-  const [attachments, setAttachments] = useState<string[]>([])
+  const [attachments, setAttachments] = useState<string[]>(() => editItem?.attachments ?? [])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<FaqFormValues>({
     resolver: zodResolver(faqFormSchema),
-    defaultValues: { question: '', answer: '', attachments: [] },
+    defaultValues: isEdit && editItem
+      ? { question: editItem.question, answer: editItem.answer, attachments: editItem.attachments ?? [] }
+      : { question: '', answer: '', attachments: [] },
   })
-
-  useEffect(() => {
-    if (isEdit && editItem) {
-      form.reset({
-        question: editItem.question,
-        answer: editItem.answer,
-        attachments: editItem.attachments ?? [],
-      })
-      setAttachments(editItem.attachments ?? [])
-    } else if (!isEdit) {
-      form.reset({ question: '', answer: '', attachments: [] })
-      setAttachments([])
-    }
-  }, [editItem, isEdit, form])
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return

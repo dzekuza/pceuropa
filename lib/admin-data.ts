@@ -22,6 +22,7 @@ const TENANT_LIST_COLUMNS = [
   'weekday_hours',
   'saturday_hours',
   'sunday_hours',
+  'is_visible',
 ].join(', ')
 
 const TENANT_EXPORT_COLUMNS = [
@@ -56,6 +57,7 @@ const TENANT_DETAIL_COLUMNS = [
   'weekday_hours',
   'saturday_hours',
   'sunday_hours',
+  'is_visible',
 ].join(', ')
 
 const TENANT_SORT_COLUMNS = new Set([
@@ -85,30 +87,30 @@ export interface TenantListState {
   direction: 'asc' | 'desc'
 }
 
-export interface TenantListRow
-  extends Pick<
-    Tenant,
-    | 'id'
-    | 'store_name'
-    | 'operator'
-    | 'category'
-    | 'space_m2'
-    | 'rent_eur'
-    | 'company_code'
-    | 'description'
-    | 'contact_email'
-    | 'contact_phone'
-    | 'logo_url'
-    | 'gallery_images'
-    | 'created_at'
-    | 'user_id'
-    | 'weekday_hours'
-    | 'saturday_hours'
-    | 'sunday_hours'
-  > {}
+export type TenantListRow = Pick<
+  Tenant,
+  | 'id'
+  | 'store_name'
+  | 'operator'
+  | 'category'
+  | 'space_m2'
+  | 'rent_eur'
+  | 'company_code'
+  | 'description'
+  | 'contact_email'
+  | 'contact_phone'
+  | 'logo_url'
+  | 'gallery_images'
+  | 'created_at'
+  | 'user_id'
+  | 'weekday_hours'
+  | 'saturday_hours'
+  | 'sunday_hours'
+  | 'is_visible'
+>
 
-export interface TenantSubmissionRow
-  extends Pick<Tenant, 'id' | 'store_name' | 'operator' | 'category' | 'space_m2' | 'rent_eur'> {}
+export type TenantSubmissionRow =
+  Pick<Tenant, 'id' | 'store_name' | 'operator' | 'category' | 'space_m2' | 'rent_eur'>
 
 export interface MonthlyRevenuePoint {
   month: string
@@ -148,8 +150,8 @@ interface MonthlyStatsRow {
   total_tx: number
 }
 
-interface RecentReportRow
-  extends Pick<RevenueReport, 'id' | 'amount_eur' | 'tx_count' | 'month' | 'tenant_id' | 'submitted_at'> {}
+type RecentReportRow =
+  Pick<RevenueReport, 'id' | 'amount_eur' | 'tx_count' | 'month' | 'tenant_id' | 'submitted_at'>
 
 export interface AdminHomeData {
   tenantCount: number

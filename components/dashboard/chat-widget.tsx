@@ -2,7 +2,7 @@
 // components/dashboard/chat-widget.tsx
 // Floating admin chat widget — Gemini 2.5 Flash with live DB context
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import type { UIMessage } from 'ai'
@@ -36,6 +36,29 @@ const INITIAL_MESSAGES: UIMessage[] = [
   },
 ]
 
+type Corner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
+const CORNER_STORAGE_KEY = 'pceuropa-chat-widget-corner'
+const DEFAULT_CORNER: Corner = 'bottom-right'
+const DRAG_THRESHOLD = 6
+
+function isCorner(value: string | null): value is Corner {
+  return value === 'top-left' || value === 'top-right' || value === 'bottom-left' || value === 'bottom-right'
+}
+
+// Panel renders first in DOM order; flex-col-reverse (top corners) flips it
+// below the trigger button instead of above, without reordering the JSX.
+function cornerClasses(corner: Corner): string {
+  const isTop = corner.startsWith('top')
+  const isLeft = corner.endsWith('left')
+  return cn(
+    isTop ? 'top-6' : 'bottom-6',
+    isLeft ? 'left-6' : 'right-6',
+    isTop ? 'flex-col-reverse' : 'flex-col',
+    isLeft ? 'items-start' : 'items-end',
+  )
+}
+
 function TypingDots() {
   return (
     <div className="flex gap-1.5 items-center px-1 py-0.5">
@@ -53,6 +76,100 @@ export function ChatWidget() {
   const [input, setInput] = useState('')
   const endRef = useRef<HTMLDivElement>(null)
 
+  const [corner, setCorner] = useState<Corner>(DEFAULT_CORNER)
+  const [hasHydrated, setHasHydrated] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dragStateRef = useRef<{
+    pointerId: number
+    startX: number
+    startY: number
+    originLeft: number
+    originTop: number
+    moved: boolean
+  } | null>(null)
+  const justDraggedRef = useRef(false)
+
+  useEffect(() => {
+    // One-time read of a client-only source (localStorage) to correct the
+    // SSR-safe default — not a reaction to a subsequent external event.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHasHydrated(true)
+    try {
+      const stored = localStorage.getItem(CORNER_STORAGE_KEY)
+      if (isCorner(stored)) setCorner(stored)
+    } catch {
+      // localStorage unavailable (private browsing) — keep default corner
+    }
+  }, [])
+
+  const startDrag = (e: ReactPointerEvent) => {
+    if (e.button !== undefined && e.button !== 0) return
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    dragStateRef.current = {
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originLeft: rect.left,
+      originTop: rect.top,
+      moved: false,
+    }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  const onDragMove = (e: ReactPointerEvent) => {
+    const ds = dragStateRef.current
+    if (!ds || e.pointerId !== ds.pointerId) return
+
+    const dx = e.clientX - ds.startX
+    const dy = e.clientY - ds.startY
+
+    if (!ds.moved) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return
+      ds.moved = true
+      setIsDragging(true)
+    }
+
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const nextLeft = Math.min(Math.max(ds.originLeft + dx, 0), window.innerWidth - rect.width)
+    const nextTop = Math.min(Math.max(ds.originTop + dy, 0), window.innerHeight - rect.height)
+    setDragPos({ x: nextLeft, y: nextTop })
+  }
+
+  const onDragEnd = (e: ReactPointerEvent) => {
+    const ds = dragStateRef.current
+    if (!ds || e.pointerId !== ds.pointerId) return
+
+    e.currentTarget.releasePointerCapture(e.pointerId)
+
+    if (!ds.moved) {
+      dragStateRef.current = null
+      return
+    }
+
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (rect) {
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const nextCorner: Corner = `${centerY < window.innerHeight / 2 ? 'top' : 'bottom'}-${centerX < window.innerWidth / 2 ? 'left' : 'right'}`
+      setCorner(nextCorner)
+      try {
+        localStorage.setItem(CORNER_STORAGE_KEY, nextCorner)
+      } catch {
+        // localStorage unavailable — position just won't persist
+      }
+    }
+
+    justDraggedRef.current = true
+    setIsDragging(false)
+    setDragPos(null)
+    dragStateRef.current = null
+  }
+
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     messages: INITIAL_MESSAGES,
@@ -63,10 +180,6 @@ export function ChatWidget() {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isLoading])
-
-  useEffect(() => {
-    if (isOpen) setUnread(0)
-  }, [isOpen])
 
   const handleSend = () => {
     const text = input.trim()
@@ -85,7 +198,15 @@ export function ChatWidget() {
   const showTyping = isLoading && messages[messages.length - 1]?.role === 'user'
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
+    <div
+      ref={containerRef}
+      className={cn(
+        'fixed z-50 flex gap-3 pointer-events-none',
+        !isDragging && hasHydrated && 'transition-[top,left,bottom,right] duration-200 ease-out',
+        cornerClasses(corner),
+      )}
+      style={isDragging && dragPos ? { left: dragPos.x, top: dragPos.y, right: 'auto', bottom: 'auto' } : undefined}
+    >
       {/* Chat panel */}
       {isOpen && (
         <div
@@ -98,8 +219,15 @@ export function ChatWidget() {
             isMinimized ? 'h-[62px]' : 'h-[520px]',
           )}
         >
-          {/* Header */}
-          <div className="shrink-0 flex items-center gap-3 px-4 py-3 bg-muted/20 border-b">
+          {/* Header — also the drag handle */}
+          <div
+            className="shrink-0 flex items-center gap-3 px-4 py-3 bg-muted/20 border-b cursor-grab active:cursor-grabbing touch-none"
+            aria-label={S.dragHandleLabel}
+            onPointerDown={startDrag}
+            onPointerMove={onDragMove}
+            onPointerUp={onDragEnd}
+            onPointerCancel={onDragEnd}
+          >
             <div className="relative shrink-0">
               <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-primary" />
@@ -112,7 +240,7 @@ export function ChatWidget() {
                 {isLoading ? 'Rašo...' : S.assistantStatus}
               </p>
             </div>
-            <div className="flex items-center gap-0.5 shrink-0">
+            <div className="flex items-center gap-0.5 shrink-0" onPointerDown={(e) => e.stopPropagation()}>
               <Button
                 variant="ghost"
                 size="icon"
@@ -237,13 +365,25 @@ export function ChatWidget() {
 
       {/* Floating trigger */}
       <button
-        onClick={() => setIsOpen(v => !v)}
+        onClick={() => {
+          if (justDraggedRef.current) {
+            justDraggedRef.current = false
+            return
+          }
+          setIsOpen(v => !v)
+          setUnread(0)
+        }}
+        onPointerDown={startDrag}
+        onPointerMove={onDragMove}
+        onPointerUp={onDragEnd}
+        onPointerCancel={onDragEnd}
         className={cn(
-          'pointer-events-auto relative h-14 w-14 rounded-2xl',
+          'pointer-events-auto relative h-14 w-14 rounded-2xl touch-none',
           'bg-primary text-primary-foreground',
           'flex items-center justify-center',
           'shadow-lg hover:shadow-xl',
           'hover:scale-105 active:scale-95 transition-all duration-200',
+          'cursor-grab active:cursor-grabbing',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
         )}
         aria-label={isOpen ? S.closeLabel : S.triggerLabel}

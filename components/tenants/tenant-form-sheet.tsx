@@ -30,6 +30,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
@@ -222,6 +223,7 @@ const EMPTY_TENANT_FORM_VALUES: TenantFormValues = {
   weekday_hours: '',
   saturday_hours: '',
   sunday_hours: '',
+  is_visible: true,
 }
 
 export function TenantFormSheet({
@@ -255,6 +257,7 @@ export function TenantFormSheet({
         weekday_hours: tenant.weekday_hours ?? '',
         saturday_hours: tenant.saturday_hours ?? '',
         sunday_hours: tenant.sunday_hours ?? '',
+        is_visible: 'is_visible' in tenant ? tenant.is_visible ?? true : true,
       })
     } else if (!isEdit) {
       form.reset(EMPTY_TENANT_FORM_VALUES)
@@ -396,6 +399,24 @@ export function TenantFormSheet({
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="is_visible"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border px-3 py-2">
+                  <div className="space-y-0.5">
+                    <FormLabel>Rodyti viešai</FormLabel>
+                    <p className="text-xs text-muted-foreground">
+                      Kai išjungta, nuomininkas nerodomas viešuose puslapiuose
+                    </p>
+                  </div>
+                  <FormControl>
+                    <Switch checked={field.value ?? true} onCheckedChange={field.onChange} />
+                  </FormControl>
                 </FormItem>
               )}
             />
