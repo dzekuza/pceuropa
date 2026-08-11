@@ -9,6 +9,26 @@ import { TENANTS_PUBLIC_CACHE_TAG } from '@/lib/tenants-public'
 import type { TenantFormValues } from '@/lib/validations/tenant'
 
 /**
+ * revalidatePublicTenantPages — revalidateTag() alone only busts the
+ * unstable_cache() data entry in lib/tenants-public.ts; it does not bust the
+ * Full Route Cache for the marketing pages that render that data, so edits
+ * were invisible on the public site until the 300s TTL naturally expired.
+ * Explicitly revalidate every page that reads getPublicTenants()/
+ * getPublicTenantBySlug().
+ */
+function revalidatePublicTenantPages() {
+  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePath('/parduotuves')
+  revalidatePath('/parduotuves/[slug]', 'page')
+  revalidatePath('/restoranai')
+  revalidatePath('/dialogai')
+  revalidatePath('/sportas')
+  revalidatePath('/laisvalaikis')
+  revalidatePath('/darbo-laikas')
+  revalidatePath('/planas')
+}
+
+/**
  * generateUniqueTenantSlug — slugifies store_name and appends a numeric
  * suffix if it collides with an existing tenant slug (column is unique).
  */
@@ -101,7 +121,7 @@ export async function createTenant(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { success: true }
 }
 
@@ -147,7 +167,7 @@ export async function updateTenant(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { success: true }
 }
 
@@ -178,7 +198,7 @@ export async function setTenantVisibility(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { success: true }
 }
 
@@ -225,7 +245,7 @@ export async function deleteTenant(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { success: true }
 }
 
@@ -401,7 +421,10 @@ export async function importTenants(
     }
   }
 
-  if (imported > 0) revalidatePath('/admin/tenants')
+  if (imported > 0) {
+    revalidatePath('/admin/tenants')
+    revalidatePublicTenantPages()
+  }
   return { imported, errors }
 }
 
@@ -433,7 +456,7 @@ export async function bulkUpdateTenantCategory(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { updated: tenantIds.length }
 }
 
@@ -479,7 +502,7 @@ export async function bulkDeleteTenants(
   }
 
   revalidatePath('/admin/tenants')
-  revalidateTag(TENANTS_PUBLIC_CACHE_TAG, 'max')
+  revalidatePublicTenantPages()
   return { deleted: tenants.length, errors: [] }
 }
 
