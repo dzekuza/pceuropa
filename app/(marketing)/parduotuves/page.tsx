@@ -5,7 +5,7 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
-import { normalizeCategory } from '@/lib/constants'
+import { normalizeCategory, TENANT_CATEGORIES } from '@/lib/constants'
 
 export const metadata = {
   title: 'Parduotuvės ir Paslaugos — PC Europa',
@@ -38,7 +38,11 @@ export default async function ParduotuvesPage() {
 
       {/* Stores directory */}
       <div className="w-full flex flex-col items-center">
-        <StoresDirectory stores={stores} excludeCategories={['Maistas ir restoranai', 'Dialogai']} />
+        <StoresDirectory
+          stores={stores}
+          excludeCategories={['Maistas ir restoranai', 'Dialogai']}
+          includeCategories={TENANT_CATEGORIES}
+        />
       </div>
 
       {/* Floor plan */}

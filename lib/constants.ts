@@ -9,13 +9,12 @@ export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? 'G
 export const TENANT_CATEGORIES = [
   'Mada ir apranga',
   'Maistas ir restoranai',
+  'Maistas ir gerimai',
   'Dialogai',
   'Elektronika',
   'Sportas ir sveikatingumas',
   'Laisvalaikis ir pramogos',
   'Grožis ir sveikata',
-  'Namų apyvoka',
-  'Žaislai ir vaikų prekės',
   'Juvelyrika ir aksesuarai',
   'Paslaugos',
   'Kita',
@@ -43,10 +42,14 @@ const CATEGORY_ALIASES: Record<string, TenantCategory> = {
   'GROŽIS IR SVEIKATA': 'Grožis ir sveikata',
   'VAISTINĖS OPTIKA': 'Grožis ir sveikata',
   'JUVELYRIKA IR AKSESUARAI': 'Juvelyrika ir aksesuarai',
-  'ŽAISLAI IR VAIKŲ PREKĖS': 'Žaislai ir vaikų prekės',
   'PASLAUGOS': 'Paslaugos',
   'ELEKTRONIKA': 'Elektronika',
-  'NAMŲ APYVOKA': 'Namų apyvoka',
+  'MAISTAS IR GĖRIMAI': 'Maistas ir gerimai',
+  // Removed categories — existing tenants tagged with these fall back to 'Kita'.
+  'NAMŲ APYVOKA': 'Kita',
+  'Namų apyvoka': 'Kita',
+  'ŽAISLAI IR VAIKŲ PREKĖS': 'Kita',
+  'Žaislai ir vaikų prekės': 'Kita',
 }
 
 export function normalizeCategory(raw: string | null | undefined): TenantCategory {

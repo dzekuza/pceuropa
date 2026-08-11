@@ -17,7 +17,10 @@ type Store = {
 
 interface StoresDirectoryProps {
   stores: Store[]
-  excludeCategories?: string[]
+  excludeCategories?: readonly string[]
+  // Categories to always offer as a filter pill, even before any store is
+  // assigned to them — e.g. a newly added TENANT_CATEGORIES entry.
+  includeCategories?: readonly string[]
 }
 
 type CategoryConfig = {
@@ -132,7 +135,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
   )
 }
 
-export function StoresDirectory({ stores, excludeCategories = [] }: StoresDirectoryProps) {
+export function StoresDirectory({ stores, excludeCategories = [], includeCategories = [] }: StoresDirectoryProps) {
   const [activeCategory, setActiveCategory] = useState('Visos')
   const [search, setSearch] = useState('')
 
@@ -142,9 +145,11 @@ export function StoresDirectory({ stores, excludeCategories = [] }: StoresDirect
   )
 
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(visibleStores.map((s) => s.category))).sort()
-    return ['Visos', ...unique]
-  }, [visibleStores])
+    const fromStores = visibleStores.map((s) => s.category)
+    const combined = new Set([...fromStores, ...includeCategories])
+    excludeCategories.forEach((c) => combined.delete(c))
+    return ['Visos', ...Array.from(combined).sort()]
+  }, [visibleStores, includeCategories, excludeCategories])
 
   const categoryIndexMap = useMemo(() => {
     const map: Record<string, number> = {}
