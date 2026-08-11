@@ -331,7 +331,7 @@ export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
                         <Field label="Operatorius" value={tenant.operator ?? '—'} />
                         <Field label="Įm. kodas" value={tenant.company_code ?? '—'} />
                         <Field label="Kategorija" value={tenant.category ?? '—'} />
-                        <Field label="El. paštas" value={tenant.contact_email ?? '—'} />
+                        <Field label="Internetinis puslapis" value={tenant.website_url ?? '—'} />
                         <Field label="Telefonas" value={tenant.contact_phone ?? '—'} />
                         <Field
                             label="Plotas"

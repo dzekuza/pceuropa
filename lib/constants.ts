@@ -59,6 +59,11 @@ export function normalizeCategory(raw: string | null | undefined): TenantCategor
   return CATEGORY_ALIASES[raw] ?? 'Kita'
 }
 
+// Fallback tenant working hours — used when a tenant hasn't set their own.
+export const DEFAULT_WEEKDAY_HOURS = '10:00–21:00'
+export const DEFAULT_SATURDAY_HOURS = '10:00–20:00'
+export const DEFAULT_SUNDAY_HOURS = '10:00–20:00'
+
 export const MONTHS_LT = [
   'Sausis',
   'Vasaris',

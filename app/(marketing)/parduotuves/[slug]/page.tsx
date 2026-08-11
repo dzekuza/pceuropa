@@ -7,6 +7,7 @@ import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
 import { StoreGallery } from '@/components/marketing/store-gallery'
 import { getPublicTenantBySlug } from '@/lib/tenants-public'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { DEFAULT_WEEKDAY_HOURS, DEFAULT_SATURDAY_HOURS, DEFAULT_SUNDAY_HOURS } from '@/lib/constants'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -20,10 +21,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: `${data.store_name} (${data.category ?? 'Parduotuvė'}) PC Europa prekybos centras`,
   }
 }
-
-const DEFAULT_WEEKDAY_HOURS = '10:00–21:00'
-const DEFAULT_SATURDAY_HOURS = '10:00–20:00'
-const DEFAULT_SUNDAY_HOURS = '10:00–20:00'
 
 function buildHoursRows(weekdayHours: string, saturdayHours: string, sundayHours: string) {
   return [
@@ -158,19 +155,21 @@ export default async function StoreDetailPage({ params }: Props) {
                 ))}
               </div>
 
-              {(tenant.contact_email || tenant.contact_phone) && (
+              {(tenant.website_url || tenant.contact_phone) && (
                 <>
                   <div className="h-px bg-[#f2f2f2]" />
 
                   {/* Contacts */}
                   <div className="flex flex-col gap-1">
                     <p className="text-[#575757] text-[13px]">Kontaktai</p>
-                    {tenant.contact_email && (
+                    {tenant.website_url && (
                       <a
-                        href={`mailto:${tenant.contact_email}`}
+                        href={tenant.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="font-medium text-[14px] text-black hover:underline"
                       >
-                        {tenant.contact_email}
+                        {tenant.website_url.replace(/^https?:\/\//, '')}
                       </a>
                     )}
                     {tenant.contact_phone && (

@@ -13,7 +13,7 @@ const TENANT_LIST_COLUMNS = [
   'rent_eur',
   'company_code',
   'description',
-  'contact_email',
+  'website_url',
   'contact_phone',
   'logo_url',
   'gallery_images',
@@ -48,7 +48,7 @@ const TENANT_DETAIL_COLUMNS = [
   'rent_eur',
   'company_code',
   'description',
-  'contact_email',
+  'website_url',
   'contact_phone',
   'logo_url',
   'gallery_images',
@@ -97,7 +97,7 @@ export type TenantListRow = Pick<
   | 'rent_eur'
   | 'company_code'
   | 'description'
-  | 'contact_email'
+  | 'website_url'
   | 'contact_phone'
   | 'logo_url'
   | 'gallery_images'

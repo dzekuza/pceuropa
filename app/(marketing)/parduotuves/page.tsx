@@ -27,6 +27,9 @@ export default async function ParduotuvesPage() {
     category: normalizeCategory(t.category),
     logoUrl: t.logo_url ?? null,
     coverUrl: t.gallery_images?.[0] ?? null,
+    weekdayHours: t.weekday_hours,
+    saturdayHours: t.saturday_hours,
+    sundayHours: t.sunday_hours,
   }))
 
   return (

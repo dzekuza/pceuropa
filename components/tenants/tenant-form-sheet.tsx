@@ -216,7 +216,7 @@ const EMPTY_TENANT_FORM_VALUES: TenantFormValues = {
   space_m2: '',
   rent_eur: '',
   description: '',
-  contact_email: '',
+  website_url: '',
   contact_phone: '',
   logo_url: '',
   gallery_images: [],
@@ -250,7 +250,7 @@ export function TenantFormSheet({
         space_m2: tenant.space_m2 != null ? String(tenant.space_m2) : '',
         rent_eur: tenant.rent_eur != null ? String(tenant.rent_eur) : '',
         description: tenant.description ?? '',
-        contact_email: tenant.contact_email ?? '',
+        website_url: tenant.website_url ?? '',
         contact_phone: tenant.contact_phone ?? '',
         logo_url: tenant.logo_url ?? '',
         gallery_images: tenant.gallery_images ?? [],
@@ -514,12 +514,12 @@ export function TenantFormSheet({
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="contact_email"
+                name="website_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kontaktinis el. paštas</FormLabel>
+                    <FormLabel>Internetinis puslapis</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="info@parduotuve.lt" {...field} />
+                      <Input type="url" placeholder="https://parduotuve.lt" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

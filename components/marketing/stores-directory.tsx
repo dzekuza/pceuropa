@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { DEFAULT_WEEKDAY_HOURS, DEFAULT_SATURDAY_HOURS, DEFAULT_SUNDAY_HOURS } from '@/lib/constants'
 
 type Store = {
   id: string
@@ -13,6 +14,9 @@ type Store = {
   category: string
   logoUrl: string | null
   coverUrl: string | null
+  weekdayHours?: string | null
+  saturdayHours?: string | null
+  sundayHours?: string | null
 }
 
 interface StoresDirectoryProps {
@@ -57,7 +61,28 @@ function getInitials(name: string): string {
   return (words[0][0] + words[1][0]).toUpperCase()
 }
 
+function buildHoursOverlayRows(store: Store) {
+  const weekdayHours = store.weekdayHours ?? DEFAULT_WEEKDAY_HOURS
+  const saturdayHours = store.saturdayHours ?? DEFAULT_SATURDAY_HOURS
+  const sundayHours = store.sundayHours ?? DEFAULT_SUNDAY_HOURS
+
+  if (saturdayHours === sundayHours) {
+    return [
+      { days: 'I–V', hours: weekdayHours },
+      { days: 'VI–VII', hours: saturdayHours },
+    ]
+  }
+
+  return [
+    { days: 'I–V', hours: weekdayHours },
+    { days: 'VI', hours: saturdayHours },
+    { days: 'VII', hours: sundayHours },
+  ]
+}
+
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
+  const hoursRows = buildHoursOverlayRows(store)
+
   return (
     <Link href={`/parduotuves/${store.slug}`} className="group bg-white flex flex-col gap-4 items-start p-4 rounded-[32px] lg:rounded-[40px] cursor-pointer transition-shadow duration-200 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       {/* Top row: status + name on left, logo on right */}
@@ -120,14 +145,12 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         <div className="absolute inset-0 bg-black/36 rounded-[24px] pointer-events-none" />
         {/* Hours overlay */}
         <div className="absolute bottom-3 left-3 flex flex-col gap-0.5">
-          <div className="flex items-center gap-2">
-            <span className="text-white/70 text-[11px] leading-[16px] w-[36px] whitespace-nowrap">I–V</span>
-            <span className="text-white text-[11px] leading-[16px]">10:00–21:00</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-white/70 text-[11px] leading-[16px] w-[36px] whitespace-nowrap">VI–VII</span>
-            <span className="text-white text-[11px] leading-[16px]">10:00–20:00</span>
-          </div>
+          {hoursRows.map(({ days, hours }) => (
+            <div key={days} className="flex items-center gap-2">
+              <span className="text-white/70 text-[11px] leading-[16px] w-[36px] whitespace-nowrap">{days}</span>
+              <span className="text-white text-[11px] leading-[16px]">{hours}</span>
+            </div>
+          ))}
         </div>
         <CardArrowButton />
       </div>

@@ -18,6 +18,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       articles: {
@@ -269,13 +294,14 @@ export type Database = {
           logo_url: string | null
           operator: string | null
           rent_eur: number | null
-          space_m2: number | null
-          slug: string
-          store_name: string
-          user_id: string | null
-          weekday_hours: string
           saturday_hours: string
+          slug: string
+          space_m2: number | null
+          store_name: string
           sunday_hours: string
+          user_id: string | null
+          website_url: string | null
+          weekday_hours: string
         }
         Insert: {
           category?: string | null
@@ -291,13 +317,14 @@ export type Database = {
           logo_url?: string | null
           operator?: string | null
           rent_eur?: number | null
-          space_m2?: number | null
-          slug: string
-          store_name: string
-          user_id?: string | null
-          weekday_hours?: string
           saturday_hours?: string
+          slug: string
+          space_m2?: number | null
+          store_name: string
           sunday_hours?: string
+          user_id?: string | null
+          website_url?: string | null
+          weekday_hours?: string
         }
         Update: {
           category?: string | null
@@ -313,13 +340,14 @@ export type Database = {
           logo_url?: string | null
           operator?: string | null
           rent_eur?: number | null
-          space_m2?: number | null
-          slug?: string
-          store_name?: string
-          user_id?: string | null
-          weekday_hours?: string
           saturday_hours?: string
+          slug?: string
+          space_m2?: number | null
+          store_name?: string
           sunday_hours?: string
+          user_id?: string | null
+          website_url?: string | null
+          weekday_hours?: string
         }
         Relationships: []
       }
@@ -328,45 +356,45 @@ export type Database = {
       tenants_public: {
         Row: {
           category: string | null
-          contact_email: string | null
           contact_phone: string | null
           description: string | null
           gallery_images: string[] | null
           id: string
           logo_url: string | null
+          saturday_hours: string | null
           slug: string
           store_name: string
-          weekday_hours: string | null
-          saturday_hours: string | null
           sunday_hours: string | null
+          website_url: string | null
+          weekday_hours: string | null
         }
         Insert: {
           category?: string | null
-          contact_email?: string | null
           contact_phone?: string | null
           description?: string | null
           gallery_images?: string[] | null
-          id?: string
+          id?: string | null
           logo_url?: string | null
-          slug?: string
-          store_name?: string
-          weekday_hours?: string | null
           saturday_hours?: string | null
+          slug?: string | null
+          store_name?: string | null
           sunday_hours?: string | null
+          website_url?: string | null
+          weekday_hours?: string | null
         }
         Update: {
           category?: string | null
-          contact_email?: string | null
           contact_phone?: string | null
           description?: string | null
           gallery_images?: string[] | null
-          id?: string
+          id?: string | null
           logo_url?: string | null
-          slug?: string
-          store_name?: string
-          weekday_hours?: string | null
           saturday_hours?: string | null
+          slug?: string | null
+          store_name?: string | null
           sunday_hours?: string | null
+          website_url?: string | null
+          weekday_hours?: string | null
         }
         Relationships: []
       }
@@ -520,6 +548,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

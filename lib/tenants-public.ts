@@ -22,7 +22,7 @@ export const getPublicTenants = unstable_cache(
     )
     const { data } = await supabase
       .from('tenants_public')
-      .select('id, slug, store_name, category, logo_url, gallery_images, description, weekday_hours, saturday_hours, sunday_hours, contact_email, contact_phone')
+      .select('id, slug, store_name, category, logo_url, gallery_images, description, weekday_hours, saturday_hours, sunday_hours, contact_phone, website_url')
       .order('store_name', { ascending: true })
     return data ?? []
   },

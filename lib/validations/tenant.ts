@@ -28,11 +28,11 @@ export const tenantSchema = z.object({
       message: 'Nuomos kaina turi būti teigiamas skaičius',
     }),
   description: z.string().optional(),
-  contact_email: z
+  website_url: z
     .string()
     .optional()
-    .refine((v) => !v || z.string().email().safeParse(v).success, {
-      message: 'Neteisingas el. pašto formatas',
+    .refine((v) => !v || z.string().url().safeParse(v).success, {
+      message: 'Neteisingas svetainės adreso formatas',
     }),
   contact_phone: z.string().optional(),
   logo_url: z.string().optional(),
