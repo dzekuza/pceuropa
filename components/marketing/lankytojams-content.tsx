@@ -37,7 +37,7 @@ export function LankytojamsContent({
         {/* Parking */}
         <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
           <h2 className="font-bold text-[22px] text-black">{parkingTitle}</h2>
-          <p className="text-[#575757] leading-relaxed">{parkingBody}</p>
+          <p className="text-[#575757] leading-relaxed whitespace-pre-line">{parkingBody}</p>
         </section>
 
         {/* Amenities */}
@@ -57,8 +57,8 @@ export function LankytojamsContent({
       {/* How to get here */}
       <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
         <h2 className="font-bold text-[22px] text-black">{accessTitle}</h2>
-        <p className="text-[#575757] leading-relaxed">{accessPublicTransport}</p>
-        <p className="text-[#575757] leading-relaxed">{accessByCar}</p>
+        <p className="text-[#575757] leading-relaxed whitespace-pre-line">{accessPublicTransport}</p>
+        <p className="text-[#575757] leading-relaxed whitespace-pre-line">{accessByCar}</p>
       </section>
 
       {/* FAQ */}
@@ -68,7 +68,7 @@ export function LankytojamsContent({
           {faqItems.map((item) => (
             <div key={item.question} className="bg-white rounded-[24px] p-8 flex flex-col gap-3">
               <p className="font-bold text-[18px] text-black">{item.question}</p>
-              <p className="text-[#575757] leading-relaxed">{item.answer}</p>
+              <p className="text-[#575757] leading-relaxed whitespace-pre-line">{item.answer}</p>
             </div>
           ))}
         </div>

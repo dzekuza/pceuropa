@@ -44,7 +44,7 @@ export default async function KontaktaiPage() {
           {/* Address */}
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.addressTitle}</h2>
-            <p className="text-[#575757] leading-relaxed">{s.address}</p>
+            <p className="text-[#575757] leading-relaxed whitespace-pre-line">{s.address}</p>
           </section>
 
           {/* Working hours */}

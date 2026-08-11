@@ -31,7 +31,7 @@ export function HowToGetHereSection({
         <DisplayHeading>
           {heading}
         </DisplayHeading>
-        <p className="text-[#575757] text-base leading-6">
+        <p className="text-[#575757] text-base leading-6 whitespace-pre-line">
           {subtext}
         </p>
       </div>

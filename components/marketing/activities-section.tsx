@@ -93,7 +93,7 @@ export function ActivitiesSection({
             <DisplayHeading>
               {petsHeading || 'PC EUROPA\ndraugiška augintiniams'}
             </DisplayHeading>
-            <BodyText className="md:max-w-[320px] xl:max-w-[378px] text-neutral-600">
+            <BodyText className="md:max-w-[320px] xl:max-w-[378px] text-neutral-600 whitespace-pre-line">
               {petsDescription || 'Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.'}
             </BodyText>
           </div>
