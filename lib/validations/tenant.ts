@@ -17,8 +17,8 @@ export const tenantSchema = z.object({
     .min(1, 'Pasirinkite kategoriją'),
   space_m2: z
     .string()
-    .min(1, 'Plotas yra privalomas')
-    .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
+    .optional()
+    .refine((v) => !v || (!isNaN(parseFloat(v)) && parseFloat(v) > 0), {
       message: 'Plotas turi būti teigiamas skaičius',
     }),
   rent_eur: z
@@ -28,6 +28,13 @@ export const tenantSchema = z.object({
       message: 'Nuomos kaina turi būti teigiamas skaičius',
     }),
   description: z.string().optional(),
+  contact_email: z
+    .string()
+    .optional()
+    .refine((v) => !v || z.string().email().safeParse(v).success, {
+      message: 'Neteisingas el. pašto formatas',
+    }),
+  contact_phone: z.string().optional(),
   logo_url: z.string().optional(),
   gallery_images: z.array(z.string()).optional(),
   weekday_hours: z.string().optional(),

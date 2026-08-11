@@ -75,7 +75,7 @@ export default async function PromoDetailPage({ params }: Props) {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-[0.64fr_1fr] gap-8 lg:gap-12 items-start">
-          <div className="relative w-full aspect-[4/3] lg:aspect-square rounded-[32px] lg:rounded-[40px] overflow-hidden bg-muted">
+          <div className="relative w-full aspect-[1/1] rounded-[24px] overflow-hidden bg-muted">
             {item.image && (
               <img
                 src={resizeSupabaseImage(item.image, {

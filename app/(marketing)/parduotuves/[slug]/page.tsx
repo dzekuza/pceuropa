@@ -158,13 +158,32 @@ export default async function StoreDetailPage({ params }: Props) {
                 ))}
               </div>
 
-              <div className="h-px bg-[#f2f2f2]" />
+              {(tenant.contact_email || tenant.contact_phone) && (
+                <>
+                  <div className="h-px bg-[#f2f2f2]" />
 
-              {/* Location hint */}
-              <div className="flex flex-col gap-1">
-                <p className="text-[#575757] text-[13px]">Adresas</p>
-                <p className="font-medium text-[14px] text-black">Konstitucijos pr. 7A, Vilnius</p>
-              </div>
+                  {/* Contacts */}
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[#575757] text-[13px]">Kontaktai</p>
+                    {tenant.contact_email && (
+                      <a
+                        href={`mailto:${tenant.contact_email}`}
+                        className="font-medium text-[14px] text-black hover:underline"
+                      >
+                        {tenant.contact_email}
+                      </a>
+                    )}
+                    {tenant.contact_phone && (
+                      <a
+                        href={`tel:${tenant.contact_phone.replace(/\s+/g, '')}`}
+                        className="font-medium text-[14px] text-black hover:underline"
+                      >
+                        {tenant.contact_phone}
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

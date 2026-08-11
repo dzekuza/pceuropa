@@ -13,6 +13,8 @@ const TENANT_LIST_COLUMNS = [
   'rent_eur',
   'company_code',
   'description',
+  'contact_email',
+  'contact_phone',
   'logo_url',
   'gallery_images',
   'created_at',
@@ -45,6 +47,8 @@ const TENANT_DETAIL_COLUMNS = [
   'rent_eur',
   'company_code',
   'description',
+  'contact_email',
+  'contact_phone',
   'logo_url',
   'gallery_images',
   'created_at',
@@ -92,6 +96,8 @@ export interface TenantListRow
     | 'rent_eur'
     | 'company_code'
     | 'description'
+    | 'contact_email'
+    | 'contact_phone'
     | 'logo_url'
     | 'gallery_images'
     | 'created_at'

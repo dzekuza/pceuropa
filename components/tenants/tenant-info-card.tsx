@@ -19,6 +19,7 @@ import {
 import { TenantFormSheet } from '@/components/tenants/tenant-form-sheet'
 import { resetPassword, createTenantAccount } from '@/actions/tenants'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { cn } from '@/lib/utils'
 import type { Tenant } from '@/types/database'
 
 const MIN_PASSWORD_LENGTH = 10
@@ -37,9 +38,9 @@ interface TenantInfoCardProps {
     loginEmail: string | null
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function Field({ label, value, className }: { label: string; value: string; className?: string }) {
     return (
-        <div className="flex flex-col gap-1">
+        <div className={cn('flex flex-col gap-1', className)}>
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {label}
             </span>
@@ -330,6 +331,8 @@ export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
                         <Field label="Operatorius" value={tenant.operator ?? '—'} />
                         <Field label="Įm. kodas" value={tenant.company_code ?? '—'} />
                         <Field label="Kategorija" value={tenant.category ?? '—'} />
+                        <Field label="El. paštas" value={tenant.contact_email ?? '—'} />
+                        <Field label="Telefonas" value={tenant.contact_phone ?? '—'} />
                         <Field
                             label="Plotas"
                             value={tenant.space_m2 != null ? `${tenant.space_m2} m²` : '—'}
@@ -345,6 +348,11 @@ export function TenantInfoCard({ tenant, loginEmail }: TenantInfoCardProps) {
                         <Field label="Darbo laikas (I–V)" value={tenant.weekday_hours ?? '—'} />
                         <Field label="Šeštadienis" value={tenant.saturday_hours ?? '—'} />
                         <Field label="Sekmadienis" value={tenant.sunday_hours ?? '—'} />
+                        <Field
+                            label="Aprašymas"
+                            value={tenant.description ?? '—'}
+                            className="col-span-2 sm:col-span-3 lg:col-span-4 xl:col-span-7"
+                        />
                         <PasswordField
                             hasAccount={Boolean(tenant.user_id)}
                             isCreating={isPending}

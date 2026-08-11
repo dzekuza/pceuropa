@@ -215,6 +215,8 @@ const EMPTY_TENANT_FORM_VALUES: TenantFormValues = {
   space_m2: '',
   rent_eur: '',
   description: '',
+  contact_email: '',
+  contact_phone: '',
   logo_url: '',
   gallery_images: [],
   weekday_hours: '',
@@ -246,6 +248,8 @@ export function TenantFormSheet({
         space_m2: tenant.space_m2 != null ? String(tenant.space_m2) : '',
         rent_eur: tenant.rent_eur != null ? String(tenant.rent_eur) : '',
         description: tenant.description ?? '',
+        contact_email: tenant.contact_email ?? '',
+        contact_phone: tenant.contact_phone ?? '',
         logo_url: tenant.logo_url ?? '',
         gallery_images: tenant.gallery_images ?? [],
         weekday_hours: tenant.weekday_hours ?? '',
@@ -485,6 +489,35 @@ export function TenantFormSheet({
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="contact_email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kontaktinis el. paštas</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="info@parduotuve.lt" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="contact_phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kontaktinis telefonas</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="+370 600 00000" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}

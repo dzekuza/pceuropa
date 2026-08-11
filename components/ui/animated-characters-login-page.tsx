@@ -521,6 +521,7 @@ export function AnimatedLoginForm({ onSubmit, isLoading, error, strings }: Anima
                                 placeholder={strings.usernamePlaceholder}
                                 value={identifier}
                                 autoComplete="username"
+                                suppressHydrationWarning
                                 onChange={(e) => setIdentifier(e.target.value)}
                                 onFocus={() => setIsTyping(true)}
                                 onBlur={() => setIsTyping(false)}
@@ -537,6 +538,8 @@ export function AnimatedLoginForm({ onSubmit, isLoading, error, strings }: Anima
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
                                     value={password}
+                                    autoComplete="current-password"
+                                    suppressHydrationWarning
                                     onChange={(e) => setPassword(e.target.value)}
                                     onFocus={() => setIsTyping(true)}
                                     onBlur={() => setIsTyping(false)}

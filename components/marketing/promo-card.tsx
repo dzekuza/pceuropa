@@ -21,10 +21,10 @@ export function PromoCard({ item }: { item: PromoItem }) {
       className="flex flex-col gap-6 group"
     >
       {/* Image */}
-      <div className="relative w-full h-[236px] rounded-[32px] lg:rounded-[40px] overflow-hidden shrink-0 bg-muted">
+      <div className="relative w-full h-auto aspect-[1/1] rounded-[24px] overflow-hidden shrink-0 bg-muted">
         {item.image && (
           <img
-            src={resizeSupabaseImage(item.image, { width: 500, height: 472, quality: 90 })}
+            src={resizeSupabaseImage(item.image, { width: 500, height: 500, quality: 90 })}
             alt={item.title}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
           />

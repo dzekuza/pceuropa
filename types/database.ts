@@ -258,6 +258,8 @@ export type Database = {
         Row: {
           category: string | null
           company_code: string | null
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string | null
           description: string | null
           gallery_images: string[] | null
@@ -277,6 +279,8 @@ export type Database = {
         Insert: {
           category?: string | null
           company_code?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           description?: string | null
           gallery_images?: string[] | null
@@ -296,6 +300,8 @@ export type Database = {
         Update: {
           category?: string | null
           company_code?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           description?: string | null
           gallery_images?: string[] | null
@@ -319,6 +325,8 @@ export type Database = {
       tenants_public: {
         Row: {
           category: string | null
+          contact_email: string | null
+          contact_phone: string | null
           description: string | null
           gallery_images: string[] | null
           id: string
@@ -331,6 +339,8 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           description?: string | null
           gallery_images?: string[] | null
           id?: string
@@ -343,6 +353,8 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           description?: string | null
           gallery_images?: string[] | null
           id?: string

@@ -89,11 +89,11 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
       </div>
 
       {/* Cover image */}
-      <div className="relative h-[204px] rounded-[24px] w-full overflow-hidden shrink-0">
+      <div className="relative h-auto aspect-[1/1] rounded-[24px] w-full overflow-hidden shrink-0">
         {store.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={resizeSupabaseImage(store.coverUrl, { width: 800, height: 408, quality: 90 })}
+            src={resizeSupabaseImage(store.coverUrl, { width: 800, height: 800, quality: 90 })}
             alt=""
             loading="lazy"
             className="absolute inset-0 size-full object-cover rounded-[24px] transition-transform duration-300 group-hover:scale-105"

@@ -16,7 +16,7 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="relative w-full h-[320px] md:h-[480px] lg:h-full rounded-[32px] lg:rounded-[40px] bg-[#e8e8e4] flex items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-square lg:aspect-auto lg:h-full rounded-[32px] lg:rounded-[40px] bg-[#e8e8e4] flex items-center justify-center overflow-hidden">
         <span className="font-bold text-[64px] text-black/10 tracking-[-3px] select-none">
           {name.slice(0, 2).toUpperCase()}
         </span>
@@ -27,11 +27,11 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
   return (
     <div className="flex flex-col gap-3 lg:h-full">
       {/* Main image */}
-      <div className="relative w-full h-[320px] md:h-[480px] lg:h-full lg:flex-1 rounded-[32px] lg:rounded-[40px] overflow-hidden bg-[#e8e8e4]">
+      <div className="relative w-full aspect-square lg:aspect-auto lg:h-full lg:flex-1 rounded-[32px] lg:rounded-[40px] overflow-hidden bg-[#e8e8e4]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={active}
-          src={resizeSupabaseImage(images[active], { width: 1200, height: 960, quality: 90 })}
+          src={resizeSupabaseImage(images[active], { width: 1200, height: 1200, quality: 90 })}
           alt={`${name} — nuotrauka ${active + 1}`}
           className="absolute inset-0 size-full object-cover"
         />
@@ -81,12 +81,12 @@ export function StoreGallery({ images, name }: StoreGalleryProps) {
               key={i}
               onClick={() => setActive(i)}
               aria-label={`Peržiūrėti nuotrauką ${i + 1}`}
-              className={`relative shrink-0 h-[72px] w-[100px] rounded-[16px] overflow-hidden transition-all duration-150 ${
+              className={`relative shrink-0 size-[72px] rounded-[16px] overflow-hidden transition-all duration-150 ${
                 i === active ? 'ring-2 ring-black' : 'opacity-60 hover:opacity-100'
               }`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resizeSupabaseImage(src, { width: 200, height: 144 })} alt="" loading="lazy" className="size-full object-cover" />
+              <img src={resizeSupabaseImage(src, { width: 144, height: 144 })} alt="" loading="lazy" className="size-full object-cover" />
             </button>
           ))}
         </div>
