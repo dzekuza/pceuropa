@@ -499,7 +499,7 @@ export const PRIVATUMO_POLITIKA_STRINGS = {
 export const COOKIE_CONSENT_STRINGS = {
   message: 'Naudojame slapukus, kad svetainė veiktų tinkamai ir galėtume analizuoti lankomumą. Daugiau informacijos rasite mūsų ',
   linkText: 'slapukų politikoje',
-  linkHref: '/slapuku-politika',
+  linkHref: '/privatumo-politika',
   accept: 'Sutinku',
   reject: 'Atmesti',
 } as const
