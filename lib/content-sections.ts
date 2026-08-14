@@ -3,7 +3,7 @@
 // public.puck_pages so app/api/puck/[slug]/route.ts and lib/puck-render.tsx
 // (the public marketing-page renderer) need no changes.
 
-import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS } from '@/lib/strings'
+import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS } from '@/lib/strings'
 
 export type FieldKind = 'text' | 'textarea' | 'image' | 'array'
 
@@ -340,6 +340,7 @@ export const PAGES = [
   { slug: 'darbo-laikas', label: 'Darbo laikas' },
   { slug: 'lankytojams', label: 'Lankytojams' },
   { slug: 'kontaktai', label: 'Kontaktai' },
+  { slug: 'kaip-atvykti', label: 'Kaip atvykti' },
   { slug: 'naujienos', label: 'Naujienos' },
   { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
 ] as const
@@ -355,6 +356,7 @@ export const PREVIEW_URLS: Record<string, string> = {
   'darbo-laikas': '/darbo-laikas',
   lankytojams: '/lankytojams',
   kontaktai: '/kontaktai',
+  'kaip-atvykti': '/kaip-atvykti',
   naujienos: '/naujienos',
   'nuoma-reklama': '/nuoma-reklama',
 }
@@ -539,6 +541,22 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
         hoursSunday: KONTAKTAI_STRINGS.hoursSunday,
         adminHoursTitle: KONTAKTAI_STRINGS.adminHoursTitle,
         adminHours: KONTAKTAI_STRINGS.adminHours,
+      } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
+  'kaip-atvykti': {
+    content: [
+      { type: 'PageBanner', props: { id: 'banner-1', slide1: '', slide2: '', slide3: '', slide4: '' } },
+      { type: 'HowToGetHereBlock', props: {
+        id: 'directions-1',
+        heading: KAIP_ATVYKTI_STRINGS.heading,
+        subtext: KAIP_ATVYKTI_STRINGS.addressNote,
+        mapEmbedUrl: 'https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed',
+        mapLinkUrl: 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
+        viewRouteLabel: DARBO_LAIKAS_STRINGS.viewRouteButton,
+        transportCards: DARBO_LAIKAS_STRINGS.transportCards.map((c) => ({ ...c })),
       } },
     ],
     root: { props: {} },

@@ -239,6 +239,25 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'kaip-atvykti',
+    title: 'Kaip atvykti',
+    navLabel: 'Kaip atvykti',
+    description: 'Kaip atvykti puslapio antraštė, žemėlapis ir transporto informacija',
+    previewUrl: '/kaip-atvykti',
+    sections: [
+      {
+        key: 'directions',
+        title: 'Kaip mus rasti',
+        fields: [
+          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Kaip mus pasiekti' },
+          { key: 'subtext', label: 'Paantraštė', type: 'textarea', placeholder: '' },
+          { key: 'mapEmbedUrl', label: 'Žemėlapio embed URL', type: 'text', placeholder: 'https://...' },
+          { key: 'mapLinkUrl', label: 'Maršruto nuoroda', type: 'text', placeholder: 'https://...' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',
