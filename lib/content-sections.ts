@@ -3,7 +3,7 @@
 // public.puck_pages so app/api/puck/[slug]/route.ts and lib/puck-render.tsx
 // (the public marketing-page renderer) need no changes.
 
-import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS } from '@/lib/strings'
+import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS, PARKAVIMAS_STRINGS } from '@/lib/strings'
 
 export type FieldKind = 'text' | 'textarea' | 'image' | 'array'
 
@@ -278,6 +278,21 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     ],
   },
 
+  ParkavimasBlock: {
+    type: 'ParkavimasBlock',
+    label: 'Parkavimo informacija',
+    editable: true,
+    fields: [
+      { key: 'heading', label: 'Antraštė', kind: 'text' },
+      { key: 'mainTitle', label: 'Pagrindinės informacijos antraštė', kind: 'text' },
+      { key: 'mainBody', label: 'Pagrindinės informacijos tekstas', kind: 'textarea' },
+      { key: 'evTitle', label: 'Elektromobilių įkrovimo antraštė', kind: 'text' },
+      { key: 'evBody', label: 'Elektromobilių įkrovimo tekstas', kind: 'textarea' },
+      { key: 'disabledTitle', label: 'Neįgaliųjų vietų antraštė', kind: 'text' },
+      { key: 'disabledBody', label: 'Neįgaliųjų vietų tekstas', kind: 'textarea' },
+    ],
+  },
+
   AkcijosGridBlock: {
     type: 'AkcijosGridBlock',
     label: 'Akcijų tinklelis',
@@ -341,6 +356,7 @@ export const PAGES = [
   { slug: 'lankytojams', label: 'Lankytojams' },
   { slug: 'kontaktai', label: 'Kontaktai' },
   { slug: 'kaip-atvykti', label: 'Kaip atvykti' },
+  { slug: 'parkavimas', label: 'Parkavimas' },
   { slug: 'naujienos', label: 'Naujienos' },
   { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
 ] as const
@@ -357,6 +373,7 @@ export const PREVIEW_URLS: Record<string, string> = {
   lankytojams: '/lankytojams',
   kontaktai: '/kontaktai',
   'kaip-atvykti': '/kaip-atvykti',
+  parkavimas: '/parkavimas',
   naujienos: '/naujienos',
   'nuoma-reklama': '/nuoma-reklama',
 }
@@ -557,6 +574,22 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
         mapLinkUrl: 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
         viewRouteLabel: DARBO_LAIKAS_STRINGS.viewRouteButton,
         transportCards: DARBO_LAIKAS_STRINGS.transportCards.map((c) => ({ ...c })),
+      } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
+  parkavimas: {
+    content: [
+      { type: 'ParkavimasBlock', props: {
+        id: 'parkavimas-1',
+        heading: PARKAVIMAS_STRINGS.heading,
+        mainTitle: PARKAVIMAS_STRINGS.mainTitle,
+        mainBody: PARKAVIMAS_STRINGS.mainBody,
+        evTitle: PARKAVIMAS_STRINGS.evTitle,
+        evBody: PARKAVIMAS_STRINGS.evBody,
+        disabledTitle: PARKAVIMAS_STRINGS.disabledTitle,
+        disabledBody: PARKAVIMAS_STRINGS.disabledBody,
       } },
     ],
     root: { props: {} },

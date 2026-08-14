@@ -258,6 +258,28 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'parkavimas',
+    title: 'Parkavimas',
+    navLabel: 'Parkavimas',
+    description: 'Parkavimo puslapio antraštė ir informacijos kortelės',
+    previewUrl: '/parkavimas',
+    sections: [
+      {
+        key: 'parking',
+        title: 'Parkavimo informacija',
+        fields: [
+          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Parkavimas' },
+          { key: 'mainTitle', label: 'Pagrindinės informacijos antraštė', type: 'text', placeholder: '' },
+          { key: 'mainBody', label: 'Pagrindinės informacijos tekstas', type: 'textarea', placeholder: '' },
+          { key: 'evTitle', label: 'Elektromobilių įkrovimo antraštė', type: 'text', placeholder: '' },
+          { key: 'evBody', label: 'Elektromobilių įkrovimo tekstas', type: 'textarea', placeholder: '' },
+          { key: 'disabledTitle', label: 'Neįgaliųjų vietų antraštė', type: 'text', placeholder: '' },
+          { key: 'disabledBody', label: 'Neįgaliųjų vietų tekstas', type: 'textarea', placeholder: '' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',

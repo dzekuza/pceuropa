@@ -1,15 +1,26 @@
 import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
+import { getPuckBlockProps } from '@/lib/page-content'
 import { PARKAVIMAS_STRINGS } from '@/lib/strings'
+
+const DEFAULT_PARKAVIMAS_BLOCK = {
+  heading: PARKAVIMAS_STRINGS.heading,
+  mainTitle: PARKAVIMAS_STRINGS.mainTitle,
+  mainBody: PARKAVIMAS_STRINGS.mainBody,
+  evTitle: PARKAVIMAS_STRINGS.evTitle,
+  evBody: PARKAVIMAS_STRINGS.evBody,
+  disabledTitle: PARKAVIMAS_STRINGS.disabledTitle,
+  disabledBody: PARKAVIMAS_STRINGS.disabledBody,
+}
 
 export const metadata: Metadata = {
   title: PARKAVIMAS_STRINGS.pageTitle,
   description: PARKAVIMAS_STRINGS.pageDescription,
 }
 
-export default function ParkavimasPage() {
-  const s = PARKAVIMAS_STRINGS
+export default async function ParkavimasPage() {
+  const s = await getPuckBlockProps('parkavimas', 'ParkavimasBlock', DEFAULT_PARKAVIMAS_BLOCK)
 
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
