@@ -11,6 +11,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },
   { label: 'Puslapiai', href: '/admin/pages', icon: 'FileText' },
   { label: 'Integracijos', href: '/admin/integrations', icon: 'Plug' },
+  { label: 'Nustatymai', href: '/admin/settings', icon: 'Settings' },
 ] as const
 
 export const SELLER_NAV_ITEMS = [
@@ -315,6 +316,18 @@ export const MODERAN_SYNC_STRINGS = {
   viewJsonButton: 'Peržiūrėti JSON',
   jsonDialogTitle: 'Siunčiamų duomenų peržiūra',
   jsonDialogDescription: 'Kiekvienai parduotuvei siunčiama atskira POST užklausa su tokiu turiniu (JSON).',
+} as const
+
+export const SITE_SETTINGS_STRINGS = {
+  pageTitle: 'Nustatymai',
+  pageDescription: 'Bendri svetainės nustatymai',
+  gateSectionTitle: '„Svetainė ruošiama“ ekranas',
+  gateSectionDescription:
+    'Kai įjungta, lankytojai mato „Svetainė ruošiama“ ekraną, kol neįveda administratoriaus slaptažodžio. Išjungus, svetainė iškart tampa vieša.',
+  gateToggleLabel: 'Rodyti „Svetainė ruošiama“ ekraną',
+  gateEnabledStatus: 'Įjungta — svetainė paslėpta nuo lankytojų',
+  gateDisabledStatus: 'Išjungta — svetainė vieša',
+  errorGeneric: 'Klaida atnaujinant nustatymą. Bandykite dar kartą.',
 } as const
 
 export const UNDER_CONSTRUCTION_STRINGS = {

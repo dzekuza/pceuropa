@@ -70,9 +70,19 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/api/')
 
   if (!isGateExempt && request.cookies.get(SITE_LOCK_COOKIE)?.value !== '1') {
-    const url = new URL('/under-construction', request.url)
-    url.searchParams.set('from', pathname)
-    return NextResponse.redirect(url)
+    // Admins can turn the gate off from /admin/settings without a redeploy — the flag
+    // lives in site_settings (publicly readable via RLS) and defaults to enabled on error.
+    const { data: settings } = await supabase
+      .from('site_settings')
+      .select('coming_soon_enabled')
+      .eq('id', true)
+      .maybeSingle()
+
+    if (settings?.coming_soon_enabled ?? true) {
+      const url = new URL('/under-construction', request.url)
+      url.searchParams.set('from', pathname)
+      return NextResponse.redirect(url)
+    }
   }
 
   // Redirect unauthenticated users away from protected dashboard routes

@@ -279,6 +279,24 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          coming_soon_enabled: boolean
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          coming_soon_enabled?: boolean
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          coming_soon_enabled?: boolean
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tenants: {
         Row: {
           category: string | null
