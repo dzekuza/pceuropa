@@ -72,7 +72,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
       <article className="flex-1 w-full max-w-[800px] mx-auto px-4 lg:px-4 py-10">
         {article.cover_image && (
-          <div className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
+          <div className="relative aspect-[2/1] h-auto md:aspect-auto md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px] mb-8">
             <Image
               src={resizeSupabaseImage(article.cover_image, { width: 1600, height: 920, quality: 90 })}
               alt={article.title}

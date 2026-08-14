@@ -38,7 +38,7 @@ export function PageBannerCarousel({ slides }: PageBannerCarouselProps) {
   return (
     <div className="w-full max-w-[1332px] mx-auto px-4 pt-4 lg:pt-6">
       <div
-        className="relative h-[240px] md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px]"
+        className="relative aspect-[2/1] h-auto md:aspect-auto md:h-[340px] lg:h-[460px] w-full overflow-hidden rounded-[20px] md:rounded-[32px] lg:rounded-[40px]"
         onMouseEnter={() => { if (timerRef.current) clearInterval(timerRef.current) }}
         onMouseLeave={startTimer}
       >
