@@ -1,6 +1,7 @@
 import { Car, SquareParking, Bike, Accessibility } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
+import { sanitizeRichText } from '@/lib/utils/sanitize-rich-text'
 import { DisplayHeading } from './ui/typography'
 
 const TRANSPORT_ICONS: LucideIcon[] = [Car, SquareParking, Bike, Accessibility]
@@ -31,9 +32,10 @@ export function HowToGetHereSection({
         <DisplayHeading>
           {heading}
         </DisplayHeading>
-        <p className="text-[#575757] text-base leading-6 whitespace-pre-line">
-          {subtext}
-        </p>
+        <p
+          className="text-[#575757] text-base leading-6 whitespace-pre-line [&_a]:underline"
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText(subtext) }}
+        />
       </div>
 
       {/* Map + cards */}

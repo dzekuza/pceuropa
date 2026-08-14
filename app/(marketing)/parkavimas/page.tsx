@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { getPuckBlockProps } from '@/lib/page-content'
+import { sanitizeRichText } from '@/lib/utils/sanitize-rich-text'
 import { PARKAVIMAS_STRINGS } from '@/lib/strings'
 
 const DEFAULT_PARKAVIMAS_BLOCK = {
@@ -34,17 +35,26 @@ export default async function ParkavimasPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.mainTitle}</h2>
-            <p className="text-[#575757] leading-relaxed">{s.mainBody}</p>
+            <p
+              className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.mainBody) }}
+            />
           </section>
 
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.evTitle}</h2>
-            <p className="text-[#575757] leading-relaxed">{s.evBody}</p>
+            <p
+              className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.evBody) }}
+            />
           </section>
 
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.disabledTitle}</h2>
-            <p className="text-[#575757] leading-relaxed">{s.disabledBody}</p>
+            <p
+              className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.disabledBody) }}
+            />
           </section>
         </div>
       </div>

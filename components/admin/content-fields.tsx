@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { ImageUploadField } from '@/components/admin/image-upload-field'
+import { RichTextField } from '@/components/admin/rich-text-field'
 import type { ArraySubField, SectionField } from '@/lib/content-sections'
 
 interface FieldProps {
@@ -30,6 +31,16 @@ export function ContentField({ field, value, onChange }: FieldProps) {
         <Label className="text-xs font-medium text-muted-foreground">{field.label}</Label>
         <Textarea rows={3} value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} />
       </div>
+    )
+  }
+
+  if (field.kind === 'richtext') {
+    return (
+      <RichTextField
+        label={field.label}
+        value={(value as string) ?? ''}
+        onChange={(v) => onChange(v)}
+      />
     )
   }
 

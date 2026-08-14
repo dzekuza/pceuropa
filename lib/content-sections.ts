@@ -5,7 +5,7 @@
 
 import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS, PARKAVIMAS_STRINGS } from '@/lib/strings'
 
-export type FieldKind = 'text' | 'textarea' | 'image' | 'array'
+export type FieldKind = 'text' | 'textarea' | 'richtext' | 'image' | 'array'
 
 export interface ArraySubField {
   key: string
@@ -175,7 +175,7 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     editable: true,
     fields: [
       { key: 'heading', label: 'Antraštė', kind: 'text' },
-      { key: 'subtext', label: 'Paantraštė', kind: 'textarea' },
+      { key: 'subtext', label: 'Paantraštė', kind: 'richtext' },
       { key: 'mapEmbedUrl', label: 'Žemėlapio embed URL', kind: 'text' },
       { key: 'mapLinkUrl', label: 'Maršruto nuoroda', kind: 'text' },
       { key: 'viewRouteLabel', label: 'Mygtuko tekstas', kind: 'text' },
@@ -285,11 +285,11 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     fields: [
       { key: 'heading', label: 'Antraštė', kind: 'text' },
       { key: 'mainTitle', label: 'Pagrindinės informacijos antraštė', kind: 'text' },
-      { key: 'mainBody', label: 'Pagrindinės informacijos tekstas', kind: 'textarea' },
+      { key: 'mainBody', label: 'Pagrindinės informacijos tekstas', kind: 'richtext' },
       { key: 'evTitle', label: 'Elektromobilių įkrovimo antraštė', kind: 'text' },
-      { key: 'evBody', label: 'Elektromobilių įkrovimo tekstas', kind: 'textarea' },
+      { key: 'evBody', label: 'Elektromobilių įkrovimo tekstas', kind: 'richtext' },
       { key: 'disabledTitle', label: 'Neįgaliųjų vietų antraštė', kind: 'text' },
-      { key: 'disabledBody', label: 'Neįgaliųjų vietų tekstas', kind: 'textarea' },
+      { key: 'disabledBody', label: 'Neįgaliųjų vietų tekstas', kind: 'richtext' },
     ],
   },
 
