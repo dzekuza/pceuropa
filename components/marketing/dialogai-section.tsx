@@ -33,7 +33,7 @@ export const RESTORANAI_SECTION_PROPS: DialogaiSectionProps = {
 export function DialogaiSection({
   images = DIALOGAI_IMAGES,
   heading = 'Dialogai – atraskite vietas, kur norisi sugrįžti',
-  body = 'Lorem ipsum dolor sit amet consectetur. Condimentum ullamcorper scelerisque pellentesque et amet ut nisl ipsum cursus. Ac amet non facilisi malesuada consequat enim interdum imperdiet. Velit faucibus diam sit in vitae.',
+  body = '',
   buttonLabel = 'Dialogai',
   buttonHref = '/dialogai',
 }: DialogaiSectionProps = {}) {
@@ -54,9 +54,11 @@ export function DialogaiSection({
         <div className="flex flex-col gap-8 lg:max-w-[648px]">
           <div className="flex flex-col gap-4">
             <DisplayHeading>{heading}</DisplayHeading>
-            <p className="text-[#575757] text-[15px] lg:text-[16px] leading-[24px]">
-              {body}
-            </p>
+            {body && (
+              <p className="text-[#575757] text-[15px] lg:text-[16px] leading-[24px]">
+                {body}
+              </p>
+            )}
           </div>
           <Link
             href={buttonHref}
