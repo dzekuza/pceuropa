@@ -137,7 +137,7 @@ export const DARBO_LAIKAS_STRINGS = {
     },
     {
       title: 'Didelis parkingas',
-      subtitle: 'pirma valanda — nemokama.',
+      subtitle: '',
     },
     {
       title: 'Dviračių stovai',

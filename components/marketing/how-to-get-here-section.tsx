@@ -79,7 +79,9 @@ export function HowToGetHereSection({
                   <p className="font-bold text-[18px] leading-6 text-black font-[family-name:var(--font-jakarta)]">
                     {title}
                   </p>
-                  <p className="text-[#575757] text-base leading-6">{subtitle}</p>
+                  {subtitle && (
+                    <p className="text-[#575757] text-base leading-6">{subtitle}</p>
+                  )}
                 </div>
               </div>
             )
