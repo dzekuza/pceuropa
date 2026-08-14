@@ -97,13 +97,6 @@ export function ActivitiesSection({
               {petsDescription || 'Jūsų augintiniai – mūsų svečiai. Atvykite į PC Europa kartu su savo mažaisiais draugais, nepamiršdami jų priežiūros ir saugumo.'}
             </BodyText>
           </div>
-          <Link
-            href="/augintiniai"
-            prefetch={false}
-            className="inline-flex items-center bg-black text-white rounded-full px-5 py-3 xl:py-[15px] text-[14px] xl:text-[16px] font-medium w-fit mt-6 xl:mt-auto transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
-          >
-            Sužinokite daugiau
-          </Link>
           <img
             src={resizeSupabaseImage(petImage || petImg, { width: 360, height: 360, quality: 90 })}
             alt=""
