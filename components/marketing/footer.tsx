@@ -13,7 +13,6 @@ const NAV_LINKS = [
 
 const VISITOR_LINKS = [
   { label: 'Prekybos centro taisyklės', href: '/taisykles' },
-  { label: 'Slapukų politika', href: '/slapuku-politika' },
   { label: 'Privatumo politika', href: '/privatumo-politika' },
   { label: 'Parkavimas', href: '/parkavimas' },
   { label: 'Kontaktai', href: '/kontaktai' },

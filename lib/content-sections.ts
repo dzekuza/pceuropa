@@ -151,23 +151,10 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     type: 'NewsSection',
     label: 'Naujienos',
     editable: true,
+    note: 'Kortelės rodomos automatiškai pagal naujausias publikuotas akcijas.',
     fields: [
       { key: 'heading', label: 'Antraštė', kind: 'text' },
       { key: 'ctaLabel', label: 'Mygtuko tekstas', kind: 'text' },
-      {
-        key: 'items',
-        label: 'Naujienos',
-        kind: 'array',
-        arrayFields: [
-          { key: 'image', label: 'Nuotrauka', kind: 'image' },
-          { key: 'title', label: 'Pavadinimas', kind: 'text' },
-          { key: 'date', label: 'Data', kind: 'text' },
-          { key: 'href', label: 'URL', kind: 'text' },
-        ],
-        defaultItem: { image: '', title: '', date: '', href: '/akcijos' },
-        itemLabelKey: 'title',
-        itemLabelFallback: 'Naujiena',
-      },
     ],
   },
 
@@ -422,7 +409,6 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
         id: 'news-1',
         heading: NEWS_SECTION_STRINGS.heading,
         ctaLabel: NEWS_SECTION_STRINGS.ctaLabel,
-        items: NEWS_SECTION_STRINGS.items.map((item) => ({ ...item })),
       } },
       { type: 'SocialSection', props: {
         id: 'social-1',

@@ -469,34 +469,18 @@ export const PRIVATUMO_POLITIKA_STRINGS = {
   pageTitle: 'Privatumo politika — PC Europa',
   pageDescription: 'PC Europa svetainės privatumo politika ir asmens duomenų tvarkymas.',
   heading: 'Privatumo politika',
-  controllerTitle: 'Duomenų valdytojas',
-  controllerBody:
-    'Baltic Horizon UAB, Konstitucijos pr. 7A, Vilnius, 09308 Vilniaus m. sav. El. paštas: reklama@baltichorizon.com',
-  collectedTitle: 'Kokie duomenys renkami',
-  collectedItems: [
-    'Kontaktinės formos duomenys: vardas, el. pašto adresas, žinutės turinys.',
-    'Analitiniai duomenys: apsilankymo laikas, naršyklė, įrenginio tipas (anonimiškai per „Google Analytics").',
+  documents: [
+    {
+      title: 'Privatumo\npolitika',
+      href: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/privatumo-politika.pdf',
+      variant: 'light',
+    },
+    {
+      title: 'Slapukų\nprivatumo politika',
+      href: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/slapuku-privatumo-politika.pdf',
+      variant: 'dark',
+    },
   ],
-  usageTitle: 'Kaip naudojame duomenis',
-  usageItems: [
-    'Atsakyti į Jūsų užklausas ir susisiekti su Jumis.',
-    'Tobulinti svetainės veikimą ir turinį.',
-    'Vykdyti teisinius įpareigojimus pagal galiojančius teisės aktus.',
-  ],
-  retentionTitle: 'Duomenų saugojimas',
-  retentionBody:
-    'Duomenys saugomi ne ilgiau, nei tai būtina nurodytam tikslui pasiekti. Kontaktinės formos duomenys ištrinami po 2 metų nuo paskutinio susisiekimo.',
-  rightsTitle: 'Jūsų teisės',
-  rightsItems: [
-    'Teisė susipažinti su savo asmens duomenimis.',
-    'Teisė reikalauti ištaisyti netikslius duomenis.',
-    'Teisė reikalauti ištrinti duomenis.',
-  ],
-  rightsContact: 'Norėdami pasinaudoti savo teisėmis, rašykite: reklama@baltichorizon.com',
-  cookiesTitle: 'Slapukai',
-  cookiesBody: 'Informacija apie slapukų naudojimą pateikta mūsų ',
-  cookiesLinkText: 'slapukų politikoje',
-  cookiesLinkHref: '/slapuku-politika',
 } as const
 
 export const COOKIE_CONSENT_STRINGS = {
