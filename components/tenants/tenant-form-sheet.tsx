@@ -31,6 +31,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
@@ -216,6 +217,9 @@ const EMPTY_TENANT_FORM_VALUES: TenantFormValues = {
   space_m2: '',
   rent_eur: '',
   description: '',
+  store_name_en: '',
+  description_en: '',
+  category_en: '',
   website_url: '',
   contact_phone: '',
   logo_url: '',
@@ -233,6 +237,7 @@ export function TenantFormSheet({
 }: TenantFormSheetProps) {
   const isEdit = tenant !== null
   const [isPending, startTransition] = useTransition()
+  const [langTab, setLangTab] = useState<'lt' | 'en'>('lt')
 
   const form = useForm<TenantFormValues>({
     resolver: zodResolver(tenantSchema),
@@ -250,6 +255,9 @@ export function TenantFormSheet({
         space_m2: tenant.space_m2 != null ? String(tenant.space_m2) : '',
         rent_eur: tenant.rent_eur != null ? String(tenant.rent_eur) : '',
         description: tenant.description ?? '',
+        store_name_en: 'store_name_en' in tenant ? tenant.store_name_en ?? '' : '',
+        description_en: 'description_en' in tenant ? tenant.description_en ?? '' : '',
+        category_en: 'category_en' in tenant ? tenant.category_en ?? '' : '',
         website_url: tenant.website_url ?? '',
         contact_phone: tenant.contact_phone ?? '',
         logo_url: tenant.logo_url ?? '',
@@ -336,19 +344,42 @@ export function TenantFormSheet({
               </>
             )}
 
-            <FormField
-              control={form.control}
-              name="store_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Parduotuvė</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Lindex" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Tabs value={langTab} onValueChange={(v) => setLangTab(v as 'lt' | 'en')}>
+              <TabsList>
+                <TabsTrigger value="lt">LT</TabsTrigger>
+                <TabsTrigger value="en">EN</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {langTab === 'lt' ? (
+              <FormField
+                control={form.control}
+                name="store_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Parduotuvė</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Lindex" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="store_name_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pavadinimas (EN)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Lindex" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -378,30 +409,46 @@ export function TenantFormSheet({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kategorija</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+            {langTab === 'lt' ? (
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategorija</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Pasirinkite kategoriją" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {TENANT_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="category_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategorija (EN)</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Pasirinkite kategoriją" />
-                      </SelectTrigger>
+                      <Input placeholder="Fashion" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {TENANT_CATEGORIES.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -492,24 +539,45 @@ export function TenantFormSheet({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Aprašymas</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Trumpas parduotuvės aprašymas viešai puslapiui..."
-                      className="resize-none"
-                      rows={3}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {langTab === 'lt' ? (
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aprašymas</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Trumpas parduotuvės aprašymas viešai puslapiui..."
+                        className="resize-none"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="description_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aprašymas (EN)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Short store description for the public page..."
+                        className="resize-none"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <FormField

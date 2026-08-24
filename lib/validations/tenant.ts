@@ -28,6 +28,9 @@ export const tenantSchema = z.object({
       message: 'Nuomos kaina turi būti teigiamas skaičius',
     }),
   description: z.string().optional(),
+  store_name_en: z.string().optional(),
+  description_en: z.string().optional(),
+  category_en: z.string().optional(),
   website_url: z
     .string()
     .optional()

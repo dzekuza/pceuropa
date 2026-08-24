@@ -12,7 +12,8 @@ type ContentUpdate = {
 
 export async function savePageContent(
   page_slug: string,
-  updates: ContentUpdate[]
+  updates: ContentUpdate[],
+  locale: 'lt' | 'en' = 'lt'
 ): Promise<{ success: true } | { error: string }> {
   const supabase = await createClient()
   const {
@@ -28,12 +29,13 @@ export async function savePageContent(
     section_key: u.section_key,
     content_key: u.content_key,
     value: u.value,
+    locale,
     updated_at: new Date().toISOString(),
   }))
 
   const { error } = await supabase
     .from('page_sections')
-    .upsert(rows, { onConflict: 'page_slug,section_key,content_key' })
+    .upsert(rows, { onConflict: 'page_slug,section_key,content_key,locale' })
 
   if (error) {
     return { error: 'Nepavyko išsaugoti puslapio turinio' }

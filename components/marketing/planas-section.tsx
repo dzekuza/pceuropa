@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { DisplayHeading } from './ui/typography'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const MAP_IMAGE: string | null = null
-
-const FLOORS = ['Pirmas aukštas', 'Antras aukštas', 'Trečias aukštas'] as const
-type Floor = (typeof FLOORS)[number]
 
 type Store = {
   id: string
@@ -23,7 +21,9 @@ function getInitials(name: string): string {
 }
 
 export function PlanasSection({ stores }: { stores: Store[] }) {
-  const [activeFloor, setActiveFloor] = useState<Floor>('Pirmas aukštas')
+  const t = useTranslations('planasSection')
+  const FLOORS = [t('floor1'), t('floor2'), t('floor3')]
+  const [activeFloor, setActiveFloor] = useState(FLOORS[0])
   const [search, setSearch] = useState('')
 
   const filtered = stores.filter((s) =>
@@ -34,7 +34,7 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
     <section className="w-full max-w-[1332px] mx-auto px-4 py-8 lg:py-12">
       {/* Heading */}
       <DisplayHeading className="mb-6">
-        Prekybos centro planas
+        {t('heading')}
       </DisplayHeading>
 
       <div className="flex gap-6 items-start">
@@ -46,7 +46,7 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
               <input
                 type="text"
-                placeholder="Paieška"
+                placeholder={t('searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-white rounded-full pl-[52px] pr-5 py-[10px] text-[16px] text-[#575757] placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/10 transition-shadow"
@@ -68,7 +68,7 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={resizeSupabaseImage(store.logoUrl, { width: 56, height: 56, fit: 'contain' })}
-                        alt={`${store.name} logotipas`}
+                        alt={store.name}
                         className="size-full object-contain p-1"
                       />
                     </div>
@@ -92,7 +92,7 @@ export function PlanasSection({ stores }: { stores: Store[] }) {
         <div className="hidden lg:block flex-1 relative rounded-[24px] overflow-hidden h-[692px]">
           {MAP_IMAGE ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={MAP_IMAGE} alt="Prekybos centro planas" className="size-full object-cover" />
+            <img src={MAP_IMAGE} alt={t('mapAlt')} className="size-full object-cover" />
           ) : (
             <div className="absolute inset-0 bg-[#e8e8e5]" />
           )}

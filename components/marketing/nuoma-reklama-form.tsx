@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { NUOMA_REKLAMA_STRINGS as S } from '@/lib/strings'
+import { useTranslations } from 'next-intl'
 import { trackEvent } from '@/lib/analytics'
 
 export function NuomaReklamaForm() {
+  const t = useTranslations('nuomaReklama')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
@@ -16,7 +17,7 @@ export function NuomaReklamaForm() {
     const body = encodeURIComponent(
       `Vardas: ${name}\nEl. paštas: ${email}\n\nŽinutė:\n${message}`,
     )
-    window.location.href = `mailto:${S.contactEmail}?subject=${subject}&body=${body}`
+    window.location.href = `mailto:${t('contactEmail')}?subject=${subject}&body=${body}`
     trackEvent('generate_lead', { form_name: 'nuoma_reklama' })
     setSubmitted(true)
   }
@@ -26,7 +27,7 @@ export function NuomaReklamaForm() {
       {submitted ? (
         <div className="flex items-center justify-center py-12">
           <p className="text-black text-[15px] lg:text-[18px] font-medium leading-[24px] text-center">
-            {S.successMessage}
+            {t('successMessage')}
           </p>
         </div>
       ) : (
@@ -34,13 +35,13 @@ export function NuomaReklamaForm() {
           {/* Name */}
           <div className="flex flex-col gap-3 lg:gap-4">
             <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-              {S.labelName}
+              {t('labelName')}
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={S.placeholderName}
+              placeholder={t('placeholderName')}
               required
               className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
             />
@@ -49,13 +50,13 @@ export function NuomaReklamaForm() {
           {/* Email */}
           <div className="flex flex-col gap-3 lg:gap-4">
             <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-              {S.labelEmail}
+              {t('labelEmail')}
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={S.placeholderEmail}
+              placeholder={t('placeholderEmail')}
               required
               className="bg-[#e0e0e0] h-12 px-6 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full"
             />
@@ -64,12 +65,12 @@ export function NuomaReklamaForm() {
           {/* Message */}
           <div className="flex flex-col gap-3 lg:gap-4">
             <label className="text-black text-[15px] lg:text-[16px] leading-[24px]">
-              {S.labelMessage}
+              {t('labelMessage')}
             </label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder={S.placeholderMessage}
+              placeholder={t('placeholderMessage')}
               required
               rows={7}
               className="bg-[#e0e0e0] px-6 py-3 rounded-[8px] text-[15px] lg:text-[16px] leading-[24px] text-black placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/20 transition-shadow duration-150 w-full resize-none"
@@ -82,7 +83,7 @@ export function NuomaReklamaForm() {
               type="submit"
               className="bg-black text-white rounded-full px-7 py-4 text-[16px] lg:text-[18px] leading-[24px] font-normal transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
             >
-              {S.submitButton}
+              {t('submitButton')}
             </button>
           </div>
         </form>

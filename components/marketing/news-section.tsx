@@ -1,10 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { DisplayHeading } from './ui/typography'
 import { ArrowIcon } from './ui/arrow-icon'
-import { NEWS_SECTION_STRINGS } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 export type NewsSectionItem = {
@@ -21,11 +21,16 @@ type NewsSectionProps = {
 }
 
 export function NewsSection({
-  heading = NEWS_SECTION_STRINGS.heading,
-  ctaLabel = NEWS_SECTION_STRINGS.ctaLabel,
-  items = NEWS_SECTION_STRINGS.items as unknown as NewsSectionItem[],
+  heading: headingProp,
+  ctaLabel: ctaLabelProp,
+  items: itemsProp,
 }: NewsSectionProps) {
+  const t = useTranslations('newsSection')
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  const heading = headingProp ?? t('heading')
+  const ctaLabel = ctaLabelProp ?? t('ctaLabel')
+  const items = itemsProp ?? (t.raw('items') as NewsSectionItem[])
 
   const scroll = (dir: 'left' | 'right') => {
     const el = scrollRef.current

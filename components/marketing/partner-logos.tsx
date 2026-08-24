@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { LogoCard } from './logo-card'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 type Tenant = { id: string; slug: string; store_name: string; logo_url: string }

@@ -1,7 +1,7 @@
 'use client'
 // components/faq/faq-form-dialog.tsx — Dialog for creating/editing FAQ items
 import { useRef, useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X, Paperclip, FileText, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const BUCKET = 'faq-attachments'
 const ACCEPTED = 'image/jpeg,image/png,image/webp,image/gif,application/pdf'
@@ -59,10 +60,16 @@ export function FaqFormDialog({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<FaqFormValues>({
-    resolver: zodResolver(faqFormSchema),
+    resolver: zodResolver(faqFormSchema) as Resolver<FaqFormValues>,
     defaultValues: isEdit && editItem
-      ? { question: editItem.question, answer: editItem.answer, attachments: editItem.attachments ?? [] }
-      : { question: '', answer: '', attachments: [] },
+      ? {
+          question: editItem.question,
+          answer: editItem.answer,
+          question_en: editItem.question_en ?? '',
+          answer_en: editItem.answer_en ?? '',
+          attachments: editItem.attachments ?? [],
+        }
+      : { question: '', answer: '', question_en: '', answer_en: '', attachments: [] },
   })
 
   async function handleFiles(files: FileList | null) {
@@ -145,43 +152,92 @@ export function FaqFormDialog({
               </div>
             )}
 
-            <FormField
-              control={form.control}
-              name="question"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Klausimas</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Įveskite klausimą..."
-                      className="resize-none"
-                      rows={3}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Tabs defaultValue="lt">
+              <TabsList>
+                <TabsTrigger value="lt">LT</TabsTrigger>
+                <TabsTrigger value="en">EN</TabsTrigger>
+              </TabsList>
 
-            <FormField
-              control={form.control}
-              name="answer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Atsakymas</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Įveskite atsakymą..."
-                      className="resize-none"
-                      rows={5}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <TabsContent value="lt" className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="question"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Klausimas</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Įveskite klausimą..."
+                          className="resize-none"
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="answer"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Atsakymas</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Įveskite atsakymą..."
+                          className="resize-none"
+                          rows={5}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+
+              <TabsContent value="en" className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="question_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Klausimas (EN)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter the question..."
+                          className="resize-none"
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="answer_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Atsakymas (EN)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter the answer..."
+                          className="resize-none"
+                          rows={5}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+            </Tabs>
 
             {/* File attachments */}
             <div className="flex flex-col gap-2">

@@ -1,0 +1,205 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
+import { Nav } from '@/components/marketing/nav'
+import { Footer } from '@/components/marketing/footer'
+import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
+import { StoreGallery } from '@/components/marketing/store-gallery'
+import { getPublicTenantBySlug } from '@/lib/tenants-public'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { DEFAULT_WEEKDAY_HOURS, DEFAULT_SATURDAY_HOURS, DEFAULT_SUNDAY_HOURS } from '@/lib/constants'
+import { getLocale, getTranslations } from 'next-intl/server'
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const locale = await getLocale()
+  const data = await getPublicTenantBySlug(slug)
+
+  if (!data) return {}
+  const t = await getTranslations('parduotuvesDetail')
+  const name = (locale === 'en' ? data.store_name_en : null) || data.store_name
+  const category = (locale === 'en' && data.category_en) || data.category || t('defaultCategory')
+  return {
+    title: `${name} — PC Europa`,
+    description: `${name} (${category}) PC Europa prekybos centras`,
+  }
+}
+
+function buildHoursRows(weekdayHours: string, saturdayHours: string, sundayHours: string) {
+  return [
+    { days: 'I–V', hours: weekdayHours },
+    { days: 'VI', hours: saturdayHours },
+    { days: 'VII', hours: sundayHours },
+  ]
+}
+
+// "10:00–21:00" -> [10, 21] (fractional hours)
+function parseHoursRange(range: string): [number, number] | null {
+  const match = range.match(/(\d{1,2}):(\d{2})\D+(\d{1,2}):(\d{2})/)
+  if (!match) return null
+  const [, h1, m1, h2, m2] = match
+  return [Number(h1) + Number(m1) / 60, Number(h2) + Number(m2) / 60]
+}
+
+function isOpen(weekdayHours: string, saturdayHours: string, sundayHours: string): boolean {
+  const now = new Date()
+  const tz = 'Europe/Vilnius'
+
+  const vilniusHour = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hour12: false }).format(now),
+    10,
+  )
+  const vilniusMinute = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: 'numeric', hour12: false }).format(now),
+    10,
+  )
+  const h = vilniusHour + vilniusMinute / 60
+
+  // Derive weekday in Vilnius time — getDay() uses UTC which can be a different calendar day
+  const vilniusDayName = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long' }).format(now)
+  const DAY_INDEX: Record<string, number> = {
+    Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6,
+  }
+  const day = DAY_INDEX[vilniusDayName] ?? now.getDay()
+
+  const hoursForDay = day === 0 ? sundayHours : day === 6 ? saturdayHours : weekdayHours
+  const range = parseHoursRange(hoursForDay)
+  if (!range) return false
+  const [open, close] = range
+  return h >= open && h < close
+}
+
+export default async function StoreDetailPage({ params }: Props) {
+  const { slug } = await params
+  const locale = await getLocale()
+  const t = await getTranslations('parduotuvesDetail')
+  const tHours = await getTranslations('darboLaikas')
+  const tenant = await getPublicTenantBySlug(slug)
+
+  if (!tenant) notFound()
+
+  const weekdayHours = tenant.weekday_hours ?? DEFAULT_WEEKDAY_HOURS
+  const saturdayHours = tenant.saturday_hours ?? DEFAULT_SATURDAY_HOURS
+  const sundayHours = tenant.sunday_hours ?? DEFAULT_SUNDAY_HOURS
+  const open = isOpen(weekdayHours, saturdayHours, sundayHours)
+  const images = (tenant.gallery_images ?? []) as string[]
+  const storeName = (locale === 'en' ? tenant.store_name_en : null) || tenant.store_name || ''
+  const category = (locale === 'en' && tenant.category_en) || tenant.category
+  const description = (locale === 'en' ? tenant.description_en : null) || tenant.description
+
+  return (
+    <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
+      <Nav />
+
+      <section className="w-full max-w-[1332px] mx-auto px-4 pt-4 pb-10 md:pb-14 flex flex-col gap-8">
+        {/* Back */}
+        <Link
+          href="/parduotuves"
+          className="inline-flex items-center gap-2 text-sm text-[#575757] hover:text-black transition-colors w-fit"
+        >
+          <ArrowIcon className="size-4 rotate-180" />
+          {t('backToStores')}
+        </Link>
+
+        {/* Gallery + info grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+
+          {/* Left: gallery */}
+          <StoreGallery images={images} name={storeName} />
+
+          {/* Right: name/description + hours, stacked */}
+          <div className="flex flex-col gap-4">
+            <div className="bg-white rounded-[40px] p-8 md:p-10 flex flex-col gap-6">
+              <div className="flex items-start gap-5">
+                {/* Logo */}
+                {tenant.logo_url ? (
+                  <div className="h-[72px] w-[72px] rounded-[20px] overflow-hidden border border-[#ebebeb] shrink-0 bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={resizeSupabaseImage(tenant.logo_url, { width: 144, height: 144, fit: 'contain' })}
+                      alt={storeName}
+                      className="size-full object-contain p-1"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-[72px] w-[72px] rounded-[20px] bg-[#f2f2f2] shrink-0 flex items-center justify-center">
+                    <span className="font-bold text-[22px] text-black/20 tracking-tight select-none">
+                      {storeName.slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1 min-w-0 pt-1">
+                  {/* Status */}
+                  <div className="flex items-center gap-1.5">
+                    <div className={`size-2 rounded-full shrink-0 ${open ? 'bg-[#22c55e]' : 'bg-[#ef4444]'}`} />
+                    <span className="text-[#575757] text-sm leading-none">
+                      {open ? tHours('openStatus') : tHours('closedStatus')}
+                    </span>
+                  </div>
+                  <h1 className="font-bold text-[28px] md:text-[36px] leading-[1.15] text-black tracking-tight">
+                    {storeName}
+                  </h1>
+                  {category && (
+                    <span className="text-[#575757] text-sm">{category}</span>
+                  )}
+                </div>
+              </div>
+
+              {description && (
+                <p className="text-[#575757] text-[15px] leading-relaxed">{description}</p>
+              )}
+            </div>
+
+            <div className="bg-white rounded-[40px] p-8 flex flex-col gap-5">
+              <h2 className="font-bold text-[18px] leading-6 text-black">{t('hoursHeading')}</h2>
+
+              <div className="flex flex-col gap-3">
+                {buildHoursRows(weekdayHours, saturdayHours, sundayHours).map(({ days, hours }) => (
+                  <div key={days} className="flex items-center justify-between gap-4">
+                    <span className="text-[#575757] text-[14px] w-[44px] shrink-0">{days}</span>
+                    <div className="flex-1 border-b border-dashed border-[#e8e8e4]" />
+                    <span className="text-black font-medium text-[14px] tabular-nums">{hours}</span>
+                  </div>
+                ))}
+              </div>
+
+              {(tenant.website_url || tenant.contact_phone) && (
+                <>
+                  <div className="h-px bg-[#f2f2f2]" />
+
+                  {/* Contacts */}
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[#575757] text-[13px]">{t('contactsLabel')}</p>
+                    {tenant.website_url && (
+                      <a
+                        href={tenant.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-[14px] text-black hover:underline"
+                      >
+                        {tenant.website_url.replace(/^https?:\/\//, '')}
+                      </a>
+                    )}
+                    {tenant.contact_phone && (
+                      <a
+                        href={`tel:${tenant.contact_phone.replace(/\s+/g, '')}`}
+                        className="font-medium text-[14px] text-black hover:underline"
+                      >
+                        {tenant.contact_phone}
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
+  )
+}

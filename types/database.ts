@@ -6,7 +6,6 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-// Weekly revenue breakdown — 5 weeks per month
 export interface WeekData {
   tx_count: number
   amount_eur: number
@@ -18,37 +17,13 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       articles: {
         Row: {
           category: 'Naujiena' | 'Akcija' | 'Renginys'
           content: string
+          content_en: string | null
           cover_image: string | null
           created_at: string | null
           featured: boolean
@@ -57,11 +32,13 @@ export type Database = {
           published_at: string | null
           slug: string
           title: string
+          title_en: string | null
           updated_at: string | null
         }
         Insert: {
           category?: 'Naujiena' | 'Akcija' | 'Renginys'
           content?: string
+          content_en?: string | null
           cover_image?: string | null
           created_at?: string | null
           featured?: boolean
@@ -70,11 +47,13 @@ export type Database = {
           published_at?: string | null
           slug: string
           title: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Update: {
           category?: 'Naujiena' | 'Akcija' | 'Renginys'
           content?: string
+          content_en?: string | null
           cover_image?: string | null
           created_at?: string | null
           featured?: boolean
@@ -83,6 +62,7 @@ export type Database = {
           published_at?: string | null
           slug?: string
           title?: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -90,26 +70,32 @@ export type Database = {
       faq_items: {
         Row: {
           answer: string
+          answer_en: string | null
           attachments: string[]
           created_at: string | null
           id: string
           question: string
+          question_en: string | null
           sort_order: number | null
         }
         Insert: {
           answer: string
+          answer_en?: string | null
           attachments?: string[]
           created_at?: string | null
           id?: string
           question: string
+          question_en?: string | null
           sort_order?: number | null
         }
         Update: {
           answer?: string
+          answer_en?: string | null
           attachments?: string[]
           created_at?: string | null
           id?: string
           question?: string
+          question_en?: string | null
           sort_order?: number | null
         }
         Relationships: []
@@ -142,6 +128,7 @@ export type Database = {
         Row: {
           content_key: string
           id: string
+          locale: string
           page_slug: string
           section_key: string
           updated_at: string | null
@@ -150,6 +137,7 @@ export type Database = {
         Insert: {
           content_key: string
           id?: string
+          locale?: string
           page_slug: string
           section_key: string
           updated_at?: string | null
@@ -158,6 +146,7 @@ export type Database = {
         Update: {
           content_key?: string
           id?: string
+          locale?: string
           page_slug?: string
           section_key?: string
           updated_at?: string | null
@@ -169,6 +158,7 @@ export type Database = {
         Row: {
           category: 'stores' | 'services' | 'food'
           content: string
+          content_en: string | null
           created_at: string | null
           ends_at: string
           id: string
@@ -177,11 +167,13 @@ export type Database = {
           slug: string
           starts_at: string
           title: string
+          title_en: string | null
           updated_at: string | null
         }
         Insert: {
           category?: 'stores' | 'services' | 'food'
           content?: string
+          content_en?: string | null
           created_at?: string | null
           ends_at: string
           id?: string
@@ -190,11 +182,13 @@ export type Database = {
           slug: string
           starts_at: string
           title: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Update: {
           category?: 'stores' | 'services' | 'food'
           content?: string
+          content_en?: string | null
           created_at?: string | null
           ends_at?: string
           id?: string
@@ -203,6 +197,7 @@ export type Database = {
           slug?: string
           starts_at?: string
           title?: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -238,7 +233,7 @@ export type Database = {
           tenant_id: string | null
           tx_count: number | null
           user_id: string | null
-          weeks: WeekData[] | null
+          weeks: Json | null
         }
         Insert: {
           amount_eur: number
@@ -249,7 +244,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: WeekData[] | null
+          weeks?: Json | null
         }
         Update: {
           amount_eur?: number
@@ -260,7 +255,7 @@ export type Database = {
           tenant_id?: string | null
           tx_count?: number | null
           user_id?: string | null
-          weeks?: WeekData[] | null
+          weeks?: Json | null
         }
         Relationships: [
           {
@@ -300,11 +295,13 @@ export type Database = {
       tenants: {
         Row: {
           category: string | null
+          category_en: string | null
           company_code: string | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string | null
           description: string | null
+          description_en: string | null
           gallery_images: string[] | null
           id: string
           is_visible: boolean
@@ -316,6 +313,7 @@ export type Database = {
           slug: string
           space_m2: number | null
           store_name: string
+          store_name_en: string | null
           sunday_hours: string
           user_id: string | null
           website_url: string | null
@@ -323,11 +321,13 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          category_en?: string | null
           company_code?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string
           is_visible?: boolean
@@ -339,6 +339,7 @@ export type Database = {
           slug: string
           space_m2?: number | null
           store_name: string
+          store_name_en?: string | null
           sunday_hours?: string
           user_id?: string | null
           website_url?: string | null
@@ -346,11 +347,13 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          category_en?: string | null
           company_code?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string
           is_visible?: boolean
@@ -362,6 +365,7 @@ export type Database = {
           slug?: string
           space_m2?: number | null
           store_name?: string
+          store_name_en?: string | null
           sunday_hours?: string
           user_id?: string | null
           website_url?: string | null
@@ -374,42 +378,51 @@ export type Database = {
       tenants_public: {
         Row: {
           category: string | null
+          category_en: string | null
           contact_phone: string | null
           description: string | null
+          description_en: string | null
           gallery_images: string[] | null
-          id: string
+          id: string | null
           logo_url: string | null
           saturday_hours: string | null
-          slug: string
-          store_name: string
+          slug: string | null
+          store_name: string | null
+          store_name_en: string | null
           sunday_hours: string | null
           website_url: string | null
           weekday_hours: string | null
         }
         Insert: {
           category?: string | null
+          category_en?: string | null
           contact_phone?: string | null
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string | null
           logo_url?: string | null
           saturday_hours?: string | null
           slug?: string | null
           store_name?: string | null
+          store_name_en?: string | null
           sunday_hours?: string | null
           website_url?: string | null
           weekday_hours?: string | null
         }
         Update: {
           category?: string | null
+          category_en?: string | null
           contact_phone?: string | null
           description?: string | null
+          description_en?: string | null
           gallery_images?: string[] | null
           id?: string | null
           logo_url?: string | null
           saturday_hours?: string | null
           slug?: string | null
           store_name?: string | null
+          store_name_en?: string | null
           sunday_hours?: string | null
           website_url?: string | null
           weekday_hours?: string | null
@@ -566,9 +579,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
@@ -598,6 +608,7 @@ export interface PageSection {
   section_key: string
   content_key: string
   value: string | null
+  locale: string
   updated_at: string | null
 }
 

@@ -1,4 +1,4 @@
-import { LANKYTOJAMS_STRINGS } from '@/lib/strings'
+import { getTranslations } from 'next-intl/server'
 
 export type FaqItem = { question: string; answer: string }
 
@@ -15,18 +15,31 @@ type LankytojamsContentProps = {
   faqItems?: FaqItem[]
 }
 
-export function LankytojamsContent({
-  heading = LANKYTOJAMS_STRINGS.heading,
-  parkingTitle = LANKYTOJAMS_STRINGS.parkingTitle,
-  parkingBody = LANKYTOJAMS_STRINGS.parkingBody,
-  accessTitle = LANKYTOJAMS_STRINGS.accessTitle,
-  accessPublicTransport = LANKYTOJAMS_STRINGS.accessPublicTransport,
-  accessByCar = LANKYTOJAMS_STRINGS.accessByCar,
-  amenitiesTitle = LANKYTOJAMS_STRINGS.amenitiesTitle,
-  amenities = LANKYTOJAMS_STRINGS.amenities as unknown as string[],
-  faqTitle = LANKYTOJAMS_STRINGS.faqTitle,
-  faqItems = LANKYTOJAMS_STRINGS.faqItems as unknown as FaqItem[],
+export async function LankytojamsContent({
+  heading: headingProp,
+  parkingTitle: parkingTitleProp,
+  parkingBody: parkingBodyProp,
+  accessTitle: accessTitleProp,
+  accessPublicTransport: accessPublicTransportProp,
+  accessByCar: accessByCarProp,
+  amenitiesTitle: amenitiesTitleProp,
+  amenities: amenitiesProp,
+  faqTitle: faqTitleProp,
+  faqItems: faqItemsProp,
 }: LankytojamsContentProps) {
+  const t = await getTranslations('lankytojams')
+
+  const heading = headingProp ?? t('heading')
+  const parkingTitle = parkingTitleProp ?? t('parkingTitle')
+  const parkingBody = parkingBodyProp ?? t('parkingBody')
+  const accessTitle = accessTitleProp ?? t('accessTitle')
+  const accessPublicTransport = accessPublicTransportProp ?? t('accessPublicTransport')
+  const accessByCar = accessByCarProp ?? t('accessByCar')
+  const amenitiesTitle = amenitiesTitleProp ?? t('amenitiesTitle')
+  const amenities = amenitiesProp ?? (t.raw('amenities') as string[])
+  const faqTitle = faqTitleProp ?? t('faqTitle')
+  const faqItems = faqItemsProp ?? (t.raw('faqItems') as FaqItem[])
+
   return (
     <div className="w-full max-w-[1332px] mx-auto px-4 py-10 md:py-14 flex flex-col gap-12">
       <h1 className="font-bold text-[36px] md:text-[48px] leading-tight text-black">

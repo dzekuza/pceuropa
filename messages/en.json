@@ -1,0 +1,325 @@
+{
+  "nav": {
+    "navAkcijos": "Deals / News",
+    "navParduotuves": "Stores / Services",
+    "navRestoranai": "Restaurants / Cafes",
+    "navDialogai": "Dialogai / Food court",
+    "navSportas": "Sport / Wellness",
+    "navLaisvalaikis": "Leisure / Entertainment",
+    "infoNaujienos": "News",
+    "infoKontaktai": "Contact",
+    "infoKaipAtvykti": "How to get here",
+    "infoDarboLaikas": "Opening hours",
+    "darboLaikasButton": "Opening hours",
+    "infoDropdownLabel": "Visitor information"
+  },
+  "footer": {
+    "partnersHeading": "For partners",
+    "tenantsLabel": "For tenants",
+    "rentAdvertisingLabel": "Space rental and advertising",
+    "socialHeading": "Follow us",
+    "visitorsHeading": "For visitors",
+    "rulesLabel": "Shopping centre rules",
+    "privacyLabel": "Privacy policy",
+    "parkingLabel": "Parking",
+    "contactLabel": "Contact",
+    "copyright": "2026 | Web solutions by P.idea"
+  },
+  "dialogaiSection": {
+    "dialogaiHeading": "Dialogai — discover places you'll want to return to",
+    "dialogaiButtonLabel": "Dialogai",
+    "restoranaiHeading": "Looking for more flavours?",
+    "restoranaiBody": "PC Europa offers a large selection of restaurants and cafés from cuisines around the world. Discover your favourite spots and let's meet there.",
+    "restoranaiButtonLabel": "Restaurants / Cafes"
+  },
+  "dialogaiPage": {
+    "pageTitle": "Dialogai Food Court — PC Europa",
+    "pageDescription": "A place for meetups, flavours and a short break from the pace of the city. The Dialogai food court welcomes you with a variety of flavours, a cosy atmosphere and convenient hours for a quick lunch or a longer conversation."
+  },
+  "restoranaiPage": {
+    "pageTitle": "Restaurants and Cafes — PC Europa",
+    "pageDescription": "From morning coffee to dinner in the city — PC EUROPA's restaurants and cafés invite you to discover flavours, a cosy atmosphere and pleasant moments every day."
+  },
+  "parduotuvesDetail": {
+    "backToStores": "All stores",
+    "hoursHeading": "Opening hours",
+    "contactsLabel": "Contact",
+    "defaultCategory": "Store"
+  },
+  "tenantCategories": {
+    "Mada ir apranga": "Fashion and clothing",
+    "Maistas ir restoranai": "Food and restaurants",
+    "Maistas ir gerimai": "Food and drinks",
+    "Dialogai": "Dialogai",
+    "Elektronika": "Electronics",
+    "Sportas ir sveikatingumas": "Sport and wellness",
+    "Laisvalaikis ir pramogos": "Leisure and entertainment",
+    "Grožis ir sveikata": "Beauty and health",
+    "Juvelyrika ir aksesuarai": "Jewelry and accessories",
+    "Paslaugos": "Services",
+    "Kita": "Other"
+  },
+  "directory": {
+    "statusOpen": "Open",
+    "searchPlaceholder": "Search",
+    "clearSearchLabel": "Clear search",
+    "allLabel": "All",
+    "emptyTitle": "Nothing found",
+    "emptyBodyCategory": "Try changing your search query or category",
+    "emptyBodySearch": "Try changing your search query"
+  },
+  "planasSection": {
+    "heading": "Shopping centre floor plan",
+    "searchPlaceholder": "Search",
+    "floor1": "First floor",
+    "floor2": "Second floor",
+    "floor3": "Third floor",
+    "mapAlt": "Shopping centre floor plan"
+  },
+  "newsSection": {
+    "heading": "Deals and news",
+    "ctaLabel": "More",
+    "items": [
+      {
+        "image": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg",
+        "title": "Extra discount at Rieker!",
+        "date": "From 2026.03.25 to 2026.03.29",
+        "href": "/en/akcijos/rieker"
+      },
+      {
+        "image": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg",
+        "title": "Spring is in the air",
+        "date": "From 2026.03.25 to 2026.03.29",
+        "href": "/en/akcijos/pavasaris"
+      },
+      {
+        "image": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg",
+        "title": "Spring is in the air",
+        "date": "From 2026.03.25 to 2026.03.29",
+        "href": "/en/akcijos/samsung"
+      },
+      {
+        "image": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg",
+        "title": "Spring is in the air",
+        "date": "From 2026.03.25 to 2026.03.29",
+        "href": "/en/akcijos/vision-express"
+      }
+    ]
+  },
+  "akcijos": {
+    "pageTitle": "Deals / News",
+    "pageDescription": "The biggest news, new store openings, seasonal offers and current deals — all in one place, so you never miss what's happening at PC EUROPA.",
+    "filterAll": "All offers",
+    "filterStores": "Stores",
+    "filterServices": "Services",
+    "filterFood": "Restaurants / Cafés / Dialogai",
+    "searchPlaceholder": "Search",
+    "loadMore": "Show more",
+    "breadcrumbHome": "Home",
+    "breadcrumbCurrent": "Deals / News"
+  },
+  "darboLaikas": {
+    "pageTitle": "Opening hours — PC Europa",
+    "pageDescription": "PC Europa shopping centre opening hours and store schedules.",
+    "breadcrumbHome": "Home",
+    "breadcrumbCurrent": "Opening hours",
+    "heroHeading": "Opening hours",
+    "searchPlaceholder": "Search",
+    "loadMoreButton": "Show more",
+    "openStatus": "Open",
+    "closedStatus": "Closed",
+    "howToGetHereHeading": "How to get here?",
+    "howToGetHereSubtext": "Find the easiest way to reach PC Europa.",
+    "viewRouteButton": "View route",
+    "contactAdminLabel": "PC Europa administration",
+    "contactAdminPhone": "+370 644 05764",
+    "contactAdminEmail": "europa@baltichorizon.com",
+    "contactMarketingLabel": "Marketing department",
+    "contactMarketingEmail": "reklama@baltichorizon.com",
+    "bannerHeading": "We're here to help!",
+    "bannerHoursCards": [
+      { "label": "Shopping centre:", "line1": "Mon-Sat 10:00 - 21:00", "line2": "Sun 10:00 - 20:00" },
+      { "label": "Sports clubs:", "line1": "Mon-Sun 24/7" },
+      { "label": "Fashion and accessories stores:", "line1": "Mon-Sat 10:00 - 20:00", "line2": "Sun 10:00 - 19:00" },
+      { "label": "Iki:", "line1": "Mon-Sat 10:00 - 21:00", "line2": "Sun 10:00 - 20:00" },
+      { "label": "Benu:", "line1": "Mon-Sat 10:00 - 21:00", "line2": "Sun 10:00 - 20:00" },
+      { "label": "Dialogai:", "line1": "Mon-Sat 10:00 - 21:00", "line2": "Sun 10:00 - 20:00" },
+      { "label": "Restaurants:", "line1": "Mon-Sat 10:00 - 21:00", "line2": "Sun 10:00 - 20:00" }
+    ],
+    "mapAlt": "PC Europa map",
+    "transportCards": [
+      { "title": "Easy access", "subtitle": "from Konstitucijos Ave. and Ozo St." },
+      { "title": "Large parking area", "subtitle": "" },
+      { "title": "Bike racks", "subtitle": "at the main entrance." },
+      { "title": "Accessible for everyone", "subtitle": "easy access." }
+    ]
+  },
+  "laisvalaikis": {
+    "pageTitle": "Leisure and Entertainment — PC Europa",
+    "pageDescription": "Cinema, games, entertainment for kids and adults — all the leisure venues at PC Europa.",
+    "heroHeading": "Leisure / Entertainment",
+    "heroDescription": "Cinema, gaming zones, entertainment for kids and adults — all under one roof at PC Europa.",
+    "filterAll": "All",
+    "searchPlaceholder": "Search",
+    "loadMore": "Show more"
+  },
+  "sportas": {
+    "pageTitle": "Sport and health — PC Europa",
+    "pageDescription": "PC Europa sports clubs and health services — find the best place for an active lifestyle.",
+    "heroHeading": "Sport / Health",
+    "heroDescription": "Sports clubs, pilates studios and health services — everything in one place to help you live more actively.",
+    "filterAll": "All",
+    "searchPlaceholder": "Search",
+    "loadMore": "Show more"
+  },
+  "nuomaReklama": {
+    "pageTitle": "Space rental and advertising — PC Europa",
+    "pageDescription": "Want to open a business at PC Europa or advertise in our spaces? Get in touch and let's discuss the best options.",
+    "heroHeading": "Space rental and advertising",
+    "contactCardLabel": "Get in touch",
+    "contactPhone": "+370 644 05764",
+    "contactEmail": "reklama@baltichorizon.com",
+    "formHeading": "Get in touch",
+    "formBody": "Share a few details about your business and our leasing manager will get back to you shortly.",
+    "labelName": "Your name",
+    "placeholderName": "First Last",
+    "labelEmail": "Email address",
+    "placeholderEmail": "name@email.com",
+    "labelMessage": "Your message",
+    "placeholderMessage": "Your message, click here.",
+    "submitButton": "Send",
+    "successMessage": "Thank you! Your message has been sent. We'll be in touch shortly."
+  },
+  "naujienos": {
+    "pageTitle": "News — PC Europa",
+    "pageDescription": "The latest openings, events and news from PC Europa shopping centre — all in one place.",
+    "featuredLabel": "Featured",
+    "emptyState": "No articles yet. Check back soon.",
+    "readMore": "Read more"
+  },
+  "articleCategories": {
+    "Naujiena": "News",
+    "Akcija": "Deal",
+    "Renginys": "Event"
+  },
+  "lankytojams": {
+    "pageTitle": "Visitor information — PC Europa",
+    "pageDescription": "Everything visitors need to know about PC Europa shopping centre: parking, accessibility, amenities and frequently asked questions.",
+    "heading": "Visitor information",
+    "parkingTitle": "Parking",
+    "parkingBody": "PC Europa has free parking with over 500 spaces. The car park is open around the clock, with dedicated spaces for visitors with disabilities.",
+    "accessTitle": "How to reach us",
+    "accessPublicTransport": "By public transport: buses No. 1, 5 and 14 stop directly at the centre. The nearest stop is \"PC Europa\".",
+    "accessByCar": "By car: the centre is easily reached from the city's main streets. Navigation address: PC Europa, Vilnius.",
+    "amenitiesTitle": "Amenities",
+    "amenities": [
+      "Children's play room",
+      "Wheelchair access and lift",
+      "EV charging stations",
+      "ATM",
+      "Information desk",
+      "Free Wi-Fi"
+    ],
+    "faqTitle": "FAQ",
+    "faqItems": [
+      { "question": "Can I bring my pet?", "answer": "Small pets may visit with their owners, but please carry them or keep them on a leash." },
+      { "question": "Is there a mother-and-baby room?", "answer": "Yes, there's a mother-and-baby room on the second floor with a changing table and feeding area." },
+      { "question": "Where do I report a lost item?", "answer": "Please bring found items to the information desk at the main entrance." }
+    ]
+  },
+  "kontaktai": {
+    "pageTitle": "Contact — PC Europa",
+    "pageDescription": "PC Europa shopping centre contact information, address and opening hours.",
+    "heading": "Contact",
+    "addressTitle": "Address",
+    "address": "Konstitucijos ave. 7A, Vilnius, 09308 Vilnius district",
+    "hoursTitle": "Opening hours",
+    "hoursWeekdays": "Mon-Fri: 10:00–21:00",
+    "hoursSaturday": "Sat: 10:00–20:00",
+    "hoursSunday": "Sun: 10:00–20:00",
+    "adminHoursTitle": "Administration office hours",
+    "adminHours": "10:00–17:00"
+  },
+  "kaipAtvykti": {
+    "pageTitle": "How to get here — PC Europa",
+    "pageDescription": "How to reach PC Europa shopping centre by public transport or by car.",
+    "heading": "How to reach us",
+    "publicTransportTitle": "Public transport",
+    "publicTransport": "By public transport: buses No. 1, 5 and 14 stop directly at the centre. The nearest stop is \"PC Europa\".",
+    "byCarTitle": "By car",
+    "byCar": "By car: the centre is easily reached from the city's main streets. Navigation address: PC Europa, Vilnius.",
+    "addressTitle": "Our address",
+    "address": "Konstitucijos ave. 7A, Vilnius, 09308 Vilnius district",
+    "addressNote": "PC Europa is easily accessible by public transport and by car.",
+    "mapLabel": "Map"
+  },
+  "parkavimas": {
+    "pageTitle": "Parking — PC Europa",
+    "pageDescription": "Free parking at PC Europa: over 500 spaces, EV charging and dedicated spaces for visitors with disabilities.",
+    "heading": "Parking",
+    "mainTitle": "Parking",
+    "mainBody": "PC Europa has free parking with over 500 spaces. The car park is open around the clock, with dedicated spaces for visitors with disabilities.",
+    "evTitle": "EV charging",
+    "evBody": "PC Europa's car park has EV charging stations. The first 2 hours are free.",
+    "disabledTitle": "Accessible parking",
+    "disabledBody": "Dedicated parking spaces for visitors with disabilities are located closest to the main entrances."
+  },
+  "taisykles": {
+    "pageTitle": "Shopping centre rules — PC Europa",
+    "pageDescription": "PC Europa shopping centre visitor conduct rules and policies.",
+    "heading": "Shopping centre rules",
+    "generalTitle": "General rules",
+    "generalItems": [
+      "Visitors are asked to behave respectfully towards other guests and staff.",
+      "Smoking is strictly prohibited inside the shopping centre.",
+      "Consuming alcoholic beverages in the centre's public spaces is prohibited.",
+      "Loud music or noise that disturbs other visitors is not tolerated."
+    ],
+    "securityTitle": "Security",
+    "securityItems": [
+      "CCTV cameras operate around the clock, 7 days a week.",
+      "If you notice suspicious behaviour, please notify security staff or the information desk immediately.",
+      "Emergency exit doors are marked with green signs on every floor."
+    ],
+    "childrenTitle": "Child safety",
+    "childrenBody": "Children under 12 must be accompanied by an adult. Parents or guardians are fully responsible for their children's behaviour and safety on the centre's premises.",
+    "petsTitle": "Pets",
+    "petsBody": "Small pets may visit the centre if carried or kept on a leash. The owner is fully responsible for the pet's behaviour and cleanliness.",
+    "liabilityTitle": "Liability",
+    "liabilityBody": "The shopping centre is not liable for visitors' lost or stolen personal belongings. We recommend using the luggage lockers located near the entrances."
+  },
+  "slapukuPolitika": {
+    "pageTitle": "Cookie policy — PC Europa",
+    "pageDescription": "PC Europa website cookie usage policy.",
+    "heading": "Cookie policy",
+    "whatTitle": "What are cookies",
+    "whatBody": "Cookies are small text files that are stored on your device when you visit a website. They help the site remember your settings and improve your browsing experience.",
+    "typesTitle": "Which cookies we use",
+    "necessaryLabel": "Necessary cookies",
+    "necessaryBody": "These cookies are essential for the website to function properly — they manage sessions and authentication. They cannot be disabled.",
+    "analyticsLabel": "Analytics cookies",
+    "analyticsBody": "We use Google Analytics cookies to analyse visitor traffic and improve the website. Data is collected anonymously.",
+    "marketingLabel": "Marketing cookies",
+    "marketingBody": "Optional cookies used to show more relevant ads. You can withdraw consent at any time in your browser settings.",
+    "controlTitle": "How to manage cookies",
+    "controlBody": "You can manage and delete cookies through your browser settings. Please note that disabling necessary cookies may prevent certain site features from working properly.",
+    "contactTitle": "Contact us",
+    "contactBody": "For questions about cookies, email: reklama@baltichorizon.com"
+  },
+  "privatumoPolitika": {
+    "pageTitle": "Privacy policy — PC Europa",
+    "pageDescription": "PC Europa website privacy policy and personal data processing.",
+    "heading": "Privacy policy",
+    "documents": [
+      { "title": "Privacy\npolicy", "href": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/privatumo-politika.pdf", "variant": "light" },
+      { "title": "Cookie\nprivacy policy", "href": "https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/slapuku-privatumo-politika.pdf", "variant": "dark" }
+    ]
+  },
+  "cookieConsent": {
+    "message": "We use cookies to make the site work properly and to analyse traffic. You can find more information in our ",
+    "linkText": "cookie policy",
+    "linkHref": "/en/privatumo-politika",
+    "accept": "Accept",
+    "reject": "Reject"
+  }
+}

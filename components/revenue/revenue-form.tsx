@@ -10,7 +10,7 @@ import { revenueFormSchema, type RevenueFormValues } from '@/lib/validations/rev
 import { submitRevenue } from '@/actions/revenue'
 import { MONTHS_LT } from '@/lib/constants'
 import { formatEur, formatInt } from '@/lib/utils/format'
-import type { RevenueReport } from '@/types/database'
+import type { RevenueReport, WeekData } from '@/types/database'
 import {
   Form,
   FormControl,
@@ -53,7 +53,7 @@ const EMPTY_WEEKS: RevenueFormValues['weeks'] = [
 // the Suma matches the stored total and the seller can redistribute them.
 function reportToWeeksForm(report: RevenueReport | undefined): RevenueFormValues['weeks'] {
   if (report?.weeks && Array.isArray(report.weeks) && report.weeks.length > 0) {
-    return report.weeks.map((w) => ({
+    return (report.weeks as unknown as WeekData[]).map((w) => ({
       tx_count: w.tx_count ? String(w.tx_count) : '',
       amount_eur: w.amount_eur ? String(w.amount_eur) : '',
     })) as RevenueFormValues['weeks']

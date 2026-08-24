@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
@@ -81,6 +82,7 @@ function buildHoursOverlayRows(store: Store) {
 }
 
 function StoreCard({ store, colorConfig }: { store: Store; colorConfig: CategoryConfig }) {
+  const t = useTranslations('directory')
   const hoursRows = buildHoursOverlayRows(store)
 
   return (
@@ -91,7 +93,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
           {/* Status */}
           <div className="flex gap-[10px] items-center">
             <div className="size-2 rounded-full bg-[#22c55e] shrink-0" />
-            <p className="font-normal leading-6 text-[#575757] text-base">Atidaryta</p>
+            <p className="font-normal leading-6 text-[#575757] text-base">{t('statusOpen')}</p>
           </div>
           {/* Store name */}
           <p className="font-bold font-[family-name:var(--font-jakarta)] leading-6 text-[18px] text-black truncate w-full">
@@ -103,7 +105,7 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
         {store.logoUrl ? (
           <div className="h-14 w-[53px] overflow-hidden rounded-xl shrink-0 bg-white border border-[#ebebeb]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={resizeSupabaseImage(store.logoUrl, { width: 110, height: 106, fit: 'contain' })} alt={`${store.name} logotipas`} loading="lazy" className="size-full object-contain" />
+            <img src={resizeSupabaseImage(store.logoUrl, { width: 110, height: 106, fit: 'contain' })} alt={store.name} loading="lazy" className="size-full object-contain" />
           </div>
         ) : (
           <div
@@ -159,6 +161,8 @@ function StoreCard({ store, colorConfig }: { store: Store; colorConfig: Category
 }
 
 export function StoresDirectory({ stores, excludeCategories = [], includeCategories = [] }: StoresDirectoryProps) {
+  const t = useTranslations('directory')
+  const tCategory = useTranslations('tenantCategories')
   const [activeCategory, setActiveCategory] = useState('Visos')
   const [search, setSearch] = useState('')
 
@@ -197,7 +201,7 @@ export function StoresDirectory({ stores, excludeCategories = [], includeCategor
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
           <input
             type="text"
-            placeholder="Paieška"
+            placeholder={t('searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white rounded-full pl-[52px] pr-5 py-[10px] text-[16px] text-[#575757] placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/10 transition-shadow duration-150"
@@ -222,7 +226,7 @@ export function StoresDirectory({ stores, excludeCategories = [], includeCategor
                 onClick={() => setActiveCategory(cat)}
                 className={`shrink-0 inline-flex items-center rounded-full px-7 py-3 text-[14px] leading-[20px] transition-[background-color,color] duration-150 active:scale-[0.97] whitespace-nowrap border ${isActive ? 'bg-black text-white border-black' : 'bg-white text-black border-[#e5e5e3]'}`}
               >
-                {cat === 'Visos' ? 'Visi' : cat}
+                {cat === 'Visos' ? t('allLabel') : (tCategory.has(cat) ? tCategory(cat) : cat)}
               </button>
             )
           })}
@@ -244,9 +248,9 @@ export function StoresDirectory({ stores, excludeCategories = [], includeCategor
           <div className="bg-[#f2f2f2] rounded-full size-16 flex items-center justify-center mb-4">
             <Search size={24} className="text-black/30" />
           </div>
-          <p className="font-semibold text-[18px] text-black mb-1">Nieko nerasta</p>
+          <p className="font-semibold text-[18px] text-black mb-1">{t('emptyTitle')}</p>
           <p className="text-[14px] text-black/40">
-            Bandykite keisti paieškos užklausą arba kategoriją
+            {t('emptyBodyCategory')}
           </p>
         </div>
       )}

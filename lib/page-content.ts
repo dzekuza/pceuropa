@@ -3,14 +3,17 @@ import { createClient as createAnonClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
 type PuckContent = { content?: Array<{ type: string; props?: Record<string, unknown> }> }
+type Locale = 'lt' | 'en'
+type PuckPageRow = Partial<Record<Locale, PuckContent>>
 
 export const PUCK_PAGES_CACHE_TAG = 'puck-pages'
 
-/** Cached read of a Puck page's saved JSON. Public content — read via the plain anon
- * client (not the cookie-bound one) so all pages/requests share one cache entry per slug
- * instead of each hitting Postgres individually. Invalidated by revalidateTag on save. */
-const getPuckPageData = unstable_cache(
-  async (slug: string): Promise<PuckContent | null> => {
+/** Cached read of a Puck page's saved JSON, nested per locale as { lt: {...}, en: {...} }.
+ * Public content — read via the plain anon client (not the cookie-bound one) so all
+ * pages/requests share one cache entry per slug instead of each hitting Postgres
+ * individually. Invalidated by revalidateTag on save. */
+const getPuckPageRow = unstable_cache(
+  async (slug: string): Promise<PuckPageRow | null> => {
     const supabase = createAnonClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -21,18 +24,28 @@ const getPuckPageData = unstable_cache(
       .eq('page_slug', slug)
       .single()
 
-    return (data?.data as PuckContent | null) ?? null
+    return (data?.data as PuckPageRow | null) ?? null
   },
   ['puck-page-data'],
   { revalidate: 300, tags: [PUCK_PAGES_CACHE_TAG] }
 )
 
+function normalizeLocale(locale: string): Locale {
+  return locale === 'en' ? 'en' : 'lt'
+}
+
+async function getPuckPageData(slug: string, locale: string): Promise<PuckContent | null> {
+  const row = await getPuckPageRow(slug)
+  return row?.[normalizeLocale(locale)] ?? row?.lt ?? null
+}
+
 /** Returns banner slides from the Puck PageBanner block for a page, with fallback to defaults. */
 export async function getPuckBannerSlides(
   slug: string,
   defaults: string[],
+  locale: string = 'lt',
 ): Promise<string[]> {
-  const puckData = await getPuckPageData(slug)
+  const puckData = await getPuckPageData(slug, locale)
   const bannerBlock = puckData?.content?.find((b) => b.type === 'PageBanner')
   if (!bannerBlock) return defaults
 
@@ -45,8 +58,9 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
   slug: string,
   blockType: string,
   defaults: T,
+  locale: string = 'lt',
 ): Promise<T> {
-  const puckData = await getPuckPageData(slug)
+  const puckData = await getPuckPageData(slug, locale)
   const block = puckData?.content?.find((b) => b.type === blockType)
   if (!block?.props) return defaults
 
@@ -61,7 +75,7 @@ export async function getPuckBlockProps<T extends Record<string, unknown>>(
 
 export type CmsSections = Record<string, Record<string, string>>
 
-export async function getPageContent(slug: string): Promise<CmsSections> {
+export async function getPageContent(slug: string, locale: string = 'lt'): Promise<CmsSections> {
   const supabase = createAnonClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -70,6 +84,7 @@ export async function getPageContent(slug: string): Promise<CmsSections> {
     .from('page_sections')
     .select('section_key, content_key, value')
     .eq('page_slug', slug)
+    .eq('locale', normalizeLocale(locale))
 
   const sections: CmsSections = {}
   for (const row of data ?? []) {

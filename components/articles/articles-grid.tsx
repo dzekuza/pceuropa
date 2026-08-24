@@ -1,15 +1,17 @@
+import { getTranslations } from 'next-intl/server'
 import { ArticleCard } from './article-card'
-import { NAUJIENOS_STRINGS } from '@/lib/strings'
 import type { Article } from '@/types/database'
 
 interface ArticlesGridProps {
   articles: Article[]
 }
 
-export function ArticlesGrid({ articles }: ArticlesGridProps) {
+export async function ArticlesGrid({ articles }: ArticlesGridProps) {
+  const t = await getTranslations('naujienos')
+
   if (articles.length === 0) {
     return (
-      <p className="text-center text-muted-foreground py-16">{NAUJIENOS_STRINGS.emptyState}</p>
+      <p className="text-center text-muted-foreground py-16">{t('emptyState')}</p>
     )
   }
 

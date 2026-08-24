@@ -3,7 +3,18 @@
 // public.puck_pages so app/api/puck/[slug]/route.ts and lib/puck-render.tsx
 // (the public marketing-page renderer) need no changes.
 
-import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS, PARKAVIMAS_STRINGS } from '@/lib/strings'
+// Storefront strings moved to messages/lt.json + messages/en.json (next-intl).
+// This admin-editor default-seed content is LT-only (dashboard stays LT-only),
+// so it reads the LT catalog directly rather than importing from lib/strings.ts.
+import ltMessages from '@/messages/lt.json'
+
+const NEWS_SECTION_STRINGS = ltMessages.newsSection
+const AKCIJOS_STRINGS = ltMessages.akcijos
+const DARBO_LAIKAS_STRINGS = ltMessages.darboLaikas
+const LANKYTOJAMS_STRINGS = ltMessages.lankytojams
+const KONTAKTAI_STRINGS = ltMessages.kontaktai
+const KAIP_ATVYKTI_STRINGS = ltMessages.kaipAtvykti
+const PARKAVIMAS_STRINGS = ltMessages.parkavimas
 
 export type FieldKind = 'text' | 'textarea' | 'richtext' | 'image' | 'array'
 
