@@ -37,13 +37,17 @@ export default async function AdminContentEditPage({ params }: Props) {
     .eq('page_slug', slug)
     .single()
 
-  const savedData = data?.data as unknown as ContentData | null
+  const localized = data?.data as unknown as Partial<Record<'lt' | 'en', ContentData>> | null
   const defaults = DEFAULT_DATA[slug] ?? FALLBACK_DATA
-  const content = savedData ? mergeWithDefaults(savedData.content, defaults.content) : defaults.content
+
+  const contentByLocale: Record<'lt' | 'en', ContentBlock[]> = {
+    lt: localized?.lt ? mergeWithDefaults(localized.lt.content, defaults.content) : defaults.content,
+    en: localized?.en ? mergeWithDefaults(localized.en.content, defaults.content) : defaults.content,
+  }
 
   return (
     <ContentEditor
-      content={content}
+      contentByLocale={contentByLocale}
       pageSlug={slug}
       previewUrl={PREVIEW_URLS[slug]}
     />

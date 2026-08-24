@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
@@ -27,6 +28,7 @@ function getInitials(name: string): string {
 }
 
 function PlaceCard({ place }: { place: Place }) {
+  const t = useTranslations('directory')
   return (
     <Link
       href={`/parduotuves/${place.slug}`}
@@ -38,7 +40,7 @@ function PlaceCard({ place }: { place: Place }) {
         <div className="flex flex-col gap-0.5 min-w-0">
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-[#22c55e] shrink-0" />
-            <span className="text-[#575757] text-[14px] leading-[24px]">Atidaryta</span>
+            <span className="text-[#575757] text-[14px] leading-[24px]">{t('statusOpen')}</span>
           </div>
           <p className="font-bold text-[18px] leading-[24px] text-black truncate">
             {place.name}
@@ -50,7 +52,7 @@ function PlaceCard({ place }: { place: Place }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={resizeSupabaseImage(place.logoUrl, { width: 112, height: 112, fit: 'contain' })}
-              alt={`${place.name} logotipas`}
+              alt={place.name}
               loading="lazy"
               className="size-full object-contain p-1"
             />
@@ -89,6 +91,7 @@ function PlaceCard({ place }: { place: Place }) {
 }
 
 export function DialogaiFoodCourtDirectory({ places, allowCategories }: DialogaiFoodCourtDirectoryProps) {
+  const t = useTranslations('directory')
   const [search, setSearch] = useState('')
 
   const visiblePlaces = allowCategories?.length ? places.filter((p) => allowCategories.includes(p.category)) : places
@@ -106,7 +109,7 @@ export function DialogaiFoodCourtDirectory({ places, allowCategories }: Dialogai
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
           <input
             type="text"
-            placeholder="Paieška"
+            placeholder={t('searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white rounded-full pl-[52px] pr-5 py-[10px] text-[16px] text-[#575757] placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/10 transition-shadow duration-150"
@@ -115,7 +118,7 @@ export function DialogaiFoodCourtDirectory({ places, allowCategories }: Dialogai
             <button
               onClick={() => setSearch('')}
               className="absolute right-5 top-1/2 -translate-y-1/2 text-black/30 hover:text-black/60 transition-colors"
-              aria-label="Išvalyti paiešką"
+              aria-label={t('clearSearchLabel')}
             >
               <X size={16} />
             </button>
@@ -135,9 +138,9 @@ export function DialogaiFoodCourtDirectory({ places, allowCategories }: Dialogai
           <div className="bg-[#f2f2f2] rounded-full size-16 flex items-center justify-center mb-4">
             <Search size={24} className="text-black/30" />
           </div>
-          <p className="font-semibold text-[18px] text-black mb-1">Nieko nerasta</p>
+          <p className="font-semibold text-[18px] text-black mb-1">{t('emptyTitle')}</p>
           <p className="text-[14px] text-black/40">
-            Bandykite keisti paieškos užklausą
+            {t('emptyBodySearch')}
           </p>
         </div>
       )}

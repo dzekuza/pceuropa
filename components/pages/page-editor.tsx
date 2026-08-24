@@ -16,26 +16,35 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ImageIcon, Save, CheckCircle2, AlertCircle } from 'lucide-react'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
+type Locale = 'lt' | 'en'
+
 interface PageEditorProps {
   pageConfig: PageConfig
-  initialContent: PageContentMap
+  initialContentByLocale: Record<Locale, PageContentMap>
 }
 
-export function PageEditor({ pageConfig, initialContent }: PageEditorProps) {
-  const [content, setContent] = useState<PageContentMap>(initialContent)
+export function PageEditor({ pageConfig, initialContentByLocale }: PageEditorProps) {
+  const [locale, setLocale] = useState<Locale>('lt')
+  const [contentByLocale, setContentByLocale] = useState(initialContentByLocale)
   const [savingSection, setSavingSection] = useState<string | null>(null)
   const [sectionStatus, setSectionStatus] = useState<
     Record<string, 'success' | 'error'>
   >({})
   const [, startTransition] = useTransition()
 
+  const content = contentByLocale[locale]
+
   function handleChange(sectionKey: string, contentKey: string, value: string) {
-    setContent((prev) => ({
+    setContentByLocale((prev) => ({
       ...prev,
-      [sectionKey]: { ...(prev[sectionKey] ?? {}), [contentKey]: value },
+      [locale]: {
+        ...prev[locale],
+        [sectionKey]: { ...(prev[locale][sectionKey] ?? {}), [contentKey]: value },
+      },
     }))
     setSectionStatus((prev) => {
       const next = { ...prev }
@@ -54,7 +63,7 @@ export function PageEditor({ pageConfig, initialContent }: PageEditorProps) {
     }))
 
     startTransition(async () => {
-      const result = await savePageContent(pageConfig.slug, updates)
+      const result = await savePageContent(pageConfig.slug, updates, locale)
       setSectionStatus((prev) => ({
         ...prev,
         [sectionKey]: 'error' in result ? 'error' : 'success',
@@ -65,6 +74,13 @@ export function PageEditor({ pageConfig, initialContent }: PageEditorProps) {
 
   return (
     <div className="flex flex-col gap-6">
+      <Tabs value={locale} onValueChange={(value) => setLocale(value as Locale)}>
+        <TabsList>
+          <TabsTrigger value="lt">LT</TabsTrigger>
+          <TabsTrigger value="en">EN</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       {pageConfig.sections.map((section) => {
         const isSaving = savingSection === section.key
         const status = sectionStatus[section.key]

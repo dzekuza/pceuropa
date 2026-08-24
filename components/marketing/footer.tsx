@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
@@ -6,19 +7,21 @@ const logoUrl = '/pc-europa-logo.svg'
 const facebookIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.svg'
 const instagramIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.svg'
 
-const NAV_LINKS = [
-  { label: 'Nuomininkams', href: 'https://nuomininkai.pceuropa.lt/' },
-  { label: 'Patalpų nuoma ir reklama', href: '/nuoma-reklama' },
-]
+export async function Footer() {
+  const t = await getTranslations('footer')
 
-const VISITOR_LINKS = [
-  { label: 'Prekybos centro taisyklės', href: '/taisykles' },
-  { label: 'Privatumo politika', href: '/privatumo-politika' },
-  { label: 'Parkavimas', href: '/parkavimas' },
-  { label: 'Kontaktai', href: '/kontaktai' },
-]
+  const NAV_LINKS = [
+    { label: t('tenantsLabel'), href: 'https://nuomininkai.pceuropa.lt/' },
+    { label: t('rentAdvertisingLabel'), href: '/nuoma-reklama' },
+  ]
 
-export function Footer() {
+  const VISITOR_LINKS = [
+    { label: t('rulesLabel'), href: '/taisykles' },
+    { label: t('privacyLabel'), href: '/privatumo-politika' },
+    { label: t('parkingLabel'), href: '/parkavimas' },
+    { label: t('contactLabel'), href: '/kontaktai' },
+  ]
+
   return (
     <footer className="w-full bg-[#181818] rounded-t-[20px] font-[family-name:var(--font-montserrat)]">
       <div className="max-w-[1332px] mx-auto flex flex-col gap-8 md:gap-10 items-center px-4 py-8 lg:py-12">
@@ -38,7 +41,7 @@ export function Footer() {
           <div className="flex flex-row gap-8 md:gap-12 lg:gap-[86px] items-start">
             <div className="flex flex-col gap-6 lg:gap-[50px]">
               <div className="flex flex-col gap-1 lg:gap-2">
-                <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white">Partneriams</p>
+                <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white">{t('partnersHeading')}</p>
                 {NAV_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -52,7 +55,7 @@ export function Footer() {
               </div>
               <div className="flex flex-col gap-1">
                 <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white whitespace-nowrap">
-                  Bendraukime
+                  {t('socialHeading')}
                 </p>
                 <div className="flex items-center gap-4 mt-1">
                   <TrackedLink
@@ -79,7 +82,7 @@ export function Footer() {
 
             <div className="flex flex-col gap-1 lg:gap-2">
               <p className="font-semibold text-[16px] lg:text-[18px] leading-[28px] text-white whitespace-nowrap">
-                Lankytojams
+                {t('visitorsHeading')}
               </p>
               {VISITOR_LINKS.map((link) => (
                 <Link
@@ -96,7 +99,7 @@ export function Footer() {
 
         <div className="flex flex-col items-center gap-2 text-center w-full max-w-[530px] mx-auto">
           <p className="font-normal text-[13px] lg:text-[16px] leading-[24px] text-[rgba(245,241,232,0.56)]">
-            2026 | Web sprendimai P.idea
+            {t('copyright')}
           </p>
         </div>
       </div>

@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { Search } from 'lucide-react'
 import { StoreHoursCard, type StoreHoursCardProps } from '@/components/marketing/store-hours-card'
 import { HoursCardsGrid, type HoursCardData } from '@/components/marketing/hours-cards-grid'
-import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 
 const PAGE_SIZE = 8
 
@@ -20,11 +20,15 @@ type OpeningHoursSectionProps = {
 
 export function OpeningHoursSection({
   stores,
-  heroHeading = DARBO_LAIKAS_STRINGS.heroHeading,
-  searchPlaceholder = DARBO_LAIKAS_STRINGS.searchPlaceholder,
-  loadMoreButton = DARBO_LAIKAS_STRINGS.loadMoreButton,
+  heroHeading: heroHeadingProp,
+  searchPlaceholder: searchPlaceholderProp,
+  loadMoreButton: loadMoreButtonProp,
   hoursCards = [],
 }: OpeningHoursSectionProps) {
+  const t = useTranslations('darboLaikas')
+  const heroHeading = heroHeadingProp ?? t('heroHeading')
+  const searchPlaceholder = searchPlaceholderProp ?? t('searchPlaceholder')
+  const loadMoreButton = loadMoreButtonProp ?? t('loadMoreButton')
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 

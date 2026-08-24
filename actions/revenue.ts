@@ -4,7 +4,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import type { RevenueFormValues } from '@/lib/validations/revenue'
-import type { WeekData } from '@/types/database'
+import type { Json, WeekData } from '@/types/database'
 
 /**
  * submitRevenue — Upserts a revenue_report with weekly breakdown.
@@ -57,7 +57,7 @@ export async function submitRevenue(
         month,
         amount_eur,
         tx_count,
-        weeks,
+        weeks: weeks as unknown as Json,
         submitted_by: formData.submitted_by,
         submitted_at: new Date().toISOString(),
       },

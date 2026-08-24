@@ -7,12 +7,43 @@
 // - This is NOT the sole auth guard — every admin Server Component independently calls getUser()
 //   (CVE-2025-29927: middleware can be bypassed with x-middleware-subrequest header)
 import { createServerClient } from '@supabase/ssr'
+import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { SITE_LOCK_COOKIE } from '@/lib/constants'
+import { routing } from '@/i18n/routing'
+
+// Locale routing (LT unprefixed at "/", EN prefixed at "/en/...") only ever
+// applies to the marketing tree — dashboard/login/api routes are never
+// locale-prefixed, so they're excluded here and handled by the auth/gate
+// logic below exactly as before.
+const intlMiddleware = createIntlMiddleware(routing)
 
 // Next.js 16 proxy.ts requires the exported function to be named "proxy" (not "middleware")
 export async function proxy(request: NextRequest) {
-  const supabaseResponse = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
+  const isDashboardRoute =
+    pathname.startsWith('/admin') || pathname.startsWith('/seller')
+  const isLocaleExempt =
+    isDashboardRoute ||
+    pathname.startsWith('/api/') ||
+    pathname === '/login' ||
+    pathname.startsWith('/auth/')
+
+  // Let next-intl resolve the locale for marketing-tree requests. For the
+  // default locale (lt) this is an internal rewrite ("/" -> "/lt") that the
+  // App Router's [locale] segment needs to match a page — it must be used as
+  // the base response so the rewrite header survives, not discarded. A 3xx
+  // here means an actual redirect (malformed/unknown locale segment) and
+  // short-circuits immediately. Gate/login/api paths below are never
+  // locale-prefixed, so their raw-pathname comparisons stay correct either way.
+  let supabaseResponse = NextResponse.next({ request })
+  if (!isLocaleExempt) {
+    const intlResponse = intlMiddleware(request)
+    if (intlResponse.status >= 300 && intlResponse.status < 400) {
+      return intlResponse
+    }
+    supabaseResponse = intlResponse
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,10 +67,6 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const { pathname } = request.nextUrl
-  const isDashboardRoute =
-    pathname.startsWith('/admin') || pathname.startsWith('/seller')
 
   // Dashboard portal lives on the nuomininkai subdomain — login is not reachable
   // from the public marketing domain (pceuropa.lt), and the subdomain root sends

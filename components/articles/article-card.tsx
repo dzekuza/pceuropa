@@ -1,7 +1,7 @@
 import Link from 'next/link'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui/badge'
 import { ArrowIcon } from '@/components/marketing/ui/arrow-icon'
-import { NAUJIENOS_STRINGS } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 import type { Article } from '@/types/database'
 
@@ -14,10 +14,16 @@ interface ArticleCardProps {
   featured?: boolean
 }
 
-export function ArticleCard({ article, featured = false }: ArticleCardProps) {
-  const excerpt = stripHtml(article.content).slice(0, 120)
+export async function ArticleCard({ article, featured = false }: ArticleCardProps) {
+  const t = await getTranslations('naujienos')
+  const tCategory = await getTranslations('articleCategories')
+  const locale = await getLocale()
+  const title = locale === 'en' ? (article.title_en || article.title) : article.title
+  const content = locale === 'en' ? (article.content_en || article.content) : article.content
+  const excerpt = stripHtml(content).slice(0, 120)
+  const category = tCategory.has(article.category) ? tCategory(article.category) : article.category
   const date = article.published_at
-    ? new Date(article.published_at).toLocaleDateString('lt-LT', {
+    ? new Date(article.published_at).toLocaleDateString(locale === 'en' ? 'en-GB' : 'lt-LT', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -34,7 +40,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
           {article.cover_image ? (
             <img
               src={resizeSupabaseImage(article.cover_image, { width: 800, height: 600, quality: 90 })}
-              alt={article.title}
+              alt={title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
@@ -42,7 +48,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
           )}
           <span className="absolute top-3 left-3">
             <Badge className="bg-black text-white text-xs border-0">
-              {NAUJIENOS_STRINGS.featuredLabel}
+              {t('featuredLabel')}
             </Badge>
           </span>
         </div>
@@ -50,18 +56,18 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
         <div className="flex flex-col gap-2 p-4 md:w-1/2 md:p-6">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium border border-black/20 rounded-full px-2 py-0.5 text-[#575757]">
-              {article.category}
+              {category}
             </span>
             {date && <span className="text-xs text-[#888]">{date}</span>}
           </div>
           <h2 className="font-semibold leading-snug text-black group-hover:opacity-70 transition-opacity text-xl">
-            {article.title}
+            {title}
           </h2>
           {excerpt && (
             <p className="text-sm text-[#575757] line-clamp-2">{excerpt}&hellip;</p>
           )}
           <span className="text-sm font-medium mt-auto text-black group-hover:opacity-70 transition-opacity">
-            {NAUJIENOS_STRINGS.readMore} &rarr;
+            {t('readMore')} &rarr;
           </span>
         </div>
       </Link>
@@ -77,7 +83,7 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
         {article.cover_image ? (
           <img
             src={resizeSupabaseImage(article.cover_image, { width: 800, height: 472, quality: 90 })}
-            alt={article.title}
+            alt={title}
             loading="lazy"
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 [transition-timing-function:var(--ease-out)]"
           />
@@ -90,12 +96,12 @@ export function ArticleCard({ article, featured = false }: ArticleCardProps) {
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium border border-black/20 rounded-full px-2 py-0.5 text-[#575757]">
-              {article.category}
+              {category}
             </span>
             {date && <span className="text-xs text-[#888]">{date}</span>}
           </div>
           <p className="font-bold text-[18px] leading-[24px] text-black font-[family-name:var(--font-jakarta)] break-words">
-            {article.title}
+            {title}
           </p>
         </div>
         <span className="inline-flex items-center justify-center bg-black rounded-full size-[56px] shrink-0 transition-opacity duration-150 group-hover:opacity-70 active:scale-95">

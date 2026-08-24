@@ -1,6 +1,8 @@
-import Link from 'next/link'
+'use client'
+
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { CardArrowButton } from './ui/card-arrow-button'
-import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 export type HoursEntry = {
@@ -41,9 +43,8 @@ export function StoreHoursCard({
   sundayHours,
   href,
 }: StoreHoursCardProps) {
-  const statusLabel = isOpen
-    ? DARBO_LAIKAS_STRINGS.openStatus
-    : DARBO_LAIKAS_STRINGS.closedStatus
+  const t = useTranslations('darboLaikas')
+  const statusLabel = isOpen ? t('openStatus') : t('closedStatus')
 
   return (
     <Link

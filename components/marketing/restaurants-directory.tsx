@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { Search, X } from 'lucide-react'
 import { CardArrowButton } from './ui/card-arrow-button'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
@@ -27,6 +28,7 @@ function getInitials(name: string): string {
 }
 
 function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  const t = useTranslations('directory')
   return (
     <Link
       href={`/parduotuves/${restaurant.slug}`}
@@ -39,7 +41,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
           {/* Status */}
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-[#22c55e] shrink-0" />
-            <span className="text-[#575757] text-[14px] leading-[24px]">Atidaryta</span>
+            <span className="text-[#575757] text-[14px] leading-[24px]">{t('statusOpen')}</span>
           </div>
           {/* Name */}
           <p className="font-bold text-[18px] leading-[24px] text-black truncate">
@@ -53,7 +55,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={resizeSupabaseImage(restaurant.logoUrl, { width: 112, height: 112, fit: 'contain' })}
-              alt={`${restaurant.name} logotipas`}
+              alt={restaurant.name}
               loading="lazy"
               className="size-full object-contain p-1"
             />
@@ -93,6 +95,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
 }
 
 export function RestaurantsDirectory({ restaurants, allowCategories }: RestaurantsDirectoryProps) {
+  const t = useTranslations('directory')
   const [search, setSearch] = useState('')
 
   const visibleRestaurants = useMemo(
@@ -116,7 +119,7 @@ export function RestaurantsDirectory({ restaurants, allowCategories }: Restauran
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 size-6 text-[#575757] pointer-events-none" />
           <input
             type="text"
-            placeholder="Paieška"
+            placeholder={t('searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white rounded-full pl-[52px] pr-5 py-[10px] text-[16px] text-[#575757] placeholder:text-[#575757] outline-none focus:ring-2 focus:ring-black/10 transition-shadow duration-150"
@@ -144,9 +147,9 @@ export function RestaurantsDirectory({ restaurants, allowCategories }: Restauran
           <div className="bg-[#f2f2f2] rounded-full size-16 flex items-center justify-center mb-4">
             <Search size={24} className="text-black/30" />
           </div>
-          <p className="font-semibold text-[18px] text-black mb-1">Nieko nerasta</p>
+          <p className="font-semibold text-[18px] text-black mb-1">{t('emptyTitle')}</p>
           <p className="text-[14px] text-black/40">
-            Bandykite keisti paieškos užklausą arba kategoriją
+            {t('emptyBodyCategory')}
           </p>
         </div>
       )}

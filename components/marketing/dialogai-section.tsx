@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { DisplayHeading } from './ui/typography'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
@@ -22,21 +23,22 @@ export interface DialogaiSectionProps {
   buttonHref?: string
 }
 
-export const RESTORANAI_SECTION_PROPS: DialogaiSectionProps = {
-  images: RESTORANAI_IMAGES,
-  heading: 'Ieškote daugiau skonių?',
-  body: 'PC Europa rasite didelį restoranų ir kavinių pasirinkimą iš daugumos pasaulio virtuvių. Atraskite savo mėgstamiausias vietas ir sutikime ten.',
-  buttonLabel: 'Restoranai / Kavinės',
-  buttonHref: '/restoranai',
-}
+// Non-text defaults for the restoranai/page.tsx variant — translated text is
+// resolved there via getTranslations('dialogaiSection') and passed explicitly.
+export const RESTORANAI_SECTION_IMAGES = RESTORANAI_IMAGES
 
-export function DialogaiSection({
+export async function DialogaiSection({
   images = DIALOGAI_IMAGES,
-  heading = 'Dialogai – atraskite vietas, kur norisi sugrįžti',
-  body = '',
-  buttonLabel = 'Dialogai',
+  heading: headingProp,
+  body: bodyProp,
+  buttonLabel: buttonLabelProp,
   buttonHref = '/dialogai',
 }: DialogaiSectionProps = {}) {
+  const t = await getTranslations('dialogaiSection')
+  const heading = headingProp ?? t('dialogaiHeading')
+  const body = bodyProp ?? ''
+  const buttonLabel = buttonLabelProp ?? t('dialogaiButtonLabel')
+
   return (
     <section className="w-full bg-white">
       <div className="max-w-[1332px] mx-auto px-4 py-16 lg:py-[104px] flex flex-col lg:flex-row items-center gap-10 lg:gap-10">
