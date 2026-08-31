@@ -1,0 +1,20 @@
+node_modules
+.next
+.git
+.env
+.env.local
+.env*.local
+npm-debug.log*
+Dockerfile
+.dockerignore
+docker-compose.yml
+Caddyfile
+README.md
+obsidian
+.claude
+
+# WIP: page_content table not yet applied to production Cloud. Remove this
+# block once the 20260814160000_page_content.sql migration ships to prod.
+app/actions/page-content-actions.ts
+hooks/use-page-content.ts
+lib/edit-toolbar

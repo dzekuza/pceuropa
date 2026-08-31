@@ -1,0 +1,25 @@
+pceuropa.lt, www.pceuropa.lt {
+	reverse_proxy app:3000
+	encode gzip zstd
+}
+
+# Dashboard portal. proxy.ts gates /login and all dashboard routes on the
+# hostname starting with "nuomininkai." — the name must match exactly.
+nuomininkai.pceuropa.lt {
+	reverse_proxy app:3000
+	encode gzip zstd
+}
+
+# Staging host for verifying the migration before the production DNS cutover.
+# Remove once pceuropa.lt itself points here.
+nuoma.pceuropa.lt {
+	reverse_proxy app:3000
+	encode gzip zstd
+}
+
+# Self-hosted Supabase gateway (Kong), published on the host by the separate
+# supabase-stack/docker-compose.yml (default port 8000).
+supabase.pceuropa.lt {
+	reverse_proxy host.docker.internal:8000
+	encode gzip zstd
+}
