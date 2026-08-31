@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // Falls back to the Supabase Cloud host for local dev; set NEXT_PUBLIC_SUPABASE_URL
 // to the self-hosted domain (e.g. https://supabase.pceuropa.lt) in production.
@@ -78,4 +81,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

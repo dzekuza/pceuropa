@@ -1,4 +1,4 @@
-import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
+import { getTranslations } from 'next-intl/server'
 import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
@@ -36,30 +36,34 @@ const SOCIAL_LINKS = [
   { href: 'https://tiktok.com/@pceuropa', Icon: TikTokIcon, label: 'TikTok' },
 ]
 
-function AdminContactCard({ location }: { location: string }) {
+async function AdminContactCard({ location }: { location: string }) {
+  const t = await getTranslations('darboLaikas')
+  const contactAdminPhone = t('contactAdminPhone')
+  const contactAdminEmail = t('contactAdminEmail')
+
   return (
     <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
       <div className="flex flex-col gap-2">
-        <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactAdminLabel}</p>
+        <p className="text-[#575757] text-xs leading-4">{t('contactAdminLabel')}</p>
         <div className="text-black text-base leading-6">
           <p>
             <TrackedLink
-              href={`tel:${DARBO_LAIKAS_STRINGS.contactAdminPhone.replace(/\s+/g, '')}`}
+              href={`tel:${contactAdminPhone.replace(/\s+/g, '')}`}
               eventName="contact_click"
               eventParams={{ method: 'phone', location }}
               className="hover:underline"
             >
-              {DARBO_LAIKAS_STRINGS.contactAdminPhone}
+              {contactAdminPhone}
             </TrackedLink>
           </p>
           <p>
             <TrackedLink
-              href={`mailto:${DARBO_LAIKAS_STRINGS.contactAdminEmail}`}
+              href={`mailto:${contactAdminEmail}`}
               eventName="contact_click"
               eventParams={{ method: 'email', location }}
               className="hover:underline"
             >
-              {DARBO_LAIKAS_STRINGS.contactAdminEmail}
+              {contactAdminEmail}
             </TrackedLink>
           </p>
         </div>
@@ -68,19 +72,22 @@ function AdminContactCard({ location }: { location: string }) {
   )
 }
 
-function MarketingContactCard({ location }: { location: string }) {
+async function MarketingContactCard({ location }: { location: string }) {
+  const t = await getTranslations('darboLaikas')
+  const contactMarketingEmail = t('contactMarketingEmail')
+
   return (
     <div className="bg-[#f5f5f5] flex gap-4 items-center p-4 rounded-3xl">
       <div className="flex flex-col gap-2">
-        <p className="text-[#575757] text-xs leading-4">{DARBO_LAIKAS_STRINGS.contactMarketingLabel}</p>
+        <p className="text-[#575757] text-xs leading-4">{t('contactMarketingLabel')}</p>
         <p className="text-black text-base leading-6">
           <TrackedLink
-            href={`mailto:${DARBO_LAIKAS_STRINGS.contactMarketingEmail}`}
+            href={`mailto:${contactMarketingEmail}`}
             eventName="contact_click"
             eventParams={{ method: 'email', location }}
             className="hover:underline"
           >
-            {DARBO_LAIKAS_STRINGS.contactMarketingEmail}
+            {contactMarketingEmail}
           </TrackedLink>
         </p>
       </div>
@@ -94,11 +101,14 @@ interface VisitorInfoBannerProps {
   backgroundImage?: string
 }
 
-export function VisitorInfoBanner({
-  heading = DARBO_LAIKAS_STRINGS.bannerHeading,
+export async function VisitorInfoBanner({
+  heading: headingProp,
   variant = 'contact',
   backgroundImage = DEFAULT_BANNER_BG,
 }: VisitorInfoBannerProps) {
+  const t = await getTranslations('darboLaikas')
+  const heading = headingProp ?? t('bannerHeading')
+
   if (variant === 'hours') {
     return (
       <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center px-6 lg:px-10 py-6 min-h-[292px]">

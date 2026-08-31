@@ -3,8 +3,19 @@
 // public.puck_pages so app/api/puck/[slug]/route.ts and lib/puck-render.tsx
 // (the public marketing-page renderer) need no changes.
 
-import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS, PARKAVIMAS_STRINGS } from '@/lib/strings'
+// Storefront strings moved to messages/lt.json + messages/en.json (next-intl).
+// This admin-editor default-seed content is LT-only (dashboard stays LT-only),
+// so it reads the LT catalog directly rather than importing from lib/strings.ts.
+import ltMessages from '@/messages/lt.json'
 import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
+
+const NEWS_SECTION_STRINGS = ltMessages.newsSection
+const AKCIJOS_STRINGS = ltMessages.akcijos
+const DARBO_LAIKAS_STRINGS = ltMessages.darboLaikas
+const LANKYTOJAMS_STRINGS = ltMessages.lankytojams
+const KONTAKTAI_STRINGS = ltMessages.kontaktai
+const KAIP_ATVYKTI_STRINGS = ltMessages.kaipAtvykti
+const PARKAVIMAS_STRINGS = ltMessages.parkavimas
 
 export type FieldKind = 'text' | 'textarea' | 'richtext' | 'image' | 'array'
 
@@ -379,9 +390,8 @@ export const PREVIEW_URLS: Record<string, string> = {
   'nuoma-reklama': '/nuoma-reklama',
 }
 
-// Default/fallback banner images were seeded on the legacy Supabase project and
-// never migrated to the current one — matches the DEFAULT_BANNER_SLIDES host used
-// by every public marketing page (e.g. app/(marketing)/dialogai/page.tsx).
+// Matches the DEFAULT_BANNER_SLIDES host used by every public marketing page
+// (e.g. app/[locale]/(marketing)/dialogai/page.tsx).
 const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 
 export const ALLOWED_SLUGS: Set<string> = new Set(PAGES.map((p) => p.slug))

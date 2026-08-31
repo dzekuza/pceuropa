@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import gsap from 'gsap'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeSupabaseImage } from '@/lib/utils/supabase-image'

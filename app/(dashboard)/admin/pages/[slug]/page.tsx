@@ -34,10 +34,11 @@ export default async function AdminPageEditorPage({ params }: Props) {
     .select('*')
     .eq('page_slug', slug)
 
-  const content: PageContentMap = {}
+  const contentByLocale: Record<'lt' | 'en', PageContentMap> = { lt: {}, en: {} }
   for (const row of rows ?? []) {
-    if (!content[row.section_key]) content[row.section_key] = {}
-    content[row.section_key][row.content_key] = row.value ?? ''
+    const locale = row.locale === 'en' ? 'en' : 'lt'
+    if (!contentByLocale[locale][row.section_key]) contentByLocale[locale][row.section_key] = {}
+    contentByLocale[locale][row.section_key][row.content_key] = row.value ?? ''
   }
 
   return (
@@ -66,7 +67,7 @@ export default async function AdminPageEditorPage({ params }: Props) {
         </Button>
       </div>
 
-      <PageEditor pageConfig={pageConfig} initialContent={content} />
+      <PageEditor pageConfig={pageConfig} initialContentByLocale={contentByLocale} />
     </div>
   )
 }

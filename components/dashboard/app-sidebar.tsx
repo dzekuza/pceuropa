@@ -18,6 +18,7 @@ import {
   FileText,
   Plug,
   LayoutGrid,
+  Languages,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -43,6 +44,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText,
   Plug,
   LayoutGrid,
+  Languages,
 }
 
 interface AppSidebarProps {

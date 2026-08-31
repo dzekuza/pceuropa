@@ -1,5 +1,5 @@
 import type React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { ArrowIcon } from './ui/arrow-icon'
 import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 

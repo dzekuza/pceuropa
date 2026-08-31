@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PromoCard, type PromoItem } from './promo-card'
-import { AKCIJOS_STRINGS } from '@/lib/strings'
 
 type FilterKey = 'all' | 'stores' | 'services' | 'food'
 
@@ -21,13 +21,22 @@ type Props = {
 
 export function AkcijosGrid({
   items,
-  filterAllLabel = AKCIJOS_STRINGS.filterAll,
-  filterStoresLabel = AKCIJOS_STRINGS.filterStores,
-  filterServicesLabel = AKCIJOS_STRINGS.filterServices,
-  filterFoodLabel = AKCIJOS_STRINGS.filterFood,
-  searchPlaceholder = AKCIJOS_STRINGS.searchPlaceholder,
-  loadMoreLabel = AKCIJOS_STRINGS.loadMore,
+  filterAllLabel: filterAllLabelProp,
+  filterStoresLabel: filterStoresLabelProp,
+  filterServicesLabel: filterServicesLabelProp,
+  filterFoodLabel: filterFoodLabelProp,
+  searchPlaceholder: searchPlaceholderProp,
+  loadMoreLabel: loadMoreLabelProp,
 }: Props) {
+  const t = useTranslations('akcijos')
+  const tDirectory = useTranslations('directory')
+  const filterAllLabel = filterAllLabelProp ?? t('filterAll')
+  const filterStoresLabel = filterStoresLabelProp ?? t('filterStores')
+  const filterServicesLabel = filterServicesLabelProp ?? t('filterServices')
+  const filterFoodLabel = filterFoodLabelProp ?? t('filterFood')
+  const searchPlaceholder = searchPlaceholderProp ?? t('searchPlaceholder')
+  const loadMoreLabel = loadMoreLabelProp ?? t('loadMore')
+
   const FILTERS = [
     { key: 'all', label: filterAllLabel },
     { key: 'stores', label: filterStoresLabel },
@@ -111,7 +120,7 @@ export function AkcijosGrid({
       {/* Empty state */}
       {visible.length === 0 && (
         <p className="text-center text-[#575757] text-[16px] leading-[24px] py-12">
-          Nieko nerasta.
+          {tDirectory('emptyTitle')}
         </p>
       )}
     </div>

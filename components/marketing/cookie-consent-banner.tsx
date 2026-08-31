@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { COOKIE_CONSENT_STRINGS } from '@/lib/strings'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { type ConsentValue, getStoredConsent, setStoredConsent } from '@/lib/consent'
 
 export function CookieConsentBanner() {
+  const t = useTranslations('cookieConsent')
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -26,9 +27,9 @@ export function CookieConsentBanner() {
     <div className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 flex justify-center">
       <div className="w-full max-w-[900px] bg-[#181818] text-white rounded-[24px] shadow-lg px-6 py-5 flex flex-col sm:flex-row items-center gap-4 font-[family-name:var(--font-jakarta)]">
         <p className="text-sm leading-relaxed text-white/90 flex-1">
-          {COOKIE_CONSENT_STRINGS.message}
-          <Link href={COOKIE_CONSENT_STRINGS.linkHref} className="underline hover:text-white">
-            {COOKIE_CONSENT_STRINGS.linkText}
+          {t('message')}
+          <Link href={t('linkHref')} className="underline hover:text-white">
+            {t('linkText')}
           </Link>
           .
         </p>
@@ -38,14 +39,14 @@ export function CookieConsentBanner() {
             onClick={() => respond('rejected')}
             className="border border-white rounded-full px-5 py-2 text-sm transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
-            {COOKIE_CONSENT_STRINGS.reject}
+            {t('reject')}
           </button>
           <button
             type="button"
             onClick={() => respond('accepted')}
             className="bg-white text-black rounded-full px-5 py-2 text-sm font-medium transition-[transform,opacity] duration-150 hover:opacity-80 active:scale-[0.97]"
           >
-            {COOKIE_CONSENT_STRINGS.accept}
+            {t('accept')}
           </button>
         </div>
       </div>

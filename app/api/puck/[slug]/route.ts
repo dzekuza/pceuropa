@@ -11,9 +11,15 @@ const ALLOWED_SLUGS = new Set([
 ])
 
 const EMPTY_DATA = { content: [], root: { props: {} }, zones: {} }
+const LOCALES = new Set(['lt', 'en'])
+
+function resolveLocale(req: NextRequest): 'lt' | 'en' {
+  const locale = req.nextUrl.searchParams.get('locale')
+  return locale && LOCALES.has(locale) ? (locale as 'lt' | 'en') : 'lt'
+}
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
@@ -21,6 +27,7 @@ export async function GET(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
+  const locale = resolveLocale(req)
   const supabase = await createClient()
   const { data } = await supabase
     .from('puck_pages')
@@ -28,7 +35,8 @@ export async function GET(
     .eq('page_slug', slug)
     .single()
 
-  return NextResponse.json(data?.data ?? EMPTY_DATA)
+  const localized = data?.data as Partial<Record<'lt' | 'en', Json>> | null | undefined
+  return NextResponse.json(localized?.[locale] ?? localized?.lt ?? EMPTY_DATA)
 }
 
 export async function POST(
@@ -50,6 +58,8 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const locale = resolveLocale(req)
+
   let body: Json
   try {
     body = await req.json() as Json
@@ -57,8 +67,17 @@ export async function POST(
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
+  const { data: existing } = await supabase
+    .from('puck_pages')
+    .select('data')
+    .eq('page_slug', slug)
+    .single()
+
+  const existingLocalized = (existing?.data as Partial<Record<'lt' | 'en', Json>> | null) ?? {}
+  const merged = { ...existingLocalized, [locale]: body }
+
   const { error } = await supabase.from('puck_pages').upsert(
-    { page_slug: slug, data: body, updated_at: new Date().toISOString() },
+    { page_slug: slug, data: merged, updated_at: new Date().toISOString() },
     { onConflict: 'page_slug' }
   )
 

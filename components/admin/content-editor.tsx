@@ -12,8 +12,11 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ContentField } from '@/components/admin/content-fields'
 import { PAGES, SECTION_DEFS, type ContentBlock, type SectionField } from '@/lib/content-sections'
+
+type Locale = 'lt' | 'en'
 
 type FieldGroup =
   | { kind: 'row'; fields: SectionField[] }
@@ -46,27 +49,33 @@ function groupFields(fields: SectionField[]): FieldGroup[] {
 }
 
 interface ContentEditorProps {
-  content: ContentBlock[]
+  contentByLocale: Record<Locale, ContentBlock[]>
   pageSlug: string
   previewUrl?: string
 }
 
-export function ContentEditor({ content, pageSlug, previewUrl }: ContentEditorProps) {
+export function ContentEditor({ contentByLocale, pageSlug, previewUrl }: ContentEditorProps) {
   const router = useRouter()
-  const [blocks, setBlocks] = useState(content)
+  const [locale, setLocale] = useState<Locale>('lt')
+  const [blocksByLocale, setBlocksByLocale] = useState(contentByLocale)
   const [saving, setSaving] = useState(false)
   const [dirty, setDirty] = useState(false)
 
+  const blocks = blocksByLocale[locale]
+
   const updateProp = (blockIndex: number, key: string, value: unknown) => {
-    setBlocks((prev) =>
-      prev.map((block, i) => (i === blockIndex ? { ...block, props: { ...block.props, [key]: value } } : block))
-    )
+    setBlocksByLocale((prev) => ({
+      ...prev,
+      [locale]: prev[locale].map((block, i) =>
+        i === blockIndex ? { ...block, props: { ...block.props, [key]: value } } : block
+      ),
+    }))
     setDirty(true)
   }
 
   const handlePublish = async () => {
     setSaving(true)
-    const res = await fetch(`/api/puck/${pageSlug}`, {
+    const res = await fetch(`/api/puck/${pageSlug}?locale=${locale}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: blocks, root: { props: {} }, zones: {} }),
@@ -104,6 +113,12 @@ export function ContentEditor({ content, pageSlug, previewUrl }: ContentEditorPr
               </option>
             ))}
           </select>
+          <Tabs value={locale} onValueChange={(value) => setLocale(value as Locale)}>
+            <TabsList>
+              <TabsTrigger value="lt">LT</TabsTrigger>
+              <TabsTrigger value="en">EN</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
         {previewUrl && (

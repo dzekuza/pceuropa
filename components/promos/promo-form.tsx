@@ -32,6 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { RichTextField } from '@/components/admin/rich-text-field'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { createPromo, updatePromo } from '@/actions/promos'
@@ -76,6 +78,8 @@ export function PromoForm({ promo }: PromoFormProps) {
       title: promo?.title ?? '',
       slug: promo?.slug ?? '',
       content: promo?.content ?? '',
+      title_en: promo?.title_en ?? '',
+      content_en: promo?.content_en ?? '',
       image: promo?.image ?? null,
       starts_at: promo?.starts_at ?? '',
       ends_at: promo?.ends_at ?? '',
@@ -237,36 +241,64 @@ export function PromoForm({ promo }: PromoFormProps) {
             </div>
           )}
 
-          <div className="border-b px-6 py-2 flex items-center gap-1 flex-wrap">
-            {toolbarButtons.map(({ icon: Icon, action, active }, i) => (
-              <Button
-                key={i}
-                variant={active ? 'secondary' : 'ghost'}
-                size="icon"
-                className="h-7 w-7"
-                onClick={action}
-                type="button"
-              >
-                <Icon className="h-3.5 w-3.5" />
-              </Button>
-            ))}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={addLink}
-              type="button"
-            >
-              <Link2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <Tabs defaultValue="lt" className="flex-1 flex flex-col gap-0">
+            <div className="border-b px-6 py-2">
+              <TabsList>
+                <TabsTrigger value="lt">{ADMIN_PROMOS_STRINGS.tabLt}</TabsTrigger>
+                <TabsTrigger value="en">{ADMIN_PROMOS_STRINGS.tabEn}</TabsTrigger>
+              </TabsList>
+            </div>
 
-          <div className="flex-1 px-6 py-4">
-            <EditorContent
-              editor={editor}
-              className="min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[400px] [&_.ProseMirror]:text-foreground [&_.ProseMirror_h2]:text-foreground [&_.ProseMirror_h3]:text-foreground [&_.ProseMirror_p]:text-foreground"
-            />
-          </div>
+            <TabsContent value="lt" className="flex-1 flex flex-col mt-0">
+              <div className="border-b px-6 py-2 flex items-center gap-1 flex-wrap">
+                {toolbarButtons.map(({ icon: Icon, action, active }, i) => (
+                  <Button
+                    key={i}
+                    variant={active ? 'secondary' : 'ghost'}
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={action}
+                    type="button"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </Button>
+                ))}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={addLink}
+                  type="button"
+                >
+                  <Link2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+
+              <div className="flex-1 px-6 py-4">
+                <EditorContent
+                  editor={editor}
+                  className="min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[400px] [&_.ProseMirror]:text-foreground [&_.ProseMirror_h2]:text-foreground [&_.ProseMirror_h3]:text-foreground [&_.ProseMirror_p]:text-foreground"
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="en" className="flex-1 flex flex-col gap-4 px-6 py-4 mt-0">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-xs font-medium text-muted-foreground">
+                  {ADMIN_PROMOS_STRINGS.titleEnLabel}
+                </Label>
+                <Input
+                  {...register('title_en')}
+                  placeholder={ADMIN_PROMOS_STRINGS.titleEnPlaceholder}
+                />
+              </div>
+              <RichTextField
+                label={ADMIN_PROMOS_STRINGS.contentEnLabel}
+                value={watch('content_en') ?? ''}
+                onChange={(value) => setValue('content_en', value)}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Sidebar */}

@@ -36,6 +36,8 @@ export async function createFaqItem(
     .insert({
       question: formData.question,
       answer: formData.answer,
+      question_en: formData.question_en || null,
+      answer_en: formData.answer_en || null,
       attachments: formData.attachments ?? [],
       sort_order: nextSortOrder,
     })
@@ -71,6 +73,8 @@ export async function updateFaqItem(
     .update({
       question: formData.question,
       answer: formData.answer,
+      question_en: formData.question_en || null,
+      answer_en: formData.answer_en || null,
       attachments: formData.attachments ?? [],
     })
     .eq('id', id)

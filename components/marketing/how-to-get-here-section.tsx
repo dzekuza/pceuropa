@@ -1,6 +1,6 @@
 import { Car, SquareParking, Bike, Accessibility } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
+import { getTranslations } from 'next-intl/server'
 import { sanitizeRichText } from '@/lib/utils/sanitize-rich-text'
 import { DisplayHeading } from './ui/typography'
 
@@ -17,14 +17,20 @@ type HowToGetHereSectionProps = {
   transportCards?: TransportCard[]
 }
 
-export function HowToGetHereSection({
-  heading = DARBO_LAIKAS_STRINGS.howToGetHereHeading,
-  subtext = DARBO_LAIKAS_STRINGS.howToGetHereSubtext,
+export async function HowToGetHereSection({
+  heading: headingProp,
+  subtext: subtextProp,
   mapEmbedUrl = 'https://maps.google.com/maps?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308&t=&z=15&ie=UTF8&iwloc=&output=embed',
   mapLinkUrl = 'https://maps.google.com/?q=Europa,+Konstitucijos+pr.+7A,+Vilnius,+09308',
-  viewRouteLabel = DARBO_LAIKAS_STRINGS.viewRouteButton,
-  transportCards = DARBO_LAIKAS_STRINGS.transportCards as unknown as TransportCard[],
+  viewRouteLabel: viewRouteLabelProp,
+  transportCards: transportCardsProp,
 }: HowToGetHereSectionProps) {
+  const t = await getTranslations('darboLaikas')
+  const heading = headingProp ?? t('howToGetHereHeading')
+  const subtext = subtextProp ?? t('howToGetHereSubtext')
+  const viewRouteLabel = viewRouteLabelProp ?? t('viewRouteButton')
+  const transportCards = transportCardsProp ?? (t.raw('transportCards') as TransportCard[])
+
   return (
     <section className="bg-white w-full rounded-[32px] lg:rounded-[40px] p-6 lg:p-10 flex flex-col gap-10">
       {/* Heading */}
@@ -48,7 +54,7 @@ export function HowToGetHereSection({
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title={DARBO_LAIKAS_STRINGS.mapAlt}
+            title={t('mapAlt')}
           />
           {/* View route button */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
