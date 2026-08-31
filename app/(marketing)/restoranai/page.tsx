@@ -7,6 +7,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export const metadata = {
   title: 'Restoranai ir Kavinės — PC Europa',
@@ -14,9 +15,9 @@ export const metadata = {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-3.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-2.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-3.jpg`,
 ]
 
 const RESTORANAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])

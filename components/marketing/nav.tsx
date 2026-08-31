@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, ChevronDown } from 'lucide-react'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const logoUrl = '/pc-europa-logo.svg'
-const timerIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.svg'
-const infoIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.svg'
+const timerIconUrl = `${STORAGE_PUBLIC_BASE}/marketing-assets/timer-icon.svg`
+const infoIconUrl = `${STORAGE_PUBLIC_BASE}/marketing-assets/nav-info-icon.svg`
 
 const NAV_LINKS = [
   { label: 'Akcijos / Naujienos', href: '/akcijos' },

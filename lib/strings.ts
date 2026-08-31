@@ -1,3 +1,4 @@
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 // lib/strings.ts — Lithuanian UI string constants
 // All visible UI strings are defined here to ensure consistency and avoid scattered literals.
 // SHLL-04: Lithuanian labels throughout all UI elements
@@ -49,26 +50,26 @@ export const NEWS_SECTION_STRINGS = {
   ctaLabel: 'Daugiau',
   items: [
     {
-      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
+      image: `${STORAGE_PUBLIC_BASE}/marketing-assets/news-1.jpg`,
       title: 'Papildoma nuolaida Rieker!',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/rieker',
     },
     {
-      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-2.jpg',
+      image: `${STORAGE_PUBLIC_BASE}/marketing-assets/news-2.jpg`,
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/pavasaris',
     },
     {
-      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-3.jpg',
+      image: `${STORAGE_PUBLIC_BASE}/marketing-assets/news-3.jpg`,
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/samsung',
     },
     {
       // NOTE: reuses news-1.jpg — original news-4.jpg was unrecoverable after the Supabase project migration.
-      image: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/news-1.jpg',
+      image: `${STORAGE_PUBLIC_BASE}/marketing-assets/news-1.jpg`,
       title: 'Kvepia pavasariu',
       date: 'Nuo 2026.03.25 iki 2026.03.29',
       href: '/akcijos/vision-express',
@@ -485,12 +486,12 @@ export const PRIVATUMO_POLITIKA_STRINGS = {
   documents: [
     {
       title: 'Privatumo\npolitika',
-      href: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/privatumo-politika.pdf',
+      href: `${STORAGE_PUBLIC_BASE}/marketing-assets/privatumo-politika.pdf`,
       variant: 'light',
     },
     {
       title: 'Slapukų\nprivatumo politika',
-      href: 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/slapuku-privatumo-politika.pdf',
+      href: `${STORAGE_PUBLIC_BASE}/marketing-assets/slapuku-privatumo-politika.pdf`,
       variant: 'dark',
     },
   ],

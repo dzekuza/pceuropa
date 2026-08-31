@@ -6,10 +6,11 @@ import { ArticlesGrid } from '@/components/articles/articles-grid'
 import { NAUJIENOS_STRINGS } from '@/lib/strings'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { createClient } from '@/lib/supabase/server'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-akcijos-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-akcijos-2.jpg`,
 ]
 
 export const metadata: Metadata = {

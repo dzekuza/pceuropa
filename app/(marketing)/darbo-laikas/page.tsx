@@ -8,9 +8,10 @@ import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import { DARBO_LAIKAS_STRINGS } from '@/lib/strings'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/darbo-laikas/banner.jpg`,
 ]
 
 const DEFAULT_OPENING_HOURS_TEXT = {

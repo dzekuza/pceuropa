@@ -7,13 +7,14 @@ import { getPublicTenants } from '@/lib/tenants-public'
 import { LAISVALAIKIS_STRINGS } from '@/lib/strings'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export const metadata = {
   title: LAISVALAIKIS_STRINGS.pageTitle,
   description: LAISVALAIKIS_STRINGS.pageDescription,
 }
 
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {

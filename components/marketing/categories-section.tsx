@@ -1,12 +1,12 @@
 import type React from 'react'
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
-const imgCat1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-1.jpg'
-const imgCat2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-2.jpg'
-const imgCat3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-3.jpg'
-const imgCat4 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/categories-4.jpg'
+const imgCat1 = `${STORAGE_PUBLIC_BASE}/marketing-assets/categories-1.jpg`
+const imgCat2 = `${STORAGE_PUBLIC_BASE}/marketing-assets/categories-2.jpg`
+const imgCat3 = `${STORAGE_PUBLIC_BASE}/marketing-assets/categories-3.jpg`
+const imgCat4 = `${STORAGE_PUBLIC_BASE}/marketing-assets/categories-4.jpg`
 
 const CATEGORIES = [
   { title: 'Akcijos ir naujienos', href: '/akcijos', image: imgCat1 },

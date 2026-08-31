@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 import { TrackedLink } from '@/components/marketing/tracked-link'
 
 const logoUrl = '/pc-europa-logo.svg'
-const facebookIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-facebook.svg'
-const instagramIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/footer-instagram.svg'
+const facebookIcon = `${STORAGE_PUBLIC_BASE}/marketing-assets/footer-facebook.svg`
+const instagramIcon = `${STORAGE_PUBLIC_BASE}/marketing-assets/footer-instagram.svg`
 
 const NAV_LINKS = [
   { label: 'Nuomininkams', href: 'https://nuomininkai.pceuropa.lt/' },

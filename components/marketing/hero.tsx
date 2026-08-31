@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import type React from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 
 export const HERO_DEFAULT_SLIDES = [
   { src: `${BASE}/hero-bg.jpg`,          alt: 'PC Europa' },

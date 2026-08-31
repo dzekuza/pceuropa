@@ -4,6 +4,11 @@
 const OBJECT_PREFIX = '/storage/v1/object/public/'
 const RENDER_PREFIX = '/storage/v1/render/image/public/'
 
+// Base URL for public Storage objects. Derived from the env var so assets
+// follow whichever Supabase instance the app points at — never hardcode the
+// project URL at call sites (see CLAUDE.md).
+export const STORAGE_PUBLIC_BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public`
+
 interface ResizeOptions {
   width: number
   height: number

@@ -6,6 +6,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory, TENANT_CATEGORIES } from '@/lib/constants'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export const metadata = {
   title: 'Parduotuvės ir Paslaugos — PC Europa',
@@ -13,7 +14,7 @@ export const metadata = {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-parduotuves-wide.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-parduotuves-wide.jpg`,
 ]
 
 export default async function ParduotuvesPage() {

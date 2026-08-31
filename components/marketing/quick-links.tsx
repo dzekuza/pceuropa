@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import { ArrowIcon } from './ui/arrow-icon'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
-const parkingIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/parking-icon.svg'
-const phoneIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/phone-icon.svg'
-const mapIcon = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/map-icon.svg'
+const parkingIcon = `${STORAGE_PUBLIC_BASE}/marketing-assets/parking-icon.svg`
+const phoneIcon = `${STORAGE_PUBLIC_BASE}/marketing-assets/phone-icon.svg`
+const mapIcon = `${STORAGE_PUBLIC_BASE}/marketing-assets/map-icon.svg`
 
 const LINKS = [
   { icon: parkingIcon, label: 'Parkavimas', href: '/parkavimas', iconBg: 'bg-[#e6ffd1]' },

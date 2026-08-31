@@ -4,6 +4,7 @@
 // (the public marketing-page renderer) need no changes.
 
 import { NEWS_SECTION_STRINGS, DARBO_LAIKAS_STRINGS, LANKYTOJAMS_STRINGS, AKCIJOS_STRINGS, KONTAKTAI_STRINGS, KAIP_ATVYKTI_STRINGS, PARKAVIMAS_STRINGS } from '@/lib/strings'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export type FieldKind = 'text' | 'textarea' | 'richtext' | 'image' | 'array'
 
@@ -381,7 +382,7 @@ export const PREVIEW_URLS: Record<string, string> = {
 // Default/fallback banner images were seeded on the legacy Supabase project and
 // never migrated to the current one — matches the DEFAULT_BANNER_SLIDES host used
 // by every public marketing page (e.g. app/(marketing)/dialogai/page.tsx).
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 
 export const ALLOWED_SLUGS: Set<string> = new Set(PAGES.map((p) => p.slug))
 
