@@ -32,8 +32,22 @@ The storefront is bilingual; the dashboard is not (internal tooling stays Lithua
 - Dynamic content tables (`articles`, `promos`, `tenants`, `faq_items`) have nullable `_en` sibling columns (`title_en`, `description_en`, etc.). Render pattern: `locale === 'en' ? (row.field_en || row.field) : row.field` — always fall back to the LT column when EN is empty, since admins may not have translated everything.
 - Admin editors (tenant/article/promo/FAQ forms, the puck page-builder editor) have an LT/EN tab to manage translations per record. `/admin/translations` is a bulk review page for the DB-backed content.
 
+## Hosting
+
+Self-hosted on a VPS (`176.223.138.9`, Ubuntu 24.04) since 2026-09-01 — **not Vercel, not Supabase Cloud**. See [[self-hosted-infrastructure]] for the full picture.
+
+- `/opt/pceuropa-app` — this repo, plus `Dockerfile`, `docker-compose.yml`, `Caddyfile`. Caddy terminates TLS and reverse-proxies the app.
+- `/opt/supabase-stack` — self-hosted Supabase (Postgres, GoTrue, PostgREST, Storage, imgproxy, Envoy gateway). Its data and uploaded files live in `volumes/`.
+- Deploy = `rsync` the repo up, `docker compose build app`, `docker compose up -d --force-recreate app`. ~13 min on one vCPU.
+- Server-side env lives in `/opt/pceuropa-app/.env.production`; build-time (`NEXT_PUBLIC_*`) in `.env`. Changing a `NEXT_PUBLIC_*` needs a rebuild, not just a restart.
+
 ## Non-obvious constraints
 
+- **Never hardcode a Supabase URL.** Storage URLs come from `STORAGE_PUBLIC_BASE` (`lib/utils/supabase-image.ts`), derived from `NEXT_PUBLIC_SUPABASE_URL`. Content authored in the DB or in `messages/*.json` stores absolute URLs and can't interpolate env vars, so `toStorageUrl()` rewrites any legacy `*.supabase.co` origin at render time — call it for non-image links too (e.g. PDF hrefs).
+- Any route outside `app/[locale]/` must be added to `isLocaleExempt` in `proxy.ts`, or next-intl rewrites it into the locale tree and it 404s. This bit `/under-construction` once.
+- `docker-compose.yml` gives Caddy a `supabase.pceuropa.lt` network alias so SSR reaches Supabase over the Docker network instead of hairpinning out via the public IP.
+- Caddy uses **DNS-01** ACME challenges (`acme_dns cloudflare`), and runs a custom image built from `Dockerfile.caddy` — the stock image lacks the Cloudflare DNS module. HTTP-01/TLS-ALPN would break if a hostname is ever put behind Cloudflare's proxy.
+- Public Storage objects get `Cache-Control: public, max-age=31536000` from Caddy. storage-api serves `no-cache` regardless of the object's metadata, which made browsers re-download ~8.7 MB of images on every page view.
 - `proxy.ts` exports `proxy`, not `middleware` — Next.js 16 rename. Do not change the export name. It also composes `next-intl`'s locale middleware for the marketing tree while running the existing auth/gate/subdomain logic unchanged on raw pathnames (dashboard/login/api routes are never locale-prefixed).
 - Always `supabase.auth.getUser()`, never `getSession()` — validates JWT server-side (CVE-2025-29927).
 - Every admin Server Component calls `getUser()` independently — middleware alone is not the auth guard.

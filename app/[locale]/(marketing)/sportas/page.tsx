@@ -8,6 +8,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('sportas')
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-sportas-carousel.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-sportas-carousel.jpg`,
 ]
 
 export default async function SportasPage() {

@@ -3,10 +3,10 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { NuomaReklamaForm } from '@/components/marketing/nuoma-reklama-form'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 import { getPuckBlockProps } from '@/lib/page-content'
 
-const BANNER_IMAGE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nuoma-reklama/banner.jpg'
+const BANNER_IMAGE = `${STORAGE_PUBLIC_BASE}/marketing-assets/nuoma-reklama/banner.jpg`
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('nuomaReklama')

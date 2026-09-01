@@ -4,12 +4,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 import { LanguageSwitcher } from './language-switcher'
 
 const logoUrl = '/pc-europa-logo.svg'
-const timerIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/timer-icon.svg'
-const infoIconUrl = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/nav-info-icon.svg'
+const timerIconUrl = `${STORAGE_PUBLIC_BASE}/marketing-assets/timer-icon.svg`
+const infoIconUrl = `${STORAGE_PUBLIC_BASE}/marketing-assets/nav-info-icon.svg`
 
 export function Nav() {
   const t = useTranslations('nav')

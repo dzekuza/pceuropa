@@ -3,6 +3,7 @@ import { Shield, Cookie } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
+import { toStorageUrl } from '@/lib/utils/supabase-image'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('privatumoPolitika')
@@ -40,7 +41,7 @@ export default async function PrivatumoPoliitkaPage() {
             return (
               <a
                 key={doc.href + index}
-                href={doc.href}
+                href={toStorageUrl(doc.href)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`group relative flex flex-col justify-between h-[300px] rounded-2xl p-8 transition-transform hover:-translate-y-1 ${

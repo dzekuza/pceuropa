@@ -8,9 +8,10 @@ import { PlanasSection } from '@/components/marketing/planas-section'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import type { StoreHoursCardProps } from '@/components/marketing/store-hours-card'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/darbo-laikas/banner.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/darbo-laikas/banner.jpg`,
 ]
 
 // TODO: replace with permanent Supabase Storage URL (Figma MCP assets expire after 7 days)

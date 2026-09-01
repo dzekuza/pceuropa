@@ -1,0 +1,53 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    expose:
+      - "3000"
+    networks:
+      - web
+
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    # DNS-01 needs a Cloudflare token with Zone:DNS:Edit on this zone.
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?set CLOUDFLARE_API_TOKEN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    # Lets Caddy resolve the self-hosted Supabase stack's Kong gateway, which is
+    # published on the host (see supabase-stack/docker-compose.yml, port 8000).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      web:
+        # Server-side rendering calls Supabase at its public hostname. Without
+        # this alias those requests leave the box and come back in via the public
+        # IP — slower, and broken while public DNS still serves a stale record.
+        # The alias keeps them on the Docker network; Caddy still presents the
+        # real certificate for this name, so TLS verification passes.
+        aliases:
+          - supabase.pceuropa.lt
+    depends_on:
+      - app
+
+networks:
+  web:
+
+volumes:
+  caddy_data:
+  caddy_config:

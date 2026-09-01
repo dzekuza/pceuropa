@@ -8,6 +8,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('laisvalaikis')
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 const DEFAULT_BANNER_SLIDES = [`${BASE}/hero-bg.jpg`, `${BASE}/activities-coffee.jpg`]
 
 export default async function LaisvalaikisPage() {

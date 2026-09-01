@@ -1,13 +1,13 @@
 import type React from 'react'
 import { Link } from '@/i18n/navigation'
 import { DisplayHeading, BodyText } from './ui/typography'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
-const coffeeImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-coffee.jpg'
-const sportsAd1 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-1.jpg'
-const sportsAd2 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-2.jpg'
-const sportsAd3 = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-sports-3.jpg'
-const petImg = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/activities-pet.png'
+const coffeeImg = `${STORAGE_PUBLIC_BASE}/marketing-assets/activities-coffee.jpg`
+const sportsAd1 = `${STORAGE_PUBLIC_BASE}/marketing-assets/activities-sports-1.jpg`
+const sportsAd2 = `${STORAGE_PUBLIC_BASE}/marketing-assets/activities-sports-2.jpg`
+const sportsAd3 = `${STORAGE_PUBLIC_BASE}/marketing-assets/activities-sports-3.jpg`
+const petImg = `${STORAGE_PUBLIC_BASE}/marketing-assets/activities-pet.png`
 
 export interface ActivitiesSectionProps {
   leisureTag?: React.ReactNode

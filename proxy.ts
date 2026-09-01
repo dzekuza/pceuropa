@@ -27,6 +27,10 @@ export async function proxy(request: NextRequest) {
     isDashboardRoute ||
     pathname.startsWith('/api/') ||
     pathname === '/login' ||
+    // The gate page lives at app/under-construction, outside [locale]. Without
+    // this, next-intl rewrites it to /lt/under-construction and every gated
+    // visitor lands on a 404 instead of the coming-soon screen.
+    pathname === '/under-construction' ||
     pathname.startsWith('/auth/')
 
   // Let next-intl resolve the locale for marketing-tree requests. For the

@@ -1,0 +1,9 @@
+# Caddy with the Cloudflare DNS provider module. Needed because the stock image
+# only solves ACME challenges over HTTP/TLS-ALPN, and Cloudflare's proxy
+# intercepts both — so certificates could never renew once the orange cloud is
+# on. DNS-01 proves ownership through the Cloudflare API instead.
+FROM caddy:2-builder-alpine AS builder
+RUN xcaddy build --with github.com/caddy-dns/cloudflare
+
+FROM caddy:2-alpine
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy

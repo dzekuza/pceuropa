@@ -8,10 +8,11 @@ import { createClient } from '@/lib/supabase/server'
 import { formatPromoDateRange } from '@/lib/utils/format-promo-date'
 import { getPuckBannerSlides, getPuckBlockProps } from '@/lib/page-content'
 import type { PromoItem } from '@/components/marketing/promo-card'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-akcijos-2.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-akcijos-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-akcijos-2.jpg`,
 ]
 
 export async function generateMetadata(): Promise<Metadata> {

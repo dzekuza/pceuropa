@@ -4,6 +4,24 @@
 const OBJECT_PREFIX = '/storage/v1/object/public/'
 const RENDER_PREFIX = '/storage/v1/render/image/public/'
 
+// Base URL for public Storage objects. Derived from the env var so assets
+// follow whichever Supabase instance the app points at — never hardcode the
+// project URL at call sites (see CLAUDE.md).
+export const STORAGE_PUBLIC_BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public`
+
+// Any *.supabase.co Storage origin, so URLs written before self-hosting still
+// resolve. JSON message catalogs and admin-authored DB rows can't interpolate
+// the env var, so they keep whatever origin was current when they were saved.
+const LEGACY_STORAGE_ORIGIN = /^https:\/\/[a-z0-9-]+\.supabase\.co(?=\/storage\/)/
+
+/** Repoints a Storage URL at the configured instance. No-op for anything else. */
+export function toStorageUrl(url: string | null | undefined): string {
+  if (!url) return ''
+  const configured = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (!configured) return url
+  return url.replace(LEGACY_STORAGE_ORIGIN, configured)
+}
+
 interface ResizeOptions {
   width: number
   height: number
@@ -31,5 +49,5 @@ export function resizeSupabaseImage(
     quality: String(quality),
   })
 
-  return `${url.replace(OBJECT_PREFIX, RENDER_PREFIX)}?${params.toString()}`
+  return `${toStorageUrl(url).replace(OBJECT_PREFIX, RENDER_PREFIX)}?${params.toString()}`
 }

@@ -3,7 +3,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-const SUPABASE_HOST = "ybyyxcuvxuzrledbitky.supabase.co";
+// Falls back to the Supabase Cloud host for local dev; set NEXT_PUBLIC_SUPABASE_URL
+// to the self-hosted domain (e.g. https://supabase.pceuropa.lt) in production.
+const SUPABASE_HOST = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : "ybyyxcuvxuzrledbitky.supabase.co";
 const isDev = process.env.NODE_ENV !== "production";
 
 // React/Turbopack use eval() in dev mode for debugging (stack reconstruction, HMR)
@@ -52,16 +56,17 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  output: "standalone",
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
+        hostname: SUPABASE_HOST,
         pathname: '/storage/v1/object/public/**',
       },
       {
         protocol: 'https',
-        hostname: 'ybyyxcuvxuzrledbitky.supabase.co',
+        hostname: SUPABASE_HOST,
         pathname: '/storage/v1/render/image/public/**',
       },
     ],

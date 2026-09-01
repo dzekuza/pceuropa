@@ -8,6 +8,7 @@ import { PageBannerCarousel } from '@/components/marketing/page-banner-carousel'
 import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { getLocale, getTranslations } from 'next-intl/server'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('dialogaiPage')
@@ -18,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-dialogai-3.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-dialogai-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-dialogai-2.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-dialogai-3.jpg`,
 ]
 
 // 'DIALOGAI' is the raw legacy value still stored on tenants imported before

@@ -7,6 +7,7 @@
 // This admin-editor default-seed content is LT-only (dashboard stays LT-only),
 // so it reads the LT catalog directly rather than importing from lib/strings.ts.
 import ltMessages from '@/messages/lt.json'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const NEWS_SECTION_STRINGS = ltMessages.newsSection
 const AKCIJOS_STRINGS = ltMessages.akcijos
@@ -389,10 +390,9 @@ export const PREVIEW_URLS: Record<string, string> = {
   'nuoma-reklama': '/nuoma-reklama',
 }
 
-// Default/fallback banner images were seeded on the legacy Supabase project and
-// never migrated to the current one — matches the DEFAULT_BANNER_SLIDES host used
-// by every public marketing page (e.g. app/(marketing)/dialogai/page.tsx).
-const BASE = 'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets'
+// Matches the DEFAULT_BANNER_SLIDES host used by every public marketing page
+// (e.g. app/[locale]/(marketing)/dialogai/page.tsx).
+const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
 
 export const ALLOWED_SLUGS: Set<string> = new Set(PAGES.map((p) => p.slug))
 

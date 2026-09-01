@@ -9,6 +9,7 @@ import { getPublicTenants } from '@/lib/tenants-public'
 import { getPuckBannerSlides } from '@/lib/page-content'
 import { normalizeCategory } from '@/lib/constants'
 import { getLocale, getTranslations } from 'next-intl/server'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('restoranaiPage')
@@ -19,9 +20,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const DEFAULT_BANNER_SLIDES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/banner-restoranai-3.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-2.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/banner-restoranai-3.jpg`,
 ]
 
 const RESTORANAI_CATEGORIES = new Set(['Maistas ir restoranai', 'Maistas', 'Kavinės', 'Restoranai', 'KAVINĖS/RESTORANAI'])

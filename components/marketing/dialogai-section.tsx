@@ -1,18 +1,18 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { DisplayHeading } from './ui/typography'
-import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
+import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const DIALOGAI_IMAGES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/1.png',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/2.png',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/3.png',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/1.png`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/2.png`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/3.png`,
 ]
 
 const RESTORANAI_IMAGES = [
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-1.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-2.jpg',
-  'https://ybyyxcuvxuzrledbitky.supabase.co/storage/v1/object/public/marketing-assets/dialogai/restoranai-3.jpg',
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/restoranai-1.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/restoranai-2.jpg`,
+  `${STORAGE_PUBLIC_BASE}/marketing-assets/dialogai/restoranai-3.jpg`,
 ]
 
 export interface DialogaiSectionProps {
