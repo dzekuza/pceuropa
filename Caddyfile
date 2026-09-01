@@ -1,4 +1,18 @@
-pceuropa.lt, www.pceuropa.lt {
+{
+	# Solve ACME challenges over DNS rather than HTTP/TLS-ALPN. Cloudflare's
+	# proxy terminates TLS at the edge, so it would intercept both other
+	# challenge types and renewals would fail silently ~60 days in. DNS-01
+	# works whether or not a hostname is proxied.
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+# www is canonical, matching the pre-migration setup — the apex 308s to it so
+# indexed URLs and SEO signals stay on one hostname.
+pceuropa.lt {
+	redir https://www.pceuropa.lt{uri} permanent
+}
+
+www.pceuropa.lt {
 	reverse_proxy app:3000
 	encode gzip zstd
 }
@@ -17,9 +31,25 @@ nuoma.pceuropa.lt {
 	encode gzip zstd
 }
 
-# Self-hosted Supabase gateway (Kong), published on the host by the separate
+# Self-hosted Supabase gateway (Envoy), published on the host by the separate
 # supabase-stack/docker-compose.yml (default port 8000).
 supabase.pceuropa.lt {
-	reverse_proxy host.docker.internal:8000
+	# storage-api answers with "no-cache" whatever the object's cacheControl
+	# metadata says, so browsers re-fetch every image on every page view — a
+	# marketing page pulls ~8MB across ~116 images. Supabase Cloud fronted the
+	# same objects with a CDN sending max-age=31536000; this restores that for
+	# public objects only, leaving signed/private URLs untouched.
+	@publicStorage path /storage/v1/object/public/* /storage/v1/render/image/public/*
+	handle @publicStorage {
+		reverse_proxy host.docker.internal:8000 {
+			# ">" replaces the upstream header instead of appending a second one.
+			header_down >Cache-Control "public, max-age=31536000"
+		}
+	}
+
+	handle {
+		reverse_proxy host.docker.internal:8000
+	}
+
 	encode gzip zstd
 }
