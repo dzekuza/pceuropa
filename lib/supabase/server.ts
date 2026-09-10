@@ -26,3 +26,12 @@ export const createClient = cache(async function createClient() {
     }
   )
 })
+
+// Per-request memo of the JWT-validated user. Dashboard components each still call
+// this independently (middleware is not the auth guard — CVE-2025-29927), but the
+// layout + page pair now costs one GoTrue round-trip per render instead of two.
+export const getCurrentUser = cache(async function getCurrentUser() {
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getUser()
+  return data.user
+})

@@ -124,6 +124,36 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          draft_data: Json | null
+          draft_status: string
+          id: string
+          page_slug: string
+          published_data: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          draft_data?: Json | null
+          draft_status?: string
+          id?: string
+          page_slug: string
+          published_data?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          draft_data?: Json | null
+          draft_status?: string
+          id?: string
+          page_slug?: string
+          published_data?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       page_sections: {
         Row: {
           content_key: string

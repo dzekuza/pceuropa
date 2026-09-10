@@ -1,17 +1,14 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/server'
 import { isAdminUser } from '@/lib/admin/is-admin'
 import { getAllTranslatableContent } from '@/app/actions/translations-actions'
 import { TranslationsReview } from '@/components/admin/translations-review'
 
 export default async function AdminTranslationsPage() {
-  const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!isAdminUser(user)) {
     redirect('/login')

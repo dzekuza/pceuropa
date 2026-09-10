@@ -2,7 +2,7 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { Bold, Italic } from 'lucide-react'
+import { Bold, Italic, List, ListOrdered } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 
@@ -15,7 +15,7 @@ interface RichTextFieldProps {
 export function RichTextField({ label, value, onChange }: RichTextFieldProps) {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit.configure({ heading: false, bulletList: false, orderedList: false, blockquote: false, codeBlock: false })],
+    extensions: [StarterKit.configure({ heading: false, blockquote: false, codeBlock: false })],
     content: value,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   })
@@ -41,10 +41,26 @@ export function RichTextField({ label, value, onChange }: RichTextFieldProps) {
           >
             <Italic />
           </Button>
+          <Button
+            type="button"
+            variant={editor?.isActive('bulletList') ? 'secondary' : 'ghost'}
+            size="icon-xs"
+            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+          >
+            <List />
+          </Button>
+          <Button
+            type="button"
+            variant={editor?.isActive('orderedList') ? 'secondary' : 'ghost'}
+            size="icon-xs"
+            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+          >
+            <ListOrdered />
+          </Button>
         </div>
         <EditorContent
           editor={editor}
-          className="px-3 py-2 text-sm min-h-[80px] [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[64px]"
+          className="px-3 py-2 text-sm min-h-[80px] [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[64px] [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:list-inside [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:list-inside"
         />
       </div>
     </div>

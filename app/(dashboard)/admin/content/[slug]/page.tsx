@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { ContentEditor } from '@/components/admin/content-editor'
-import { ALLOWED_SLUGS, DEFAULT_DATA, FALLBACK_DATA, PREVIEW_URLS, type ContentBlock, type ContentData } from '@/lib/content-sections'
+import { ALLOWED_SLUGS, DEFAULT_DATA, FALLBACK_DATA, PREVIEW_URLS, toRichListValue, type ContentBlock, type ContentData } from '@/lib/content-sections'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -16,6 +16,23 @@ function mergeWithDefaults(saved: ContentBlock[], defaults: ContentBlock[]): Con
   return defaults.map((defaultBlock) => savedByType.get(defaultBlock.type) ?? defaultBlock)
 }
 
+// generalItems/securityItems moved from an array-of-items shape to a single richtext
+// string — normalize any block saved under the old shape so the editor doesn't choke on it.
+function normalizeTaisyklesRichText(blocks: ContentBlock[]): ContentBlock[] {
+  return blocks.map((block) =>
+    block.type === 'TaisyklesBlock'
+      ? {
+          ...block,
+          props: {
+            ...block.props,
+            generalItems: toRichListValue(block.props.generalItems),
+            securityItems: toRichListValue(block.props.securityItems),
+          },
+        }
+      : block
+  )
+}
+
 export default async function AdminContentEditPage({ params }: Props) {
   const { slug } = await params
 
@@ -23,9 +40,7 @@ export default async function AdminContentEditPage({ params }: Props) {
 
   const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')
@@ -41,8 +56,12 @@ export default async function AdminContentEditPage({ params }: Props) {
   const defaults = DEFAULT_DATA[slug] ?? FALLBACK_DATA
 
   const contentByLocale: Record<'lt' | 'en', ContentBlock[]> = {
-    lt: localized?.lt ? mergeWithDefaults(localized.lt.content, defaults.content) : defaults.content,
-    en: localized?.en ? mergeWithDefaults(localized.en.content, defaults.content) : defaults.content,
+    lt: normalizeTaisyklesRichText(
+      localized?.lt ? mergeWithDefaults(localized.lt.content, defaults.content) : defaults.content
+    ),
+    en: normalizeTaisyklesRichText(
+      localized?.en ? mergeWithDefaults(localized.en.content, defaults.content) : defaults.content
+    ),
   }
 
   return (

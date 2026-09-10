@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { RevenueLineChart } from '@/components/analytics/revenue-line-chart'
 import { CategoryBarChart } from '@/components/analytics/category-bar-chart'
 import { TenantTrendChart } from '@/components/analytics/tenant-trend-chart'
@@ -23,9 +23,7 @@ export default async function AdminAnalyticsPage({ searchParams }: AnalyticsPage
   const supabase = await createClient()
 
   // Defense-in-depth: validate JWT and verify admin role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')

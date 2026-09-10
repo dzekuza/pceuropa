@@ -1,18 +1,15 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/server'
 import { isAdminUser } from '@/lib/admin/is-admin'
 import { getComingSoonEnabled } from '@/app/actions/site-settings-actions'
 import { ComingSoonGateToggle } from '@/components/admin/coming-soon-gate-toggle'
 import { SITE_SETTINGS_STRINGS as S } from '@/lib/strings'
 
 export default async function AdminSettingsPage() {
-  const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!isAdminUser(user)) {
     redirect('/login')

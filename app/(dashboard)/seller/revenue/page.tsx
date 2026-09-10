@@ -1,7 +1,7 @@
 // app/(dashboard)/seller/revenue/page.tsx — Seller revenue submission page
 // Server Component — Defense-in-depth auth check (CVE-2025-29927: middleware alone insufficient)
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { RevenuePageClient } from '@/components/revenue/revenue-page-client'
 import { AlertCircle } from 'lucide-react'
 import { REVENUE_REMINDER_TITLE, revenueReminderBody } from '@/lib/strings'
@@ -10,9 +10,7 @@ export default async function SellerRevenuePage() {
   const supabase = await createClient()
 
   // Defense-in-depth: verify seller role independently of middleware
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'seller') {
     redirect('/login')

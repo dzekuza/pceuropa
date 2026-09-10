@@ -1,7 +1,7 @@
 // app/(dashboard)/seller/analytics/page.tsx — Seller personal analytics page
 // Server Component — Defense-in-depth auth check (CVE-2025-29927: middleware alone insufficient)
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { aggregateMonthlyRevenue } from '@/lib/utils/analytics'
 import { StatsCards } from '@/components/seller-analytics/stats-cards'
 import { RevenueAreaChart } from '@/components/reui/charts/revenue-area-chart'
@@ -11,9 +11,7 @@ export default async function SellerAnalyticsPage() {
     const supabase = await createClient()
 
     // Defense-in-depth: verify seller role independently of middleware
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    const user = await getCurrentUser()
 
     if (!user || user.app_metadata?.role !== 'seller') {
         redirect('/login')

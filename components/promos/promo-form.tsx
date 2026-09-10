@@ -114,6 +114,7 @@ export function PromoForm({ promo }: PromoFormProps) {
 
   async function uploadImage(file: File) {
     setUploadingImage(true)
+    setSaveError(null)
     const compressed = await compressImageFile(file)
     const supabase = createClient()
     const path = `akcijos/${Date.now()}.${imageExtension(compressed)}`
@@ -121,6 +122,8 @@ export function PromoForm({ promo }: PromoFormProps) {
       .from('marketing-assets')
       .upload(path, compressed, { contentType: compressed.type })
     if (error) {
+      console.error('Promo image upload error:', error)
+      setSaveError(ADMIN_PROMOS_STRINGS.errorUpload)
       setUploadingImage(false)
       return
     }

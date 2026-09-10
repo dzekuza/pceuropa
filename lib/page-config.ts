@@ -280,6 +280,30 @@ export const PAGES_CONFIG: PageConfig[] = [
     ],
   },
   {
+    slug: 'taisykles',
+    title: 'Prekybos centro taisyklės',
+    navLabel: 'Taisyklės',
+    description: 'Lankytojų elgesio taisyklės ir tvarka',
+    previewUrl: '/taisykles',
+    sections: [
+      {
+        key: 'taisykles',
+        title: 'Taisyklės',
+        fields: [
+          { key: 'heading', label: 'Antraštė', type: 'text', placeholder: 'Prekybos centro taisyklės' },
+          { key: 'generalTitle', label: 'Bendrųjų taisyklių antraštė', type: 'text', placeholder: 'Bendrosios taisyklės' },
+          { key: 'securityTitle', label: 'Saugumo antraštė', type: 'text', placeholder: 'Saugumas' },
+          { key: 'childrenTitle', label: 'Vaikų saugumo antraštė', type: 'text', placeholder: 'Vaikų saugumas' },
+          { key: 'childrenBody', label: 'Vaikų saugumo tekstas', type: 'textarea', placeholder: '' },
+          { key: 'petsTitle', label: 'Gyvūnų antraštė', type: 'text', placeholder: 'Gyvūnai' },
+          { key: 'petsBody', label: 'Gyvūnų tekstas', type: 'textarea', placeholder: '' },
+          { key: 'liabilityTitle', label: 'Atsakomybės antraštė', type: 'text', placeholder: 'Atsakomybė' },
+          { key: 'liabilityBody', label: 'Atsakomybės tekstas', type: 'textarea', placeholder: '' },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'lankytojams',
     title: 'Informacija lankytojams',
     navLabel: 'Lankytojams',

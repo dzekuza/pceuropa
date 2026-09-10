@@ -61,6 +61,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
   const [uploadingCover, setUploadingCover] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [uploadingContentImage, setUploadingContentImage] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const contentImageInputRef = useRef<HTMLInputElement>(null)
 
   const {
@@ -128,6 +129,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
 
   async function uploadCoverImage(file: File) {
     setUploadingCover(true)
+    setSaveError(null)
     const compressed = await compressImageFile(file)
     const supabase = createClient()
     const path = `articles/${Date.now()}.${imageExtension(compressed)}`
@@ -135,6 +137,8 @@ export function ArticleForm({ article }: ArticleFormProps) {
       .from('marketing-assets')
       .upload(path, compressed, { contentType: compressed.type })
     if (error) {
+      console.error('Article cover image upload error:', error)
+      setSaveError(ARTICLES_STRINGS.errorUpload)
       setUploadingCover(false)
       return
     }
@@ -148,6 +152,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
 
   function onSave(published: boolean) {
     setValue('published', published)
+    setSaveError(null)
     handleSubmit((data) => {
       startTransition(async () => {
         const payload = { ...data, published }
@@ -159,6 +164,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
         }
         if ('error' in result) {
           console.error(result.error)
+          setSaveError(ARTICLES_STRINGS.errorSave)
           return
         }
         router.push('/admin/articles')
@@ -173,6 +179,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
 
   async function uploadContentImage(file: File, pos?: number) {
     setUploadingContentImage(true)
+    setSaveError(null)
     const compressed = await compressImageFile(file)
     const supabase = createClient()
     const path = `articles/${Date.now()}.${imageExtension(compressed)}`
@@ -180,6 +187,8 @@ export function ArticleForm({ article }: ArticleFormProps) {
       .from('marketing-assets')
       .upload(path, compressed, { contentType: compressed.type })
     if (error) {
+      console.error('Article content image upload error:', error)
+      setSaveError(ARTICLES_STRINGS.errorUpload)
       setUploadingContentImage(false)
       return
     }
@@ -281,6 +290,12 @@ export function ArticleForm({ article }: ArticleFormProps) {
       <div className="flex flex-1 gap-0">
         {/* Editor area */}
         <div className="flex-1 flex flex-col">
+          {saveError && (
+            <div className="border-b px-6 py-3">
+              <p className="text-sm text-destructive">{saveError}</p>
+            </div>
+          )}
+
           <Tabs defaultValue="lt" className="flex-1 flex flex-col gap-0">
             <div className="border-b px-6 py-2">
               <TabsList>

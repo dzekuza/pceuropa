@@ -87,7 +87,10 @@ export function AppSidebar({ navItems, ...props }: AppSidebarProps & React.Compo
                   tooltip={item.label}
                   onClick={() => isMobile && setOpenMobile(false)}
                 >
-                  <Link href={item.href}>
+                  {/* Every dashboard route is force-dynamic (auth + DB per render), so
+                      prefetching the whole nav costs a full SSR render per link on a 1-vCPU
+                      box. loading.tsx covers the click latency instead. */}
+                  <Link href={item.href} prefetch={false}>
                     {Icon && <Icon className="size-4" />}
                     <span>{item.label}</span>
                   </Link>

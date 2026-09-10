@@ -8,6 +8,7 @@ const ALLOWED_SLUGS = new Set([
   'landing', 'akcijos', 'dialogai', 'restoranai',
   'parduotuves', 'sportas', 'laisvalaikis', 'darbo-laikas', 'lankytojams',
   'naujienos', 'nuoma-reklama', 'kontaktai', 'kaip-atvykti', 'parkavimas',
+  'taisykles',
 ])
 
 const EMPTY_DATA = { content: [], root: { props: {} }, zones: {} }

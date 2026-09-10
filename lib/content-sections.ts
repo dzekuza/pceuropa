@@ -16,6 +16,31 @@ const LANKYTOJAMS_STRINGS = ltMessages.lankytojams
 const KONTAKTAI_STRINGS = ltMessages.kontaktai
 const KAIP_ATVYKTI_STRINGS = ltMessages.kaipAtvykti
 const PARKAVIMAS_STRINGS = ltMessages.parkavimas
+const TAISYKLES_STRINGS = ltMessages.taisykles
+
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+/** Renders a list of plain strings as an HTML bullet list for a richtext field. */
+export function listToHtml(items: string[]): string {
+  const filtered = items.filter(Boolean)
+  if (filtered.length === 0) return ''
+  return `<ul>${filtered.map((text) => `<li>${escapeHtml(text)}</li>`).join('')}</ul>`
+}
+
+/** Migrates a rules field saved under the pre-richtext array-of-items shape
+ * ([{ value: string }]) into the HTML string the field now uses. A value already
+ * in the new shape (a string) passes through unchanged. */
+export function toRichListValue(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (Array.isArray(value)) {
+    return listToHtml(
+      (value as Array<{ value?: unknown }>).map((item) => (typeof item?.value === 'string' ? item.value : ''))
+    )
+  }
+  return ''
+}
 
 export type FieldKind = 'text' | 'textarea' | 'richtext' | 'image' | 'array'
 
@@ -305,6 +330,25 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     ],
   },
 
+  TaisyklesBlock: {
+    type: 'TaisyklesBlock',
+    label: 'Prekybos centro taisyklės',
+    editable: true,
+    fields: [
+      { key: 'heading', label: 'Antraštė', kind: 'text' },
+      { key: 'generalTitle', label: 'Bendrųjų taisyklių antraštė', kind: 'text' },
+      { key: 'generalItems', label: 'Bendrosios taisyklės', kind: 'richtext' },
+      { key: 'securityTitle', label: 'Saugumo antraštė', kind: 'text' },
+      { key: 'securityItems', label: 'Saugumo taisyklės', kind: 'richtext' },
+      { key: 'childrenTitle', label: 'Vaikų saugumo antraštė', kind: 'text' },
+      { key: 'childrenBody', label: 'Vaikų saugumo tekstas', kind: 'textarea' },
+      { key: 'petsTitle', label: 'Gyvūnų antraštė', kind: 'text' },
+      { key: 'petsBody', label: 'Gyvūnų tekstas', kind: 'textarea' },
+      { key: 'liabilityTitle', label: 'Atsakomybės antraštė', kind: 'text' },
+      { key: 'liabilityBody', label: 'Atsakomybės tekstas', kind: 'textarea' },
+    ],
+  },
+
   AkcijosGridBlock: {
     type: 'AkcijosGridBlock',
     label: 'Akcijų tinklelis',
@@ -369,6 +413,7 @@ export const PAGES = [
   { slug: 'kontaktai', label: 'Kontaktai' },
   { slug: 'kaip-atvykti', label: 'Kaip atvykti' },
   { slug: 'parkavimas', label: 'Parkavimas' },
+  { slug: 'taisykles', label: 'Taisyklės' },
   { slug: 'naujienos', label: 'Naujienos' },
   { slug: 'nuoma-reklama', label: 'Nuoma / Reklama' },
 ] as const
@@ -386,6 +431,7 @@ export const PREVIEW_URLS: Record<string, string> = {
   kontaktai: '/kontaktai',
   'kaip-atvykti': '/kaip-atvykti',
   parkavimas: '/parkavimas',
+  taisykles: '/taisykles',
   naujienos: '/naujienos',
   'nuoma-reklama': '/nuoma-reklama',
 }
@@ -601,6 +647,26 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
         evBody: PARKAVIMAS_STRINGS.evBody,
         disabledTitle: PARKAVIMAS_STRINGS.disabledTitle,
         disabledBody: PARKAVIMAS_STRINGS.disabledBody,
+      } },
+    ],
+    root: { props: {} },
+    zones: {},
+  },
+  taisykles: {
+    content: [
+      { type: 'TaisyklesBlock', props: {
+        id: 'taisykles-1',
+        heading: TAISYKLES_STRINGS.heading,
+        generalTitle: TAISYKLES_STRINGS.generalTitle,
+        generalItems: listToHtml(TAISYKLES_STRINGS.generalItems),
+        securityTitle: TAISYKLES_STRINGS.securityTitle,
+        securityItems: listToHtml(TAISYKLES_STRINGS.securityItems),
+        childrenTitle: TAISYKLES_STRINGS.childrenTitle,
+        childrenBody: TAISYKLES_STRINGS.childrenBody,
+        petsTitle: TAISYKLES_STRINGS.petsTitle,
+        petsBody: TAISYKLES_STRINGS.petsBody,
+        liabilityTitle: TAISYKLES_STRINGS.liabilityTitle,
+        liabilityBody: TAISYKLES_STRINGS.liabilityBody,
       } },
     ],
     root: { props: {} },

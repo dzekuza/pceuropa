@@ -1,4 +1,10 @@
 {
+  "enabledMcpjsonServers": [
+    "shadcn",
+    "supabase",
+    "figma-desktop",
+    "puppeteer"
+  ],
   "skillOverrides": {
     "studio": "off",
     "explain": "off",
@@ -10,10 +16,7 @@
     "pr-review": "off",
     "refactor": "off"
   },
-  "enabledMcpjsonServers": [
-    "shadcn",
-    "supabase",
-    "figma-desktop",
-    "puppeteer"
+  "disabledMcpjsonServers": [
+    "blender"
   ]
 }

@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
+import { getPuckBlockProps } from '@/lib/page-content'
+import { listToHtml, toRichListValue } from '@/lib/content-sections'
+import { sanitizeRichText } from '@/lib/utils/sanitize-rich-text'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('taisykles')
@@ -13,12 +16,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TaisyklesPage() {
   const t = await getTranslations('taisykles')
-  const s = {
+
+  const DEFAULT_TAISYKLES_BLOCK = {
     heading: t('heading'),
     generalTitle: t('generalTitle'),
-    generalItems: t.raw('generalItems') as string[],
+    generalItems: listToHtml(t.raw('generalItems') as string[]),
     securityTitle: t('securityTitle'),
-    securityItems: t.raw('securityItems') as string[],
+    securityItems: listToHtml(t.raw('securityItems') as string[]),
     childrenTitle: t('childrenTitle'),
     childrenBody: t('childrenBody'),
     petsTitle: t('petsTitle'),
@@ -26,6 +30,9 @@ export default async function TaisyklesPage() {
     liabilityTitle: t('liabilityTitle'),
     liabilityBody: t('liabilityBody'),
   }
+
+  const locale = await getLocale()
+  const s = await getPuckBlockProps('taisykles', 'TaisyklesBlock', DEFAULT_TAISYKLES_BLOCK, locale)
 
   return (
     <main className="bg-[#f7f7f5] flex flex-col items-center min-h-screen font-[family-name:var(--font-jakarta)]">
@@ -39,35 +46,33 @@ export default async function TaisyklesPage() {
 
           <section>
             <h2 className="font-bold text-[20px] text-black mt-8 mb-3">{s.generalTitle}</h2>
-            <ul className="list-disc list-inside text-[#575757] leading-relaxed text-[15px] flex flex-col gap-1">
-              {s.generalItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+            <div
+              className="text-[#575757] leading-relaxed text-[15px] [&_ul]:list-disc [&_ul]:list-inside [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-1 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:flex [&_ol]:flex-col [&_ol]:gap-1"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(toRichListValue(s.generalItems)) }}
+            />
           </section>
 
           <section>
             <h2 className="font-bold text-[20px] text-black mt-8 mb-3">{s.securityTitle}</h2>
-            <ul className="list-disc list-inside text-[#575757] leading-relaxed text-[15px] flex flex-col gap-1">
-              {s.securityItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+            <div
+              className="text-[#575757] leading-relaxed text-[15px] [&_ul]:list-disc [&_ul]:list-inside [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-1 [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:flex [&_ol]:flex-col [&_ol]:gap-1"
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(toRichListValue(s.securityItems)) }}
+            />
           </section>
 
           <section>
             <h2 className="font-bold text-[20px] text-black mt-8 mb-3">{s.childrenTitle}</h2>
-            <p className="text-[#575757] leading-relaxed text-[15px]">{s.childrenBody}</p>
+            <p className="text-[#575757] leading-relaxed text-[15px] whitespace-pre-line">{s.childrenBody}</p>
           </section>
 
           <section>
             <h2 className="font-bold text-[20px] text-black mt-8 mb-3">{s.petsTitle}</h2>
-            <p className="text-[#575757] leading-relaxed text-[15px]">{s.petsBody}</p>
+            <p className="text-[#575757] leading-relaxed text-[15px] whitespace-pre-line">{s.petsBody}</p>
           </section>
 
           <section>
             <h2 className="font-bold text-[20px] text-black mt-8 mb-3">{s.liabilityTitle}</h2>
-            <p className="text-[#575757] leading-relaxed text-[15px]">{s.liabilityBody}</p>
+            <p className="text-[#575757] leading-relaxed text-[15px] whitespace-pre-line">{s.liabilityBody}</p>
           </section>
         </div>
       </div>

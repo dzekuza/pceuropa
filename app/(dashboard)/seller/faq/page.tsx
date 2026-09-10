@@ -4,16 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { FaqReader } from '@/components/faq/faq-reader'
 
 export default async function SellerFaqPage() {
   const supabase = await createClient()
 
   // Defense-in-depth: validate JWT and verify seller role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'seller') {
     redirect('/login')

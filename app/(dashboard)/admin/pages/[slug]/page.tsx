@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { getPageConfig } from '@/lib/page-config'
 import { PageEditor } from '@/components/pages/page-editor'
 import type { PageContentMap } from '@/types/database'
@@ -18,9 +18,7 @@ interface Props {
 export default async function AdminPageEditorPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')

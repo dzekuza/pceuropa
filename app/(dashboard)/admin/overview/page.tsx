@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { AdminOverviewGrid } from '@/components/admin/admin-overview-grid'
 import { YearSelector } from '@/components/tenants/year-selector'
 import { getAdminOverviewData } from '@/lib/admin-data'
@@ -20,8 +20,8 @@ export default async function AdminOverviewPage({ searchParams }: OverviewPagePr
   const year = yearParam ? parseInt(yearParam, 10) : currentYear
   const safeYear = isNaN(year) ? currentYear : year
 
-  const [{ data: { user } }, overviewData] = await Promise.all([
-    supabase.auth.getUser(),
+  const [user, overviewData] = await Promise.all([
+    getCurrentUser(),
     getAdminOverviewData(supabase, safeYear),
   ])
 

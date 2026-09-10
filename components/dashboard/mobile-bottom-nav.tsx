@@ -31,6 +31,7 @@ export function MobileBottomNav({ navItems }: { navItems: readonly NavItem[] }) 
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className={cn(
                 'flex flex-col items-center justify-center gap-1 flex-1 h-full text-[10px] font-medium transition-colors min-w-0',
                 isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',

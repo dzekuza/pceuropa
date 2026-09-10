@@ -4,16 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { FaqAdminPageClient } from '@/components/faq/faq-admin-page-client'
 
 export default async function AdminFaqPage() {
   const supabase = await createClient()
 
   // Defense-in-depth: validate JWT and verify admin role
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')

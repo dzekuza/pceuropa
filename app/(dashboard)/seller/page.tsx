@@ -5,7 +5,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { PlusIcon } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { YearSelector } from '@/components/tenants/year-selector'
 import { SellerYearGrid } from '@/components/seller/seller-year-grid'
 import { SellerYearExportButton } from '@/components/seller/seller-year-export-button'
@@ -29,9 +29,7 @@ interface SellerHomePageProps {
 export default async function SellerHomePage({ searchParams }: SellerHomePageProps) {
   const supabase = await createClient()
   // Defense-in-depth: validate JWT and verify seller role even though middleware already checked
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
 
   if (!user || user.app_metadata?.role !== 'seller') {
     redirect('/login')

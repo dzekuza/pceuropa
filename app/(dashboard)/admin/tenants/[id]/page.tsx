@@ -4,7 +4,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeftIcon } from 'lucide-react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCurrentUser } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { TenantInfoCard } from '@/components/tenants/tenant-info-card'
 import { TenantRevenueTable } from '@/components/tenants/tenant-revenue-table'
@@ -36,8 +36,8 @@ export default async function TenantDetailPage({
   const safeYear = isNaN(year) ? currentYear : year
 
   // Auth + both data fetches run concurrently.
-  const [{ data: { user } }, detailData] = await Promise.all([
-    supabase.auth.getUser(),
+  const [user, detailData] = await Promise.all([
+    getCurrentUser(),
     getAdminTenantDetail(supabase, id, safeYear),
   ])
 
