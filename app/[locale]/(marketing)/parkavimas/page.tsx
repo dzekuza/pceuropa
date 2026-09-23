@@ -38,7 +38,7 @@ export default async function ParkavimasPage() {
           {s.heading}
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
             <h2 className="font-bold text-[22px] text-black">{s.mainTitle}</h2>
             <p
@@ -47,21 +47,23 @@ export default async function ParkavimasPage() {
             />
           </section>
 
-          <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
-            <h2 className="font-bold text-[22px] text-black">{s.evTitle}</h2>
-            <p
-              className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
-              dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.evBody) }}
-            />
-          </section>
+          <div className="flex flex-col gap-8">
+            <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
+              <h2 className="font-bold text-[22px] text-black">{s.evTitle}</h2>
+              <p
+                className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.evBody) }}
+              />
+            </section>
 
-          <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
-            <h2 className="font-bold text-[22px] text-black">{s.disabledTitle}</h2>
-            <p
-              className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
-              dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.disabledBody) }}
-            />
-          </section>
+            <section className="bg-white rounded-[24px] p-8 flex flex-col gap-4">
+              <h2 className="font-bold text-[22px] text-black">{s.disabledTitle}</h2>
+              <p
+                className="text-[#575757] leading-relaxed whitespace-pre-line [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.disabledBody) }}
+              />
+            </section>
+          </div>
         </div>
       </div>
 

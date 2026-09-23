@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import type React from 'react'
 import { ArrowIcon } from './ui/arrow-icon'
+import { Link } from '@/i18n/navigation'
 import { resizeSupabaseImage, STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
 
 const BASE = `${STORAGE_PUBLIC_BASE}/marketing-assets`
@@ -14,7 +15,7 @@ export const HERO_DEFAULT_SLIDES = [
   { src: `${BASE}/news-1.jpg`,            alt: 'PC Europa — naujienos' },
 ]
 
-interface HeroSlide { src: string; alt: string }
+interface HeroSlide { src: string; alt: string; link?: string }
 
 interface HeroProps {
   slides?: HeroSlide[]
@@ -63,18 +64,25 @@ export function Hero({ slides = HERO_DEFAULT_SLIDES, title, subtitle }: HeroProp
         onMouseLeave={startTimer}
       >
         {/* Slides */}
-        {slides.map((slide, i) => (
-          <img
-            key={slide.src}
-            src={resizeSupabaseImage(slide.src, { width: 1600, height: 920, quality: 90 })}
-            alt={slide.alt}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0'}`}
-          />
-        ))}
+        {slides.map((slide, i) => {
+          const img = (
+            <img
+              src={resizeSupabaseImage(slide.src, { width: 1600, height: 920, quality: 90 })}
+              alt={slide.alt}
+              className="w-full h-full object-cover"
+            />
+          )
+          const cls = `absolute inset-0 transition-opacity duration-700 ${i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0 pointer-events-none'}`
+          if (!slide.link) return <div key={slide.src} className={cls}>{img}</div>
+          if (slide.link.startsWith('/')) {
+            return <Link key={slide.src} href={slide.link} className={cls}>{img}</Link>
+          }
+          return <a key={slide.src} href={slide.link} target="_blank" rel="noopener noreferrer" className={cls}>{img}</a>
+        })}
 
         {/* CMS text overlay */}
         {(title || subtitle) && (
-          <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-10 lg:p-14 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+          <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-10 lg:p-14 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
             {title && (
               <h1 className="text-white font-bold text-[28px] md:text-[40px] lg:text-[56px] leading-tight tracking-tight drop-shadow-md">
                 {title}

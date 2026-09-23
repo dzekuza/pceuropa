@@ -52,7 +52,9 @@ export function renderPuckBlock(block: BlockEntry, index: number) {
           isSafeImageUrl((slide as Record<string, unknown>).src)
         ) {
           const s = slide as Record<string, unknown>
-          return [{ src: s.src as string, alt: safeString(s.alt) ?? '' }]
+          const link = safeString(s.link)?.trim()
+          const safeLink = link && /^(https?:\/\/|\/(?!\/))/i.test(link) ? link : undefined
+          return [{ src: s.src as string, alt: safeString(s.alt) ?? '', link: safeLink }]
         }
         return []
       })

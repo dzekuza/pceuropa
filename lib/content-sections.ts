@@ -107,8 +107,9 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
         arrayFields: [
           { key: 'src', label: 'Nuotrauka', kind: 'image' },
           { key: 'alt', label: 'Aprašymas (alt)', kind: 'text' },
+          { key: 'link', label: 'Nuoroda (URL, nebūtina)', kind: 'text' },
         ],
-        defaultItem: { src: '', alt: 'PC Europa' },
+        defaultItem: { src: '', alt: 'PC Europa', link: '' },
         itemLabelKey: 'alt',
         itemLabelFallback: 'Skaidrė',
       },
