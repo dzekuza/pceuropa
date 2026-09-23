@@ -17,4 +17,8 @@ docker tag "$image:$tag" "$image:latest"
 
 cd /opt/pceuropa-app
 docker compose up -d --force-recreate --no-build app
+
+# Every deploy adds a SHA tag; without this each one pins ~400MB of old layers.
+docker images "$image" --format '{{.Tag}}' | grep -E '^[0-9a-f]{40}$' | grep -vx "$tag" \
+  | xargs -r -I{} docker rmi "$image:{}" || true
 docker image prune -f
