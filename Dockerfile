@@ -22,7 +22,9 @@ ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NODE_ENV=production
 
-RUN pnpm build
+# CI supplies server-only build env (page data collection uses the admin client) as
+# a secret so it never lands in a layer; on the VPS .env.production is in the context.
+RUN --mount=type=secret,id=envprod,target=/app/.env.production,required=false pnpm build
 
 # ---- runtime ----
 FROM base AS runner
