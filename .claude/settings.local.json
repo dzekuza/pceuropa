@@ -5,6 +5,10 @@
     "figma-desktop",
     "puppeteer"
   ],
+  "disabledMcpjsonServers": [
+    "blender",
+    "watermelon"
+  ],
   "skillOverrides": {
     "studio": "off",
     "explain": "off",
@@ -15,8 +19,5 @@
     "context-budget": "off",
     "pr-review": "off",
     "refactor": "off"
-  },
-  "disabledMcpjsonServers": [
-    "blender"
-  ]
+  }
 }
