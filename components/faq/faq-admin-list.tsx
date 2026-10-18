@@ -48,7 +48,7 @@ export function FaqAdminList({ items: initialItems, onEdit, onDeleteSuccess }: F
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-        <p className="text-base">Dar nėra DUK įrašų. Pridėkite pirmą klausimą.</p>
+        <p className="text-base">Dar nėra naujienų. Pridėkite pirmą naujieną.</p>
       </div>
     )
   }

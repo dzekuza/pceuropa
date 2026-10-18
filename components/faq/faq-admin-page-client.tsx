@@ -40,14 +40,14 @@ export function FaqAdminPageClient({ items: initialItems }: FaqAdminPageClientPr
     <div className="flex flex-col gap-3">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">DUK valdymas</h1>
+          <h1 className="text-2xl font-bold">Naujienos</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Kurkite ir tvarkykite dažnai užduodamus klausimus
+            Kurkite ir tvarkykite naujienas nuomininkams
           </p>
         </div>
         <Button size="sm" onClick={handleAdd}>
           <Plus className="mr-2 h-4 w-4" />
-          Pridėti klausimą
+          Pridėti naujieną
         </Button>
       </div>
 

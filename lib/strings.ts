@@ -8,7 +8,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: 'Metų apžvalga', href: '/admin/overview', icon: 'LayoutGrid' },
   { label: 'Analitika', href: '/admin/analytics', icon: 'BarChart2' },
   { label: 'Straipsniai', href: '/admin/articles', icon: 'Newspaper' },
-  { label: 'DUK', href: '/admin/faq', icon: 'HelpCircle' },
+  { label: 'Naujienos', href: '/admin/faq', icon: 'Newspaper' },
   { label: 'Puslapiai', href: '/admin/pages', icon: 'FileText' },
   { label: 'Integracijos', href: '/admin/integrations', icon: 'Plug' },
   { label: 'Vertimai', href: '/admin/translations', icon: 'Languages' },
@@ -19,7 +19,7 @@ export const SELLER_NAV_ITEMS = [
   { label: 'Pagrindinis', href: '/seller', icon: 'Home' },
   { label: 'Apyvarta', href: '/seller/revenue', icon: 'TrendingUp' },
   { label: 'Analitika', href: '/seller/analytics', icon: 'BarChart2' },
-  { label: 'DUK', href: '/seller/faq', icon: 'HelpCircle' },
+  { label: 'Naujienos', href: '/seller/faq', icon: 'Newspaper' },
 ] as const
 
 export const AUTH_STRINGS = {

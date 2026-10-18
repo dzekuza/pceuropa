@@ -137,7 +137,7 @@ export function FaqFormDialog({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? 'Redaguoti klausimą' : 'Naujas klausimas'}
+            {isEdit ? 'Redaguoti naujieną' : 'Nauja naujiena'}
           </DialogTitle>
         </DialogHeader>
 
@@ -164,10 +164,10 @@ export function FaqFormDialog({
                   name="question"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Klausimas</FormLabel>
+                      <FormLabel>Pavadinimas</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Įveskite klausimą..."
+                          placeholder="Įveskite pavadinimą..."
                           className="resize-none"
                           rows={3}
                           {...field}
@@ -183,10 +183,10 @@ export function FaqFormDialog({
                   name="answer"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Atsakymas</FormLabel>
+                      <FormLabel>Turinys</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Įveskite atsakymą..."
+                          placeholder="Įveskite turinį..."
                           className="resize-none"
                           rows={5}
                           {...field}
@@ -204,7 +204,7 @@ export function FaqFormDialog({
                   name="question_en"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Klausimas (EN)</FormLabel>
+                      <FormLabel>Pavadinimas (EN)</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Enter the question..."
@@ -223,7 +223,7 @@ export function FaqFormDialog({
                   name="answer_en"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Atsakymas (EN)</FormLabel>
+                      <FormLabel>Turinys (EN)</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Enter the answer..."

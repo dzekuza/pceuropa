@@ -70,7 +70,7 @@ export function FaqReader({ items }: FaqReaderProps) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <p className="text-base text-muted-foreground">
-          Šiuo metu DUK įrašų nėra.
+          Šiuo metu naujienų nėra.
         </p>
       </div>
     )

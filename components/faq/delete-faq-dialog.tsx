@@ -44,9 +44,9 @@ export function DeleteFaqDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Ištrinti klausimą</AlertDialogTitle>
+          <AlertDialogTitle>Ištrinti naujieną</AlertDialogTitle>
           <AlertDialogDescription>
-            Ar tikrai norite ištrinti šį klausimą?{' '}
+            Ar tikrai norite ištrinti šią naujieną?{' '}
             {item && (
               <span className="block mt-1 font-medium text-foreground">
                 &ldquo;{item.question}&rdquo;

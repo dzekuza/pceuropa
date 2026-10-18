@@ -25,9 +25,9 @@ export default async function SellerFaqPage() {
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <h1 className="text-2xl font-bold">DUK</h1>
+        <h1 className="text-2xl font-bold">Naujienos</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Dažnai užduodami klausimai
+          Naujausia informacija nuomininkams
         </p>
       </div>
 
