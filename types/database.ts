@@ -67,6 +67,48 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_pages: {
+        Row: {
+          content: string
+          content_en: string | null
+          cover_image: string | null
+          created_at: string | null
+          id: string
+          published: boolean
+          published_at: string | null
+          slug: string
+          title: string
+          title_en: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string
+          content_en?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug: string
+          title: string
+          title_en?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          content_en?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug?: string
+          title?: string
+          title_en?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       faq_items: {
         Row: {
           answer: string
@@ -629,6 +671,7 @@ export type FaqItemUpdate = Database['public']['Tables']['faq_items']['Update']
 
 export type Article = Database['public']['Tables']['articles']['Row']
 export type Promo = Database['public']['Tables']['promos']['Row']
+export type CustomPage = Database['public']['Tables']['custom_pages']['Row']
 export type ArticleInsert = Omit<Article, 'id' | 'created_at' | 'updated_at'>
 export type ArticleUpdate = Partial<ArticleInsert>
 

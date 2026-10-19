@@ -1,24 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
-import Placeholder from '@tiptap/extension-placeholder'
-import {
-  Bold,
-  Italic,
-  Heading2,
-  Heading3,
-  List,
-  ListOrdered,
-  Quote,
-  Link2,
-  Image as ImageIcon,
-  ChevronLeft,
-  Loader2,
-} from 'lucide-react'
+import { Image as ImageIcon, ChevronLeft, Loader2 } from 'lucide-react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -35,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { RichTextField } from '@/components/admin/rich-text-field'
+import { RichContentEditor } from '@/components/admin/rich-content-editor'
 import { createClient } from '@/lib/supabase/client'
 import { compressImageFile, imageExtension } from '@/lib/image-compression'
 import { createArticle, updateArticle } from '@/actions/articles'
@@ -43,7 +28,6 @@ import {
   ARTICLE_CATEGORIES,
   type ArticleFormValues,
 } from '@/lib/validations/article'
-import { ResizableImage } from './resizable-image'
 import { slugify } from '@/lib/slugify'
 import { ARTICLES_STRINGS } from '@/lib/strings'
 import type { Article } from '@/types/database'
@@ -60,9 +44,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
   )
   const [uploadingCover, setUploadingCover] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [uploadingContentImage, setUploadingContentImage] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
-  const contentImageInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
@@ -93,39 +75,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
       setValue('slug', slugify(title))
     }
   }, [title, article, setValue])
-
-  const editor = useEditor({
-    immediatelyRender: false,
-    extensions: [
-      StarterKit.configure({ link: false }),
-      ResizableImage,
-      Link.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: ARTICLES_STRINGS.editorPlaceholder }),
-    ],
-    content: article?.content ?? '',
-    onUpdate: ({ editor }) => {
-      setValue('content', editor.getHTML())
-    },
-    editorProps: {
-      handleDrop: (view, event) => {
-        const file = event.dataTransfer?.files?.[0]
-        if (!file || !file.type.startsWith('image/')) return false
-        event.preventDefault()
-        const pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos
-        uploadContentImage(file, pos)
-        return true
-      },
-      handlePaste: (view, event) => {
-        const file = Array.from(event.clipboardData?.items ?? [])
-          .find((item) => item.type.startsWith('image/'))
-          ?.getAsFile()
-        if (!file) return false
-        event.preventDefault()
-        uploadContentImage(file)
-        return true
-      },
-    },
-  })
 
   async function uploadCoverImage(file: File) {
     setUploadingCover(true)
@@ -171,77 +120,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
       })
     })()
   }
-
-  function addLink() {
-    const url = window.prompt('URL:')
-    if (url) editor?.chain().focus().setLink({ href: url }).run()
-  }
-
-  async function uploadContentImage(file: File, pos?: number) {
-    setUploadingContentImage(true)
-    setSaveError(null)
-    const compressed = await compressImageFile(file)
-    const supabase = createClient()
-    const path = `articles/${Date.now()}.${imageExtension(compressed)}`
-    const { error } = await supabase.storage
-      .from('marketing-assets')
-      .upload(path, compressed, { contentType: compressed.type })
-    if (error) {
-      console.error('Article content image upload error:', error)
-      setSaveError(ARTICLES_STRINGS.errorUpload)
-      setUploadingContentImage(false)
-      return
-    }
-    const { data } = supabase.storage
-      .from('marketing-assets')
-      .getPublicUrl(path)
-    if (pos != null) {
-      editor?.chain().focus().insertContentAt(pos, { type: 'image', attrs: { src: data.publicUrl } }).run()
-    } else {
-      editor?.chain().focus().setImage({ src: data.publicUrl }).run()
-    }
-    setUploadingContentImage(false)
-  }
-
-  const toolbarButtons = [
-    {
-      icon: Bold,
-      action: () => editor?.chain().focus().toggleBold().run(),
-      active: editor?.isActive('bold'),
-    },
-    {
-      icon: Italic,
-      action: () => editor?.chain().focus().toggleItalic().run(),
-      active: editor?.isActive('italic'),
-    },
-    {
-      icon: Heading2,
-      action: () =>
-        editor?.chain().focus().toggleHeading({ level: 2 }).run(),
-      active: editor?.isActive('heading', { level: 2 }),
-    },
-    {
-      icon: Heading3,
-      action: () =>
-        editor?.chain().focus().toggleHeading({ level: 3 }).run(),
-      active: editor?.isActive('heading', { level: 3 }),
-    },
-    {
-      icon: List,
-      action: () => editor?.chain().focus().toggleBulletList().run(),
-      active: editor?.isActive('bulletList'),
-    },
-    {
-      icon: ListOrdered,
-      action: () => editor?.chain().focus().toggleOrderedList().run(),
-      active: editor?.isActive('orderedList'),
-    },
-    {
-      icon: Quote,
-      action: () => editor?.chain().focus().toggleBlockquote().run(),
-      active: editor?.isActive('blockquote'),
-    },
-  ]
 
   return (
     <div className="flex flex-col gap-0 min-h-screen -mx-4 -mt-4 -mb-20 md:-mb-4">
@@ -305,63 +183,16 @@ export function ArticleForm({ article }: ArticleFormProps) {
             </div>
 
             <TabsContent value="lt" className="flex-1 flex flex-col mt-0">
-              {/* Tiptap toolbar */}
-              <div className="border-b px-6 py-2 flex items-center gap-1 flex-wrap">
-                {toolbarButtons.map(({ icon: Icon, action, active }, i) => (
-                  <Button
-                    key={i}
-                    variant={active ? 'secondary' : 'ghost'}
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={action}
-                    type="button"
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                  </Button>
-                ))}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7"
-                  onClick={addLink}
-                  type="button"
-                >
-                  <Link2 className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7"
-                  disabled={uploadingContentImage}
-                  onClick={() => contentImageInputRef.current?.click()}
-                  type="button"
-                >
-                  {uploadingContentImage ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <ImageIcon className="h-3.5 w-3.5" />
-                  )}
-                </Button>
-                <input
-                  ref={contentImageInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0]
-                    if (f) uploadContentImage(f)
-                    e.target.value = ''
-                  }}
-                />
-              </div>
-
-              {/* Tiptap editor */}
-              <div className="flex-1 px-6 py-4">
-                <EditorContent
-                  editor={editor}
-                  className="min-h-[400px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[400px] [&_.ProseMirror]:text-foreground [&_.ProseMirror_h2]:text-foreground [&_.ProseMirror_h3]:text-foreground [&_.ProseMirror_p]:text-foreground [&_.ProseMirror_img]:rounded-md [&_.ProseMirror_img]:max-w-full"
-                />
-              </div>
+              <RichContentEditor
+                initialContent={article?.content ?? ''}
+                onChange={(html) => setValue('content', html)}
+                placeholder={ARTICLES_STRINGS.editorPlaceholder}
+                uploadFolder="articles"
+                onUploadError={(error) => {
+                  console.error('Article content image upload error:', error)
+                  setSaveError(ARTICLES_STRINGS.errorUpload)
+                }}
+              />
             </TabsContent>
 
             <TabsContent value="en" className="flex-1 flex flex-col gap-4 px-6 py-4 mt-0">

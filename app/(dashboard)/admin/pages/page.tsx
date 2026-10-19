@@ -5,7 +5,10 @@ export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getCurrentUser } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PAGES_CONFIG } from '@/lib/page-config'
+import { CUSTOM_PAGES_STRINGS } from '@/lib/strings'
+import { CustomPageCard } from '@/components/pages/custom-page-card'
 import {
   Card,
   CardFooter,
@@ -16,7 +19,7 @@ import {
   CardToolbar,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FileText, Layers, PanelsTopLeft } from 'lucide-react'
+import { FileText, Layers, PanelsTopLeft, Plus } from 'lucide-react'
 
 export default async function AdminPagesPage() {
   const user = await getCurrentUser()
@@ -24,6 +27,12 @@ export default async function AdminPagesPage() {
   if (!user || user.app_metadata?.role !== 'admin') {
     redirect('/login')
   }
+
+  // Service role: the admin list includes drafts, which RLS hides from other roles
+  const { data: customPages } = await createAdminClient()
+    .from('custom_pages')
+    .select('id, title, slug, published')
+    .order('updated_at', { ascending: false })
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -34,7 +43,31 @@ export default async function AdminPagesPage() {
             Redaguokite puslapių turinį, nuotraukas ir tekstus
           </p>
         </div>
+        <Button asChild size="sm">
+          <Link href="/admin/pages/custom/new" prefetch={false}>
+            <Plus className="mr-1.5 h-4 w-4" />
+            {CUSTOM_PAGES_STRINGS.newButton}
+          </Link>
+        </Button>
       </div>
+
+      <section className="flex flex-col gap-3">
+        <div>
+          <h2 className="text-lg font-semibold">{CUSTOM_PAGES_STRINGS.sectionTitle}</h2>
+          <p className="text-muted-foreground text-sm">{CUSTOM_PAGES_STRINGS.sectionDescription}</p>
+        </div>
+        {customPages && customPages.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {customPages.map((page) => (
+              <CustomPageCard key={page.id} page={page} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">{CUSTOM_PAGES_STRINGS.emptyState}</p>
+        )}
+      </section>
+
+      <h2 className="text-lg font-semibold">{CUSTOM_PAGES_STRINGS.sitePagesTitle}</h2>
 
       {PAGES_CONFIG.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">

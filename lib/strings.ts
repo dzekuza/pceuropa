@@ -116,6 +116,38 @@ export const ARTICLES_STRINGS = {
   editorPlaceholderEn: 'Start writing the article...',
 } as const
 
+export const CUSTOM_PAGES_STRINGS = {
+  sectionTitle: 'Sukurti puslapiai',
+  sectionDescription: 'Atskiri puslapiai su viršelio nuotrauka ir tekstu',
+  sitePagesTitle: 'Svetainės puslapiai',
+  newButton: 'Naujas puslapis',
+  emptyState: 'Sukurtų puslapių kol kas nėra.',
+  titlePlaceholder: 'Puslapio pavadinimas',
+  slugLabel: 'Nuoroda (URL)',
+  slugHint: 'Puslapis bus pasiekiamas adresu /puslapiai/',
+  coverLabel: 'Viršelio nuotrauka',
+  editorPlaceholder: 'Pradėkite rašyti puslapio tekstą...',
+  saveDraft: 'Išsaugoti juodraštį',
+  publish: 'Publikuoti',
+  statusPublished: 'Publikuotas',
+  statusDraft: 'Juodraštis',
+  edit: 'Redaguoti',
+  view: 'Peržiūrėti',
+  delete: 'Ištrinti',
+  deleteConfirmTitle: 'Ištrinti puslapį?',
+  deleteConfirmDesc: 'Šis veiksmas negrįžtamas. Puslapis bus ištrintas visam laikui.',
+  deleteCancel: 'Atšaukti',
+  errorSave: 'Nepavyko išsaugoti puslapio',
+  errorSlugTaken: 'Puslapis su tokia nuoroda jau egzistuoja',
+  errorDelete: 'Nepavyko ištrinti puslapio',
+  errorUpload: 'Nepavyko įkelti nuotraukos. Bandykite dar kartą.',
+  tabLt: 'LT',
+  tabEn: 'EN',
+  titleEnLabel: 'Pavadinimas (EN)',
+  titleEnPlaceholder: 'Page title',
+  contentEnLabel: 'Turinys (EN)',
+} as const
+
 export const ADMIN_PROMOS_STRINGS = {
   pageTitle: 'Akcijos',
   pageDescription: 'Kurkite ir valdykite akcijas bei pasiūlymus',
