@@ -79,6 +79,9 @@ export default async function CustomPage({ params }: Props) {
               fill
               className="object-cover"
               priority
+              // imgproxy already resizes it; Next 16's optimizer refuses this host because
+              // it resolves to a private Docker IP (Caddy's network alias)
+              unoptimized
             />
           </div>
         )}
