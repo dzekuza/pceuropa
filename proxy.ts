@@ -115,7 +115,9 @@ export async function proxy(request: NextRequest) {
   // Public marketing pages are gated behind an under-construction screen until
   // unlocked with the maintenance password. Dashboard/login/API routes and the
   // gate page itself are exempt so the unlock flow and admin access still work.
+  // Localhost skips the gate so storefront work can be checked without the password.
   const isGateExempt =
+    isLocalDev ||
     isTenantSubdomain ||
     isDashboardRoute ||
     pathname === '/login' ||
