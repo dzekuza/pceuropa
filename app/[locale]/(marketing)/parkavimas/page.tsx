@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
+import { FileText } from 'lucide-react'
+
 import { Nav } from '@/components/marketing/nav'
 import { Footer } from '@/components/marketing/footer'
 import { getPuckBlockProps } from '@/lib/page-content'
 import { sanitizeRichText } from '@/lib/utils/sanitize-rich-text'
+import { STORAGE_PUBLIC_BASE } from '@/lib/utils/supabase-image'
+
+const PARKING_RULES_PDF_URL = `${STORAGE_PUBLIC_BASE}/marketing-assets/documents/parkavimo-taisykles.pdf`
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('parkavimas')
@@ -63,6 +68,21 @@ export default async function ParkavimasPage() {
                 dangerouslySetInnerHTML={{ __html: sanitizeRichText(s.disabledBody) }}
               />
             </section>
+
+            <a
+              href={PARKING_RULES_PDF_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white rounded-[24px] p-8 flex items-center gap-4"
+            >
+              <FileText className="h-6 w-6 text-black shrink-0" />
+              <div className="flex flex-col gap-1">
+                <h2 className="font-bold text-[22px] text-black">{t('rulesTitle')}</h2>
+                <span className="text-[#575757] leading-relaxed underline group-hover:text-black">
+                  {t('rulesLinkText')}
+                </span>
+              </div>
+            </a>
           </div>
         </div>
       </div>

@@ -262,7 +262,9 @@
     "evTitle": "Elektromobilių įkrovimas",
     "evBody": "PC Europa stovėjimo aikštelėje yra įrengtos elektromobilių įkrovimo stotelės. Naudojimasis nemokamas pirmąsias 2 valandas.",
     "disabledTitle": "Neįgaliųjų vietos",
-    "disabledBody": "Specialios stovėjimo vietos neįgaliesiems pažymėtos arčiausiai centrinių įėjimų."
+    "disabledBody": "Specialios stovėjimo vietos neįgaliesiems pažymėtos arčiausiai centrinių įėjimų.",
+    "rulesTitle": "Parkavimo taisyklės",
+    "rulesLinkText": "Peržiūrėti taisykles (PDF)"
   },
   "taisykles": {
     "pageTitle": "Prekybos centro taisyklės — PC Europa",

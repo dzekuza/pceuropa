@@ -262,7 +262,9 @@
     "evTitle": "EV charging",
     "evBody": "PC Europa's car park has EV charging stations. The first 2 hours are free.",
     "disabledTitle": "Accessible parking",
-    "disabledBody": "Dedicated parking spaces for visitors with disabilities are located closest to the main entrances."
+    "disabledBody": "Dedicated parking spaces for visitors with disabilities are located closest to the main entrances.",
+    "rulesTitle": "Parking rules",
+    "rulesLinkText": "View rules (PDF)"
   },
   "taisykles": {
     "pageTitle": "Shopping centre rules — PC Europa",
