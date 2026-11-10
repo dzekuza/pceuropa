@@ -202,6 +202,8 @@ export const SECTION_DEFS: Record<string, SectionDef> = {
     editable: true,
     fields: [
       { key: 'heroHeading', label: 'Antraštė', kind: 'text' },
+      { key: 'image', label: 'Nuotrauka po antrašte', kind: 'image' },
+      { key: 'imageAlt', label: 'Nuotraukos aprašymas (alt)', kind: 'text' },
       { key: 'searchPlaceholder', label: 'Paieškos placeholder', kind: 'text' },
       { key: 'loadMoreButton', label: '"Rodyti daugiau" mygtukas', kind: 'text' },
     ],
@@ -566,6 +568,8 @@ export const DEFAULT_DATA: Record<string, ContentData> = {
       { type: 'OpeningHoursBlock', props: {
         id: 'hours-1',
         heroHeading: DARBO_LAIKAS_STRINGS.heroHeading,
+        image: '',
+        imageAlt: '',
         searchPlaceholder: DARBO_LAIKAS_STRINGS.searchPlaceholder,
         loadMoreButton: DARBO_LAIKAS_STRINGS.loadMoreButton,
       } },

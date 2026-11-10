@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Search } from 'lucide-react'
 import { StoreHoursCard, type StoreHoursCardProps } from '@/components/marketing/store-hours-card'
 import { HoursCardsGrid, type HoursCardData } from '@/components/marketing/hours-cards-grid'
+import { resizeSupabaseImage } from '@/lib/utils/supabase-image'
 
 const PAGE_SIZE = 8
 
@@ -13,6 +14,8 @@ type Store = Omit<StoreHoursCardProps, never>
 type OpeningHoursSectionProps = {
   stores: Store[]
   heroHeading?: string
+  image?: string
+  imageAlt?: string
   searchPlaceholder?: string
   loadMoreButton?: string
   hoursCards?: HoursCardData[]
@@ -21,6 +24,8 @@ type OpeningHoursSectionProps = {
 export function OpeningHoursSection({
   stores,
   heroHeading: heroHeadingProp,
+  image,
+  imageAlt = '',
   searchPlaceholder: searchPlaceholderProp,
   loadMoreButton: loadMoreButtonProp,
   hoursCards = [],
@@ -67,6 +72,14 @@ export function OpeningHoursSection({
           />
         </label>
       </div>
+
+      {image && (
+        <img
+          src={resizeSupabaseImage(image, { width: 2000, height: 2000, quality: 85, fit: 'contain' })}
+          alt={imageAlt}
+          className="w-full h-auto rounded-[24px] mb-6"
+        />
+      )}
 
       {/* Opening-hours cards — own full-width row, separate from search */}
       {hoursCards.length > 0 && <HoursCardsGrid cards={hoursCards} className="mb-6" />}

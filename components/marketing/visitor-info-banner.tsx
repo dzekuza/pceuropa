@@ -111,11 +111,12 @@ export async function VisitorInfoBanner({
 
   if (variant === 'hours') {
     return (
-      <div className="relative w-full rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center px-6 lg:px-10 py-6 min-h-[292px]">
+      // Same box as the home page hero (components/marketing/hero.tsx) so the covers line up across pages.
+      <div className="relative w-full aspect-[2/1] h-auto md:aspect-auto md:h-[340px] lg:h-[460px] rounded-[20px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden flex items-center px-6 lg:px-10 py-6">
         {/* Background */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={resizeSupabaseImage(backgroundImage, { width: 1200, height: 600, quality: 90 })} alt="" className="absolute inset-0 size-full object-cover rounded-[32px] lg:rounded-[40px]" aria-hidden />
-        <div className="absolute inset-0 bg-black/25 rounded-[32px] lg:rounded-[40px]" aria-hidden />
+        <img src={resizeSupabaseImage(backgroundImage, { width: 1600, height: 920, quality: 90 })} alt="" className="absolute inset-0 size-full object-cover" aria-hidden />
+        <div className="absolute inset-0 bg-black/25" aria-hidden />
 
         {/* Heading + social icons */}
         <div className="relative flex flex-col gap-8 items-start">

@@ -54,6 +54,8 @@ export default async function DarboLaikasPage() {
 
   const defaultOpeningHoursText = {
     heroHeading: t('heroHeading'),
+    image: '',
+    imageAlt: '',
     searchPlaceholder: t('searchPlaceholder'),
     loadMoreButton: t('loadMoreButton'),
   }
@@ -72,6 +74,12 @@ export default async function DarboLaikasPage() {
   const bannerSlides = await getPuckBannerSlides('darbo-laikas', DEFAULT_BANNER_SLIDES, locale)
   const bannerHours = await getPuckBlockProps('darbo-laikas', 'BannerHoursBlock', defaultBannerHours, locale)
   const openingHoursText = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', defaultOpeningHoursText, locale)
+  // Admins usually upload the image once on the LT tab; show it on EN too unless EN has its own.
+  if (locale !== 'lt' && !openingHoursText.image) {
+    const lt = await getPuckBlockProps('darbo-laikas', 'OpeningHoursBlock', defaultOpeningHoursText, 'lt')
+    openingHoursText.image = lt.image
+    openingHoursText.imageAlt = openingHoursText.imageAlt || lt.imageAlt
+  }
   const howToGetHere = await getPuckBlockProps('darbo-laikas', 'HowToGetHereBlock', defaultHowToGetHere, locale)
 
   const stores: StoreHoursCardProps[] = tenants.map((tenant) => ({
@@ -98,7 +106,7 @@ export default async function DarboLaikasPage() {
       <Nav />
 
       {/* Info banner — matches Figma "Nav / Banner" section (node 946:72) */}
-      <div className="w-full max-w-[1332px] mx-auto px-4 pt-6 lg:pt-8">
+      <div className="w-full max-w-[1332px] mx-auto px-4 pt-4 lg:pt-6">
         <VisitorInfoBanner
           heading={t('heroHeading')}
           variant="hours"
