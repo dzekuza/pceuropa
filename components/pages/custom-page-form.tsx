@@ -17,6 +17,7 @@ import { createCustomPage, updateCustomPage } from '@/actions/custom-pages'
 import { customPageFormSchema, type CustomPageFormValues } from '@/lib/validations/custom-page'
 import { slugify } from '@/lib/slugify'
 import { CUSTOM_PAGES_STRINGS } from '@/lib/strings'
+import { PUBLIC_SITE_ORIGIN } from '@/lib/constants'
 import type { CustomPage } from '@/types/database'
 
 interface CustomPageFormProps {
@@ -48,6 +49,8 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
   })
 
   const title = watch('title')
+  const slug = watch('slug')
+  const publicUrl = `${PUBLIC_SITE_ORIGIN}/puslapiai/${slug}`
 
   // Auto-generate slug from title only when creating a new page
   useEffect(() => {
@@ -159,9 +162,15 @@ export function CustomPageForm({ page }: CustomPageFormProps) {
           <div className="flex flex-col gap-2">
             <Label htmlFor="slug">{CUSTOM_PAGES_STRINGS.slugLabel}</Label>
             <Input id="slug" {...register('slug')} />
-            <p className="text-xs text-muted-foreground">
-              {CUSTOM_PAGES_STRINGS.slugHint}
-              {watch('slug')}
+            <p className="text-xs text-muted-foreground break-all">
+              {CUSTOM_PAGES_STRINGS.slugHint}{' '}
+              {page?.published && page.slug === slug ? (
+                <a href={publicUrl} target="_blank" rel="noreferrer" className="underline">
+                  {publicUrl}
+                </a>
+              ) : (
+                publicUrl
+              )}
             </p>
             {errors.slug && <p className="text-destructive text-xs">{errors.slug.message}</p>}
           </div>

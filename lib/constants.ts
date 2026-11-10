@@ -3,6 +3,11 @@
 // Cookie set once a visitor unlocks the under-construction gate on public pages.
 export const SITE_LOCK_COOKIE = 'pce_site_unlocked'
 
+// The storefront's only public host. The dashboard runs on nuomininkai.pceuropa.lt,
+// so storefront links built there must be absolute, and proxy.ts sends any
+// storefront request on the subdomain here.
+export const PUBLIC_SITE_ORIGIN = 'https://pceuropa.lt'
+
 // GA4 measurement ID — tracking only starts once CookieConsentBanner records acceptance.
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? 'G-RCN6HG618K'
 

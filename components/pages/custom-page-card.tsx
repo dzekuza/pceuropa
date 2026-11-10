@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DeleteCustomPageDialog } from '@/components/pages/delete-custom-page-dialog'
 import { CUSTOM_PAGES_STRINGS } from '@/lib/strings'
+import { PUBLIC_SITE_ORIGIN } from '@/lib/constants'
 import type { CustomPage } from '@/types/database'
 
 interface CustomPageCardProps {
@@ -50,7 +51,7 @@ export function CustomPageCard({ page }: CustomPageCardProps) {
         <div className="flex items-center gap-1">
           {page.published && (
             <Button asChild variant="ghost" size="icon" aria-label={CUSTOM_PAGES_STRINGS.view}>
-              <a href={`/puslapiai/${page.slug}`} target="_blank" rel="noreferrer">
+              <a href={`${PUBLIC_SITE_ORIGIN}/puslapiai/${page.slug}`} target="_blank" rel="noreferrer">
                 <ExternalLink className="h-4 w-4" />
               </a>
             </Button>

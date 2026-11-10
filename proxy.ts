@@ -9,7 +9,7 @@
 import { createServerClient } from '@supabase/ssr'
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
-import { SITE_LOCK_COOKIE } from '@/lib/constants'
+import { PUBLIC_SITE_ORIGIN, SITE_LOCK_COOKIE } from '@/lib/constants'
 import { routing } from '@/i18n/routing'
 
 // Locale routing (LT unprefixed at "/", EN prefixed at "/en/...") only ever
@@ -32,6 +32,32 @@ export async function proxy(request: NextRequest) {
     // visitor lands on a 404 instead of the coming-soon screen.
     pathname === '/under-construction' ||
     pathname.startsWith('/auth/')
+
+  const hostname = request.headers.get('host') || ''
+  const isLocalDev = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1')
+  const isTenantSubdomain = hostname.startsWith('nuomininkai.')
+
+  // The tenant subdomain serves only the dashboard. Every storefront path there
+  // (including /en/*, /puslapiai/*, the gate page) moves permanently to the public
+  // host, so storefront pages exist on one domain only. "/" is left for the
+  // role-based redirect below, and files with an extension (public/ assets the
+  // dashboard itself loads) are left alone.
+  const isDashboardOnlyPath = isLocaleExempt && pathname !== '/under-construction'
+  const isPublicAsset = /\.[a-z0-9]+$/i.test(pathname)
+  if (
+    !isLocalDev &&
+    isTenantSubdomain &&
+    pathname !== '/' &&
+    !isDashboardOnlyPath &&
+    !isPublicAsset
+  ) {
+    // Set the path on the URL object rather than resolving a string against the
+    // origin: a "//evil.com" pathname would otherwise resolve to another host.
+    const target = new URL(PUBLIC_SITE_ORIGIN)
+    target.pathname = pathname
+    target.search = request.nextUrl.search
+    return NextResponse.redirect(target, 308)
+  }
 
   // Let next-intl resolve the locale for marketing-tree requests. For the
   // default locale (lt) this is an internal rewrite ("/" -> "/lt") that the
@@ -76,10 +102,6 @@ export async function proxy(request: NextRequest) {
   // from the public marketing domain (pceuropa.lt), and the subdomain root sends
   // visitors straight to login. Skipped on localhost so both the marketing site
   // and the dashboard remain reachable during local development.
-  const hostname = request.headers.get('host') || ''
-  const isLocalDev = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1')
-  const isTenantSubdomain = hostname.startsWith('nuomininkai.')
-
   if (!isLocalDev && !isTenantSubdomain && (pathname === '/login' || isDashboardRoute)) {
     return NextResponse.redirect(new URL('/', request.url))
   }

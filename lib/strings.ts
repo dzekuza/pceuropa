@@ -124,7 +124,7 @@ export const CUSTOM_PAGES_STRINGS = {
   emptyState: 'Sukurtų puslapių kol kas nėra.',
   titlePlaceholder: 'Puslapio pavadinimas',
   slugLabel: 'Nuoroda (URL)',
-  slugHint: 'Puslapis bus pasiekiamas adresu /puslapiai/',
+  slugHint: 'Puslapis bus pasiekiamas adresu',
   coverLabel: 'Viršelio nuotrauka',
   editorPlaceholder: 'Pradėkite rašyti puslapio tekstą...',
   saveDraft: 'Išsaugoti juodraštį',
