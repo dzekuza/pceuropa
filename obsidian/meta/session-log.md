@@ -29,3 +29,8 @@ Entry format:
 - **Changed:** `parkavimas/page.tsx` + `messages/{lt,en}.json` (rules PDF card, URL from `STORAGE_PUBLIC_BASE`); `custom-page-card.tsx` + `lib/strings.ts` (`PUBLIC_SITE_ORIGIN`, so "view" opens pceuropa.lt, not the nuomininkai subdomain); `custom-page-form.tsx` slug hint now shows the full https://pceuropa.lt/puslapiai/{slug} URL, clickable once published; `proxy.ts` 308-redirects every storefront path on nuomininkai.pceuropa.lt to https://pceuropa.lt (dashboard/login/auth/api/assets stay). `PUBLIC_SITE_ORIGIN` lives in `lib/constants.ts`.
 - **Status:** eslint + tsc pass; not checked in a browser — local `pnpm dev` 500s on every page (Next picks `~/package-lock.json` as workspace root, can't resolve tailwindcss). VPS disk at 95%.
 - **Next:** commit + deploy, check /parkavimas on prod; fix `turbopack.root`; free VPS disk.
+
+## 2026-11-10 20:00 — admin-managed image under the Darbo laikas heading
+- **Changed:** `lib/content-sections.ts` (OpeningHoursBlock gets `image` + `imageAlt` fields), `opening-hours-section.tsx` (renders it below the heading/search row), `darbo-laikas/page.tsx` (EN falls back to the LT image). Also uncommitted: `proxy.ts` skips the under-construction gate on localhost.
+- **Status:** lint + tsc pass; not seen in a browser (local dev still broken, change not deployed). Deployed earlier today: 525aca6 (subdomain redirect, parking PDF) — verified live.
+- **Next:** commit + push, upload an image at /admin/content/darbo-laikas, check /darbo-laikas.
